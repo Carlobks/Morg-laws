@@ -23,6 +23,9 @@ Fonte secundária leva a marca *(secundária)* até ser conferida na original.
 - **Git Credential Manager — várias contas** — https://github.com/git-ecosystem/git-credential-manager/blob/main/docs/multiple-users.md — lido em 2026-10-29.
   Sustenta: o usuário no endereço do repositório escolhe a conta só para aquele repositório.
 
+- **Git — `lockfile.c` (mensagem do `index.lock`)** — https://github.com/git/git/blob/master/lockfile.c — lido em 2026-10-29.
+  Sustenta: o git não manda apagar o lock; só diz que outro processo pode estar a correr ou que o lock pode estar velho.
+
 ## Segurança
 
 - **React2Shell — CVE-2025-55182 e CVE-2025-66478** — https://www.bitsight.com/blog/security-alert-cve-2025-66478-cve-2025-55182-react2shell-nextjs-react-server-components-remote — 2026-10-29 *(secundária)*.
@@ -31,4 +34,6 @@ Fonte secundária leva a marca *(secundária)* até ser conferida na original.
 ## Livros e autores
 
 - **Fabio Akita — Competente o Suficiente** (livro). Citado por capítulo e página.
+  - pp. 128–129: skills e ferramentas de terceiros só com leitura completa e uma dor concreta (usado em `escrevendo-regras-de-agente`).
+  - p. 165: modelos esconderam uma biblioteca vulnerável numa lista de exceções (base de "sem silenciar alarme").
 - **Fabio Akita — blog** — https://akitaonrails.com
