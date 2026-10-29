@@ -1,0 +1,29 @@
+#!/bin/sh
+# Portão do Morg-laws: nada sensível entra no repositório público.
+dir=$(dirname "$0")
+
+# 1. A identidade do commit tem de ser o e-mail noreply do GitHub.
+email=$(git config user.email)
+case "$email" in
+  *@users.noreply.github.com) ;;
+  *)
+    echo "ERRO: user.email é '$email'. Use o e-mail noreply do GitHub:" >&2
+    echo "  git config --local user.email <id>+<usuario>@users.noreply.github.com" >&2
+    exit 1 ;;
+esac
+
+# 2. Linhas adicionadas e nomes dos arquivos não podem casar com a lista negra.
+{
+  git diff --cached --name-only --diff-filter=ACMR
+  git diff --cached -U0 --diff-filter=ACMR | grep '^+' | grep -v '^+++'
+} | sh "$dir/verificar-lista-negra.sh" "arquivos preparados" || exit 1
+
+# 3. AGENTS.md é lido inteiro em todo turno: no máximo 60 linhas.
+if [ -f AGENTS.md ]; then
+  linhas=$(wc -l < AGENTS.md)
+  if [ "$linhas" -gt 60 ]; then
+    echo "ERRO: AGENTS.md tem $linhas linhas (máximo 60). Mova o detalhe para uma skill." >&2
+    exit 1
+  fi
+fi
+exit 0

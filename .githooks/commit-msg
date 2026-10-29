@@ -1,0 +1,4 @@
+#!/bin/sh
+# A mensagem do commit também é pública: passa pela mesma lista negra.
+dir=$(dirname "$0")
+grep -v '^#' "$1" | sh "$dir/verificar-lista-negra.sh" "mensagem do commit"
