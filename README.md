@@ -23,7 +23,7 @@ O repositório está em construção: as pastas aparecem conforme as fases avan�
 npx skills add Carlobks/Morg-laws
 ```
 
-(em construção: o comando funciona quando a primeira skill for publicada)
+O comando instala as skills em `.claude/skills/` (ou na pasta do agente que escolher). O `AGENTS.md` não vem com elas: copie-o para a raiz do projeto. No Claude Code, junte um `CLAUDE.md` com a linha `@AGENTS.md`. Detalhes e versão testada em [aprendizados/2026-10-30-instalacao-das-skills.md](aprendizados/2026-10-30-instalacao-das-skills.md).
 
 ## Para quem contribui
 
@@ -33,7 +33,7 @@ Ative os hooks depois de clonar:
 git config core.hooksPath .githooks
 ```
 
-O `pre-commit` recusa commits com e-mail que não seja o noreply do GitHub e com AGENTS.md acima de 60 linhas.
+O `pre-commit` recusa commits com e-mail que não seja o noreply do GitHub, com um nome de autor da lista negra e com AGENTS.md acima de 60 linhas.
 Ele também procura nomes e dados sensíveis numa lista que fica **fora** do repositório
 (`git config morg.listaNegra <arquivo>`); sem essa lista, só avisa. No GitHub, o `gitleaks` procura segredos em todo push.
 
