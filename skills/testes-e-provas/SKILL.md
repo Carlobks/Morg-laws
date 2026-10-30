@@ -63,4 +63,4 @@ description: Guia como provar que um trabalho de agente funciona — o teste que
 
 ## Fontes
 
-Ver `FONTES.md`.
+Sem fonte externa: estas regras vêm da prática do projeto de origem, e os números citados foram medidos lá. Quando uma regra passar a apoiar-se numa fonte, ela entra em `FONTES.md`.

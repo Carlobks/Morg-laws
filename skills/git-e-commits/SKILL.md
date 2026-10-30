@@ -67,4 +67,4 @@ Antes de dizer "feito":
 
 ## Fontes
 
-Ver `FONTES.md`. Os números (109 arquivos, 86 de 199) são medidos no projeto de onde estas regras saíram.
+Sem fonte externa: estas regras vêm da prática do projeto de origem. Os números (109 arquivos, 86 de 199) foram medidos lá. A parte do `index.lock` apoia-se no código do git (`lockfile.c`, em `FONTES.md`).
