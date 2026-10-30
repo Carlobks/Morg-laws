@@ -30,7 +30,7 @@ O banco de produção é de toda a gente que trabalha nele. Um erro no código v
 | Mudança | Prova no banco |
 |---|---|
 | Coluna nova | `SELECT count(*) FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 't' AND column_name = 'c'` devolve 1, corrido pelo dono (sem `table_schema`, a mesma tabela noutro esquema conta também; e o `information_schema` esconde as colunas de um papel sem acesso, o `pg_attribute` não) |
-| Função | `SELECT prosrc FROM pg_proc WHERE oid = 'public.f(args)'::regprocedure` mostra o corpo entre `$$` igual ao arquivo commitado. O `pg_get_functiondef` devolve uma versão equivalente, mas normalizada; e `'f'::regproc`, sem argumentos, falha com `42725` quando há duas `f` |
+| Função | `SELECT prosrc FROM pg_proc WHERE oid = 'public.f(args)'::regprocedure` mostra o corpo entre `$$` igual ao arquivo commitado. O `pg_get_functiondef` devolve uma versão equivalente, mas normalizada; numa função `BEGIN ATOMIC` o `prosrc` vem vazio, e compara-se o `pg_get_functiondef`, que reconstrói o corpo. `'f'::regproc`, sem argumentos, falha com `42725` quando há duas `f` |
 | Permissão retirada | `SELECT has_function_privilege('papel', 'public.f(args)', 'EXECUTE')` devolve false |
 
 A tabela de controle de migrações da ferramenta não serve de prova: o que se aplica por fora dela não aparece lá.
@@ -39,8 +39,8 @@ Um número escrito à mão num documento ("vamos na migração 140") envelhece: 
 
 Uma migração numa tabela com uso não pode trancá-la:
 
-- **`SET LOCAL lock_timeout = '2s'` antes do DDL.** O `ALTER TABLE` pede um lock exclusivo: enquanto espera por uma leitura longa, as consultas seguintes ficam na fila atrás dele. Com o limite, ele desiste com `55P03` em vez de parar o sistema.
-- **Coluna nova com `DEFAULT` volátil** (`clock_timestamp()`, `random()`) reescreve a tabela inteira; com um `DEFAULT` constante, não.
+- **`SET LOCAL lock_timeout = '2s'` antes do DDL, dentro da transação da migração.** O `ALTER TABLE` pede um lock exclusivo: enquanto espera por uma leitura longa, as consultas seguintes ficam na fila atrás dele. Com o limite, ele desiste com `55P03` em vez de parar o sistema. Fora de uma transação, o `SET LOCAL` só dá um aviso (`25P01`) e não faz nada: se a ferramenta não abre a transação, use `SET lock_timeout` na sessão.
+- **Coluna nova com `DEFAULT` volátil** (`clock_timestamp()`, `random()`) reescreve a tabela inteira; com um `DEFAULT` não volátil (uma constante, `now()`), não.
 - **Restrição nova numa tabela grande:** `ADD CONSTRAINT ... NOT VALID` (vale só para as linhas novas) e, noutro passo, `VALIDATE CONSTRAINT`.
 - **Índice numa tabela com uso:** `CREATE INDEX CONCURRENTLY`, que não corre dentro de uma transação (`25001`).
 
@@ -70,7 +70,7 @@ ROLLBACK;
 ## 5. Como guardar dados
 
 - **Dado com histórico nunca leva `DELETE`.** Marca-se como apagado (`deleted_at`, `deleted_by`) e preservam-se os registros ligados (pagamentos, horas, períodos).
-- **Tabela de registro é imutável:** só `SELECT` e `INSERT`. Um erro corrige-se com uma linha nova de correção, nunca editando a antiga. Escrever nela fica a cargo de um gatilho, não da aplicação: a aplicação só tem `SELECT` nela, e a função do gatilho é `SECURITY DEFINER SET search_path = ''`, com os nomes qualificados (sem `SECURITY DEFINER`, o gatilho recebe `42501`; sem o `search_path`, fica contornável, ver a skill `supabase`, seção 4). Tirar os grants não trava o dono nem o superusuário: isso faz-se com os gatilhos do fim desta seção.
+- **Tabela de registro é imutável:** só `SELECT` e `INSERT`. Um erro corrige-se com uma linha nova de correção, nunca editando a antiga. Escrever nela fica a cargo de um gatilho, não da aplicação: a aplicação só tem `SELECT` nela, e a função do gatilho é `SECURITY DEFINER SET search_path = ''`, com os nomes qualificados (sem `SECURITY DEFINER`, o gatilho recebe `42501`; sem os nomes com esquema e o `search_path`, fica contornável, ver a skill `supabase`, seção 4). Tirar os grants não trava o dono nem o superusuário: isso faz-se com os gatilhos do fim desta seção.
 - **O mesmo dado em duas colunas:** uma é a verdade e a outra deriva dela. Escolha qual e escreva-o; senão as duas divergem.
 - **Categoria que o usuário cria: tabela, não ENUM.** Num `ENUM` acrescenta-se (`ADD VALUE`) e renomeia-se (`RENAME VALUE`); remover e reordenar não existem. O valor novo só se usa depois do commit (`55P04`), por isso não serve na mesma migração, e cada valor novo pede migração e deploy.
 - **Estado de processo calcula-se, não se digita.** Um estado digitado apodrece. Quando falta um dado, o resultado é "indeterminado", nunca "falhou".
@@ -78,7 +78,7 @@ ROLLBACK;
 - **Dado sensível omite-se no `SELECT`**, não se anula depois na saída.
 - **Normalizar só na apresentação** (maiúsculas, acentos). O valor cru fica para consultas e filtros.
 
-A trava da tabela de registro, que vale para todos (o `UPDATE`, o `DELETE` e o `TRUNCATE` do dono e do superusuário caem no erro):
+A trava da tabela de registro apanha os erros e os acidentes de todos: o `UPDATE`, o `DELETE` e o `TRUNCATE` do dono e do superusuário caem no erro. Não trava um dono decidido, porque `ALTER TABLE ... DISABLE TRIGGER USER` desliga-a. Por isso o dono da tabela não é o papel da aplicação, e desligar um gatilho só se faz numa migração revista. O `ENABLE ALWAYS` faz a trava valer também no modo `replica` (`session_replication_role`), que salta os gatilhos comuns:
 
 ```sql
 CREATE FUNCTION public.registro_imutavel() RETURNS trigger
@@ -90,6 +90,8 @@ CREATE TRIGGER registro_sem_update_delete BEFORE UPDATE OR DELETE ON public.regi
   FOR EACH ROW EXECUTE FUNCTION public.registro_imutavel();
 CREATE TRIGGER registro_sem_truncate BEFORE TRUNCATE ON public.registro
   FOR EACH STATEMENT EXECUTE FUNCTION public.registro_imutavel();
+ALTER TABLE public.registro ENABLE ALWAYS TRIGGER registro_sem_update_delete;
+ALTER TABLE public.registro ENABLE ALWAYS TRIGGER registro_sem_truncate;
 ```
 
 ## 6. Armadilhas
@@ -110,5 +112,6 @@ Documentação do PostgreSQL 18, consultada em 30 de outubro de 2026 (as mesmas 
 - Enumerated Types: https://www.postgresql.org/docs/18/datatype-enum.html
 - ALTER TYPE: https://www.postgresql.org/docs/18/sql-altertype.html
 - ALTER TABLE: https://www.postgresql.org/docs/18/sql-altertable.html
+- SET (`SET LOCAL` fora de uma transação): https://www.postgresql.org/docs/18/sql-set.html
 
 Os trechos de SQL foram testados no PostgreSQL 18.3, num banco descartável, em 30 de outubro de 2026. Os locks foram provados com duas ligações ao mesmo banco.
