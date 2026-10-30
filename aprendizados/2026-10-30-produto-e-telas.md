@@ -5,6 +5,11 @@
 **O que aconteceu:** uma lista de pendências tinha dezenas de itens e nenhum saía. O critério de saída existia no papel, mas nunca abria na prática.
 **Como fazer:** ao criar uma lista de trabalho, meça quantos itens já saíram. Um sinal de fora (o estado da pessoa) serve de critério; uma arrumação de tela (arquivar) não.
 
+## Uma forma de apagar, não quatro
+
+**O que aconteceu:** um levantamento achou quatro padrões de apagar em uso no mesmo sistema (apagar de vez, marcar como apagado, arquivar, mover para o lixo), escolhidos tela a tela, sem critério.
+**Como fazer:** meça quais padrões existem, escolha um por tipo de dado e escreva o critério. Dado com histórico marca-se como apagado (ver a skill `sql-postgres`). Apagar de vez fica para a limpeza de retenção.
+
 ## Um botão que abre "em breve" ensina a ignorá-lo
 
 Botão sem função faz as pessoas aprenderem que aquele lugar não serve. Ou funciona, ou não aparece.

@@ -57,6 +57,7 @@ Pergunte, para cada regra: o que acontece se o agente a ignorar?
 
 - **Pouco:** fica como texto.
 - **Muito** (vazamento, dado apagado, produção fora do ar): vira barreira. Pode ser um hook que recusa o commit, um teste que falha, uma regra de negação nas permissões do agente ou um passo do CI.
+- **Autorização permanente:** quando o dono deixa o agente fazer algo sem pedir a cada vez, escreva **qual classe de ação** está autorizada (por exemplo, "criar tarefas no quadro do projeto"), e não uma licença geral. Tudo o que fica fora dessa classe volta a pedir o "sim".
 - **Catraca:** para o que já viola em grande quantidade, congele a contagem atual numa linha de base e falhe só se piorar. A linha de base desce no mesmo commit que corrige.
 
 ## 7. Registro
