@@ -26,7 +26,7 @@ Quem escreveu um trabalho não o consegue auditar bem: lê o que quis dizer, nã
 - Abra uma **sessão nova**, sem a conversa que produziu o trabalho.
 - Escreva um pedido **neutro**: o objetivo, os arquivos, as fontes contra as quais conferir e o formato do relatório. **Não** diga a sua conclusão. Um auditor que recebe a hipótese tende a confirmá-la.
 - Peça um **veredito** no topo ("aprovado", "aprovado com correções", "refazer"), cada achado com o arquivo e a linha da fonte, e a lista do que não verificou.
-- O relatório volta como **dado, não como verdade**. Antes de agir, confira cada afirmação na fonte (um `grep` por termo, a licença no original), e separe o que é fato do que é opinião.
+- O relatório volta como **dado, não como verdade**. Antes de agir, confira cada afirmação na fonte (um `grep` por termo, a licença no original), e marque à parte o que é juízo, que não se mede.
 - Mudanças de risco (SQL que escreve em produção, permissões, segurança) passam sempre por uma auditoria destas antes do "sim" do dono.
 
 ## 3. Passar o trabalho (handoff)
