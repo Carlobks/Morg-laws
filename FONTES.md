@@ -28,8 +28,12 @@ Fonte secundária leva a marca *(secundária)* até ser conferida na original.
 
 ## Segurança
 
-- **React2Shell — CVE-2025-55182 e CVE-2025-66478** — https://www.bitsight.com/blog/security-alert-cve-2025-66478-cve-2025-55182-react2shell-nextjs-react-server-components-remote — 2026-10-29 *(secundária)*.
-- **Next.js — CVE-2025-29927 (middleware)** — https://nextjs.org/blog/cve-2025-29927 — *(por conferir)*.
+- **React — Critical Security Vulnerability in React Server Components (CVE-2025-55182)** — https://react.dev/blog/2025/12/03/critical-security-vulnerability-in-react-server-components — lido em 2026-10-30.
+  Sustenta: CVSS 10.0; versões 19.0, 19.1.0, 19.1.1 e 19.2.0 afetadas; vulnerabilidades novas acrescentadas depois.
+- **Next.js — Security Advisory CVE-2025-66478** — https://nextjs.org/blog/CVE-2025-66478 — 2026-10-30 *(secundária: lida via busca)*.
+- **Vercel — React2Shell Security Bulletin** — https://vercel.com/kb/bulletin/react2shell — 2026-10-30 *(secundária: lida via busca)*. Sustenta: atualizar é a única correção completa.
+- **Vercel — Postmortem on Next.js middleware bypass (CVE-2025-29927)** — https://vercel.com/blog/postmortem-on-next-js-middleware-bypass — lido em 2026-10-30.
+  Sustenta: o cabeçalho `x-middleware-subrequest` saltava o middleware em apps com servidor próprio; o middleware não deve ser a única proteção das rotas.
 
 ## Livros e autores
 

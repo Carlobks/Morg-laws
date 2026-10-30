@@ -1,0 +1,12 @@
+[
+  {"query": "o redirect dentro da server action não funciona, cai no catch", "should_trigger": true},
+  {"query": "a tabela pisca toda vez que marco uma linha", "should_trigger": true},
+  {"query": "depois de editar, o painel continua a mostrar o valor antigo da linha", "should_trigger": true},
+  {"query": "cria uma rota /api para baixar o arquivo do cliente", "should_trigger": true},
+  {"query": "o build quebra com erro em arquivo 'use server'", "should_trigger": true},
+  {"query": "posso apagar esta página antiga de relatórios?", "should_trigger": true},
+  {"query": "a política RLS da tabela de clientes está certa?", "should_trigger": false},
+  {"query": "tira uma captura da tela para provar que ficou bom", "should_trigger": false},
+  {"query": "escreve a migração da coluna nova", "should_trigger": false},
+  {"query": "qual a diferença entre Vue e React?", "should_trigger": false}
+]
