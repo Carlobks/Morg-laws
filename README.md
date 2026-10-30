@@ -12,7 +12,7 @@ o que deu errado, a regra que nasceu disso e a fonte que a sustenta.
 | `skills/` | Regras por assunto (SQL, Supabase, Next.js, segurança, sessões…). O agente só abre o que o projeto usa. |
 | `biblia-akita/` | Resumo, com palavras nossas, do livro *Competente o Suficiente*, de Fabio Akita, com capítulo e página. |
 | `aprendizados/` | Notas datadas sobre bibliotecas, ferramentas e erros que custaram caro. |
-| `modelos/` | Arquivos prontos para copiar: AGENTS.md de exemplo, hooks de git. |
+| `modelos/` | Arquivos prontos para copiar: o hook `pre-push` (segredos com gitleaks e bibliotecas com `npm audit`, com linha de base). |
 | `FONTES.md` | Todas as fontes usadas, com a data em que foram lidas. |
 
 O repositório está em construção: as pastas aparecem conforme as fases avançam.

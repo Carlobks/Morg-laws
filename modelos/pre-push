@@ -1,0 +1,57 @@
+#!/bin/sh
+# Modelo de hook pre-push: verifica antes de o código sair da máquina.
+# Instalar num projeto: copiar para .githooks/pre-push e correr
+#   git config core.hooksPath .githooks
+# Precisa do gitleaks (https://github.com/gitleaks/gitleaks). O npm audit só corre se houver package-lock.json.
+# Linha de base dos avisos: .seguranca/audit-linha-de-base.txt (um ID por linha; a lista só encolhe).
+
+zeros=0000000000000000000000000000000000000000
+falhou=0
+
+# O git passa uma linha por ref: <ref local> <sha local> <ref remota> <sha remoto>
+while read -r ref_local sha_local ref_remota sha_remoto; do
+  [ "$sha_local" = "$zeros" ] && continue   # apagar uma branch não envia código
+  if [ "$sha_remoto" = "$zeros" ]; then
+    intervalo="$sha_local --not --remotes"  # branch nova: só o que nenhum remoto tem
+  else
+    intervalo="$sha_remoto..$sha_local"
+  fi
+
+  # 1. Segredos nos commits que vão subir.
+  if ! command -v gitleaks >/dev/null 2>&1; then
+    echo "ERRO: gitleaks não está instalado; o push não sai sem a verificação de segredos." >&2
+    exit 1
+  fi
+  if ! gitleaks git --log-opts="$intervalo" --redact --no-banner; then
+    echo "ERRO: o gitleaks achou um possível segredo em $ref_local. Tire-o do histórico antes do push." >&2
+    falhou=1
+  fi
+done
+
+# 2. Bibliotecas: só trava aviso crítico ou alto que não está na linha de base.
+if [ -f package-lock.json ]; then
+  base=.seguranca/audit-linha-de-base.txt
+  [ -f "$base" ] || base=/dev/null
+  novos=$(npm audit --json 2>/dev/null | node -e '
+    const fs = require("fs");
+    const base = new Set(fs.readFileSync(process.argv[1], "utf8").split(/\s+/).filter(Boolean));
+    const relatorio = JSON.parse(fs.readFileSync(0, "utf8") || "{}");
+    const novos = new Set();
+    for (const v of Object.values(relatorio.vulnerabilities || {})) {
+      for (const via of v.via || []) {
+        if (typeof via === "object" && ["critical", "high"].includes(via.severity) && !base.has(String(via.source))) {
+          novos.add(`${via.source} ${via.severity} ${via.name}: ${via.title}`);
+        }
+      }
+    }
+    console.log([...novos].join("\n"));
+  ' "$base")
+  if [ -n "$novos" ]; then
+    echo "ERRO: avisos novos de segurança nas dependências:" >&2
+    echo "$novos" >&2
+    echo "Atualize a biblioteca. Não acrescente o ID à linha de base para passar." >&2
+    falhou=1
+  fi
+fi
+
+exit $falhou
