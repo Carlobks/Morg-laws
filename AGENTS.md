@@ -28,11 +28,12 @@ Lido inteiro em todo turno: por isso fica curto (máximo 60 linhas, o hook confe
 | Situação | Onde ler |
 |---|---|
 | Vai escrever ou mudar um CLAUDE.md, AGENTS.md ou skill | `skills/escrevendo-regras-de-agente/` |
+| Pedido grande sem limites ou sem forma de validar | `skills/pondo-o-plano-a-prova/` |
 | Vai dividir trabalho entre sessões ou agentes | `skills/orquestrando-sessoes/` |
 | Vai commitar ou fechar um ciclo de trabalho | `skills/git-e-commits/` |
 | Vai corrigir um bug, testar ou provar que algo funciona | `skills/testes-e-provas/` |
 | Vai fazer push de código | `skills/auditoria-de-seguranca/` (em construção) |
-| O projeto usa SQL, Supabase, Next.js ou React | `skills/sql-postgres/`, `supabase/`, `nextjs-react/` (em construção) |
+| O projeto usa SQL, Supabase, Next.js ou React | `skills/sql-postgres/`, `supabase/`, `nextjs-react/` |
 | Quer o porquê de uma regra | `biblia-akita/` e `aprendizados/` (em construção) |
 
 Instalar as skills num projeto: `npx skills add Carlobks/Morg-laws`.
