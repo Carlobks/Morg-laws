@@ -1,0 +1,12 @@
+[
+  {"query": "cria uma migração para acrescentar a coluna telefone na tabela de clientes", "should_trigger": true},
+  {"query": "preciso apagar os registros duplicados da tabela de pedidos", "should_trigger": true},
+  {"query": "como testo se esta função do banco bloqueia quem não tem permissão?", "should_trigger": true},
+  {"query": "a migração 40 está no repositório, ela foi aplicada?", "should_trigger": true},
+  {"query": "quero transformar este ENUM de status numa tabela", "should_trigger": true},
+  {"query": "corrige o valor errado nesta tabela de lançamentos", "should_trigger": true},
+  {"query": "a política RLS para o papel authenticated está aberta?", "should_trigger": false},
+  {"query": "quantos clientes temos ativos? só a contagem", "should_trigger": false},
+  {"query": "o componente da tabela não atualiza depois de salvar", "should_trigger": false},
+  {"query": "explica o que é uma chave estrangeira", "should_trigger": false}
+]
