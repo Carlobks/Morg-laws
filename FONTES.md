@@ -41,6 +41,24 @@ Fonte secundária leva a marca *(secundária)* até ser conferida na original.
 - **npm audit** — https://docs.npmjs.com/cli/v11/commands/npm-audit — lido em 2026-10-30. Sustenta: `--audit-level` decide a partir de que gravidade o comando falha, sem filtrar o relatório; exige um lockfile.
 - **OSV-Scanner — saída e códigos de saída** — https://google.github.io/osv-scanner/output/ — lido em 2026-10-30. Sustenta: sai com 1 quando há qualquer vulnerabilidade e com 128 quando não acha pacotes; não documenta um limiar de gravidade.
 
+## Banco de dados (PostgreSQL, Supabase, PostgREST)
+
+Lidas em 2026-10-30 numa auditoria independente das skills `sql-postgres` e `supabase`; cada trecho que elas sustentam foi depois provado num PostgreSQL 18.3 descartável.
+
+- **PostgreSQL 18 — Row Security Policies** — https://www.postgresql.org/docs/18/ddl-rowsecurity.html — Sustenta: o `USING` filtra sem erro e só o `WITH CHECK` dá erro; superusuário e `BYPASSRLS` passam sempre; o dono passa, salvo `FORCE ROW LEVEL SECURITY`.
+- **PostgreSQL 18 — CREATE FUNCTION** («Writing SECURITY DEFINER Functions Safely») — https://www.postgresql.org/docs/18/sql-createfunction.html — Sustenta: uma `SECURITY DEFINER` sem `search_path` seguro pode ser desviada por uma tabela temporária.
+- **PostgreSQL 18 — CREATE VIEW** — https://www.postgresql.org/docs/18/sql-createview.html — Sustenta: por omissão, a vista aplica as políticas do dono; `security_invoker` muda isso.
+- **PostgreSQL 18 — information_schema.columns** — https://www.postgresql.org/docs/18/infoschema-columns.html — Sustenta: só aparecem as colunas a que o usuário atual tem acesso.
+- **PostgreSQL 18 — Sequence Manipulation Functions** — https://www.postgresql.org/docs/18/functions-sequence.html — Sustenta: `nextval` e `setval` não se desfazem com o `ROLLBACK`.
+- **PostgreSQL 18 — Enumerated Types** — https://www.postgresql.org/docs/18/datatype-enum.html
+- **PostgreSQL 18 — ALTER TYPE** — https://www.postgresql.org/docs/18/sql-altertype.html — Sustenta: `ADD VALUE` e `RENAME VALUE`; o valor novo só se usa depois do commit.
+- **PostgreSQL 18 — ALTER TABLE** — https://www.postgresql.org/docs/18/sql-altertable.html — Sustenta: o `ACCESS EXCLUSIVE` por omissão, o `DEFAULT` volátil que reescreve a tabela, o `NOT VALID` e o `VALIDATE CONSTRAINT`.
+- **Supabase — Row Level Security** — https://supabase.com/docs/guides/database/postgres/row-level-security — Sustenta: `search_path` vazio nas `SECURITY DEFINER`; tabela exposta sem RLS aberta a quem tem grant; vistas passam por cima do RLS; o dono `postgres` tem `bypassrls`; `raw_user_meta_data` editável pelo usuário; regras de desempenho das políticas.
+- **Supabase — Securing your API** — https://supabase.com/docs/guides/api/securing-your-api — Sustenta: os privilégios por omissão do `public`, que mudam conforme a data de criação do projeto.
+- **Supabase — Server-Side Auth for Next.js** — https://supabase.com/docs/guides/auth/server-side/nextjs — Sustenta: no servidor, não confiar no `getSession()`.
+- **Supabase — Testing Overview** — https://supabase.com/docs/guides/local-development/testing/overview — Sustenta: definir o `sub` do usuário antes das asserções.
+- **PostgREST — Errors** — https://docs.postgrest.org/en/stable/references/errors.html — Sustenta: o `PGRST204` é coluna do payload; o `42501` chega como HTTP 401 ou 403.
+
 ## Interface e acessibilidade
 
 - **WCAG 2.2 — Contrast (Minimum), 1.4.3** — https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html — lido em 2026-10-30.
