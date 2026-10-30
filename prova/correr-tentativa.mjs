@@ -2,11 +2,14 @@
 // Uma tentativa da Fase 4: cópia limpa do projeto de teste, a condição montada,
 // uma corrida de `claude -p`, o .jsonl, o diff e o veredito do oráculo.
 //
-//   node prova/correr-tentativa.mjs --tarefa <T1|T2|T3|isolamento> --condicao <sem|com>
+//   node prova/correr-tentativa.mjs --tarefa <T1|T2|T3|isolamento|politica> --condicao <sem|com>
 //        [--saida <pasta>] [--orcamento 0.5] [--manter-copia]
 //
 // «sem»: a cópia sem nada. «com»: a cópia mais o AGENTS.md, um CLAUDE.md com @AGENTS.md
 // e as 10 skills em .claude/skills/, como as deixa o `npx skills add`.
+// As duas condições correm com a mesma política de permissões (ferramentas/politica-de-permissoes.mjs),
+// sem o PostgreSQL no PATH, e com as portas 5432 e 55432 e os serviços postgresql* vigiados:
+// se mudarem entre o antes e o depois, a tentativa é inválida.
 // Os resultados ficam fora do repositório (têm caminhos da máquina): por omissão em
 // ~/.morg-laws/fase-4/corridas/<id>/.
 
@@ -21,11 +24,23 @@ import {
   criarPastaTemporaria,
 } from './ferramentas/pastas-descartaveis.mjs'
 import { localizarTranscript, resumirTranscript } from './ferramentas/ler-transcript.mjs'
+import {
+  argumentosDaPolitica,
+  compararFotografias,
+  fotografarPostgres,
+  lerVersaoDoClaudeCode,
+  MODO_DE_PERMISSAO,
+  REGRAS_NEGADAS,
+  REGRAS_PERMITIDAS,
+  tirarPostgresDoPath,
+  VERSAO_FIXA_DO_CLAUDE_CODE,
+} from './ferramentas/politica-de-permissoes.mjs'
 
 const PASTA_DA_PROVA = path.dirname(fileURLToPath(import.meta.url))
 const RAIZ_DO_REPOSITORIO = path.resolve(PASTA_DA_PROVA, '..')
 const PROJETO_ORIGINAL = path.join(PASTA_DA_PROVA, 'projeto-teste')
 const PEDIDO_DE_ISOLAMENTO = 'Responda só OK.'
+const ARQUIVO_DO_PEDIDO = { T1: 'T1.md', T2: 'T2.md', T3: 'T3.md', politica: 'prova-da-politica.md' }
 const ARQUIVOS_DE_REGRAS_PROCURADOS = ['CLAUDE.md', 'CLAUDE.local.md', 'AGENTS.md', '.claude', '.mcp.json']
 
 // Variáveis que a app desktop e a sessão que lança a corrida injetam no ambiente.
@@ -43,7 +58,9 @@ function lerArgumentos(argv) {
     else if (nome === '--manter-copia') opcoes.manterCopia = true
     else throw new Error(`opção desconhecida: ${nome}`)
   }
-  if (!['T1', 'T2', 'T3', 'isolamento'].includes(opcoes.tarefa)) throw new Error('--tarefa tem de ser T1, T2, T3 ou isolamento')
+  if (!['T1', 'T2', 'T3', 'isolamento', 'politica'].includes(opcoes.tarefa)) {
+    throw new Error('--tarefa tem de ser T1, T2, T3, isolamento ou politica')
+  }
   if (!['sem', 'com'].includes(opcoes.condicao)) throw new Error('--condicao tem de ser sem ou com')
   return opcoes
 }
@@ -86,7 +103,9 @@ function ambienteLimpo() {
   const ambiente = { ...process.env }
   const removidas = Object.keys(ambiente).filter((nome) => VARIAVEL_DA_SESSAO_MAE.test(nome)).sort()
   for (const nome of removidas) delete ambiente[nome]
-  return { ambiente, removidas }
+  // Sem o PostgreSQL no PATH: o agente não sobe nem liga a um banco por conta própria.
+  const pathSemPostgres = tirarPostgresDoPath(ambiente)
+  return { ambiente, removidas, pathSemPostgres }
 }
 
 function resumirSessao(arquivoJsonl) {
@@ -145,6 +164,10 @@ function principal() {
   const copia = path.join(pasta, 'projeto')
   const meta = { id, tarefa: opcoes.tarefa, condicao: opcoes.condicao, inicio: new Date().toISOString() }
   try {
+    meta.versao_do_claude_code = lerVersaoDoClaudeCode()
+    if (meta.versao_do_claude_code !== VERSAO_FIXA_DO_CLAUDE_CODE) {
+      throw new Error(`Claude Code ${meta.versao_do_claude_code}; a Fase 4 está fixada na ${VERSAO_FIXA_DO_CLAUDE_CODE}`)
+    }
     copiarProjetoSemDependencias(PROJETO_ORIGINAL, copia)
     const instalacao = executar('npm', ['ci', '--no-audit', '--no-fund', '--prefer-offline'], { cwd: copia, shell: true })
     if (instalacao.codigo !== 0) throw new Error(`npm ci falhou: ${instalacao.saida.slice(-500)}`)
@@ -159,13 +182,17 @@ function principal() {
 
     const pedido = opcoes.tarefa === 'isolamento'
       ? PEDIDO_DE_ISOLAMENTO
-      : fs.readFileSync(path.join(PASTA_DA_PROVA, 'tarefas', `${opcoes.tarefa}.md`), 'utf8')
+      : fs.readFileSync(path.join(PASTA_DA_PROVA, 'tarefas', ARQUIVO_DO_PEDIDO[opcoes.tarefa]), 'utf8')
     const argumentos = ['-p', pedido, '--model', 'sonnet', '--output-format', 'stream-json', '--verbose',
-      '--setting-sources', 'project', '--strict-mcp-config', '--max-budget-usd', opcoes.orcamento]
-    const { ambiente, removidas } = ambienteLimpo()
-    meta.comando = ['claude', ...argumentos.map((argumento) => (argumento === pedido ? '<pedido>' : argumento))].join(' ')
+      '--setting-sources', 'project', '--strict-mcp-config', '--max-budget-usd', opcoes.orcamento,
+      ...argumentosDaPolitica()]
+    const { ambiente, removidas, pathSemPostgres } = ambienteLimpo()
+    meta.comando = ['claude', ...argumentos.map((argumento) => (argumento === pedido ? '<pedido>' : JSON.stringify(argumento)))].join(' ')
     meta.pedido = pedido
     meta.variaveis_removidas_do_ambiente = removidas
+    meta.path_sem_postgres = pathSemPostgres
+    meta.politica = { modo: MODO_DE_PERMISSAO, permitidas: REGRAS_PERMITIDAS, negadas: REGRAS_NEGADAS }
+    meta.postgres_antes = fotografarPostgres()
 
     const arquivoJsonl = path.join(saida, 'sessao.jsonl')
     const jsonl = fs.openSync(arquivoJsonl, 'w')
@@ -180,6 +207,9 @@ function principal() {
     fs.closeSync(jsonl)
     fs.closeSync(erros)
     meta.claude = { codigo: corrida.status, erro: corrida.error?.message ?? null, duracao_ms: Date.now() - inicioDaCorrida }
+    meta.postgres_depois = fotografarPostgres()
+    meta.postgres_mudou = compararFotografias(meta.postgres_antes, meta.postgres_depois)
+    meta.invalida = meta.postgres_mudou.length > 0
 
     const depois = path.join(pasta, 'depois')
     copiarProjetoSemDependencias(copia, depois)
@@ -187,7 +217,7 @@ function principal() {
     fs.writeFileSync(path.join(saida, 'diff.patch'), diff.saida ? `${diff.saida}\n` : '')
     meta.diff_vazio = diff.codigo === 0
 
-    if (opcoes.tarefa !== 'isolamento') {
+    if (['T1', 'T2', 'T3'].includes(opcoes.tarefa)) {
       const oraculo = spawnSync(process.execPath, [path.join(PASTA_DA_PROVA, 'oraculos', 'correr.mjs'), copia, opcoes.tarefa], {
         encoding: 'utf8',
         timeout: 600_000,
@@ -205,6 +235,7 @@ function principal() {
       meta.transcript = { origem: transcript, ...resumirTranscript(transcript) }
     }
     meta.memoria_automatica = initBruto?.memory_paths ?? null
+    if (meta.invalida) throw new Error(`tentativa inválida: o Postgres da máquina mudou (${meta.postgres_mudou.join('; ')})`)
   } catch (erro) {
     meta.erro = erro instanceof Error ? erro.message : String(erro)
   } finally {

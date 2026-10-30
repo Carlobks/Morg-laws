@@ -41,6 +41,15 @@ node prova/correr-tentativa.mjs --tarefa <T1|T2|T3|isolamento> --condicao <sem|c
 Cada tentativa corre numa cópia em `%TEMP%`, fora de qualquer repositório, com
 `claude -p --model sonnet --output-format stream-json --verbose --setting-sources project --strict-mcp-config --max-budget-usd 0.5`.
 O script tira do ambiente as variáveis `CLAUDE*` e `MCP_*` da sessão que o lança.
+
+A política de permissões é a mesma nas duas condições (`ferramentas/politica-de-permissoes.mjs`, com o motivo de cada regra):
+modo `dontAsk`, que recusa tudo o que não está na lista; leitura só dentro da cópia; escrita só em `./src/**` e
+`./banco/migracoes/**`; Bash só para `npm test`, `npm run tipos` e `npx vitest run`. Sem rede, sem PowerShell e
+sem subagentes. O PATH do filho fica sem o PostgreSQL. Antes e depois de cada tentativa, o script regista quem
+escuta nas portas 5432 e 55432 e o estado dos serviços `postgresql*`: se algo mudar, a tentativa é inválida.
+O runner recusa-se a correr com outra versão do Claude Code que não a 2.1.311.
+`node prova/correr-tentativa.mjs --tarefa politica --condicao sem` prova a política, e
+`ferramentas/ler-chamadas-de-ferramentas.mjs` lê no transcript o que cada chamada recebeu.
 Os resultados (o `.jsonl`, o transcript, o diff e o oráculo) ficam fora do repositório, em
 `~/.morg-laws/fase-4/corridas/`, porque têm caminhos da máquina.
 
