@@ -30,12 +30,23 @@ done
 
 # 2. Bibliotecas: só trava aviso crítico ou alto que não está na linha de base.
 if [ -f package-lock.json ]; then
+  # Falhar fechado: se o npm audit ou a leitura do relatório falharem, o push não sai.
+  # (Não se usa /dev/null: no Git Bash do Windows o node recebe "nul" e não o encontra.)
   base=.seguranca/audit-linha-de-base.txt
-  [ -f "$base" ] || base=/dev/null
-  novos=$(npm audit --json 2>/dev/null | node -e '
+  relatorio=$(npm audit --json 2>/dev/null)
+  if [ -z "$relatorio" ]; then
+    echo "ERRO: o npm audit não devolveu relatório (sem rede?). O push não sai sem a verificação." >&2
+    exit 1
+  fi
+  if ! novos=$(printf '%s' "$relatorio" | node -e '
     const fs = require("fs");
-    const base = new Set(fs.readFileSync(process.argv[1], "utf8").split(/\s+/).filter(Boolean));
-    const relatorio = JSON.parse(fs.readFileSync(0, "utf8") || "{}");
+    const caminho = process.argv[1];
+    const base = new Set(fs.existsSync(caminho) ? fs.readFileSync(caminho, "utf8").split(/\s+/).filter(Boolean) : []);
+    const relatorio = JSON.parse(fs.readFileSync(0, "utf8"));
+    if (relatorio.error || !relatorio.vulnerabilities) {
+      console.error("relatório do npm audit sem vulnerabilidades legíveis:", JSON.stringify(relatorio.error ?? relatorio).slice(0, 300));
+      process.exit(2);
+    }
     const novos = new Set();
     for (const v of Object.values(relatorio.vulnerabilities || {})) {
       for (const via of v.via || []) {
@@ -45,7 +56,10 @@ if [ -f package-lock.json ]; then
       }
     }
     console.log([...novos].join("\n"));
-  ' "$base")
+  ' "$base"); then
+    echo "ERRO: não foi possível ler o relatório do npm audit. O push não sai sem a verificação." >&2
+    exit 1
+  fi
   if [ -n "$novos" ]; then
     echo "ERRO: avisos novos de segurança nas dependências:" >&2
     echo "$novos" >&2
