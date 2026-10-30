@@ -25,18 +25,20 @@ Lido inteiro em todo turno: por isso fica curto (máximo 60 linhas, o hook confe
 
 ## Índice: quando ler o quê
 
-| Situação | Onde ler |
-|---|---|
-| Vai escrever ou mudar um CLAUDE.md, AGENTS.md ou skill | `skills/escrevendo-regras-de-agente/` |
-| Pedido grande sem limites ou sem forma de validar | `skills/pondo-o-plano-a-prova/` |
-| Vai dividir trabalho entre sessões ou agentes | `skills/orquestrando-sessoes/` |
-| Vai commitar ou fechar um ciclo de trabalho | `skills/git-e-commits/` |
-| Vai corrigir um bug, testar ou provar que algo funciona | `skills/testes-e-provas/` |
-| Vai criar, redesenhar ou rever uma tela | `skills/desenhando-telas/` |
-| Vai fazer push de código | `skills/auditoria-de-seguranca/` e `modelos/pre-push` |
-| O projeto usa SQL, Supabase, Next.js ou React | `skills/sql-postgres/`, `supabase/`, `nextjs-react/` |
-| Quer o porquê de uma regra | `biblia-akita/` e `aprendizados/` |
+As skills abrem pelo nome, estejam onde estiverem instaladas (`.claude/skills/`, `skills/`…).
 
+| Situação | Skill |
+|---|---|
+| Vai escrever ou mudar um CLAUDE.md, AGENTS.md ou skill | `escrevendo-regras-de-agente` |
+| Pedido grande sem limites ou sem forma de validar | `pondo-o-plano-a-prova` |
+| Vai dividir trabalho entre sessões ou agentes | `orquestrando-sessoes` |
+| Vai commitar ou fechar um ciclo de trabalho | `git-e-commits` |
+| Vai corrigir um bug, testar ou provar que algo funciona | `testes-e-provas` |
+| Vai criar, redesenhar ou rever uma tela | `desenhando-telas` |
+| Vai fazer push de código | `auditoria-de-seguranca` |
+| O projeto usa SQL, Supabase, Next.js ou React | `sql-postgres`, `supabase`, `nextjs-react` |
+
+O porquê das regras, o modelo de hook `pre-push` e as notas: `biblia-akita/`, `modelos/` e `aprendizados/` do repositório Morg-laws.
 Instalar as skills num projeto: `npx skills add Carlobks/Morg-laws`.
 
 ## Regras deste repositório
