@@ -30,7 +30,7 @@ O banco de produção é de toda a gente que trabalha nele. Um erro no código v
 | Mudança | Prova no banco |
 |---|---|
 | Coluna nova | `SELECT count(*) FROM information_schema.columns WHERE table_name = 't' AND column_name = 'c'` devolve 1 |
-| Função | `SELECT pg_get_functiondef('f'::regproc)` mostra o corpo novo, igual ao arquivo commitado |
+| Função | `SELECT pg_get_functiondef('f(args)'::regprocedure)` mostra o corpo novo, igual ao arquivo commitado (`'f'::regproc`, sem argumentos, falha com `42725` quando há duas `f`) |
 | Permissão retirada | `SELECT has_function_privilege('papel', 'f(args)', 'EXECUTE')` devolve false |
 
 A tabela de controle de migrações da ferramenta não serve de prova: o que se aplica por fora dela não aparece lá.
@@ -60,7 +60,7 @@ ROLLBACK;
 ## 5. Como guardar dados
 
 - **Dado com histórico nunca leva `DELETE`.** Marca-se como apagado (`deleted_at`, `deleted_by`) e preservam-se os registros ligados (pagamentos, horas, períodos).
-- **Tabela de registro é imutável:** só `SELECT` e `INSERT`. Um erro corrige-se com uma linha nova de correção, nunca editando a antiga. Escrever nela fica a cargo de um gatilho, não da aplicação.
+- **Tabela de registro é imutável:** só `SELECT` e `INSERT`. Um erro corrige-se com uma linha nova de correção, nunca editando a antiga. Escrever nela fica a cargo de um gatilho, não da aplicação: a aplicação só tem `SELECT` nela, e a função do gatilho é `SECURITY DEFINER` (sem isso o gatilho recebe `42501`).
 - **O mesmo dado em duas colunas:** uma é a verdade e a outra deriva dela. Escolha qual e escreva-o; senão as duas divergem.
 - **Categoria que o usuário cria: tabela, não ENUM.** Num `ENUM` só se acrescentam valores (`ADD VALUE`); remover não existe, e cada valor novo pede migração e deploy.
 - **Estado de processo calcula-se, não se digita.** Um estado digitado apodrece. Quando falta um dado, o resultado é "indeterminado", nunca "falhou".
@@ -77,4 +77,4 @@ ROLLBACK;
 
 ## Fontes
 
-Ver `FONTES.md`. Os trechos de SQL seguem a documentação do Postgres. Ainda não foram rodados num banco de teste: isso fica para a Fase 4.
+Ver `FONTES.md`. Os trechos de SQL seguem a documentação do Postgres. Foram testados no PostgreSQL 18.3, num banco descartável, em 30 de outubro de 2026.
