@@ -12,6 +12,9 @@ case "$email" in
     exit 1 ;;
 esac
 
+# 1b. O nome do autor também fica público em cada commit: passa pela lista negra.
+git config user.name | sh "$dir/verificar-lista-negra.sh" "nome do autor (user.name)" || exit 1
+
 # 2. Linhas adicionadas e nomes dos arquivos não podem casar com a lista negra.
 {
   git diff --cached --name-only --diff-filter=ACMR
