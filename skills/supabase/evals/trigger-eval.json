@@ -1,0 +1,12 @@
+[
+  {"query": "escreve a política RLS para que cada usuário veja só os seus pedidos", "should_trigger": true},
+  {"query": "deu PGRST204 depois de acrescentar a coluna no select", "should_trigger": true},
+  {"query": "esta função SECURITY DEFINER pode ser chamada por qualquer usuário logado?", "should_trigger": true},
+  {"query": "como crio usuários novos pelo servidor no Supabase?", "should_trigger": true},
+  {"query": "a Edge Function que chama o Google Drive precisa conferir a permissão?", "should_trigger": true},
+  {"query": "revoguei de PUBLIC mas o anon ainda consegue executar", "should_trigger": true},
+  {"query": "cria uma migração Postgres para um índice na tabela de pedidos", "should_trigger": false},
+  {"query": "faz a revisão de segurança antes do push", "should_trigger": false},
+  {"query": "o botão salvar não mostra o spinner", "should_trigger": false},
+  {"query": "compara Supabase e Firebase para um projeto novo", "should_trigger": false}
+]
