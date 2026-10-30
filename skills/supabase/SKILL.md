@@ -13,7 +13,7 @@ O Supabase expõe as tabelas diretamente ao navegador através do PostgREST. A s
 |---|---|---|
 | Tabela lida pelo cliente | RLS da tabela | As políticas da tabela, por comando |
 | Função `SECURITY INVOKER` | RLS das tabelas por baixo | As políticas dessas tabelas |
-| Função `SECURITY DEFINER` | **A própria função** (ignora o RLS) | Quem pode executá-la e o que ela confere por dentro |
+| Função `SECURITY DEFINER` | **A própria função** (corre como o dono; se ele é dono da tabela ou tem `BYPASSRLS`, ignora o RLS) | Quem pode executá-la e o que ela confere por dentro |
 
 - **Nome de política não prova nada.** Uma política chamada `admin_*` com `USING (true)` para todos já existiu num projeto real. Leia a expressão.
 - **"Tem login" não é barreira.** `USING (auth.uid() IS NOT NULL)` está aberta a **todas** as contas autenticadas, incluindo as de trabalhadores com acesso pelo celular.
@@ -81,4 +81,4 @@ Uma Edge Function que chama uma API externa em nome do usuário cria o cliente S
 
 ## Fontes
 
-Ver `FONTES.md`. Os trechos de SQL ainda não foram rodados num banco de teste: isso fica para a Fase 4.
+Ver `FONTES.md`. Os trechos de SQL foram testados no PostgreSQL 18.3, num banco descartável com os papéis e o `auth.uid()` do Supabase imitados, em 30 de outubro de 2026. O PostgREST (`PGRST204`) não foi testado.
