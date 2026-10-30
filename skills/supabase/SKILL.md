@@ -30,7 +30,7 @@ WHERE n.nspname = 'public' AND c.relkind IN ('r', 'p') AND NOT c.relrowsecurity;
 
 - **Vista sobre uma tabela com RLS leva `WITH (security_invoker = true)`.** Sem isso, a vista aplica o RLS do dono e mostra as linhas de todos.
 - **Política que substitui outra apaga a antiga na mesma migração** (`DROP POLICY IF EXISTS`). Políticas do mesmo comando combinam por OR: a antiga, esquecida, anula a nova. Confira em `pg_policy` que a antiga sumiu.
-- **Uma política da tabela X nunca consulta a própria X**, nem uma Y cuja política volta a X: dá recursão infinita (`42P17`). A saída é uma função `SECURITY DEFINER` (seção 4) num esquema não exposto, chamada pela política: `USING (id IN (SELECT privado.equipes_do_usuario()))`.
+- **Uma política da tabela X nunca consulta a própria X**, nem uma Y cuja política volta a X: dá recursão infinita (`42P17`). A saída é uma função `SECURITY DEFINER` (seção 4) num esquema não exposto, chamada pela política: `USING (id IN (SELECT privado.equipes_do_usuario()))`. A política corre com os direitos de quem consulta: a função precisa de `GRANT EXECUTE ON FUNCTION privado.equipes_do_usuario() TO authenticated` (e a `anon`, se a política lhe servir), senão ler a tabela dá `42501`. O `USAGE` no esquema privado não é preciso.
 - **Antes de apagar uma política solta, veja se ela é a única porta** de quem tem direito para aquele comando. Se for, o `DROP` fecha o buraco e parte a tela. Substitui-se por uma política certa, não se apaga.
 - **Filtrar os apagados mesmo com RLS** (`.is('deleted_at', null)`): defesa em profundidade.
 - **Desempenho:** cada política leva `TO authenticated` (ou o papel certo), para não correr para os outros; `auth.uid()` vai dentro de `(SELECT auth.uid())`, que o Postgres calcula uma vez por consulta e não uma vez por linha; e a coluna filtrada tem índice.
@@ -49,12 +49,12 @@ ROLLBACK;
 ## 3. Grants
 
 - **`REVOKE ... FROM PUBLIC` não chega.** O Supabase dá grants individuais a `anon` e `authenticated`; revogue de cada papel pelo nome.
-- **O RLS não trava `TRUNCATE`.** Nunca escreva `GRANT ALL` aos papéis do cliente: conceda só `SELECT, INSERT, UPDATE, DELETE`, o que a tabela usa. E não basta: num projeto Supabase, os privilégios por omissão do `public` já dão `TRUNCATE`, `REFERENCES` e `TRIGGER` a `anon` e `authenticated` em cada tabela nova (confira os do seu em `pg_default_acl`). Depois de criar uma tabela: `REVOKE TRUNCATE, REFERENCES, TRIGGER ON public.t FROM anon, authenticated`, ou mude a omissão com `ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE TRUNCATE, REFERENCES, TRIGGER ON TABLES FROM anon, authenticated`, corrido pelo papel que cria as tabelas. Confira com `has_table_privilege('authenticated', 'public.t', 'TRUNCATE')`, que deve devolver false. O PostgREST não expõe o `TRUNCATE`: o risco vem de uma ligação direta ou de SQL dinâmico numa função.
+- **O RLS não trava `TRUNCATE`.** Nunca escreva `GRANT ALL` aos papéis do cliente: conceda só `SELECT, INSERT, UPDATE, DELETE`, o que a tabela usa. E não basta: num projeto Supabase, os privilégios por omissão do `public` já dão `TRUNCATE`, `REFERENCES`, `TRIGGER` e, no Postgres 17 ou mais novo, `MAINTAIN` (`VACUUM`, `REINDEX`, `CLUSTER`, `LOCK TABLE`) a `anon` e `authenticated` em cada tabela nova (confira os do seu em `pg_default_acl`). Depois de criar uma tabela: `REVOKE TRUNCATE, REFERENCES, TRIGGER, MAINTAIN ON public.t FROM anon, authenticated`, ou mude a omissão com `ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE TRUNCATE, REFERENCES, TRIGGER, MAINTAIN ON TABLES FROM anon, authenticated`, corrido pelo papel que cria as tabelas (antes do 17, sem o `MAINTAIN`, que não existe). Confira com `has_table_privilege('authenticated', 'public.t', 'TRUNCATE')` e o mesmo com `'MAINTAIN'`: os dois devem devolver false. O PostgREST não expõe o `TRUNCATE` nem o `LOCK`: o risco vem de uma ligação direta ou de SQL dinâmico numa função. E o `REVOKE` não tira tudo: quem tem `UPDATE` ou `DELETE` numa tabela continua a poder `LOCK TABLE ... IN ACCESS EXCLUSIVE MODE`.
 
 ## 4. Funções `SECURITY DEFINER`
 
-- Revogue `EXECUTE` de `anon` e de `PUBLIC`.
-- **Toda `SECURITY DEFINER` leva `SET search_path = ''` e os nomes com esquema** (`public.perfis`, `auth.uid()`). A que não é para ser chamada pela API (a de uma política, por exemplo) fica fora dos esquemas expostos. Sem o `search_path`, quem cria uma tabela temporária `perfis` passa pela guarda: o esquema temporário é pesquisado primeiro, mesmo com `SET search_path = public`.
+- Revogue `EXECUTE` de `anon` e de `PUBLIC`. A função chamada por uma política recebe-o de volta para os papéis a que a política se aplica (seção 2).
+- **Toda `SECURITY DEFINER` leva `SET search_path = ''` e os nomes com esquema** (`public.perfis`, `auth.uid()`). As duas coisas são obrigatórias. Os nomes com esquema fecham a porta à tabela temporária: para tabelas, o esquema temporário é pesquisado primeiro, mesmo com `search_path = ''`, e quem cria uma `perfis` temporária passa pela guarda. O `search_path = ''` fecha-a às funções e aos operadores com o mesmo nome noutros esquemas. A que não é para ser chamada pela API (a de uma política, por exemplo) fica fora dos esquemas expostos.
 - **O `EXECUTE` diz quem entra, não o que se autoriza.** Toda função `SECURITY DEFINER` chamável por `authenticated` confere o papel por dentro, antes de fazer qualquer coisa:
 
 ```sql
@@ -125,5 +125,7 @@ Consultadas em 30 de outubro de 2026 (as mesmas linhas estão em `FONTES.md`):
 - PostgreSQL 18, Row Security Policies: https://www.postgresql.org/docs/18/ddl-rowsecurity.html
 - PostgreSQL 18, CREATE FUNCTION («Writing SECURITY DEFINER Functions Safely»): https://www.postgresql.org/docs/18/sql-createfunction.html
 - PostgreSQL 18, CREATE VIEW (`security_invoker`): https://www.postgresql.org/docs/18/sql-createview.html
+- PostgreSQL 18, Client Connection Defaults (`search_path` e o esquema temporário): https://www.postgresql.org/docs/18/runtime-config-client.html
+- PostgreSQL 18, Privileges (`MAINTAIN`): https://www.postgresql.org/docs/18/ddl-priv.html
 
 Os trechos de SQL foram testados no PostgreSQL 18.3, num banco descartável com os papéis e o `auth.uid()` do Supabase imitados, em 30 de outubro de 2026. O PostgREST (`PGRST204`, `NOTIFY pgrst`, os códigos HTTP) e o código do cliente (seção 6) não foram testados.
