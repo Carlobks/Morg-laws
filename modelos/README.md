@@ -18,6 +18,10 @@ testes a 100 %. Os scripts são Python só com a biblioteca padrão; os hooks do
 | `git/hooks/pre-push` | `.githooks/` | Mostra o que sai, gitleaks e `npm audit` com linha de base |
 | `git/portoes/*.py` | `scripts/portoes/` | A lógica dos hooks do git: `identidade`, `lista_negra`, `mensagem_commit` (marcas `Sem-teste:`, `Teste-mudado:`, `Sem-changelog:`), `versao_lancada`, `antes_do_push` |
 | `pre-push` | `.githooks/pre-push` | Alternativa só em `sh`, sem Python |
+| `changelog/juntar_changelog.py` | `scripts/changelog/` | Junta os fragmentos no `CHANGELOG.md`, calcula a versão SemVer pelas categorias e escreve o `VERSION` |
+| `changelog/changelog.d/README.md` | `changelog.d/` | O formato dos fragmentos (`AAAA-MM-DD-assunto.md`, categoria na 1.ª linha) |
+| `github/workflows/ci.yml` | `.github/workflows/` | O comando único de testes numa máquina limpa e o gitleaks em todo o histórico, com actions por SHA e o binário conferido por sha256 |
+| `github/ISSUE_TEMPLATE/erro.yml` | `.github/ISSUE_TEMPLATE/` | Formulário de erro: resumo, passos, esperado, acontecido, versão e relatório revisto |
 | `testes/test_regras.py` | `tests/` | O arquivo de regras curto, cada regra com motivo e com linha no mapa das barreiras, caminhos citados que existem, índice das skills igual ao instalado |
 | `testes/test_docs_indices.py` | `tests/` | Índice dos docs, ADRs seguidas, pesquisa com data, armadilhas A1…An, planos com "Fora do escopo" e "Prova", handoffs com hashes que existem |
 | `testes/test_alarmes.py` | `tests/` | Alarme calado só com motivo, contagem por tipo que não sobe, `noqa` só de regras que o ruff tem ligadas |
