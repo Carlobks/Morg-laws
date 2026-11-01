@@ -60,6 +60,15 @@ description: Guia como provar que um trabalho de agente funciona — o teste que
 
 - Um teste ponta a ponta pode **escrever em produção**, se apontar para ela. Leia o spec antes de o rodar.
 - Testes de banco rodam dentro de `BEGIN` … `ROLLBACK`, ou num banco local. Uma passagem por cenário, nunca em ciclo contra o servidor real.
+- **A corrida vermelha roda o código antigo.** Um teste novo que chama um script com uma opção nova roda, antes da correção, o script velho, que ignora a opção e faz o que fazia, no repositório verdadeiro. Rode a corrida vermelha numa cópia.
+- **Teste que lança um hook que roda os testes:** se o hook estiver quebrado, o ciclo testes → hook → testes não para. Num projeto real, encheu a máquina com 650 processos. O hook sai logo quando vê uma variável de ambiente que os testes definem, e a guarda do commit recusa essa variável num commit.
+
+## 9. Provar que os testes pegam
+
+- **Estragos (mutação feita à mão):** uma lista de pares (texto certo, texto estragado). O script troca o texto num arquivo, roda os testes, espera que falhem e repõe o arquivo, também se der erro. Antes de estragar, confirma que os testes passam com o código certo; senão, tudo daria "apanhado".
+- **Rode numa cópia:** `git worktree add --detach <pasta temporária>`. No disco partilhado, durante os minutos da bateria, outra sessão vê os testes falharem sem bug, e pode commitar o mutante.
+- **A bateria tem catraca:** um teste fixa o número mínimo de estragos. Tirar um estrago enfraquece a prova sem que nada falhe.
+- **Cobertura de scripts:** rodar o script num subprocesso prova o interpretador real, mas não conta na cobertura. Rode também no próprio processo (`runpy.run_path(caminho, run_name="__main__")`). Cuidado: o processo de teste herda o que o script instala, como um gancho global de exceções; desfaça-o no fim do teste.
 
 ## Fontes
 
