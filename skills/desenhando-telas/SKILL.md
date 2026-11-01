@@ -68,7 +68,7 @@ Antes de desenhar, **escreva as suposições de volume**: quantos registros, o n
 - Hierarquia por peso, tamanho e cor, nunca por mais famílias de fonte.
 - Nada de pesos finos (`light`, `thin`).
 - `tabular-nums` em todo número.
-- Tamanhos em `rem`, nunca em `px` fixo, para respeitar o tamanho que a pessoa escolhe.
+- Tamanhos em `rem`, nunca em `px` fixo, para respeitar o tamanho que a pessoa escolhe. **Exceção:** numa WebView sem configuração de letra (widgets, apps embutidas), `1rem` é sempre 16 px e a escala do sistema já chega pelo `devicePixelRatio`. Aí o `px` é aceitável, como decisão escrita do projeto.
 - **O título de uma seção nunca é menor nem mais apagado do que o texto dentro dela.**
 
 **Contraste (WCAG 2.2, critério 1.4.3, nível AA):**
@@ -137,7 +137,7 @@ O que aparece no hover fica visível em ecrãs sem hover (`@media (hover: none)`
   - **continuidade:** estou na mesma página?
   - **estado:** está a acontecer.
 - **Tempos:** 200–500 ms, com um teto de 700 ms. No máximo duas ou três coisas a mexer ao mesmo tempo, e nada de bounce.
-- **Respeite o `prefers-reduced-motion`** do sistema. Com ele ligado, tira-se o movimento, mas o **sinal fica**: o estado final aparece sem a animação, nunca some.
+- **Respeite o `prefers-reduced-motion`** do sistema. Com ele ligado, tira-se o movimento, mas o **sinal fica**: o estado final aparece sem a animação, nunca some. Use uma duração de `0.01ms` em vez de `none`: com `none`, o `transitionend` não dispara e o código que espera por ele fica parado.
 - **Transição de página só com opacidade.** Um `transform` cria um novo contexto de empilhamento e parte elementos `fixed` e o arrastar e largar.
 - **Navegação lenta pede retorno imediato** no elemento clicado.
 - Uma animação verifica-se pelo que **pinta** (o valor resolvido ou os píxeis entre frames), não pela variável que a alimenta.
@@ -159,7 +159,7 @@ O que aparece no hover fica visível em ecrãs sem hover (`@media (hover: none)`
 - [ ] Fronteira entre superfícies ≥ 1,2:1? Superfícies sólidas? Bordas dentro do orçamento? Lista de registros num só contentor?
 - [ ] Contraste ≥ 4,5:1 (ou 3:1 em texto grande, pela definição da norma)? Tamanhos em `rem`?
 - [ ] Título de seção ≥ o texto de dentro? Espaço entre seções ≥ 2× o de dentro?
-- [ ] Nada principal depende de hover? Ícones de ação com rótulo?
+- [ ] Nada principal depende de hover? Ícones de ação com rótulo (texto ou `aria-label`; o `title` sozinho não basta)?
 - [ ] Botão faz, link vai? Alvos de toque **medidos**? Destrutivo com atrito?
 - [ ] Movimento com uma das quatro razões, ≤ 700 ms, com `prefers-reduced-motion` respeitado?
 - [ ] Permissões: ação desativada com motivo visível; navegação visível e explicada?
