@@ -24,6 +24,9 @@ COPIAS = {
     "git/hooks": ".githooks",
     "git/portoes": "scripts/portoes",
     "testes": "tests",
+    "changelog/juntar_changelog.py": "scripts/changelog/juntar_changelog.py",
+    "changelog/changelog.d": "changelog.d",
+    "github": ".github",
 }
 INDICE_DOS_DOCS = ("# Docs\n\n- [regras-e-barreiras.md](regras-e-barreiras.md)\n- [armadilhas.md](armadilhas.md)\n"
                    "- [planos/](planos/)\n- [decisoes/](decisoes/) · [0001](decisoes/0001-exemplo.md)\n")
