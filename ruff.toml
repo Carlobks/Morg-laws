@@ -1,0 +1,2 @@
+# Lint dos modelos em Python e dos testes (scripts/testar.sh). As regras são as do ruff por omissão.
+line-length = 120
