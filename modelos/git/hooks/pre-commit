@@ -1,0 +1,41 @@
+#!/bin/sh
+# Portão do git (Morg-laws): roda em todos os commits, do agente ou feitos à mão. Nunca saltar com --no-verify.
+# Instalar: copiar para .githooks/ do projeto (com a marca de executável) e os portões para scripts/portoes/;
+# depois: git config core.hooksPath .githooks
+# Python: MORG_PY, ou py (Windows), ou python3.
+
+# Ajuste ao projeto: o comando único de testes, lint e catracas. Vazio, o commit é recusado até o definir.
+COMANDO_DOS_TESTES=''
+
+raiz=$(git rev-parse --show-toplevel) || exit 1
+py=${MORG_PY:-$(command -v py || command -v python3)}
+portoes="$raiz/scripts/portoes"
+
+# 1. A identidade é pública: e-mail noreply do GitHub e nome do autor fora da lista negra.
+"$py" -I "$portoes/identidade.py" || exit 1
+
+# 2. Os nomes dos arquivos e as linhas acrescentadas não podem ter termos da lista negra.
+{
+  git diff --cached --name-only --diff-filter=ACMR
+  git diff --cached -U0 --diff-filter=ACMR | grep '^+' | grep -v '^+++'
+} | "$py" -I "$portoes/lista_negra.py" "os arquivos do commit" || exit 1
+
+# 3. Testes. Dentro de uma corrida de testes não se repetem: um teste que fizesse um commit voltaria a rodar os
+#    testes, e assim sem fim (um caso real encheu a máquina com 650 processos). A guarda do agente recusa a marca
+#    num commit.
+if [ -n "$MORG_A_TESTAR" ]; then
+  exit 0
+fi
+if [ -z "$COMANDO_DOS_TESTES" ]; then
+  echo "Commit recusado: defina COMANDO_DOS_TESTES no .githooks/pre-commit (o comando único de testes)." >&2
+  exit 1
+fi
+saida=$(mktemp)
+if ! (cd "$raiz" && MORG_A_TESTAR=1 sh -c "$COMANDO_DOS_TESTES") > "$saida" 2>&1; then
+  tail -n 40 "$saida" >&2
+  rm -f "$saida"
+  echo "Commit recusado: os testes falharam (saída acima). Corrija a causa; nunca --no-verify." >&2
+  exit 1
+fi
+rm -f "$saida"
+exit 0
