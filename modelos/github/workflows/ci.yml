@@ -1,5 +1,5 @@
 # CI modelo (Morg-laws): o mesmo comando único de testes do pre-commit numa máquina limpa, e o gitleaks em todo o
-# histórico. Apanha o commit feito à mão sem os hooks do git. Instalar: copiar para .github/workflows/ci.yml.
+# histórico. Pega o commit feito à mão sem os hooks do git. Instalar: copiar para .github/workflows/ci.yml.
 # Regras (modelos/testes/test_ci.py): actions fixadas por SHA com a versão em comentário (uma tag pode ser mudada
 # por quem a tem; escolha versões com pelo menos duas semanas); o token só lê; versões fixas, as mesmas da máquina
 # de quem desenvolve; o gitleaks baixado com o sha256 conferido, sem action de terceiros.

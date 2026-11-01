@@ -19,7 +19,7 @@ linha, e que cada caminho citado exista.
 | PLANO ANTES DE MEXER | teste; texto | `tests/test_docs_indices.py`: os planos têm "Fora do escopo" e a prova; o "sim" do dono é texto |
 | DECISÃO É DO DONO | texto | nenhuma máquina sabe o que é uma decisão do dono; skill `pondo-o-plano-a-prova` |
 | COMMIT SEM PEDIDO, PUSH COM O SIM | hook | `.claude/hooks/perguntar_antes.py` pergunta antes de cada push e PR |
-| OS HOOKS SÃO A REDE | hook + CI | `.claude/hooks/guarda_do_git.py` (`--no-verify`, `core.hooksPath`); o CI apanha quem saltar à mão |
+| OS HOOKS SÃO A REDE | hook + CI | `.claude/hooks/guarda_do_git.py` (`--no-verify`, `core.hooksPath`); o CI pega quem saltar à mão |
 | NÃO PIORAR | teste | catracas: `tests/test_tamanho_das_funcoes.py`, `tests/test_alarmes.py` |
 | SEM SILENCIAR ALARME | teste | `tests/test_alarmes.py` (motivo, contagem, só regras ligadas) |
 | BUG TRAZ TESTE | git | `.githooks/commit-msg` → `scripts/portoes/mensagem_commit.py` (fix sem teste exige `Sem-teste:`) |

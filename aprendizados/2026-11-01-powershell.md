@@ -17,7 +17,7 @@
 
 **O que aconteceu:** um script de substituições em massa desalinhou os pares "procura/troca" e trocou cada quebra de linha de um HTML por uma frase. O arquivo foi publicado numa linha só, com 65 000 caracteres.
 **Por que:** em `@('a', 'b' + "`n" + 'c')`, a vírgula é avaliada antes do `+`, e os elementos não são os que parecem.
-**Como fazer:** ponha cada valor composto entre parênteses, ou faça as trocas em Python com `assert` do número exato de ocorrências. Um teste que falha com linhas gigantes ou sem quebras apanha o resto.
+**Como fazer:** ponha cada valor composto entre parênteses, ou faça as trocas em Python com `assert` do número exato de ocorrências. Um teste que falha com linhas gigantes ou sem quebras pega o resto.
 
 ## A crase é caractere de escape nas aspas duplas
 

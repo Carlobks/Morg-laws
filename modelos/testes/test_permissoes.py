@@ -66,7 +66,7 @@ class TresColunas(unittest.TestCase):
         for hook in HOOKS_OBRIGATORIOS:
             with self.subTest(hook=hook):
                 self.assertIn(hook, comandos)
-        # Um hook que rebenta e deixa passar é uma barreira que some sem ninguém ver.
+        # Um hook que quebra e deixa passar é uma barreira que some sem ninguém ver.
         self.assertEqual(comandos.count('"type": "command"'), comandos.count('"onFailure": "block"'))
 
     def test_segredos_tambem_fora_do_git(self):
