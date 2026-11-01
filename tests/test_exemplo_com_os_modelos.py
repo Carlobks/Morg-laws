@@ -48,7 +48,7 @@ class ProjetoDeExemplo(unittest.TestCase):
         self.assertFalhaEm("test_cada_alarme_tem_motivo")
 
     def test_email_pessoal(self):
-        escrever(self.pasta / "docs" / "contato.md", "Fale com ana.silva@gmail.com\n")
+        escrever(self.pasta / "docs" / "contato.md", "Fale com ana@correio-ficticio.net\n")
         self.assertFalhaEm("test_sem_emails_pessoais")
 
     def test_action_sem_sha(self):
