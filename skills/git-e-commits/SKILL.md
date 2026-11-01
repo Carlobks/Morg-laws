@@ -25,12 +25,23 @@ git commit -F msg.txt -- <arquivo1> <arquivo2>
 - **Mensagem num arquivo** (`-F`), não por heredoc nem por `-m` com várias linhas: no Windows, o heredoc corrompe o texto.
 - **Formato:** título com até 72 caracteres, tipo e área (`fix(login): …`, `docs(regras): …`), sem ponto final. Linha em branco. Corpo com **o que mudou e porquê**.
 - **Nada de dados reais** na mensagem: ela é tão pública quanto o código.
+- **Clone novo, identidade local:** `git config --local user.email <noreply>`. Sem isso, o commit sai com o nome e o e-mail da configuração global da máquina, que costumam ser os pessoais.
 
 ## 3. Os hooks são a rede
 
 - O `pre-commit` roda o compilador, o lint, os testes dos arquivos tocados e as catracas. O `commit-msg` confere a mensagem.
 - **Nunca** `--no-verify`, nunca desligar o hook, nunca citar na mensagem a opção que o salta.
 - Hook recusou: leia a saída, corrija a causa e commite de novo. Se o hook estiver errado, corrija o hook num commit próprio.
+- **O hook do git vale também para quem commita à mão; o hook do agente só trava o agente.** O que tem de valer sempre vai no hook do git, e no CI para quem o desligar.
+- **Uma guarda no agente fecha as saídas** (modelo em `modelos/claude/hooks/`). Ela recusa:
+  - `--no-verify` (ou `-n` num commit);
+  - mudar ou desligar o `core.hooksPath`;
+  - `git add -A`, `.`, `--all` ou `:/`, e `git commit -a`;
+  - commit sem caminhos fora de um merge;
+  - `-m` com várias linhas;
+  - `git stash`.
+
+  Duas destas brechas foram abertas pelo próprio agente, num commit dele.
 
 ## 4. Correção sem teste tem de dizer porquê
 
@@ -42,11 +53,21 @@ Sem-teste: <motivo concreto>
 
 Um hook `commit-msg` pode exigi-lo. Num projeto real, 86 de 199 commits de correção não tinham teste antes desta regra.
 
+O mesmo hook pode exigir outras marcas, cada uma com o motivo concreto (modelo em `modelos/git/`):
+
+| Marca | Quando |
+|---|---|
+| `Teste-mudado:` | O commit tira ou muda linhas de um teste que já existia. Acrescentar casos não pede nada. |
+| `Sem-changelog:` | Um `feat` ou `fix` no que se instala sem fragmento do changelog. |
+| `Changelog-corrigido:` | O commit muda uma versão já lançada do `CHANGELOG.md`. |
+
 ## 5. Changelog por fragmento
 
 - Um `CHANGELOG.md` único colide quando várias sessões escrevem ao mesmo tempo.
-- Cada mudança que alguém de fora nota leva um arquivo próprio: `changelog.d/<data>-<assunto>-<hash>.md`. Um script junta os fragmentos na hora de lançar uma versão.
+- Cada mudança que alguém de fora nota leva um arquivo próprio: `changelog.d/AAAA-MM-DD-assunto.md`. O hash não entra no nome, porque ainda não existe antes do commit.
+- A categoria vai na primeira linha do arquivo (`Categoria: Corrigido`), não no nome: um nome errado mudaria a categoria sem ninguém notar. As categorias são as do Keep a Changelog.
 - Mudança interna (refatoração, teste, documentação de trabalho) não leva fragmento.
+- **A versão sobe só no lançamento:** um script junta os fragmentos, calcula a versão SemVer pelas categorias (`Removido` ou uma linha `Incompatível:` sobe o MAIOR) e escreve o `VERSION` no mesmo commit. À mão, a versão diverge do changelog. Modelo em `modelos/changelog/`.
 
 ## 6. Fechar um ciclo
 
@@ -64,7 +85,10 @@ Antes de dizer "feito":
 - **`index.lock` existe:** veja a skill `orquestrando-sessoes`. Nunca apague o lock de outro processo. Um lock seu e velho prova-se e renomeia-se.
 - **Arquivo preparado com a versão errada:** commitar por caminho grava o que está no disco e passa por cima do que ficou preparado.
 - **Commit de outra sessão levou o seu arquivo:** não reescreva o histórico partilhado. Faça um commit novo com a versão certa e avise.
+- **Histórico já publicado com um dado que não devia:** se não é segredo, não se reescreve (muda os hashes de todos). Registre a exceção numa decisão escrita e trave o dado com um teste para não voltar. Segredo publicado roda-se ou revoga-se, sempre.
+- **Marca de executável no Windows:** com `core.filemode=false`, `git commit -- <caminhos>` lê o arquivo do disco e grava-o como `100644`, perdendo o `+x` preparado. Use `git add --chmod=+x` e `git commit -i -- <caminho>`.
+- **`git checkout -- <arquivo>` (ou `git restore`) apaga as mudanças por commitar, sem volta.** Num script que repõe um arquivo depois de um teste, guarde uma cópia antes e reponha a cópia.
 
 ## Fontes
 
-Sem fonte externa: estas regras vêm da prática do projeto de origem. Os números (109 arquivos, 86 de 199) foram medidos lá. A parte do `index.lock` apoia-se no código do git (`lockfile.c`, em `FONTES.md`).
+As regras vêm da prática dos projetos de origem. Os números (109 arquivos, 86 de 199) foram medidos lá. A parte do `index.lock` apoia-se no código do git (`lockfile.c`). O changelog e a versão apoiam-se no Keep a Changelog, no towncrier e no SemVer. Todas estão em `FONTES.md`.
