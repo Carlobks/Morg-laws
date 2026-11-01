@@ -42,3 +42,8 @@ const movidos = resultados.filter((r) => r.status === 'fulfilled').length
 ```
 
 O `allSettled` não para no primeiro erro e diz quantas operações deram certo. Um `for` com `await` faz uma de cada vez.
+
+## Um arquivo de configuração tem um só escritor
+
+**O que aconteceu:** um atalho e um painel gravavam o mesmo arquivo de configuração com significados diferentes: o atalho reescrevia-o só com o que estava aberto e apagava o que o painel tinha posto. (Nota acrescentada em 2026-11-01.)
+**Como fazer:** um arquivo de configuração tem um dono que o escreve; quem mais precisa dele lê-o ou pede ao dono. Um teste pode garantir que nenhum outro código grava nele.

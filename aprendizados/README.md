@@ -26,8 +26,13 @@ Nome: `AAAA-MM-DD-assunto.md`, com a data em que a nota entrou aqui. Uma nota po
 | Nota | Assunto |
 |---|---|
 | [2026-10-30-typescript.md](2026-10-30-typescript.md) | Tipos, narrowing, `any`, limites de tamanho |
-| [2026-10-30-organizacao-de-codigo.md](2026-10-30-organizacao-de-codigo.md) | Decompor arquivos grandes, mover arquivos, paralelismo |
+| [2026-10-30-organizacao-de-codigo.md](2026-10-30-organizacao-de-codigo.md) | Decompor arquivos grandes, mover arquivos, paralelismo, um só escritor por arquivo |
 | [2026-10-30-datas-e-validacao.md](2026-10-30-datas-e-validacao.md) | Datas e fuso horário, campos vazios, PATCH × PUT, valores por omissão |
 | [2026-10-30-ambiente-e-ferramentas.md](2026-10-30-ambiente-e-ferramentas.md) | Windows, edição em massa, Turbopack, lint |
 | [2026-10-30-produto-e-telas.md](2026-10-30-produto-e-telas.md) | Listas de trabalho, PDFs, botões, acessos |
 | [2026-10-30-instalacao-das-skills.md](2026-10-30-instalacao-das-skills.md) | `npx skills add`: o que instala e o que fica de fora |
+| [2026-11-01-powershell.md](2026-11-01-powershell.md) | PowerShell 5.1: BOM, stderr, arrays, crases, maiúsculas, `$LASTEXITCODE` |
+| [2026-11-01-python.md](2026-11-01-python.md) | `py -I`, erros de leitura e de URL, ctypes, `runpy`, CRLF do `write_text` |
+| [2026-11-01-testes.md](2026-11-01-testes.md) | Ciclo de hooks, corrida vermelha segura, `patch.dict`, cobertura do Node, Pester 6, mutação |
+| [2026-11-01-hooks-do-claude-code.md](2026-11-01-hooks-do-claude-code.md) | `ask` no modo automático, `deny` só no Read, hook em falta, sondas |
+| [2026-11-01-git.md](2026-11-01-git.md) | Identidade local, marca de executável, `checkout` que apaga, objetos só de leitura, `grep -P` |
