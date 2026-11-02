@@ -18,3 +18,6 @@ create policy pedidos_do_dono on public.pedidos
   for all to authenticated
   using (e_dono_do_pedido(usuario_id))
   with check (e_dono_do_pedido(usuario_id));
+
+-- O TRUNCATE fica revogado: esta armadilha só falha na norma do search_path.
+revoke truncate on public.pedidos from anon, authenticated;

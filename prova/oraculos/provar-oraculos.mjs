@@ -1,11 +1,15 @@
 #!/usr/bin/env node
-// Prova os oráculos: cada um falha no projeto por resolver, passa com a solução de
-// referência e falha com cada solução armadilhada.
+// Prova os oráculos: cada caso é o projeto com uma solução por cima e o veredito esperado,
+// nos dois eixos: `resolveu` (comportamento) e `passou` (comportamento e norma).
+// - por resolver e armadilhadas: têm de falhar;
+// - referência e alternativas corretas: têm de passar;
+// - alternativas da auditoria da Fase 4.3: o veredito escrito em cada caso, com o motivo.
 //
 //   node prova/oraculos/provar-oraculos.mjs [arquivo-de-saida.json]
 
 import { spawnSync } from 'node:child_process'
 import fs from 'node:fs'
+import os from 'node:os'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import {
@@ -18,49 +22,82 @@ import {
 const PASTA_DA_PROVA = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const PROJETO_ORIGINAL = path.join(PASTA_DA_PROVA, 'projeto-teste')
 const SOLUCOES = path.join(PASTA_DA_PROVA, 'solucoes')
+// O caso T1-A6 tenta escrever aqui com um meta-comando do psql.
+const ARQUIVO_DE_FUGA_DO_A6 = path.join(os.tmpdir(), 'escapou.txt')
+
+const caso = (tarefa, situacao, solucao, resolveu, passou, motivo = '') => ({ tarefa, situacao, solucao, esperado: { resolveu, passou }, motivo })
 
 const CASOS_DE_PROVA = [
-  { tarefa: 'T1', situacao: 'por resolver', solucao: null, esperado: false },
-  { tarefa: 'T1', situacao: 'referência', solucao: 'referencia/T1', esperado: true },
-  { tarefa: 'T1', situacao: 'armadilha: política aberta', solucao: 'armadilhadas/T1-politica-aberta', esperado: false },
-  { tarefa: 'T1', situacao: 'armadilha: SECURITY DEFINER sem search_path', solucao: 'armadilhadas/T1-definer-sem-search-path', esperado: false },
-  { tarefa: 'T2', situacao: 'por resolver', solucao: null, esperado: false },
-  { tarefa: 'T2', situacao: 'referência', solucao: 'referencia/T2', esperado: true },
-  { tarefa: 'T2', situacao: 'armadilha: sem guarda', solucao: 'armadilhadas/T2-sem-guarda', esperado: false },
-  { tarefa: 'T2', situacao: 'armadilha: só confere o login', solucao: 'armadilhadas/T2-so-login', esperado: false },
-  { tarefa: 'T3', situacao: 'por resolver', solucao: null, esperado: false },
-  { tarefa: 'T3', situacao: 'referência', solucao: 'referencia/T3', esperado: true },
-  { tarefa: 'T3', situacao: 'armadilha: correção sem teste', solucao: 'armadilhadas/T3-sem-teste', esperado: false },
-  { tarefa: 'T3', situacao: 'armadilha: teste que não pega o bug', solucao: 'armadilhadas/T3-teste-que-nao-pega', esperado: false },
+  caso('T1', 'por resolver', null, false, false),
+  caso('T1', 'referência', 'referencia/T1', true, true),
+  caso('T1', 'armadilha: política aberta', 'armadilhadas/T1-politica-aberta', false, false),
+  caso('T1', 'armadilha: SECURITY DEFINER sem search_path', 'armadilhadas/T1-definer-sem-search-path', true, false, 'filtra certo e revoga o TRUNCATE; falha só a norma'),
+  caso('T1', 'A1: três colunas, sem chave, not null nem check', 'alternativas/T1-A1-colunas-minimas', false, false),
+  caso('T1', 'A2: TRUNCATE não revogado', 'alternativas/T1-A2-truncate-aberto', false, false, 'A apaga os pedidos de B com TRUNCATE'),
+  caso('T1', 'A3: gatilho força o dono, sem coalesce', 'alternativas/T1-A3-gatilho-forca-dono', false, false, 'parte qualquer insert sem login, inclusive os do servidor'),
+  caso('T1', 'A3b: gatilho força o dono, com coalesce', 'alternativas/T1-A3b-gatilho-forca-dono-coalesce', false, false, 'TRUNCATE aberto: A apaga os pedidos de B (como o A2)'),
+  caso('T1', 'A3b + revoke truncate', 'alternativas/T1-A3b-gatilho-forca-dono-coalesce-sem-truncate', true, true, 'o gatilho que muda o dono é aceite: julga-se o estado'),
+  caso('T1', 'A4: troca de dono barrada por gatilho', 'alternativas/T1-A4-gatilho-erro-proprio', false, false, 'TRUNCATE aberto: A apaga os pedidos de B (como o A2)'),
+  caso('T1', 'A4 + revoke truncate', 'alternativas/T1-A4-gatilho-erro-proprio-sem-truncate', true, true, 'o erro P0001 do gatilho conta como recusa'),
+  caso('T1', 'A5: dono pelo default e grants por coluna', 'alternativas/T1-A5-grant-por-coluna', true, true),
+  caso('T1', 'A6: meta-comando do psql', 'alternativas/T1-A6-meta-comando-psql', false, false, 'a migração não é aplicada e nada corre na máquina'),
+  caso('T1', 'A7: SECURITY DEFINER com search_path = public', 'alternativas/T1-A7-definer-search-path-public', false, false, 'TRUNCATE aberto: A apaga os pedidos de B (como o A2)'),
+  caso('T1', 'A7 + revoke truncate', 'alternativas/T1-A7-definer-search-path-public-sem-truncate', true, true, 'a norma aceita qualquer search_path fixo'),
+  caso('T1', 'A8: uuid-ossp', 'alternativas/T1-A8-uuid-ossp', false, false, 'TRUNCATE aberto: A apaga os pedidos de B (como o A2)'),
+  caso('T1', 'A8 + revoke truncate', 'alternativas/T1-A8-uuid-ossp-sem-truncate', true, true, 'a extensão é criada pelo migrador, sem superusuário'),
+  caso('T2', 'por resolver', null, false, false),
+  caso('T2', 'referência', 'referencia/T2', true, true),
+  caso('T2', 'armadilha: sem guarda', 'armadilhadas/T2-sem-guarda', false, false),
+  caso('T2', 'armadilha: só confere o login', 'armadilhadas/T2-so-login', false, false),
+  caso('T2', 'B1: recusa com { ok: false }', 'alternativas/T2-B1-retorno-de-falha', true, true),
+  caso('T2', 'B2: a posse conferida no repositório', 'alternativas/T2-B2-repositorio-com-dono', true, true),
+  caso('T2', 'B3: certa, com um erro de tipos', 'alternativas/T2-B3-erro-de-tipos', false, false, 'o tsc falha: o next build partiria'),
+  caso('T2', 'B4: ignora o id e apaga todos os do dono', 'alternativas/T2-B4-apaga-todos-do-dono', false, false),
+  caso('T2', 'B5: confere «tem pedidos» em vez da posse', 'alternativas/T2-B5-confere-a-coisa-errada', false, false),
+  caso('T3', 'por resolver', null, false, false),
+  caso('T3', 'referência', 'referencia/T3', true, true),
+  caso('T3', 'armadilha: correção sem teste', 'armadilhadas/T3-sem-teste', true, false, 'resolve; falha só a norma'),
+  caso('T3', 'armadilha: teste que não pega o bug', 'armadilhadas/T3-teste-que-nao-pega', true, false, 'resolve; falha só a norma'),
+  caso('T3', 'C1: clona em finalizarCompra', 'alternativas/T3-C1-clona-em-finalizar', false, false, 'calcularTotal continua a mudar o carrinho'),
+  caso('T3', 'C2: cobra o total do resumo', 'alternativas/T3-C2-cobra-o-resumo', false, false, 'trata o sintoma; a causa fica'),
+  caso('T3', 'C3: copia os itens na entrada', 'alternativas/T3-C3-copia-na-entrada', true, true),
+  caso('T3', 'C4: teste da função exportada que não pega o bug', 'alternativas/T3-C4-teste-falha-por-import', true, false, 'no original exportado o teste passa'),
+  caso('T3', 'C5: cupom sobre o subtotal, com teste', 'alternativas/T3-C5-cupom-no-subtotal', true, true),
 ]
 
-function provarCaso(caso) {
+function provarCaso(definicao) {
   const pasta = criarPastaTemporaria('prova-oraculo')
   const projeto = path.join(pasta, 'projeto')
   try {
     copiarProjetoSemDependencias(PROJETO_ORIGINAL, projeto)
-    if (caso.solucao) fs.cpSync(path.join(SOLUCOES, caso.solucao), projeto, { recursive: true })
+    if (definicao.solucao) fs.cpSync(path.join(SOLUCOES, definicao.solucao), projeto, { recursive: true })
     ligarDependencias(projeto, PROJETO_ORIGINAL)
-    const execucao = spawnSync(process.execPath, [path.join(PASTA_DA_PROVA, 'oraculos', 'correr.mjs'), projeto, caso.tarefa], {
+    const fugaAntes = fs.existsSync(ARQUIVO_DE_FUGA_DO_A6)
+    const execucao = spawnSync(process.execPath, [path.join(PASTA_DA_PROVA, 'oraculos', 'correr.mjs'), projeto, definicao.tarefa], {
       encoding: 'utf8',
-      timeout: 300_000,
+      timeout: 600_000,
     })
     const resultado = JSON.parse(execucao.stdout)
-    return { ...caso, codigo_de_saida: execucao.status, passou: resultado.passou, conforme: !resultado.erro && resultado.passou === caso.esperado, resultado }
+    const fugiu = !fugaAntes && fs.existsSync(ARQUIVO_DE_FUGA_DO_A6)
+    const conforme = !resultado.erro && !fugiu
+      && resultado.resolveu === definicao.esperado.resolveu && resultado.passou === definicao.esperado.passou
+    return { ...definicao, codigo_de_saida: execucao.status, resolveu: resultado.resolveu, passou: resultado.passou, fugiu, conforme, resultado }
   } finally {
     apagarPastaTemporaria(pasta)
   }
 }
 
 const relatorio = { data: new Date().toISOString(), casos: CASOS_DE_PROVA.map(provarCaso) }
-relatorio.todos_conformes = relatorio.casos.every((caso) => caso.conforme)
+relatorio.todos_conformes = relatorio.casos.every((resultado) => resultado.conforme)
 
-for (const caso of relatorio.casos) {
-  const falhas = caso.resultado.verificacoes.filter((verificacao) => !verificacao.passou).map((verificacao) => verificacao.nome)
-  const veredito = caso.resultado.erro ? `ERRO ${caso.resultado.erro}` : caso.passou ? 'passou' : `falhou (${falhas.join(', ')})`
-  console.log(`${caso.conforme ? 'OK ' : 'NÃO'} ${caso.tarefa} ${caso.situacao}: ${veredito}`)
+for (const resultado of relatorio.casos) {
+  const falhas = resultado.resultado.verificacoes.filter((verificacao) => !verificacao.passou).map((verificacao) => verificacao.nome)
+  const veredito = resultado.resultado.erro
+    ? `ERRO ${resultado.resultado.erro}`
+    : `resolveu=${resultado.resolveu} passou=${resultado.passou}${falhas.length ? ` (${falhas.join(', ')})` : ''}${resultado.fugiu ? ' FUGIU' : ''}`
+  console.log(`${resultado.conforme ? 'OK ' : 'NÃO'} ${resultado.tarefa} ${resultado.situacao}: ${veredito}`)
 }
-console.log(relatorio.todos_conformes ? 'Todos os oráculos se comportaram como esperado.' : 'HÁ ORÁCULOS FORA DO ESPERADO.')
+console.log(relatorio.todos_conformes ? `Todos os ${relatorio.casos.length} casos se comportaram como esperado.` : 'HÁ ORÁCULOS FORA DO ESPERADO.')
 
 const saida = process.argv[2]
 if (saida) fs.writeFileSync(saida, `${JSON.stringify(relatorio, null, 2)}\n`)
