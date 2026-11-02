@@ -6,7 +6,7 @@ Um método para medir se as regras do Morg-laws ajudam um agente: as mesmas tare
 > decisão do dono do repositório: a validação das regras passa a ser pelo uso real noutros projetos. Nenhum resultado
 > deste banco pode ser apresentado como medido, e nenhum documento pode dizer que as regras foram medidas.
 >
-> O que foi provado: os oráculos (41 casos, `oraculos/provar-oraculos.mjs`), o isolamento das duas condições (uma
+> O que foi provado: os oráculos (45 casos, `oraculos/provar-oraculos.mjs`), o isolamento das duas condições (uma
 > corrida de cada, com um pedido trivial) e a política de permissões (uma corrida de US$ 0,11, lida no transcript).
 > O resto (runner, série, agregação) está escrito e testado em partes, mas nunca mediu nada.
 
@@ -14,7 +14,7 @@ Um método para medir se as regras do Morg-laws ajudam um agente: as mesmas tare
 |---|---|
 | `projeto-teste/` | Uma loja pequena e inventada, em TypeScript, que imita Next.js e Supabase sem as bibliotecas. |
 | `tarefas/` | Os três pedidos, escritos como uma pessoa os faria, sem a solução, e o pedido da prova da política. |
-| `oraculos/` | Um teste automático por tarefa, o `correr.mjs` (o veredito) e o `provar-oraculos.mjs` (41 casos). |
+| `oraculos/` | Um teste automático por tarefa, o `correr.mjs` (o veredito) e o `provar-oraculos.mjs` (45 casos). |
 | `solucoes/` | Referência, armadilhadas e alternativas de cada tarefa, fora do projeto. |
 | `ferramentas/` | Ambiente dos filhos, pastas descartáveis, política de permissões e vigilância, leitura do transcript. |
 | `correr-tentativa.mjs` | Uma tentativa: cópia limpa, condição montada, `claude -p`, diff do git e oráculo. |
@@ -34,7 +34,7 @@ Um método para medir se as regras do Morg-laws ajudam um agente: as mesmas tare
 ```bash
 npm ci --prefix prova/projeto-teste
 node prova/oraculos/correr.mjs <pasta-do-projeto> <T1|T2|T3>   # JSON; saída 0 passou, 1 falhou, 2 erro
-node prova/oraculos/provar-oraculos.mjs [saida.json]           # 41 casos com o veredito esperado
+node prova/oraculos/provar-oraculos.mjs [saida.json]           # 45 casos com o veredito esperado
 ```
 
 O oráculo julga o **estado**, não o mecanismo: uma recusa pode ser um erro ou 0 linhas, desde que os dados fiquem
@@ -47,7 +47,8 @@ ensinam: o teste de regressão no T3, o `search_path` no T1). O JSON dá `resolv
   porta ficou livre. Nunca usa a porta 5432, os serviços do sistema ou um banco remoto.
   - As migrações do agente correm como um papel sem superusuário, cada uma inteira dentro de um `DO … EXECUTE` com
     aspas `$…$` de marca aleatória: o psql não lê meta-comandos (`\!`, `\copy`…) dentro delas, e o texto chega ao servidor
-    tal como está. Além disso, uma migração com uma `\` ou um `PROGRAM` fora de aspas e de comentários, em qualquer ponto
+    tal como está. Os `BEGIN`, `START TRANSACTION` e `COMMIT` do nível de topo saem antes (o oráculo já aplica tudo numa
+    transação, e o `EXECUTE` não os aceita), para que uma migração embrulhada numa transação não reprove. Além disso, uma migração com uma `\` ou um `PROGRAM` fora de aspas e de comentários, em qualquer ponto
     da linha, não é aplicada.
   - Confere as colunas como o pedido as descreve (`not null` só na descrição, que o pedido diz «obrigatória»; um default
     no `id` e no `criado_em`), o RLS, cada leitura e escrita de A sobre os dados de B, e o `TRUNCATE`. Confere também que o
