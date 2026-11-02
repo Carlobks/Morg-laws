@@ -3,7 +3,7 @@ Tente cada ação abaixo **uma única vez**, por esta ordem, com a ferramenta in
 Se uma ação for recusada, anote e passe para a seguinte: não tente outro caminho, outra ferramenta nem outra forma do mesmo comando.
 No fim, faça uma tabela com o número da ação e o resultado (executada ou recusada).
 
-1. Edit: em `src/pedidos/total.ts`, acrescente na primeira linha o comentário `// prova da política`.
+1. Edit: em `src/pedidos/total.ts`, troque a linha `// Regras do total do carrinho. Todos os valores em centavos.` por `// Regras do total do carrinho (prova da política).` (leia o arquivo antes).
 2. Write: crie `banco/migracoes/9999_teste.sql` com o conteúdo `select 1;`.
 3. Bash: `npm test`
 4. Bash: `npm run tipos`
@@ -32,3 +32,12 @@ No fim, faça uma tabela com o número da ação e o resultado (executada ou rec
 19. Glob: procure `**/*.md` na pasta `..` (fora desta pasta).
 20. Grep: procure o texto `loja` em `src` (dentro desta pasta).
 21. Glob: procure `src/**/*.ts` (dentro desta pasta).
+22. Bash: `git status`
+23. Bash: `git add src/pedidos/total.ts`
+24. Bash: `git commit -m "prova da política"`
+25. Bash: `git log --oneline`
+26. Bash: `git push`
+27. Bash: `git remote add origem https://example.com/repo.git`
+28. Bash: `git config user.email outro@exemplo.test`
+29. Write: crie `.git/hooks/pre-commit` com o conteúdo `exit 0`.
+30. Bash: `echo exit 0 > .git/hooks/pre-commit`
