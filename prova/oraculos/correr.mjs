@@ -266,46 +266,85 @@ const PREPARAR_MIGRADOR = `
   alter default privileges for role migrador in schema public grant all on sequences to anon, authenticated, service_role;
   alter default privileges for role migrador in schema public grant execute on functions to anon, authenticated, service_role;`
 
-// O texto do SQL fora de comentários, aspas e corpos $…$: é aí que o psql lê meta-comandos.
+// O SQL com o conteúdo de comentários, aspas e corpos $…$ trocado por espaços, com o mesmo comprimento
+// (as quebras de linha ficam): o que sobra é o que o psql e o servidor leem como comandos.
+// Uma string E'…' aceita escapes com barra (E'a\'b'): o \' não a fecha.
 export function textoForaDeAspas(sql) {
-  let fora = ''
+  const mascara = sql.split('')
+  const apagar = (de, ate) => {
+    for (let j = de; j < Math.min(ate, sql.length); j++) if (mascara[j] !== '\n') mascara[j] = ' '
+  }
   let i = 0
   while (i < sql.length) {
+    const inicio = i
     if (sql.startsWith('--', i)) {
       const fim = sql.indexOf('\n', i)
       i = fim === -1 ? sql.length : fim
-      continue
-    }
-    if (sql.startsWith('/*', i)) {
+    } else if (sql.startsWith('/*', i)) {
       const fim = sql.indexOf('*/', i + 2)
       i = fim === -1 ? sql.length : fim + 2
-      fora += ' '
-      continue
-    }
-    if (sql[i] === "'") {
+    } else if (sql[i] === "'") {
+      const comEscapes = /[eE]/.test(sql[i - 1] ?? '') && !/[A-Za-z0-9_]/.test(sql[i - 2] ?? '')
       i++
-      while (i < sql.length && !(sql[i] === "'" && sql[i + 1] !== "'")) i += sql[i] === "'" ? 2 : 1
+      while (i < sql.length) {
+        if (comEscapes && sql[i] === '\\') i += 2
+        else if (sql[i] === "'" && sql[i + 1] === "'") i += 2
+        else if (sql[i] === "'") break
+        else i++
+      }
       i++
-      fora += "''"
-      continue
-    }
-    if (sql[i] === '"') {
+    } else if (sql[i] === '"') {
       const fim = sql.indexOf('"', i + 1)
       i = fim === -1 ? sql.length : fim + 1
-      fora += '""'
-      continue
-    }
-    const dolar = /^\$([A-Za-z_][A-Za-z0-9_]*)?\$/.exec(sql.slice(i))
-    if (dolar) {
+    } else {
+      const dolar = /^\$([A-Za-z_][A-Za-z0-9_]*)?\$/.exec(sql.slice(i))
+      if (!dolar) {
+        i++
+        continue
+      }
       const fim = sql.indexOf(dolar[0], i + dolar[0].length)
       i = fim === -1 ? sql.length : fim + dolar[0].length
-      fora += ' '
-      continue
     }
-    fora += sql[i]
-    i++
+    apagar(inicio, i)
   }
-  return fora
+  return mascara.join('')
+}
+
+// Comandos de transação no nível de topo (BEGIN [WORK|TRANSACTION], START TRANSACTION, COMMIT [WORK|TRANSACTION],
+// com as opções de isolamento): embrulhar uma migração numa transação é correto, mas o EXECUTE do oráculo
+// não os aceita (0A000), e o oráculo já corre tudo numa transação. Tiram-se antes de aplicar.
+// O END e o ROLLBACK ficam: o END fecha também um BEGIN ATOMIC, e um ROLLBACK desfaria a migração.
+const OPCOES_DE_TRANSACAO = new Set(['isolation', 'level', 'serializable', 'repeatable', 'read', 'committed', 'uncommitted',
+  'write', 'only', 'deferrable', 'not', 'and', 'no', 'chain'])
+
+function eComandoDeTransacao(trecho) {
+  const palavras = trecho.toLowerCase().replace(/,/g, ' ').split(/\s+/).filter(Boolean)
+  let resto
+  if (palavras[0] === 'begin') resto = palavras.slice(['work', 'transaction'].includes(palavras[1]) ? 2 : 1)
+  else if (palavras[0] === 'start' && palavras[1] === 'transaction') resto = palavras.slice(2)
+  else if (palavras[0] === 'commit') resto = palavras.slice(['work', 'transaction'].includes(palavras[1]) ? 2 : 1)
+  else return false
+  return resto.every((palavra) => OPCOES_DE_TRANSACAO.has(palavra))
+}
+
+export function tirarComandosDeTransacao(sql) {
+  const mascara = textoForaDeAspas(sql)
+  const tirados = []
+  let resultado = ''
+  let inicio = 0
+  for (let i = 0; i <= mascara.length; i++) {
+    if (i < mascara.length && mascara[i] !== ';') continue
+    const fim = Math.min(i + 1, sql.length)
+    const trecho = mascara.slice(inicio, i).trim()
+    if (eComandoDeTransacao(trecho)) {
+      tirados.push(trecho.replace(/\s+/g, ' '))
+      resultado += sql.slice(inicio, fim).replace(/[^\n]/g, ' ')
+    } else {
+      resultado += sql.slice(inicio, fim)
+    }
+    inicio = fim
+  }
+  return { sql: resultado, tirados }
 }
 
 // Meta-comandos do psql (\!, \o, \copy…) começam em qualquer ponto da linha e correm no cliente,
@@ -324,7 +363,8 @@ function comandosProibidos(sql) {
 // A migração vai pelo stdin (que guarda o UTF-8; o «psql -c» recebe o texto na codificação ANSI do
 // Windows e parte os acentos), mas inteira dentro de um corpo $…$ com uma marca aleatória: o psql não
 // lê meta-comandos dentro dele, e o EXECUTE manda o texto ao servidor tal como está.
-function aplicarMigracao(contexto, sql) {
+function aplicarMigracao(contexto, sqlDoAgente) {
+  const { sql } = tirarComandosDeTransacao(sqlDoAgente)
   const marcaDoBloco = `$bloco_${randomBytes(8).toString('hex')}$`
   const marcaDoTexto = `$texto_${randomBytes(8).toString('hex')}$`
   if (sql.includes(marcaDoBloco) || sql.includes(marcaDoTexto)) throw new Error('uma marca aleatória apareceu dentro da migração')
