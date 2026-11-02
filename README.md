@@ -14,6 +14,7 @@ o que deu errado, a regra que nasceu disso e a fonte que a sustenta.
 | `aprendizados/` | Notas datadas sobre bibliotecas, ferramentas e erros que custaram caro. |
 | `modelos/` | Arquivos prontos para copiar, que transformam as regras em barreiras de máquina: hooks do Claude Code e `settings.json` em três colunas, hooks e portões do git, testes das regras, changelog por fragmentos, CI e moldes de documento (CLAUDE.md, mapa das barreiras, plano, handoff, ADR). Índice em [modelos/README.md](modelos/README.md). |
 | `tests/` e `scripts/testar.sh` | Os testes dos modelos: cobertura de linhas e ramos a 100 % e um projeto de exemplo montado só com eles. |
+| `pesquisas/` | As pesquisas feitas para o repositório, uma por arquivo, com o índice em [pesquisas/README.md](pesquisas/README.md). |
 | `FONTES.md` | Todas as fontes usadas, com a data em que foram lidas. |
 
 O repositório está em construção: as pastas aparecem conforme as fases avançam.

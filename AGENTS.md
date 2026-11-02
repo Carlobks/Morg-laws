@@ -48,5 +48,6 @@ estas regras direto no CLAUDE.md; o arquivo de regras do projeto fica com até 1
 
 - Público: nunca nomes de pessoas ou empresas, e-mails, IDs de serviços, caminhos de máquina ou dados reais.
 - Toda fonte usada entra em `FONTES.md`. Livros: resumo com palavras próprias, com página. Nunca texto copiado.
+- Pesquisa que outra sessão vai reler vai para `pesquisas/`, com o índice; o CI confere as pesquisas e as fontes.
 - Nada de terceiros copiado: escreve-se com estrutura própria e cita-se a inspiração em `FONTES.md`.
 - Escrita em português do Brasil.
