@@ -1,0 +1,89 @@
+{
+  "permissions": {
+    "disableBypassPermissionsMode": "disable",
+    "deny": [
+      "Read(**/.env)",
+      "Read(**/.envrc)",
+      "Read(**/.env.*)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)",
+      "Read(~/.ssh/**)",
+      "Read(~/.claude/.credentials.json)",
+      "Read(~/.config/morg-laws/**)"
+    ],
+    "ask": [
+      "Bash(git push)",
+      "Bash(git push *)",
+      "PowerShell(git push)",
+      "PowerShell(git push *)",
+      "Bash(gh pr create*)",
+      "Bash(gh pr merge*)",
+      "Bash(npm install *)",
+      "Bash(npm i *)",
+      "Bash(npm ci*)",
+      "Bash(npx *)",
+      "Bash(pip install *)",
+      "Bash(winget install *)",
+      "PowerShell(winget install *)",
+      "PowerShell(Install-Module *)",
+      "Edit(.claude/settings.json)",
+      "Edit(.claude/hooks/**)",
+      "Edit(.githooks/**)"
+    ],
+    "allow": [
+      "Bash(git status*)",
+      "Bash(git log *)",
+      "Bash(git diff *)",
+      "Bash(git show *)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "p=\"${MORG_PY:-$(command -v py || command -v python3)}\"; r=\"$CLAUDE_PROJECT_DIR\"; [ -f \"$r/.claude/hooks/guarda_do_git.py\" ] || r=\"$(git rev-parse --show-toplevel)\"; \"$p\" -I \"$r/.claude/hooks/guarda_do_git.py\"",
+            "timeout": 15,
+            "onFailure": "block",
+            "statusMessage": "Conferindo os portões do git"
+          },
+          {
+            "type": "command",
+            "command": "p=\"${MORG_PY:-$(command -v py || command -v python3)}\"; r=\"$CLAUDE_PROJECT_DIR\"; [ -f \"$r/.claude/hooks/bloquear_segredos.py\" ] || r=\"$(git rev-parse --show-toplevel)\"; \"$p\" -I \"$r/.claude/hooks/bloquear_segredos.py\"",
+            "timeout": 15,
+            "onFailure": "block",
+            "statusMessage": "Conferindo segredos e downloads"
+          },
+          {
+            "type": "command",
+            "command": "p=\"${MORG_PY:-$(command -v py || command -v python3)}\"; r=\"$CLAUDE_PROJECT_DIR\"; [ -f \"$r/.claude/hooks/perguntar_antes.py\" ] || r=\"$(git rev-parse --show-toplevel)\"; \"$p\" -I \"$r/.claude/hooks/perguntar_antes.py\"",
+            "timeout": 15,
+            "onFailure": "block",
+            "statusMessage": "Vendo se é preciso o sim do dono"
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "p=\"${MORG_PY:-$(command -v py || command -v python3)}\"; r=\"$CLAUDE_PROJECT_DIR\"; [ -f \"$r/.claude/hooks/limite_de_linhas.py\" ] || r=\"$(git rev-parse --show-toplevel)\"; \"$p\" -I \"$r/.claude/hooks/limite_de_linhas.py\"",
+            "timeout": 15,
+            "onFailure": "block",
+            "statusMessage": "Conferindo o limite de linhas"
+          },
+          {
+            "type": "command",
+            "command": "p=\"${MORG_PY:-$(command -v py || command -v python3)}\"; r=\"$CLAUDE_PROJECT_DIR\"; [ -f \"$r/.claude/hooks/perguntar_antes.py\" ] || r=\"$(git rev-parse --show-toplevel)\"; \"$p\" -I \"$r/.claude/hooks/perguntar_antes.py\"",
+            "timeout": 15,
+            "onFailure": "block",
+            "statusMessage": "Vendo se é preciso o sim do dono"
+          }
+        ]
+      }
+    ]
+  }
+}

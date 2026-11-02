@@ -1,0 +1,54 @@
+# Formulário de issue para um erro. Campos tirados do guia de bugs da Mozilla e das convenções de exceções do
+# OpenTelemetry: resumo, passos numerados, esperado, acontecido e o relatório revisto antes de publicar.
+# Instalar: copiar para .github/ISSUE_TEMPLATE/erro.yml e criar a etiqueta "erro" no repositório.
+name: Erro
+description: Algo falhou ou não fez o que devia.
+title: "[Erro] "
+labels: ["erro"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Obrigado por avisar. Se o programa guardou um relatório do erro, cole-o no fim.
+  - type: input
+    id: resumo
+    attributes:
+      label: Resumo
+      description: O que falhou, numa linha.
+    validations:
+      required: true
+  - type: textarea
+    id: passos
+    attributes:
+      label: Passos para reproduzir
+      description: Numerados, desde o início. Diga também se acontece sempre ou só às vezes.
+      placeholder: |
+        1. Abri o programa.
+        2. Cliquei em …
+    validations:
+      required: true
+  - type: textarea
+    id: esperado
+    attributes:
+      label: O que esperava
+    validations:
+      required: true
+  - type: textarea
+    id: aconteceu
+    attributes:
+      label: O que aconteceu
+      description: Só o que viu, sem suposições.
+    validations:
+      required: true
+  - type: input
+    id: versao
+    attributes:
+      label: Versão e sistema
+      description: A versão do programa (o VERSION) e o sistema operacional.
+  - type: textarea
+    id: relatorio
+    attributes:
+      label: Relatório do erro
+      description: >-
+        Revise-o antes de publicar: não deve ter o seu nome, e-mails, chaves nem caminhos pessoais.
+      render: shell

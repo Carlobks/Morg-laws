@@ -29,7 +29,8 @@ Uma instrução que o agente lê em todo turno custa contexto em todo turno. Esc
 
 ## 3. Como se escreve
 
-- **Forma curta** no arquivo lido sempre: um título único em maiúsculas, a regra numa linha, o motivo numa frase. Exemplo: `**SEM SILENCIAR ALARME:** nada de eslint-disable novo. · *Já se escondeu uma biblioteca vulnerável numa lista de exceções.*`
+- **Forma curta** no arquivo lido sempre: um título único em maiúsculas, a regra numa linha, o motivo numa frase. Exemplo: `**SEM SILENCIAR ALARME:** alarme calado novo só com o motivo na linha. · *Já se escondeu uma biblioteca vulnerável numa lista de exceções.*`
+- **Regra n.º 1:** o perigo mais caro do projeto (o que não se desfaz ou custa dinheiro) vai no topo, sozinho, com o motivo e o que fazer em vez disso.
 - **Texto integral** num arquivo à parte, com **o mesmo título**, para se achar com um `grep`. O arquivo lido sempre aponta para lá.
 - O motivo é o que torna a regra aplicável a casos novos. Uma regra sem motivo é seguida à letra e falha no primeiro caso que não previu.
 - Instrução concreta vence aspiração: "rode `npx tsc --noEmit` antes de commitar" funciona; "siga boas práticas" não muda nada.
@@ -59,6 +60,9 @@ Pergunte, para cada regra: o que acontece se o agente a ignorar?
 - **Muito** (vazamento, dado apagado, produção fora do ar): vira barreira. Pode ser um hook que recusa o commit, um teste que falha, uma regra de negação nas permissões do agente ou um passo do CI.
 - **Autorização permanente:** quando o dono deixa o agente fazer algo sem pedir a cada vez, escreva **qual classe de ação** está autorizada (por exemplo, "criar tarefas no quadro do projeto"), e não uma licença geral. Tudo o que fica fora dessa classe volta a pedir o "sim".
 - **Catraca:** para o que já viola em grande quantidade, congele a contagem atual numa linha de base e falhe só se piorar. A linha de base desce no mesmo commit que corrige.
+- **Onde a barreira vive:** o hook do agente só trava o agente; o hook do git vale também para quem commita à mão; o CI pega quem desligou os hooks. As regras `ask` das permissões não perguntam no modo automático; o que tem de perguntar vai num hook (skill `auditoria-de-seguranca`).
+- **Mapa das barreiras:** um arquivo liga cada regra à barreira que a obriga (hook, git, teste, permissão, CI) ou diz por que ela fica em texto. Um teste confere três coisas: cada título do arquivo de regras tem linha no mapa, cada regra tem motivo e cada caminho citado existe. Modelo em [`modelos/`](https://github.com/Carlobks/Morg-laws/tree/main/modelos).
+- **Nem tudo vira hook.** Um hook de fim de sessão para atualizar o handoff dispararia em cada turno. Ficou em texto: o handoff atualiza-se no commit que fecha a fase.
 
 ## 7. Registro
 

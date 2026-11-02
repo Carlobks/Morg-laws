@@ -7,10 +7,11 @@ Lido inteiro em todo turno: por isso fica curto (máximo 60 linhas, o hook confe
 
 - **Plano antes de mexer.** Mudança com vários arquivos começa por um plano e pelo "sim" do dono do projeto.
 - **Decisão a meio vai ao dono**, explicada, com a opção recomendada marcada. Não se decide sozinho o que é dele.
-- **Commitar não precisa de pedido; push e PR precisam.** Commit atômico, por caminho; nunca `git add -A` ou `.`.
+- **Commitar não precisa de pedido; push e PR precisam, a cada vez.** Commit atômico, por caminho; nunca `git add -A` ou `.`.
 - **Os hooks são a rede.** Nunca saltar (`--no-verify`) nem desligar. Hook recusou: corrige-se a causa.
 - **O que já viola não pode piorar;** arquivo novo nasce limpo. *Senão a dívida só cresce.*
-- **Sem silenciar alarme:** nada de `eslint-disable`, `@ts-ignore` ou `@ts-expect-error` novos. Corrige-se o apontado.
+- **Sem silenciar alarme sem motivo:** corrige-se o apontado. Um `eslint-disable`, `@ts-expect-error` ou `noqa` novo
+  só com o motivo na mesma linha, e a contagem por tipo não sobe. *Um alarme calado sem motivo esconde o seguinte.*
 - **Bug corrigido traz o teste que o pega**, visto a falhar antes da correção.
 - **Provar medindo** (comando e saída, tela, consulta), nunca "pronto". Dizer também o que não se verificou.
 - **Nomes únicos e pesquisáveis.** Nada de `data`, `utils`, `Props` genéricos: `grep` antes de criar.
@@ -38,8 +39,10 @@ As skills abrem pelo nome, estejam onde estiverem instaladas (`.claude/skills/`,
 | Vai fazer push de código | `auditoria-de-seguranca` |
 | O projeto usa SQL, Supabase, Next.js ou React | `sql-postgres`, `supabase`, `nextjs-react` |
 
-O porquê das regras, o modelo de hook `pre-push` e as notas: `biblia-akita/`, `modelos/` e `aprendizados/` do repositório Morg-laws.
-Instalar as skills num projeto: `npx skills add Carlobks/Morg-laws`.
+No repositório Morg-laws: o porquê das regras em `biblia-akita/`, hooks, portões e testes prontos a copiar em
+`modelos/` e as notas em `aprendizados/`.
+Instalar as skills num projeto: `npx skills add Carlobks/Morg-laws`. Projeto que só usa o Claude Code pode pôr
+estas regras direto no CLAUDE.md; o arquivo de regras do projeto fica com até 100 linhas.
 
 ## Regras deste repositório
 

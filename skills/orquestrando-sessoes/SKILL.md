@@ -25,6 +25,7 @@ Quem escreveu um trabalho não o consegue auditar bem: lê o que quis dizer, nã
 
 - Abra uma **sessão nova**, sem a conversa que produziu o trabalho.
 - Escreva um pedido **neutro**: o objetivo, os arquivos, as fontes contra as quais conferir e o formato do relatório. **Não** diga a sua conclusão. Um auditor que recebe a hipótese tende a confirmá-la.
+- **Numa verificação repetida,** a sessão nova fecha e grava as suas contagens **antes** de ler a verificação anterior, e só depois compara. Lida antes, a anterior vira a resposta esperada.
 - Peça um **veredito** no topo ("aprovado", "aprovado com correções", "refazer"), cada achado com o arquivo e a linha da fonte, e a lista do que não verificou.
 - O relatório volta como **dado, não como verdade**. Antes de agir, confira cada afirmação na fonte (um `grep` por termo, a licença no original), e marque à parte o que é juízo, que não se mede.
 - Mudanças de risco (SQL que escreve em produção, permissões, segurança) passam sempre por uma auditoria destas antes do "sim" do dono.
@@ -33,6 +34,8 @@ Quem escreveu um trabalho não o consegue auditar bem: lê o que quis dizer, nã
 
 - Um arquivo **por assunto**, com nome que diz qual: `.context/HANDOFF-<assunto>.md`. Nunca um `HANDOFF.md` genérico, que a sessão seguinte sobrescreve.
 - O conteúdo: objetivo, estado **verificado** (o que está commitado, com o hash), decisões tomadas e porquê, abordagens descartadas, próximos passos.
+- **Decisões em duas listas:** as do dono (perguntadas, com a recomendação) e as técnicas (com o motivo medido). Cada abordagem descartada leva o porquê, para a sessão seguinte não a tentar de novo.
+- O handoff vive **no repositório** e atualiza-se no commit que fecha cada fase. A memória do agente fica fora do git e fora das outras contas.
 - Quem retoma confere o estado no repositório antes de confiar no handoff.
 
 ## 4. Várias sessões na mesma pasta
@@ -42,6 +45,7 @@ Quando várias sessões (ou pessoas) trabalham na mesma pasta, o índice do git 
 - **Commit sempre por caminho:** `git commit -F msg -- <arquivos>`. Um `git commit` sem caminhos leva tudo o que outra sessão deixou preparado.
 - **Nunca `git stash`:** leva também os arquivos por commitar das outras sessões. Para comparar com o código antigo, troque só o seu arquivo, ou use `git worktree`.
 - **Não commitar trabalho alheio.** O aviso de "arquivos por commitar" conta arquivos, não donos. Use `git log -1 -- <arquivo>` e a memória do que você mexeu.
+- **Nada que estrague o disco compartilhado:** um script que troca arquivos por um tempo (testes de mutação, geradores) roda num `git worktree` à parte. Outra sessão que rode os testes ao mesmo tempo os vê falhar sem bug, e pode commitar o arquivo trocado.
 - **Confirme o HEAD antes de pedir um reteste:** outra sessão pode ter mudado a branch, e o sintoma parece "a correção não funcionou".
 - **`index.lock`:** o de outra sessão a commitar espera-se que saia, e nunca se apaga. Antes de culpar outro processo, veja **em que repositório** ele corre. Um lock seu, deixado por um comando interrompido, prova-se velho por três coisas: nenhum processo do git a correr, a hora do lock bate com a interrupção e o conteúdo do lock é o seu. Mesmo assim, renomeie-o em vez de o apagar.
 - **Não lance um commit com hooks longos** enquanto a conversa está a pedir decisões ao dono: um "parar" a meio deixa o lock para trás.

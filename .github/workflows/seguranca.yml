@@ -1,5 +1,9 @@
 name: segurança
 
+# Regras (o tests/test_ci_do_repositorio.py roda o modelo modelos/testes/test_ci.py contra este arquivo): actions
+# fixadas por SHA com a versão em comentário; o token só lê; o checkout não guarda a credencial; o gitleaks é o
+# binário oficial com o sha256 conferido, sem action de terceiros; versões fixas das ferramentas.
+
 on:
   push:
   pull_request:
@@ -10,20 +14,50 @@ permissions:
 jobs:
   gitleaks:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
-      - uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e # v3.0.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: false
+      - name: gitleaks 8.30.1 em todo o histórico
+        run: |
+          curl -sSfL -o gitleaks.tar.gz https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz
+          echo "551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb  gitleaks.tar.gz" | sha256sum -c -
+          tar -xzf gitleaks.tar.gz gitleaks
+          ./gitleaks git --redact --no-banner .
 
   agents-md-curto:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - name: AGENTS.md com no máximo 60 linhas
         run: |
           linhas=$(wc -l < AGENTS.md)
           echo "AGENTS.md: $linhas linhas"
           test "$linhas" -le 60
+
+  testar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        id: python
+        with:
+          python-version: "3.11.9"
+      # Versões fixas sem --require-hashes, por escolha: um pacote republicado com a mesma versão passaria, mas
+      # este job só lê o repositório e não tem segredos. Com segredos ou escrita, use um requirements com hashes.
+      - name: Ferramentas com versões fixas
+        run: ${{ steps.python.outputs.python-path }} -m pip install --disable-pip-version-check coverage==7.17.0 ruff==0.17.2
+      - name: Ligar os portões do git (os testes da guarda do git exigem-no)
+        run: git config core.hooksPath .githooks
+      - name: Modelos testados a 100 % e ruff (scripts/testar.sh)
+        env:
+          MORG_PY: ${{ steps.python.outputs.python-path }}
+        run: sh scripts/testar.sh

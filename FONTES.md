@@ -17,6 +17,7 @@ Fonte secundária leva a marca *(secundária)* até ser conferida na original.
 - **Evaluating AGENTS.md (arXiv 2602.11988)** — https://arxiv.org/abs/2602.11988 — resumo lido em 2026-10-30.
   Sustenta: os arquivos de contexto «do not generally improve task success rates» e sobem o custo de inferência em mais de 20%, em média. O resumo não fala do tamanho dos arquivos, e a página não mostra a afiliação dos autores.
 - **agents.md** — https://agents.md — lido em 2026-10-30 (numa auditoria independente). Sustenta: o formato é mantido pela Agentic AI Foundation, sob a Linux Foundation, e a página lista 23 ferramentas que o leem.
+- **Claude Code — hooks** — https://code.claude.com/docs/en/hooks — lido em 2026-11-01 (a primeira parte da página). Sustenta: o `PreToolUse` decide com `permissionDecision` (`allow`, `deny`, `ask`, `defer`) e o `ask` passa a decisão ao usuário; sair com 2 «Blocks the tool call», com o motivo no stderr; `onFailure` aceita `continue` ou `block` (desde o Claude Code v2.1.295); o `CLAUDE_PROJECT_DIR` é a pasta onde a sessão começou e não muda com a sessão. Que as regras `ask` do `settings.json` não perguntam no modo automático foi **medido** num projeto real, não está na página (usado na skill `auditoria-de-seguranca` e em `modelos/claude/`).
 
 ## Git e contas
 
@@ -25,6 +26,18 @@ Fonte secundária leva a marca *(secundária)* até ser conferida na original.
 
 - **Git — `lockfile.c` (mensagem do `index.lock`)** — https://github.com/git/git/blob/master/lockfile.c — lido em 2026-10-29.
   Sustenta: o git não manda apagar o lock; só diz que outro processo pode estar a correr ou que o lock pode estar velho.
+- **Pro Git — 2.6 Tagging** — https://git-scm.com/book/en/v2/Git-Basics-Tagging — lido em 2026-10-31 (no projeto de origem). Sustenta: a tag anotada guarda autor, data e mensagem; usada para marcar cada versão (`modelos/changelog/`).
+- **Git — `git` (opções globais)** — https://git-scm.com/docs/git — lido em 2026-11-02. Sustenta: as opções entre o `git` e o subcomando (`-C <caminho>` e `-c <nome>=<valor>` com o valor à parte; `--git-dir=`, `--work-tree=`, `--no-pager`/`-P` e outras), que o `perguntar_antes.py` salta para achar o `push`.
+- **GitHub CLI — `gh api`** — https://cli.github.com/manual/gh_api — lido em 2026-11-02. Sustenta: «The default HTTP request method is GET normally and POST if any parameters were added»; os parâmetros vêm de `-f`/`--raw-field` e `-F`/`--field`, o corpo de `--input`, e o método muda com `-X`/`--method` (usado no `perguntar_antes.py`).
+
+## Changelog e versões
+
+Lidas em 2026-10-31 no projeto de origem, onde sustentaram a decisão escrita (ADR) do changelog por fragmentos e da versão SemVer.
+
+- **Keep a Changelog 1.1.0** — https://keepachangelog.com/en/1.1.0/ — Sustenta: as seis categorias e a ordem (Added, Changed, Deprecated, Removed, Fixed, Security, aqui em português) e um changelog escrito para pessoas, com a versão e a data.
+- **towncrier** (tutorial) — https://towncrier.readthedocs.io/en/stable/tutorial.html — Sustenta: um arquivo por mudança, juntado e apagado na hora do lançamento. Só a ideia: o modelo `juntar_changelog.py` não usa o towncrier (biblioteca padrão apenas).
+- **Semantic Versioning 2.0.0** — https://semver.org/lang/pt-BR/ — Sustenta: MAIOR.MENOR.CORREÇÃO; o MAIOR sobe com uma mudança incompatível; no 0.y.z tudo pode mudar; os metadados de compilação (`+…`) não contam na comparação.
+- **CalVer** — https://calver.org/ — Sustenta a alternativa descartada: a versão pela data não diz a quem usa se uma atualização quebra algo.
 
 ## Segurança
 
@@ -37,7 +50,10 @@ Fonte secundária leva a marca *(secundária)* até ser conferida na original.
 
 - **gitleaks** (licença MIT) — https://github.com/gitleaks/gitleaks — lido em 2026-10-30.
   Sustenta: `gitleaks git --log-opts=…` verifica um intervalo de commits; sai com 0 sem vazamentos e com 1 quando acha (usado em `modelos/pre-push`).
-- **gitleaks-action** — https://github.com/gitleaks/gitleaks-action — lido em 2026-10-30. Sustenta: a chave `GITLEAKS_LICENSE` é «required for organizations, not required for user accounts».
+- **gitleaks-action** — https://github.com/gitleaks/gitleaks-action — lido em 2026-10-30. Sustenta: a chave `GITLEAKS_LICENSE` é «required for organizations, not required for user accounts». Desde 2026-11-01 o CI deste repositório não usa a action: roda o binário.
+- **gitleaks 8.30.1 — versão publicada** — https://github.com/gitleaks/gitleaks/releases/tag/v8.30.1 — conferida em 2026-10-31 no projeto de origem. Sustenta: o arquivo
+  https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz e o sha256 escrito nos workflows (`.github/workflows/seguranca.yml`, `modelos/github/workflows/ci.yml`).
+- **GitHub — Secure use reference (GitHub Actions)** — https://docs.github.com/en/actions/reference/security/secure-use — lido em 2026-11-01. Sustenta: «Pin references to actions to a commit SHA», porque uma tag pode ser movida ou apagada por quem ganhar acesso ao repositório da action; o `GITHUB_TOKEN` com as permissões mínimas, só leitura por padrão; evitar o `pull_request_target` quando não é necessário (usado nos workflows e em `modelos/testes/test_ci.py`).
 - **npm audit** — https://docs.npmjs.com/cli/v11/commands/npm-audit — lido em 2026-10-30. Sustenta: `--audit-level` decide a partir de que gravidade o comando falha, sem filtrar o relatório; exige um lockfile.
 - **OSV-Scanner — saída e códigos de saída** — https://google.github.io/osv-scanner/output/ — lido em 2026-10-30. Sustenta: sai com 1 quando há qualquer vulnerabilidade e com 128 quando não acha pacotes; não documenta um limiar de gravidade.
 
@@ -71,6 +87,22 @@ Lidas em 2026-10-30 numa auditoria independente das skills `sql-postgres` e `sup
 - **Apple HIG — Tab bars** — https://developer.apple.com/design/human-interface-guidelines/tab-bars — lido em 2026-10-30. Sustenta: menos abas navegam melhor; aba "Mais"; lista personalizável com 5 ou menos. **Não** traz um teto de 6.
 - **Material Design 3 — Tabs** — https://m3.material.io/components/tabs/guidelines — lido em 2026-10-30. Sustenta: não mais de 4 abas fixas.
 - Os demais (NN/g, Rams, Tesler, Dynamics, Fiori e os tetos por confirmar do Oracle Redwood) estão em `skills/desenhando-telas/references/tetos-e-fontes.md`.
+
+## Relatório de erros
+
+Lidas em 2026-10-31 no projeto de origem, para os campos do formulário `modelos/github/ISSUE_TEMPLATE/erro.yml`.
+
+- **Mozilla — Bug writing guidelines** — https://bugzilla.mozilla.org/page.cgi?id=bug-writing.html — Sustenta: resumo curto, passos numerados para reproduzir, resultado esperado e resultado obtido, cada um à parte.
+- **OpenTelemetry — convenções semânticas das exceções** — https://opentelemetry.io/docs/specs/semconv/exceptions/exceptions-logs/ — Sustenta: o que um registro de exceção leva (tipo, mensagem, pilha de chamadas).
+- **GitHub — sintaxe dos formulários de issue** — https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/syntax-for-issue-forms — Sustenta: `name`, `description`, `title`, `labels` e `body` com campos `input`, `textarea` e `markdown`, e o `validations: required`.
+- **Python — `faulthandler`** — https://docs.python.org/3/library/faulthandler.html — Sustenta: despeja a pilha de chamadas quando o processo quebra numa falha fatal; foi ele que revelou o erro do `restype` em `aprendizados/2026-11-01-python.md`.
+
+## Testes e decisões
+
+- **Node.js 24 — Test runner** (cobertura) — https://nodejs.org/docs/latest-v24.x/api/test.html — lido em 2026-10-23 no projeto de origem. Sustenta: os comentários `node:coverage disable`/`enable` e `ignore next` (`aprendizados/2026-11-01-testes.md`).
+- **Pester — code coverage** — https://pester.dev/docs/usage/code-coverage — lido em 2026-10-23 no projeto de origem. O comportamento dos mocks filtrados do Pester 6 em `aprendizados/2026-11-01-testes.md` foi **medido**, não lido.
+- **Martin Fowler — Humble Object** — https://martinfowler.com/bliki/HumbleObject.html — lido em 2026-10-23 no projeto de origem. Sustenta: deixar a cola com o sistema fina e sem lógica, para o resto ser testável (a cobertura a 100 % dos modelos).
+- **Michael Nygard — Documenting Architecture Decisions** — https://www.cognitect.com/blog/2011/11/15/documenting-architecture-decisions — lido em 2026-10-23 no projeto de origem. Sustenta: o formato contexto, decisão, consequências e as decisões numeradas que não se reutilizam (`modelos/documentos/adr.md`).
 
 ## Inspirações (nada copiado)
 

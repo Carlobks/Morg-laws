@@ -16,7 +16,7 @@ Um push manda o código para onde outras pessoas o leem. Num repositório públi
 | Armadilhas | Erros que a própria biblioteca documenta (seção 3) | Versão mínima travada e testes do projeto | Trava se aparecer uma nova |
 | Banco | RLS desligado, função sem `search_path`, chave exposta | O verificador do fornecedor, só em modo leitura | Entra no relatório, e roda no CI, não no push |
 
-Há um modelo de hook pronto em `modelos/pre-push`. O push deve continuar rápido: o que demora vai para o CI.
+Há um modelo de hook pronto em [`modelos/pre-push`](https://github.com/Carlobks/Morg-laws/blob/main/modelos/pre-push) (sh) e outro em [`modelos/git/`](https://github.com/Carlobks/Morg-laws/tree/main/modelos/git) (Python, com testes). O push deve continuar rápido: o que demora vai para o CI.
 
 ## 2. A linha de base: o passivo só encolhe
 
@@ -103,6 +103,17 @@ Achados: … · Cobertura: …
 - Correção: … (escrita no banco só com o "sim" do dono)
 ```
 
+## 8. As barreiras do próprio agente
+
+As permissões do agente são uma camada de segurança e falham como as outras. Num projeto real, cada item abaixo foi uma brecha medida. Modelos em [`modelos/claude/`](https://github.com/Carlobks/Morg-laws/tree/main/modelos/claude).
+
+- **As regras `ask` do `settings.json` não perguntam no modo automático.** Um `git push` saiu sem pergunta. O que tem de perguntar vai num hook `PreToolUse` que devolve `permissionDecision: "ask"`: esse pergunta em qualquer modo. Inclua junto com o push tudo o que escreve no GitHub: criar, comentar, aprovar e fechar PR ou issue, as versões e o `gh api` que não seja GET (que passa a POST quando leva `-f`/`-F`).
+- **O `deny` de leitura só cobre a ferramenta Read.** Um `cat .env` pelo terminal passava. Um hook para a shell recusa o comando que cita um segredo (`.env`, `*.pem`, `*.key`, `.ssh`, credenciais do agente) e o download que vai direto para uma shell (`curl … | sh`, `iex (irm …)`).
+- **`"disableBypassPermissionsMode": "disable"`** no `settings.json` do projeto. Sem ele, o modo que salta as permissões desliga todas as barreiras acima de uma vez.
+- **Um hook que não arranca deixa passar.** Sem `"onFailure": "block"`, um hook que falha ao começar (o Python em falta, saída 127) é um erro que não bloqueia, e a ação segue. O campo exige o Claude Code v2.1.295 ou mais novo: numa versão antiga ele é ignorado em silêncio. Confira a versão (`claude --version`) antes de confiar nas barreiras.
+- **Prove cada barreira com uma sonda:** um JSON de exemplo no stdin do hook e a saída esperada (recusa ou "ask"). Uma barreira que nunca se viu recusar não prova nada.
+- **Pergunte à ferramenta, não suponha.** Uma auditoria deu duas regras de lint como desligadas e mandou apagar os avisos que as citavam. Perguntado ao próprio lint, estavam ligadas por padrão. O que uma ferramenta tem ligado mede-se nela.
+
 ## Fontes
 
-Ver `FONTES.md`, na seção "Segurança": gitleaks, `npm audit`, osv-scanner, os avisos do React e do Next e o postmortem da Vercel. A ideia de "investigar antes de reportar, por confiança" foi inspirada nos guias de segurança abertos citados ali, mas o texto aqui é próprio. A lista de exceções que escondia uma biblioteca vulnerável está no livro do Akita, p. 165.
+Ver `FONTES.md`, na seção "Segurança": gitleaks, `npm audit`, osv-scanner, os avisos do React e do Next e o postmortem da Vercel. O `onFailure` e a versão que o exige estão na entrada "Claude Code — hooks"; o `gh api`, na seção "Git e contas". A ideia de "investigar antes de reportar, por confiança" foi inspirada nos guias de segurança abertos citados ali, mas o texto aqui é próprio. A lista de exceções que escondia uma biblioteca vulnerável está no livro do Akita, p. 165.
