@@ -74,11 +74,23 @@ def erros(texto, arquivos, testes_mudados=()):
     if linhas[0].startswith(TITULOS_DO_GIT):
         return []
     motivos, tipo = erros_do_titulo(linhas[0])
+    return motivos + erros_do_corpo(linhas, tipo) + erros_das_linhas_de_motivo(texto, tipo, arquivos, testes_mudados)
+
+
+def erros_do_corpo(linhas, tipo):
+    """Linha em branco depois do título, e corpo nos tipos que o exigem (os rodapés não contam como corpo)."""
+    motivos = []
     if len(linhas) > 1 and linhas[1]:
         motivos.append("ERRO: falta a linha em branco entre o título e o corpo.")
     corpo = [linha for linha in linhas[1:] if linha and not RODAPE.match(linha)]
     if tipo in EXIGEM_CORPO and not corpo:
         motivos.append(f"ERRO: um commit {tipo} leva corpo com o que mudou e porquê.")
+    return motivos
+
+
+def erros_das_linhas_de_motivo(texto, tipo, arquivos, testes_mudados):
+    """As linhas Sem-teste, Sem-changelog e Teste-mudado que os arquivos do commit exigem e faltam."""
+    motivos = []
     if tipo == "fix" and not any(TESTE.search(a) for a in arquivos) and not SEM_TESTE.search(texto):
         motivos.append("ERRO: um fix traz o teste que pega o bug ou a linha 'Sem-teste: <motivo concreto>'.")
     if tipo in ("feat", "fix") and falta_changelog(texto, arquivos):

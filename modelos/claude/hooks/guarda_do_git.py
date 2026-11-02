@@ -73,24 +73,36 @@ def opcoes(args):
             caminhos.extend(args[i + 1:])
             break
         if arg.startswith("--"):
-            nome, igual, valor = arg.partition("=")
-            longas.add(nome)
-            if nome in _LONGAS_COM_VALOR | {"--message"} and not igual:
-                valor, i = (args[i + 1] if i + 1 < len(args) else ""), i + 1
-            if nome == "--message":
-                mensagens.append(valor)
+            i = ler_opcao_longa(args, i, longas, mensagens)
         elif arg.startswith("-") and len(arg) > 1:
-            for posicao, letra in enumerate(arg[1:], 2):
-                curtas.add(letra)
-                if letra in _CURTAS_COM_VALOR:
-                    valor = arg[posicao:] or (args[i + 1] if i + 1 < len(args) else "")
-                    i += not arg[posicao:]
-                    mensagens.extend([valor] if letra == "m" else [])
-                    break
+            i = ler_opcoes_curtas(args, i, curtas, mensagens)
         else:
             caminhos.append(arg)
         i += 1
     return curtas, longas, mensagens, caminhos
+
+
+def ler_opcao_longa(args, i, longas, mensagens):
+    """Junta a opção longa args[i] a `longas` (e o texto de --message); devolve o índice da última palavra lida."""
+    nome, igual, valor = args[i].partition("=")
+    longas.add(nome)
+    if nome in _LONGAS_COM_VALOR | {"--message"} and not igual:
+        valor, i = (args[i + 1] if i + 1 < len(args) else ""), i + 1
+    if nome == "--message":
+        mensagens.append(valor)
+    return i
+
+
+def ler_opcoes_curtas(args, i, curtas, mensagens):
+    """Junta as letras de args[i] a `curtas`; a que leva valor (-m, -F…) fecha o grupo. Devolve o último índice lido."""
+    arg = args[i]
+    for posicao, letra in enumerate(arg[1:], 2):
+        curtas.add(letra)
+        if letra in _CURTAS_COM_VALOR:
+            valor = arg[posicao:] or (args[i + 1] if i + 1 < len(args) else "")
+            mensagens.extend([valor] if letra == "m" else [])
+            return i + (not arg[posicao:])
+    return i
 
 
 def motivo_do_commit(args, ler_hooks):

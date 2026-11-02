@@ -2,7 +2,7 @@
 
 As funções que já passavam quando o teste entrou ficam em LONGAS_ANTIGAS com o tamanho de então: só podem encolher,
 e saem da lista quando cabem no limite. Uma função nova acima do limite falha. No JS/TS, a mesma regra vem do lint
-(ex.: `noExcessiveLinesPerFunction` do Biome ou `max-lines-per-function` do ESLint).
+(ex.: `noExcessiveLinesPerFunction` do Biome ou `max-lines-per-function: 20` do ESLint).
 Instalar: copiar para `tests/` do projeto e ajustar o bloco abaixo.
 """
 
@@ -13,7 +13,7 @@ import unittest
 from carregar_por_caminho import RAIZ
 
 # Ajuste ao projeto. "arquivo:função" -> linhas no dia em que o teste entrou. Só desce.
-LIMITE = 35
+LIMITE = 20
 LONGAS_ANTIGAS = {}
 
 

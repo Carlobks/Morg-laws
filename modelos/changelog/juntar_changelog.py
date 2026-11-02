@@ -41,24 +41,34 @@ def ler_fragmento(texto):
     """(categoria, linhas dos itens) de um fragmento; ValueError com o motivo se estiver mal.
     A linha "Incompatível: …" passa a ser o primeiro item, para se ver na seção da versão."""
     linhas = texto.splitlines()
-    cabeca = CATEGORIA.match(linhas[0]) if linhas else None
-    if not cabeca:
-        raise ValueError("a primeira linha tem de ser 'Categoria: <" + "|".join(CATEGORIAS) + ">'")
-    if cabeca.group(1) not in CATEGORIAS:
-        raise ValueError(f"categoria desconhecida: {cabeca.group(1)}")
+    categoria = categoria_do_fragmento(linhas)
     aviso = INCOMPATIVEL.match(linhas[1]) if len(linhas) > 1 else None
     if aviso:
         linhas = [linhas[0], *linhas[2:]]
     if len(linhas) > 1 and linhas[1]:
         raise ValueError("falta a linha em branco depois da categoria")
-    itens = linhas[2:]
+    return categoria, ([MARCA_INCOMPATIVEL + aviso.group(1)] if aviso else []) + itens_do_fragmento(linhas[2:])
+
+
+def categoria_do_fragmento(linhas):
+    """A categoria da primeira linha; ValueError se faltar ou se não for uma das CATEGORIAS."""
+    cabeca = CATEGORIA.match(linhas[0]) if linhas else None
+    if not cabeca:
+        raise ValueError("a primeira linha tem de ser 'Categoria: <" + "|".join(CATEGORIAS) + ">'")
+    if cabeca.group(1) not in CATEGORIAS:
+        raise ValueError(f"categoria desconhecida: {cabeca.group(1)}")
+    return cabeca.group(1)
+
+
+def itens_do_fragmento(itens):
+    """Os itens sem as linhas vazias do fim; ValueError se não houver ou se uma linha não for item nem continuação."""
     while itens and not itens[-1]:
         itens.pop()
     if not itens:
         raise ValueError("sem itens")
     if not itens[0].startswith("- ") or any(not linha.startswith(("- ", "  ")) for linha in itens):
         raise ValueError("cada item começa com '- ' (continuação com dois espaços), sem linhas vazias")
-    return cabeca.group(1), ([MARCA_INCOMPATIVEL + aviso.group(1)] if aviso else []) + itens
+    return itens
 
 
 def fragmentos_da_pasta(pasta):
@@ -125,25 +135,35 @@ def juntar(raiz, versao, dia, rascunho=False):
     if not lidos:
         return 1, "Não há fragmentos em changelog.d/ para juntar."
     try:
-        atual = ler_versao(raiz)
+        versao = versao_a_lancar(ler_versao(raiz), versao, lidos)
     except ValueError as motivo:
         return 1, str(motivo)
-    if versao is None:
-        incompativel = any(linha.startswith(MARCA_INCOMPATIVEL) for _, _, itens in lidos for linha in itens)
-        versao = proxima_versao(atual, [categoria for _, categoria, _ in lidos], incompativel)
-    elif not SEMVER.match(versao) or numeros(versao) <= numeros(atual):
-        return 1, f"A versão {versao} tem de ser MAIOR.MENOR.CORREÇÃO e maior do que a atual ({atual})."
     nova = secao(versao, dia, lidos)
     if not rascunho:
-        destino = raiz / "CHANGELOG.md"
-        texto = destino.read_bytes().decode("utf-8")
-        corte = texto.find("\n## [")
-        corte = len(texto) if corte < 0 else corte
-        destino.write_bytes((texto[:corte] + "\n" + nova + texto[corte:]).encode("utf-8"))
-        (raiz / "VERSION").write_bytes(f"{versao}\n".encode())
-        for caminho, _, _ in lidos:
-            caminho.unlink()
+        gravar_lancamento(raiz, versao, nova, lidos)
     return 0, nova
+
+
+def versao_a_lancar(atual, versao, lidos):
+    """A versão pedida, ou a calculada pelas categorias se for None; ValueError se a pedida não subir a atual."""
+    if versao is None:
+        incompativel = any(linha.startswith(MARCA_INCOMPATIVEL) for _, _, itens in lidos for linha in itens)
+        return proxima_versao(atual, [categoria for _, categoria, _ in lidos], incompativel)
+    if not SEMVER.match(versao) or numeros(versao) <= numeros(atual):
+        raise ValueError(f"A versão {versao} tem de ser MAIOR.MENOR.CORREÇÃO e maior do que a atual ({atual}).")
+    return versao
+
+
+def gravar_lancamento(raiz, versao, nova, lidos):
+    """Põe a seção nova antes da última versão do CHANGELOG.md, escreve o VERSION e apaga os fragmentos juntados."""
+    destino = raiz / "CHANGELOG.md"
+    texto = destino.read_bytes().decode("utf-8")
+    corte = texto.find("\n## [")
+    corte = len(texto) if corte < 0 else corte
+    destino.write_bytes((texto[:corte] + "\n" + nova + texto[corte:]).encode("utf-8"))
+    (raiz / "VERSION").write_bytes(f"{versao}\n".encode())
+    for caminho, _, _ in lidos:
+        caminho.unlink()
 
 
 def escrever(canal, texto):
