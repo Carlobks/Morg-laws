@@ -67,6 +67,13 @@ class ProjetoDeExemplo(unittest.TestCase):
         escrever(self.pasta / "docs" / "contato.md", "Fale com ana@correio-ficticio.net\n")
         self.assertFalhaEm("test_sem_emails_pessoais")
 
+    def test_numero_de_documento_com_o_padrao_ligado(self):
+        teste = self.pasta / "tests" / "test_dados_pessoais.py"
+        escrever(teste, teste.read_text(encoding="utf-8").replace(
+            "DOCUMENTOS = {}", r'DOCUMENTOS = {"CPF": r"\b\d{3}\.\d{3}\.\d{3}-\d{2}\b"}'))
+        escrever(self.pasta / "docs" / "cliente.md", "CPF do cliente: 000.000.000-00\n")
+        self.assertFalhaEm("test_sem_numeros_de_documentos")
+
     def test_action_sem_sha(self):
         ci = self.pasta / ".github" / "workflows" / "ci.yml"
         texto = ci.read_text(encoding="utf-8")

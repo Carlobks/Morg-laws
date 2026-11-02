@@ -26,7 +26,7 @@ testes a 100 %. Os scripts são Python só com a biblioteca padrão; os hooks do
 | `testes/test_docs_indices.py` | `tests/` | Índice dos docs, ADRs seguidas, pesquisa com data, armadilhas A1…An, planos com "Fora do escopo" e "Prova", handoffs com hashes que existem |
 | `testes/test_alarmes.py` | `tests/` | Alarme calado só com o motivo na mesma linha (também em `/* */`), contagem por tipo que não sobe e desce com quem tira um, `noqa` só de regras que o ruff tem ligadas |
 | `testes/test_nomes.py` | `tests/` | Nenhum arquivo, pasta ou identificador com nome genérico solto |
-| `testes/test_dados_pessoais.py` | `tests/` | Sem caminhos de pastas pessoais, e-mails pessoais nem termos da lista negra |
+| `testes/test_dados_pessoais.py` | `tests/` | Sem caminhos de pastas pessoais, e-mails pessoais, termos da lista negra nem os números de documento que o projeto ligar |
 | `testes/test_tamanho_das_funcoes.py` | `tests/` | Funções Python até 20 linhas (decisão do dono), com catraca para as antigas |
 | `testes/test_fins_de_linha.py` | `tests/` | LF no git; CRLF no disco só no que o Windows roda |
 | `testes/test_permissoes.py` | `tests/` | As três colunas, o modo que salta as permissões desligado, os hooks ligados com `onFailure: block` |

@@ -7,6 +7,8 @@ Três verificações sobre os arquivos de texto do repositório (os guardados e 
   como `pacote@1.2.3` não conta);
 - os termos da lista negra, que fica FORA do repositório (os nomes não podem estar aqui, nem no teste que os
   procura): `git config morg.listaNegra <arquivo>`, um termo por linha, `#` para comentários.
+Números de documento (CPF, NIF, IBAN, telefone…) não são procurados por padrão: o formato muda de país para país.
+Ligue os do projeto em DOCUMENTOS, cada um com a sua expressão; nos exemplos, use um marcador como `<NIF>`.
 Instalar: copiar para `tests/` do projeto e ajustar o bloco abaixo.
 """
 
@@ -21,6 +23,8 @@ from carregar_por_caminho import RAIZ
 CONTAS_DE_EXEMPLO = ("ana", "nome", "conta", "public", "default")
 EXTENSOES_BINARIAS = (".ttf", ".woff2", ".png", ".jpg", ".jpeg", ".gif", ".bmp", ".ico", ".pdf", ".exe", ".zip")
 CAMINHOS_EXCLUIDOS = ("vendor/", "package-lock.json")
+# Números de documento que o projeto não pode ter: nome -> expressão regular (ex.: {"CPF": r"\b\d{3}\.\d{3}\.\d{3}-\d{2}\b"}).
+DOCUMENTOS = {}
 
 CONTA_EM_CAMINHO = re.compile(r"(?:[A-Za-z]:[\\/]+Users|(?<![\w.])/(?:home|Users))[\\/]+([^\s\\/<{%$`'\"();,:]+)",
                               re.IGNORECASE)
@@ -81,6 +85,11 @@ class SemDadosPessoais(unittest.TestCase):
 
     def test_sem_emails_pessoais(self):
         self.assertEqual(achados(EMAIL, email_aceito), {}, "só o noreply do GitHub/Anthropic ou example.com")
+
+    def test_sem_numeros_de_documentos(self):
+        for nome, expressao in DOCUMENTOS.items():
+            with self.subTest(documento=nome):
+                self.assertEqual(achados(re.compile(expressao)), {}, "número de documento: troque por um marcador")
 
     def test_sem_termos_da_lista_negra(self):
         for numero, termo in enumerate(termos_da_lista_negra(), 1):
