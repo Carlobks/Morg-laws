@@ -33,6 +33,7 @@ As skills abrem pelo nome, estejam onde estiverem instaladas (`.claude/skills/`,
 | Vai escrever ou mudar um CLAUDE.md, AGENTS.md ou skill | `escrevendo-regras-de-agente` |
 | Pedido grande sem limites ou sem forma de validar | `pondo-o-plano-a-prova` |
 | Vai dividir trabalho entre sessões ou agentes | `orquestrando-sessoes` |
+| Vai compactar a conversa, parar ou retomar trabalho | `passando-o-trabalho` |
 | Vai commitar ou fechar um ciclo de trabalho | `git-e-commits` |
 | Vai corrigir um bug, testar ou provar que algo funciona | `testes-e-provas` |
 | Vai criar, redesenhar ou rever uma tela | `desenhando-telas` |
