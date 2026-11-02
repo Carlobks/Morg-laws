@@ -321,10 +321,18 @@ class RegressoesDaAuditoria(PastaTemporaria):
         self.assertEqual(erros_das_fontes("## A\n\n- **X** — https://x.test — 2026-11-02 *(Secundária: não relida)*\n",
                                           set()), [])
 
-    def test_a7_titulo_dentro_de_bloco_de_codigo_nao_e_secao(self):
+    def assertFaltaAConclusao(self, no_lugar_da_secao):
         self.escrever("pesquisas/README.md", "| [x](2026-11-02-x.md) | Pergunta? | 2026-11-02 |\n")
-        self.escrever("pesquisas/2026-11-02-x.md", PESQUISA_CERTA.replace("## Conclusão\n", "```sh\n# Conclusão\n```\n"))
+        self.escrever("pesquisas/2026-11-02-x.md", PESQUISA_CERTA.replace("## Conclusão\n", no_lugar_da_secao))
         self.assertEqual(erros_das_pesquisas(self.raiz / "pesquisas"), ["2026-11-02-x.md: falta a seção «Conclusão»"])
+
+    def test_a7_secao_dentro_de_bloco_de_codigo_nao_conta(self):
+        # Guarda as cercas: o título tem o nível certo, só está dentro do bloco.
+        self.assertFaltaAConclusao("```md\n## Conclusão\n```\n")
+
+    def test_a7_titulo_de_nivel_1_nao_e_secao(self):
+        # Guarda o `## `: fora de qualquer bloco, um título `# ` não é seção.
+        self.assertFaltaAConclusao("# Conclusão\n")
 
     def test_a8_secoes_fora_da_ordem(self):
         invertida = "# P\n\n" + "".join(f"## {secao}\n\n" for secao in reversed(SECOES_DA_PESQUISA))
