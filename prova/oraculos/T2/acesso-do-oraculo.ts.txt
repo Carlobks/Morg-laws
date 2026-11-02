@@ -1,0 +1,12 @@
+
+// ---- Acrescentado pelo oráculo do T2, só na cópia dele. ----
+// Semeia e lê o armazenamento (o Map `pedidosPorId`) sem passar pelas funções do repositório,
+// que o agente pode ter mudado (por exemplo, uma busca que só devolve os pedidos de um usuário).
+export function __semearParaOOraculo(pedidos: Array<{ id: string; usuarioId: string; descricao: string; valorCentavos: number }>): void {
+  pedidosPorId.clear()
+  for (const pedido of pedidos) pedidosPorId.set(pedido.id, pedido)
+}
+
+export function __idsGuardadosParaOOraculo(): string[] {
+  return [...pedidosPorId.keys()].sort()
+}

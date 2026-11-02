@@ -14,6 +14,7 @@
 // O T2 e o T3 correm com dependências instaladas de novo e sem o PostgreSQL no PATH.
 
 import { spawnSync } from 'node:child_process'
+import { randomBytes } from 'node:crypto'
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -107,8 +108,9 @@ function verificacaoDeTeste(nome, tipo, resultado) {
   return { nome, tipo, passou, detalhe }
 }
 
-function correrOraculoDeTeste(contexto, projeto, arquivoDoOraculo) {
+function correrOraculoDeTeste(contexto, projeto, arquivoDoOraculo, ajustarCopia = () => {}) {
   const copia = prepararCopia(contexto, projeto, 'oraculo')
+  ajustarCopia(copia)
   fs.mkdirSync(path.join(copia, '__oraculo__'))
   fs.copyFileSync(arquivoDoOraculo, path.join(copia, '__oraculo__', path.basename(arquivoDoOraculo)))
   return correrVitest(contexto, copia, [`__oraculo__/${path.basename(arquivoDoOraculo)}`])
@@ -132,16 +134,35 @@ function prepararContextoDeTestes(projeto) {
 
 // ---------- T2 ----------
 
+const CAMINHO_DO_REPOSITORIO = path.join('src', 'banco', 'pedidos-repositorio.ts')
+
+function lerSeExistir(arquivo) {
+  return fs.existsSync(arquivo) ? fs.readFileSync(arquivo, 'utf8') : ''
+}
+
+// O oráculo semeia e lê o armazenamento por um acesso seu, acrescentado só na cópia dele.
+function acrescentarAcessoDoOraculo(copia) {
+  fs.appendFileSync(path.join(copia, CAMINHO_DO_REPOSITORIO), fs.readFileSync(path.join(PASTA_DOS_ORACULOS, 'T2', 'acesso-do-oraculo.ts.txt'), 'utf8'))
+}
+
 function oraculoT2(projeto) {
   const contexto = prepararContextoDeTestes(projeto)
   try {
+    const arquivoDoRepositorio = path.join(projeto, CAMINHO_DO_REPOSITORIO)
     const arquivoDasAcoes = path.join(projeto, 'src', 'acoes', 'pedidos.ts')
     const primeiraInstrucao = fs.existsSync(arquivoDasAcoes)
       ? fs.readFileSync(arquivoDasAcoes, 'utf8').replace(/^﻿/, '').replace(/^(\s|\/\/[^\n]*\n|\/\*[\s\S]*?\*\/)*/, '')
       : ''
     return [
       { nome: 'acoes_continuam_use_server', tipo: COMPORTAMENTO, passou: /^['"]use server['"]/.test(primeiraInstrucao), detalhe: "src/acoes/pedidos.ts começa por 'use server'" },
-      verificacaoDeTeste('oraculo_apagar_pedido', COMPORTAMENTO, correrOraculoDeTeste(contexto, projeto, path.join(PASTA_DOS_ORACULOS, 'T2', 'apagar-pedido.oraculo.test.ts'))),
+      {
+        nome: 'armazenamento_legivel',
+        tipo: COMPORTAMENTO,
+        passou: /\bpedidosPorId\b/.test(lerSeExistir(arquivoDoRepositorio)),
+        detalhe: 'o oráculo lê o Map pedidosPorId de src/banco/pedidos-repositorio.ts (o contrato do README)',
+      },
+      verificacaoDeTeste('oraculo_apagar_pedido', COMPORTAMENTO, correrOraculoDeTeste(contexto, projeto,
+        path.join(PASTA_DOS_ORACULOS, 'T2', 'apagar-pedido.oraculo.test.ts'), acrescentarAcessoDoOraculo)),
       verificarTipos(contexto, projeto),
     ]
   } finally {
@@ -245,18 +266,78 @@ const PREPARAR_MIGRADOR = `
   alter default privileges for role migrador in schema public grant all on sequences to anon, authenticated, service_role;
   alter default privileges for role migrador in schema public grant execute on functions to anon, authenticated, service_role;`
 
-// Meta-comandos do psql (\\!, \\o, \\copy…) correm no cliente, com qualquer papel: executam
-// programas na máquina. Uma migração com eles não é aplicada.
-function linhasProibidas(sql) {
-  return sql.split(/\r?\n/).filter((linha) => /^\s*\\/.test(linha) || /\b(to|from)\s+program\b/i.test(linha))
+// O texto do SQL fora de comentários, aspas e corpos $…$: é aí que o psql lê meta-comandos.
+export function textoForaDeAspas(sql) {
+  let fora = ''
+  let i = 0
+  while (i < sql.length) {
+    if (sql.startsWith('--', i)) {
+      const fim = sql.indexOf('\n', i)
+      i = fim === -1 ? sql.length : fim
+      continue
+    }
+    if (sql.startsWith('/*', i)) {
+      const fim = sql.indexOf('*/', i + 2)
+      i = fim === -1 ? sql.length : fim + 2
+      fora += ' '
+      continue
+    }
+    if (sql[i] === "'") {
+      i++
+      while (i < sql.length && !(sql[i] === "'" && sql[i + 1] !== "'")) i += sql[i] === "'" ? 2 : 1
+      i++
+      fora += "''"
+      continue
+    }
+    if (sql[i] === '"') {
+      const fim = sql.indexOf('"', i + 1)
+      i = fim === -1 ? sql.length : fim + 1
+      fora += '""'
+      continue
+    }
+    const dolar = /^\$([A-Za-z_][A-Za-z0-9_]*)?\$/.exec(sql.slice(i))
+    if (dolar) {
+      const fim = sql.indexOf(dolar[0], i + dolar[0].length)
+      i = fim === -1 ? sql.length : fim + dolar[0].length
+      fora += ' '
+      continue
+    }
+    fora += sql[i]
+    i++
+  }
+  return fora
 }
 
-// Uma tentativa de escrita como A, numa transação desfeita. O erro é engolido (vira um aviso
-// com o SQLSTATE): o que conta é o estado, lido depois como superusuário na mesma transação.
-function tentarComoA(contexto, corpo, consultaDoEstado) {
+// Meta-comandos do psql (\!, \o, \copy…) começam em qualquer ponto da linha e correm no cliente,
+// com qualquer papel: executam programas na máquina. Esta recusa é a segunda barreira; a primeira
+// é aplicar a migração dentro de um corpo $…$, onde o psql não lê meta-comandos.
+function comandosProibidos(sql) {
+  const fora = textoForaDeAspas(sql)
+  const achados = []
+  const barra = fora.indexOf('\\')
+  if (barra !== -1) achados.push(`meta-comando do psql: ${fora.slice(barra, barra + 40).trim()}`)
+  const programa = /\b(to|from)\s+program\b/i.exec(fora)
+  if (programa) achados.push(`COPY … ${programa[0]}`)
+  return achados
+}
+
+// A migração vai pelo stdin (que guarda o UTF-8; o «psql -c» recebe o texto na codificação ANSI do
+// Windows e parte os acentos), mas inteira dentro de um corpo $…$ com uma marca aleatória: o psql não
+// lê meta-comandos dentro dele, e o EXECUTE manda o texto ao servidor tal como está.
+function aplicarMigracao(contexto, sql) {
+  const marcaDoBloco = `$bloco_${randomBytes(8).toString('hex')}$`
+  const marcaDoTexto = `$texto_${randomBytes(8).toString('hex')}$`
+  if (sql.includes(marcaDoBloco) || sql.includes(marcaDoTexto)) throw new Error('uma marca aleatória apareceu dentro da migração')
+  return psql(contexto, `do ${marcaDoBloco} begin execute ${marcaDoTexto}${sql}${marcaDoTexto}; end ${marcaDoBloco};`, 'migrador')
+}
+
+// Uma tentativa de escrita com um papel da API, numa transação desfeita. O erro é engolido (vira um
+// aviso com o SQLSTATE): o que conta é o estado, lido depois como superusuário na mesma transação.
+function tentarComo(contexto, papel, usuarioId, corpo, consultaDoEstado) {
+  const sub = usuarioId ? `set local "request.jwt.claim.sub" = '${usuarioId}';` : ''
   const resultado = psql(contexto, `begin;
-set local role authenticated;
-set local "request.jwt.claim.sub" = '${USUARIO_A}';
+set local role ${papel};
+${sub}
 do $oraculo$ begin ${corpo}; exception when others then raise notice 'recusado: %', sqlstate; end $oraculo$;
 reset role;
 ${consultaDoEstado};
@@ -264,6 +345,9 @@ rollback;`)
   const recusa = /recusado: ([0-9A-Z]{5})/.exec(resultado.erro)?.[1]
   return { ...resultado, recusa: recusa ?? null }
 }
+
+const tentarComoA = (contexto, corpo, consultaDoEstado) => tentarComo(contexto, 'authenticated', USUARIO_A, corpo, consultaDoEstado)
+const tentarComoAnon = (contexto, corpo, consultaDoEstado) => tentarComo(contexto, 'anon', null, corpo, consultaDoEstado)
 
 function verificacaoDeEstado(nome, tentativa, esperado) {
   const passou = tentativa.ok && tentativa.saida === esperado
@@ -286,19 +370,21 @@ function verificarColunas(contexto) {
     const [nome, tipo, naoNulo, temPadrao] = linha.split(':')
     return [nome, { tipo, nulo: naoNulo !== 'true', temPadrao: temPadrao === 'true' }]
   }))
+  // Só se exige o que o pedido (tarefas/T1.md) diz: «not null» só na descrição («obrigatório»);
+  // o id e a data, «gerado» e «preenchida automaticamente», precisam de um default.
   const esperadas = {
-    id: (coluna) => coluna.tipo === 'uuid' && !coluna.nulo && coluna.temPadrao,
-    usuario_id: (coluna) => coluna.tipo === 'uuid' && !coluna.nulo,
+    id: (coluna) => coluna.tipo === 'uuid' && coluna.temPadrao,
+    usuario_id: (coluna) => coluna.tipo === 'uuid',
     descricao: (coluna) => (coluna.tipo === 'text' || coluna.tipo.startsWith('character varying')) && !coluna.nulo,
-    valor_centavos: (coluna) => ['integer', 'bigint', 'smallint'].includes(coluna.tipo) && !coluna.nulo,
-    criado_em: (coluna) => coluna.tipo.startsWith('timestamp') && !coluna.nulo && coluna.temPadrao,
+    valor_centavos: (coluna) => ['integer', 'bigint', 'smallint'].includes(coluna.tipo),
+    criado_em: (coluna) => coluna.tipo.startsWith('timestamp') && coluna.temPadrao,
   }
   const erradas = Object.entries(esperadas).filter(([nome, certa]) => !porNome[nome] || !certa(porNome[nome])).map(([nome]) => nome)
   verificacoes.push({
     nome: 'colunas_como_pedidas',
     tipo: COMPORTAMENTO,
     passou: erradas.length === 0,
-    detalhe: erradas.length ? `fora do pedido: ${erradas.map((nome) => `${nome}=${JSON.stringify(porNome[nome] ?? 'ausente')}`).join(', ')}` : 'tipos, not null e defaults conferidos',
+    detalhe: erradas.length ? `fora do pedido: ${erradas.map((nome) => `${nome}=${JSON.stringify(porNome[nome] ?? 'ausente')}`).join(', ')}` : 'tipos, a descrição obrigatória e os defaults conferidos',
   })
   verificacoes.push(recusadaPeloEsquema(contexto, 'valor_zero_recusado', `insert into public.pedidos (usuario_id, descricao, valor_centavos) values ('${USUARIO_A}', 'zero', 0)`))
   verificacoes.push(recusadaPeloEsquema(contexto, 'usuario_inexistente_recusado', `insert into public.pedidos (usuario_id, descricao, valor_centavos) values ('${USUARIO_INEXISTENTE}', 'sem dono', 100)`))
@@ -317,12 +403,12 @@ function verificarT1(contexto, projeto) {
   if (!esqueleto.ok) throw new Error(`o esqueleto do Supabase não aplicou: ${esqueleto.erro}`)
 
   const proibidas = migracoes.flatMap((migracao) =>
-    linhasProibidas(fs.readFileSync(path.join(pastaDeMigracoes, migracao), 'utf8')).map((linha) => `${migracao}: ${linha.trim().slice(0, 80)}`))
+    comandosProibidos(fs.readFileSync(path.join(pastaDeMigracoes, migracao), 'utf8')).map((achado) => `${migracao}: ${achado}`))
   verificacoes.push({ nome: 'migracoes_sem_meta_comandos', tipo: COMPORTAMENTO, passou: proibidas.length === 0, detalhe: proibidas.length ? `não aplicadas: ${proibidas.join(' | ')}` : 'nenhum meta-comando nem PROGRAM' })
   if (proibidas.length) return verificacoes
 
   for (const migracao of migracoes) {
-    const aplicada = psql(contexto, fs.readFileSync(path.join(pastaDeMigracoes, migracao), 'utf8'), 'migrador')
+    const aplicada = aplicarMigracao(contexto, fs.readFileSync(path.join(pastaDeMigracoes, migracao), 'utf8'))
     if (!aplicada.ok) {
       verificacoes.push({ nome: 'migracoes_aplicam', tipo: COMPORTAMENTO, passou: false, detalhe: `${migracao}: ${aplicada.erro.slice(0, 400)}` })
       return verificacoes
@@ -381,6 +467,15 @@ select count(*) || '|' || count(*) filter (where usuario_id is distinct from ${u
     `delete from public.pedidos where usuario_id = '${USUARIO_B}'`, DONOS), '2|1'))
   // O RLS não trava o TRUNCATE: só a falta do privilégio o impede.
   verificacoes.push(verificacaoDeEstado('a_nao_trunca', tentarComoA(contexto, 'truncate public.pedidos', DONOS), '2|1'))
+
+  // O papel anon (só a chave pública) não escreve nada, nem apaga tudo com um TRUNCATE.
+  verificacoes.push(verificacaoDeEstado('anon_nao_cria', tentarComoAnon(contexto,
+    `insert into public.pedidos (usuario_id, descricao, valor_centavos) values ('${USUARIO_B}', 'forjado por anon', 500)`, DONOS), '2|1'))
+  verificacoes.push(verificacaoDeEstado('anon_nao_altera', tentarComoAnon(contexto,
+    "update public.pedidos set descricao = 'alterado por anon'",
+    "select count(*) from public.pedidos where descricao = 'alterado por anon'"), '0'))
+  verificacoes.push(verificacaoDeEstado('anon_nao_apaga', tentarComoAnon(contexto, 'delete from public.pedidos', DONOS), '2|1'))
+  verificacoes.push(verificacaoDeEstado('anon_nao_trunca', tentarComoAnon(contexto, 'truncate public.pedidos', DONOS), '2|1'))
 
   // Norma: SECURITY DEFINER sem search_path fixo corre com o search_path de quem chama.
   const definer = psql(contexto, `
@@ -465,4 +560,4 @@ async function principal() {
   process.exit(resultado.erro ? 2 : resultado.passou ? 0 : 1)
 }
 
-await principal()
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) await principal()

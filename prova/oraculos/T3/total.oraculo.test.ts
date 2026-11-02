@@ -43,6 +43,14 @@ describe('oráculo T3: total com cupom', () => {
     })
   })
 
+  // 10 500 passa o limite de 10 000 sem o cupom, mas não com ele: o frete conta-se depois do cupom
+  // (a regra escrita em total.ts). 9 450 + 1 500 = 10 950.
+  it('o frete decide-se pelo subtotal já com o cupom', () => {
+    const carrinho = { itens: [{ produtoId: 'produto-oraculo-4', precoCentavos: 10500, quantidade: 1 }], cupom: { codigo: 'ORACULO10', percentual: 10 } }
+    expect(calcularTotal(carrinho)).toBe(10950)
+    expect(calcularTotal(carrinho)).toBe(10950)
+  })
+
   it('sem cupom, nada muda', () => {
     const carrinho = { itens: [{ produtoId: 'produto-oraculo-3', precoCentavos: 2000, quantidade: 2 }], cupom: null }
     expect(calcularTotal(carrinho)).toBe(5500)
