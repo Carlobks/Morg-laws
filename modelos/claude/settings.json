@@ -3,6 +3,7 @@
     "disableBypassPermissionsMode": "disable",
     "deny": [
       "Read(**/.env)",
+      "Read(**/.envrc)",
       "Read(**/.env.*)",
       "Read(**/*.pem)",
       "Read(**/*.key)",

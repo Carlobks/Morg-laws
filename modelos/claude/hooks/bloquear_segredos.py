@@ -2,11 +2,12 @@
 
 O `deny` do settings.json só cobre a ferramenta Read: sem este hook, um `cat .env` pelo terminal passa, e um
 `curl … | sh` roda sem pergunta (medido num projeto real). Recusa:
-- um comando que nomeia um segredo: `.env` e `.env.*` (menos `.env.example`/`.env.sample`), `*.pem`, `*.key`,
-  e as pastas de PASTAS_SECRETAS (`.ssh`, as credenciais do Claude Code, a pasta da lista negra);
-- um download que vai direto para uma shell (`curl|wget|iwr|irm … | sh|bash|iex|powershell|python`, e
-  `iex (irm …)` ou `DownloadString`).
+- um comando que nomeia um segredo: `.env`, `.envrc` e `.env.*` (menos `.env.example`/`.env.sample`), `*.pem`,
+  `*.key`, e as pastas de PASTAS_SECRETAS (`.ssh`, as credenciais do Claude Code, a pasta da lista negra);
+- um download que vai direto para uma shell (`curl|wget|iwr|irm … | sh|bash|iex|powershell|python`,
+  `sh -c "$(curl …)"`, `bash <(curl …)`, e `iex (irm …)` ou `DownloadString`).
 Reconhece os comandos pelo texto: até um heredoc que só cita um segredo é recusado (escreva o script num arquivo).
+Um nome partido por aspas (`cat .e""nv`) ou montado numa variável escapa: é o limite de ler o texto.
 Sai com 2 e o motivo no stderr; sai com 0 nos outros casos.
 Instalar: copiar para `.claude/hooks/` do projeto e ligar no `.claude/settings.json` (modelo ao lado).
 """
@@ -19,7 +20,7 @@ import sys
 PASTAS_SECRETAS = (r"\.ssh(?:[/\\]|$)", r"\.claude[/\\]\.credentials", r"\.config[/\\]morg-laws")
 
 _PALAVRA = re.compile(r"""[^\s"'`;|&<>()=,]+""")
-_ENV = re.compile(r"\.env(?:\.(?!example$|sample$)[\w.-]+)?", re.IGNORECASE)
+_ENV = re.compile(r"\.env(?:rc|\.(?!example$|sample$)[\w.-]+)?", re.IGNORECASE)
 _CHAVE = re.compile(r".+\.(?:pem|key)", re.IGNORECASE)
 _PASTAS = re.compile(r"(?:^|[/\\])(?:" + "|".join(PASTAS_SECRETAS) + ")", re.IGNORECASE)
 _DOWNLOAD = r"(?:curl|wget|iwr|irm|Invoke-WebRequest|Invoke-RestMethod)"
@@ -27,6 +28,9 @@ _SHELL = r"(?:sh|bash|zsh|iex|Invoke-Expression|powershell|pwsh|python3?|py)"
 _PARA_SHELL = [
     re.compile(rf"\b{_DOWNLOAD}\b[^|]*\|\s*(?:sudo\s+)?{_SHELL}\b", re.IGNORECASE),
     re.compile(rf"\b(?:iex|Invoke-Expression)\b.*(?:\b{_DOWNLOAD}\b|DownloadString)", re.IGNORECASE),
+    # A saída do download vira o script: sh -c "$(curl …)" e bash <(curl …) (ou source <(curl …)).
+    re.compile(rf"\b{_SHELL}\s+-c\s+[\"']?\$\(\s*{_DOWNLOAD}\b", re.IGNORECASE),
+    re.compile(rf"(?:\b{_SHELL}|\bsource|(?:^|[;&|]\s*)\.)\s+<\(\s*{_DOWNLOAD}\b", re.IGNORECASE),
 ]
 
 

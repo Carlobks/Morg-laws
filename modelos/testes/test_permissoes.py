@@ -1,6 +1,6 @@
 """Permissões do agente em três colunas (Morg-laws; skill auditoria-de-seguranca, seção 8).
 
-- **deny** (nunca): ler segredos (`.env`, chaves, credenciais, a lista negra fora do repositório);
+- **deny** (nunca): ler segredos (`.env`, `.envrc`, chaves, credenciais, a lista negra fora do repositório);
 - **ask** (pergunta antes): push, PR, instalar pacotes ou programas, mexer nas próprias regras de segurança;
 - **allow** (sem perguntar): só leitura e o comando de testes.
 As regras vivem em `.claude/settings.json` (vai no repositório, vale para quem o clonar). As de cada máquina ficam
@@ -16,7 +16,7 @@ import unittest
 from carregar_por_caminho import RAIZ
 
 # Ajuste ao projeto.
-NUNCA = {"Read(**/.env)", "Read(**/.env.*)", "Read(**/*.pem)", "Read(**/*.key)", "Read(~/.ssh/**)",
+NUNCA = {"Read(**/.env)", "Read(**/.envrc)", "Read(**/.env.*)", "Read(**/*.pem)", "Read(**/*.key)", "Read(~/.ssh/**)",
          "Read(~/.claude/.credentials.json)", "Read(~/.config/morg-laws/**)"}
 PERGUNTA = {"Bash(git push)", "Bash(git push *)", "Bash(gh pr create*)", "Bash(gh pr merge*)",
             "Bash(npm install *)", "Bash(npx *)", "Bash(pip install *)",
