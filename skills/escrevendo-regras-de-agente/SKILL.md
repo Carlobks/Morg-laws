@@ -61,7 +61,7 @@ Pergunte, para cada regra: o que acontece se o agente a ignorar?
 - **Autorização permanente:** quando o dono deixa o agente fazer algo sem pedir a cada vez, escreva **qual classe de ação** está autorizada (por exemplo, "criar tarefas no quadro do projeto"), e não uma licença geral. Tudo o que fica fora dessa classe volta a pedir o "sim".
 - **Catraca:** para o que já viola em grande quantidade, congele a contagem atual numa linha de base e falhe só se piorar. A linha de base desce no mesmo commit que corrige.
 - **Onde a barreira vive:** o hook do agente só trava o agente; o hook do git vale também para quem commita à mão; o CI pega quem desligou os hooks. As regras `ask` das permissões não perguntam no modo automático; o que tem de perguntar vai num hook (skill `auditoria-de-seguranca`).
-- **Mapa das barreiras:** um arquivo liga cada regra à barreira que a obriga (hook, git, teste, permissão, CI) ou diz por que ela fica em texto. Um teste confere três coisas: cada título do arquivo de regras tem linha no mapa, cada regra tem motivo e cada caminho citado existe. Modelo em `modelos/`.
+- **Mapa das barreiras:** um arquivo liga cada regra à barreira que a obriga (hook, git, teste, permissão, CI) ou diz por que ela fica em texto. Um teste confere três coisas: cada título do arquivo de regras tem linha no mapa, cada regra tem motivo e cada caminho citado existe. Modelo em [`modelos/`](https://github.com/Carlobks/Morg-laws/tree/main/modelos).
 - **Nem tudo vira hook.** Um hook de fim de sessão para atualizar o handoff dispararia em cada turno. Ficou em texto: o handoff atualiza-se no commit que fecha a fase.
 
 ## 7. Registro

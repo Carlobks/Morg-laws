@@ -33,7 +33,7 @@ git commit -F msg.txt -- <arquivo1> <arquivo2>
 - **Nunca** `--no-verify`, nunca desligar o hook, nunca citar na mensagem a opção que o salta.
 - Hook recusou: leia a saída, corrija a causa e commite de novo. Se o hook estiver errado, corrija o hook num commit próprio.
 - **O hook do git vale também para quem commita à mão; o hook do agente só trava o agente.** O que tem de valer sempre vai no hook do git, e no CI para quem o desligar.
-- **Uma guarda no agente fecha as saídas** (modelo em `modelos/claude/hooks/`). Ela recusa:
+- **Uma guarda no agente fecha as saídas** (modelo em [`modelos/claude/hooks/`](https://github.com/Carlobks/Morg-laws/tree/main/modelos/claude/hooks)). Ela recusa:
   - `--no-verify` (ou `-n` num commit);
   - mudar ou desligar o `core.hooksPath`;
   - `git add -A`, `-u`, `.`, `--all`, `--update` ou `:/` (no `git add` só passam caminhos e opções que não alargam o que se prepara), e `git commit -a`;
@@ -53,7 +53,7 @@ Sem-teste: <motivo concreto>
 
 Um hook `commit-msg` pode exigi-lo. Num projeto real, 86 de 199 commits de correção não tinham teste antes desta regra.
 
-O mesmo hook pode exigir outras marcas, cada uma com o motivo concreto (modelo em `modelos/git/`):
+O mesmo hook pode exigir outras marcas, cada uma com o motivo concreto (modelo em [`modelos/git/`](https://github.com/Carlobks/Morg-laws/tree/main/modelos/git)):
 
 | Marca | Quando |
 |---|---|
@@ -67,7 +67,7 @@ O mesmo hook pode exigir outras marcas, cada uma com o motivo concreto (modelo e
 - Cada mudança que alguém de fora nota leva um arquivo próprio: `changelog.d/AAAA-MM-DD-assunto.md`. O hash não entra no nome, porque ainda não existe antes do commit.
 - A categoria vai na primeira linha do arquivo (`Categoria: Corrigido`), não no nome: um nome errado mudaria a categoria sem ninguém notar. As categorias são as do Keep a Changelog.
 - Mudança interna (refatoração, teste, documentação de trabalho) não leva fragmento.
-- **A versão sobe só no lançamento:** um script junta os fragmentos, calcula a versão SemVer pelas categorias (`Removido` ou uma linha `Incompatível:` sobe o MAIOR) e escreve o `VERSION` no mesmo commit. À mão, a versão diverge do changelog. Modelo em `modelos/changelog/`.
+- **A versão sobe só no lançamento:** um script junta os fragmentos, calcula a versão SemVer pelas categorias (`Removido` ou uma linha `Incompatível:` sobe o MAIOR) e escreve o `VERSION` no mesmo commit. À mão, a versão diverge do changelog. Modelo em [`modelos/changelog/`](https://github.com/Carlobks/Morg-laws/tree/main/modelos/changelog).
 
 ## 6. Fechar um ciclo
 
