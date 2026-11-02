@@ -32,7 +32,12 @@ export function ligarDependencias(copia, ...projetosCandidatos) {
   fs.symlinkSync(alvo, path.join(copia, 'node_modules'), 'junction')
 }
 
+// Só apaga o que este módulo criou: uma pasta `morg-*` diretamente dentro do %TEMP%.
 export function apagarPastaTemporaria(pasta) {
+  const absoluta = path.resolve(pasta)
+  if (path.dirname(absoluta) !== path.resolve(os.tmpdir()) || !path.basename(absoluta).startsWith('morg-')) {
+    throw new Error(`recusei apagar uma pasta que não é descartável: ${absoluta}`)
+  }
   if (!fs.existsSync(pasta)) return true
   const juncoes = []
   const procurar = (dir) => {
