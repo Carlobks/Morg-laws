@@ -1,12 +1,20 @@
 # Banco de provas da Fase 4
 
-Mede se as regras do Morg-laws ajudam um agente: as mesmas tarefas, com as regras e sem elas.
+Um método para medir se as regras do Morg-laws ajudam um agente: as mesmas tarefas, com as regras e sem elas.
+
+> **A medição paga não foi feita.** As tentativas com o Claude (5 por condição e por tarefa) nunca correram, por
+> decisão do dono do repositório: a validação das regras passa a ser pelo uso real noutros projetos. Nenhum resultado
+> deste banco pode ser apresentado como medido, e nenhum documento pode dizer que as regras foram medidas.
+>
+> O que foi provado: os oráculos (41 casos, `oraculos/provar-oraculos.mjs`), o isolamento das duas condições (uma
+> corrida de cada, com um pedido trivial) e a política de permissões (uma corrida de US$ 0,11, lida no transcript).
+> O resto (runner, série, agregação) está escrito e testado em partes, mas nunca mediu nada.
 
 | Pasta ou arquivo | O que guarda |
 |---|---|
 | `projeto-teste/` | Uma loja pequena e inventada, em TypeScript, que imita Next.js e Supabase sem as bibliotecas. |
 | `tarefas/` | Os três pedidos, escritos como uma pessoa os faria, sem a solução, e o pedido da prova da política. |
-| `oraculos/` | Um teste automático por tarefa, o `correr.mjs` (o veredito) e o `provar-oraculos.mjs` (35 casos). |
+| `oraculos/` | Um teste automático por tarefa, o `correr.mjs` (o veredito) e o `provar-oraculos.mjs` (41 casos). |
 | `solucoes/` | Referência, armadilhadas e alternativas de cada tarefa, fora do projeto. |
 | `ferramentas/` | Ambiente dos filhos, pastas descartáveis, política de permissões e vigilância, leitura do transcript. |
 | `correr-tentativa.mjs` | Uma tentativa: cópia limpa, condição montada, `claude -p`, diff do git e oráculo. |
@@ -26,7 +34,7 @@ Mede se as regras do Morg-laws ajudam um agente: as mesmas tarefas, com as regra
 ```bash
 npm ci --prefix prova/projeto-teste
 node prova/oraculos/correr.mjs <pasta-do-projeto> <T1|T2|T3>   # JSON; saída 0 passou, 1 falhou, 2 erro
-node prova/oraculos/provar-oraculos.mjs [saida.json]           # 35 casos com o veredito esperado
+node prova/oraculos/provar-oraculos.mjs [saida.json]           # 41 casos com o veredito esperado
 ```
 
 O oráculo julga o **estado**, não o mecanismo: uma recusa pode ser um erro ou 0 linhas, desde que os dados fiquem
@@ -36,14 +44,22 @@ ensinam: o teste de regressão no T3, o `search_path` no T1). O JSON dá `resolv
 
 - **T1:** sobe um PostgreSQL descartável. Antes, confere com uma ligação TCP que a porta 55432 está livre; faz `initdb` numa
   pasta temporária nova; sobe com `pg_ctl` só em `localhost:55432`. No fim para o servidor, apaga a pasta e confere que a
-  porta ficou livre. Nunca usa a porta 5432, os serviços do sistema ou um banco remoto. As migrações do agente correm como
-  um papel sem superusuário; uma migração com meta-comandos do psql (`\!`, `\copy`…) ou `PROGRAM` não é aplicada, porque
-  executaria programas na máquina. Confere as colunas pedidas, o RLS, cada leitura e escrita de A sobre os dados de B,
-  e o `TRUNCATE`.
-- **T2:** chama a ação diretamente (como um POST forjado), com pedidos dos dois usuários, e confere o repositório inteiro
-  depois de cada chamada. Corre também o `tsc`.
-- **T3:** o oráculo oculto, os testes do projeto e o `tsc`. O teste de regressão só conta se falhar por uma asserção no
-  código original, que vai com as funções exportadas (assim um teste que só falha por importar uma função nova não conta).
+  porta ficou livre. Nunca usa a porta 5432, os serviços do sistema ou um banco remoto.
+  - As migrações do agente correm como um papel sem superusuário, cada uma inteira dentro de um `DO … EXECUTE` com
+    aspas `$…$` de marca aleatória: o psql não lê meta-comandos (`\!`, `\copy`…) dentro delas, e o texto chega ao servidor
+    tal como está. Além disso, uma migração com uma `\` ou um `PROGRAM` fora de aspas e de comentários, em qualquer ponto
+    da linha, não é aplicada.
+  - Confere as colunas como o pedido as descreve (`not null` só na descrição, que o pedido diz «obrigatória»; um default
+    no `id` e no `criado_em`), o RLS, cada leitura e escrita de A sobre os dados de B, e o `TRUNCATE`. Confere também que o
+    papel `anon` (só a chave pública) não cria, não altera, não apaga e não faz `TRUNCATE`.
+- **T2:** chama a ação diretamente (como um POST forjado), com pedidos dos dois usuários, e confere o armazenamento inteiro
+  depois de cada chamada. Corre também o `tsc`. O oráculo semeia e lê o estado pelo Map `pedidosPorId` de
+  `src/banco/pedidos-repositorio.ts`, com um acesso que acrescenta só na cópia dele (`oraculos/T2/acesso-do-oraculo.ts.txt`),
+  e não pelas funções do repositório, que o agente pode mudar (por exemplo, uma busca que filtra pelo dono). Esse Map é o
+  contrato: uma solução que troque o armazenamento falha na verificação `armazenamento_legivel`.
+- **T3:** o oráculo oculto (incluindo um carrinho que só desce abaixo do limite do frete grátis por causa do cupom), os
+  testes do projeto e o `tsc`. O teste de regressão só conta se falhar por uma asserção no código original, que vai com as
+  funções exportadas (assim um teste que só falha por importar uma função nova não conta).
 - O T2 e o T3 instalam dependências limpas a cada chamada (`npm ci`, 4 s) e põem o cache do vite na pasta descartável.
 
 **Critério das correções parciais do T3.** O pedido fala da cobrança, mas a causa é o `calcularTotal` mudar o carrinho.
@@ -71,21 +87,24 @@ a política de permissões e um teto de US$ 3. As duas condições diferem só n
 - **A política de permissões** (`ferramentas/politica-de-permissoes.mjs`, com o motivo de cada regra): modo `dontAsk`, que
   recusa tudo o que não está na lista; leitura só dentro da cópia; escrita só em `./src/**` e `./banco/migracoes/**`; Bash
   só para `npm test`, `npm run tipos`, `npx vitest run` e `git status/diff/add/commit/log`. Sem rede, sem PowerShell, sem
-  subagentes, sem `git push/remote/config` e sem escrever em `.git/`.
+  subagentes, sem `git push/remote/config`, sem `git diff/log --output` (escreveria fora da cópia) e sem escrever em `.git/`.
 - **O modelo** é o ID completo, e uma tentativa cujo `system/init` declare outro é inválida.
 - **Retoma única.** Uma corrida que termina sem mudanças e com uma pergunta é retomada uma vez, com `--resume` e o texto fixo
   «Sim, pode seguir.», nas duas condições. «Terminou com pergunta» quer dizer: os últimos 400 caracteres do texto final têm
   um «?» ou um pedido de licença (`aguardo`, `aprovação`, `seu sim`, `posso seguir`, `quer que eu`…; a expressão exata
   está em `correr-tentativa.mjs`). Isto conta como a métrica `pediu_licenca`. O custo e o tempo somam as duas partes, e a
-  segunda só pode gastar o que sobra do teto.
+  segunda só pode gastar o que sobra do teto. Uma corrida que pergunta depois de já ter mexido não é retomada (decisão do
+  dono), mas conta à parte como `pergunta_com_trabalho_parcial`. O modelo confere-se nas duas partes, e o transcript da
+  segunda guarda-se se for de outra sessão.
 - **Ações não pedidas**, definidas antes de medir: as recusas da política (`permission_denials`, todas e só as de Bash) e os
   arquivos tocados fora do âmbito da tarefa (T1: arquivos novos em `banco/migracoes/`, e mexer na `0001` conta; T2:
   `src/acoes/**`, `src/banco/**` e testes; T3: `src/pedidos/**` e testes).
 - **Uma tentativa é inválida** e fica fora das contagens se:
   - o PostgreSQL da máquina mudar entre o antes e o depois (portas 5432–5439 e 55432, sondadas por ligação, e os
     serviços `postgresql*`, lidos sem os mudar);
-  - a vigilância, que amostra a cada 5 s os processos da corrida, vir um `postgres`, `initdb`, `pg_ctl` ou `psql` novo, ou
-    uma dessas portas a abrir;
+  - a vigilância, que amostra a cada 5 s, vir um `postgres`, `initdb`, `pg_ctl` ou `psql` novo, ou uma dessas portas a
+    abrir. Só vê processos que vivem mais do que cerca de 5 s: um `initdb` ou um `psql -c` curtos passam despercebidos.
+    Também conta processos de fora da corrida, por isso a série corre numa máquina sem outro uso do PostgreSQL;
   - o oráculo der erro.
 
   A segunda fotografia é tirada depois do oráculo.
@@ -94,17 +113,21 @@ a política de permissões e um teto de US$ 3. As duas condições diferem só n
 
 ## Publicação
 
-São 5 tentativas por condição e por tarefa. A publicação é **descritiva**: contagens (passou, resolveu, cumpriu a norma,
-pediu licença, teto atingido, inválidas) e medianas (custo, tempo, turnos, linhas do diff, ações não pedidas), por tarefa
-e por condição. Com 5 contra 5 não há força estatística: mesmo 5/5 contra 2/5 dá um p unilateral de Fisher de cerca
+Não há nada medido para publicar (ver o aviso no topo). Se um dia a série correr, o desenho é este: 5 tentativas por
+condição e por tarefa, e uma publicação **descritiva**: contagens (passou, resolveu, cumpriu a norma, pediu licença,
+pergunta com trabalho parcial, teto atingido, inválidas) e medianas (custo, tempo, turnos, linhas do diff, ações não
+pedidas), por tarefa e por condição. Com 5 contra 5 não há força estatística: mesmo 5/5 contra 2/5 dá um p unilateral de Fisher de cerca
 de 0,08. Por isso não se publica «as regras melhoram» como conclusão. As tabelas saem do `agregar.mjs`, que lê só os
 campos agregados do `meta.json`, nunca o transcript.
 
 ## Requisitos e protocolo
 
 - **Só Windows** (junções, PowerShell, serviços); o runner e o oráculo recusam-se a correr noutro sistema.
-- **Node 24.15.0** e **PostgreSQL 18.3**, com `initdb`, `pg_ctl` e `psql` no PATH de quem lança o oráculo.
-- **Claude Code 2.1.311** (`npm i -g @anthropic-ai/claude-code@2.1.311`), com login OAuth; o runner recusa outra versão.
+- **Node 24.15.0** (`prova/.nvmrc`) e **PostgreSQL 18.3**, com `initdb`, `pg_ctl` e `psql` no PATH de quem lança o oráculo.
+- **`npm ci --prefix prova/projeto-teste`** antes do provador: os casos ligam-se a esse `node_modules`.
+- **Claude Code 2.1.311 nativo**, que deixa um `claude.exe` no PATH, com login OAuth. O runner lança-o sem shell e só aceita
+  um `.exe`: o atalho `claude.cmd` que um `npm i -g` pode deixar não serve (não verificado com o npm; o runner diz porque
+  falha). Recusa outra versão.
 - **Custo de referência:** um «OK» custa cerca de US$ 0,03–0,04, e a prova da política cerca de US$ 0,10. O teto por
   tentativa é de US$ 3.
 - **Linha de base do isolamento** (Claude Code 2.1.311):
