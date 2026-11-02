@@ -1,6 +1,6 @@
 ---
 name: orquestrando-sessoes
-description: Guia como dividir trabalho entre sessões de agente — quando abrir uma sessão nova em vez de continuar ou de usar sub-agentes, como escrever o pedido para uma leitura independente, como passar o trabalho de uma sessão para outra (handoff) e como várias sessões convivem na mesma pasta sem se atropelar. Usar ao planejar trabalho grande, ao querer uma auditoria ou revisão independente, ao retomar trabalho de outra sessão, ou quando várias sessões ou pessoas mexem no mesmo repositório. Não usar para escrever o conteúdo das regras (é a escrevendo-regras-de-agente) nem para os comandos de git do dia a dia (é a git-e-commits).
+description: Guia como dividir trabalho entre sessões de agente — quando abrir uma sessão nova em vez de continuar ou de usar sub-agentes, como escrever o pedido para uma leitura independente e como várias sessões convivem na mesma pasta sem se atropelar. Usar ao planejar trabalho grande, ao querer uma auditoria ou revisão independente, ou quando várias sessões ou pessoas mexem no mesmo repositório. Não usar para escrever o handoff, compactar ou retomar o trabalho (é a passando-o-trabalho), para escrever o conteúdo das regras (é a escrevendo-regras-de-agente) nem para os comandos de git do dia a dia (é a git-e-commits).
 ---
 
 # Orquestrando sessões
@@ -32,11 +32,7 @@ Quem escreveu um trabalho não o consegue auditar bem: lê o que quis dizer, nã
 
 ## 3. Passar o trabalho (handoff)
 
-- Um arquivo **por assunto**, com nome que diz qual: `.context/HANDOFF-<assunto>.md`. Nunca um `HANDOFF.md` genérico, que a sessão seguinte sobrescreve.
-- O conteúdo: objetivo, estado **verificado** (o que está commitado, com o hash), decisões tomadas e porquê, abordagens descartadas, próximos passos.
-- **Decisões em duas listas:** as do dono (perguntadas, com a recomendação) e as técnicas (com o motivo medido). Cada abordagem descartada leva o porquê, para a sessão seguinte não a tentar de novo.
-- O handoff vive **no repositório** e atualiza-se no commit que fecha cada fase. A memória do agente fica fora do git e fora das outras contas.
-- Quem retoma confere o estado no repositório antes de confiar no handoff.
+Escrever o handoff, compactar e retomar são da skill `passando-o-trabalho`.
 
 ## 4. Várias sessões na mesma pasta
 

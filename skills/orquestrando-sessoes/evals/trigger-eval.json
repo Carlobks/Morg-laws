@@ -1,6 +1,6 @@
 [
   {"query": "abre uma sessão nova para auditar este plano sem saber o que eu acho", "should_trigger": true},
-  {"query": "vou continuar amanhã noutra sessão, deixa o trabalho preparado", "should_trigger": true},
+  {"query": "posso usar git stash para comparar com a versão antiga enquanto outra sessão trabalha aqui?", "should_trigger": true},
   {"query": "há três sessões a mexer nesta pasta, como evito que uma leve o trabalho da outra?", "should_trigger": true},
   {"query": "devo usar sub-agentes para esta migração grande?", "should_trigger": true},
   {"query": "o git diz que existe um index.lock, outra sessão está a commitar?", "should_trigger": true},
