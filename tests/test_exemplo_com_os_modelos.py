@@ -47,6 +47,22 @@ class ProjetoDeExemplo(unittest.TestCase):
         escrever(self.pasta / "src" / "calado.py", "import os  # noqa: F401\n")
         self.assertFalhaEm("test_cada_alarme_tem_motivo")
 
+    def test_alarme_com_comentario_qualquer_em_cima(self):
+        # D9: o motivo vai na mesma linha; um TODO ou outro alarme em cima não é motivo.
+        escrever(self.pasta / "src" / "calado.py", "# TODO ver depois\nimport os  # noqa: F401\n")
+        self.assertFalhaEm("test_cada_alarme_tem_motivo")
+
+    def test_alarme_em_comentario_de_bloco_conta(self):
+        # No JSX o @ts-expect-error vai em /* */; tem de entrar na contagem como o de //.
+        escrever(self.pasta / "src" / "tela.tsx", "const a = <div>{/* @ts-expect-error — tipo da lib */}</div>;\n")
+        self.assertFalhaEm("test_a_contagem_nao_sobe")
+
+    def test_linha_de_base_dos_alarmes_que_nao_desceu(self):
+        # Quem tira um alarme baixa o máximo no mesmo commit; senão a folga deixa o próximo entrar calado.
+        teste = self.pasta / "tests" / "test_alarmes.py"
+        escrever(teste, teste.read_text(encoding="utf-8").replace("MAXIMO_POR_TIPO = {}", 'MAXIMO_POR_TIPO = {"noqa": 1}'))
+        self.assertFalhaEm("test_a_linha_de_base_desce_com_a_contagem")
+
     def test_email_pessoal(self):
         escrever(self.pasta / "docs" / "contato.md", "Fale com ana@correio-ficticio.net\n")
         self.assertFalhaEm("test_sem_emails_pessoais")

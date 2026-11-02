@@ -24,7 +24,7 @@ testes a 100 %. Os scripts são Python só com a biblioteca padrão; os hooks do
 | `github/ISSUE_TEMPLATE/erro.yml` | `.github/ISSUE_TEMPLATE/` | Formulário de erro: resumo, passos, esperado, acontecido, versão e relatório revisto |
 | `testes/test_regras.py` | `tests/` | O arquivo de regras curto, cada regra com motivo e com linha no mapa das barreiras, caminhos citados que existem, índice das skills igual ao instalado |
 | `testes/test_docs_indices.py` | `tests/` | Índice dos docs, ADRs seguidas, pesquisa com data, armadilhas A1…An, planos com "Fora do escopo" e "Prova", handoffs com hashes que existem |
-| `testes/test_alarmes.py` | `tests/` | Alarme calado só com motivo, contagem por tipo que não sobe, `noqa` só de regras que o ruff tem ligadas |
+| `testes/test_alarmes.py` | `tests/` | Alarme calado só com o motivo na mesma linha (também em `/* */`), contagem por tipo que não sobe e desce com quem tira um, `noqa` só de regras que o ruff tem ligadas |
 | `testes/test_nomes.py` | `tests/` | Nenhum arquivo, pasta ou identificador com nome genérico solto |
 | `testes/test_dados_pessoais.py` | `tests/` | Sem caminhos de pastas pessoais, e-mails pessoais nem termos da lista negra |
 | `testes/test_tamanho_das_funcoes.py` | `tests/` | Funções Python até 20 linhas (decisão do dono), com catraca para as antigas |

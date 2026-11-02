@@ -1,9 +1,10 @@
 """Alarmes silenciados só com motivo, e nunca mais do que hoje (Morg-laws: sem silenciar alarme; não piorar).
 
 Conta os `noqa`, `pragma: no cover`, `node:coverage disable`, `biome-ignore`, `eslint-disable`, `@ts-expect-error`,
-`@ts-ignore` e `SuppressMessage` no código (testes de fora: lá são exemplos). Cada um tem o motivo na mesma linha,
-depois de " — ", ou num comentário na linha de cima. A contagem por tipo não pode subir: quem tira um, baixa o
-número no mesmo commit (catraca). Um `noqa` só pode citar regras que o ruff tem ligadas, e isso pergunta-se ao
+`@ts-ignore` e `SuppressMessage` no código (testes de fora: lá são exemplos), em `//` e em `/* */` (a forma do
+JSX). Cada um tem o motivo na mesma linha, depois de " — ": um comentário na linha de cima não conta, porque pode
+ser um TODO ou outro alarme. A contagem por tipo não pode subir, e quem tira um baixa o número no mesmo commit
+(catraca nos dois sentidos). Um `noqa` só pode citar regras que o ruff tem ligadas, e isso pergunta-se ao
 próprio ruff: uma auditoria real deu duas regras como desligadas, e o ruff liga-as por omissão.
 Instalar: copiar para `tests/` do projeto e ajustar o bloco abaixo.
 """
@@ -28,11 +29,10 @@ ALARMES = {
     "node:coverage disable": re.compile(r"^\s*/\*\s*node:coverage (?:disable|ignore)"),
     "biome-ignore": re.compile(r"^\s*//\s*biome-ignore"),
     "eslint-disable": re.compile(r"(?://|/\*)\s*eslint-disable"),
-    "@ts-expect-error": re.compile(r"//\s*@ts-expect-error"),
-    "@ts-ignore": re.compile(r"//\s*@ts-ignore"),
+    "@ts-expect-error": re.compile(r"(?://|/\*)\s*@ts-expect-error"),
+    "@ts-ignore": re.compile(r"(?://|/\*)\s*@ts-ignore"),
     "SuppressMessage": re.compile(r"\[\s*(?:System\.)?Diagnostics\.CodeAnalysis\.SuppressMessage"),
 }
-COMENTARIO = re.compile(r"^\s*(?:#|//|/\*|<!--)")
 
 
 def arquivos_de_codigo():
@@ -43,15 +43,23 @@ def arquivos_de_codigo():
 
 
 def alarmes():
-    """[(tipo, caminho, número da linha, linha, linha de cima)] de todos os alarmes silenciados."""
+    """[(tipo, caminho, número da linha, linha)] de todos os alarmes silenciados."""
     resultado = []
     for caminho in arquivos_de_codigo():
         linhas = (RAIZ / caminho).read_text(encoding="utf-8-sig").splitlines()
         for numero, linha in enumerate(linhas, 1):
             for tipo, padrao in ALARMES.items():
                 if padrao.search(linha):
-                    resultado.append((tipo, caminho, numero, linha, linhas[numero - 2] if numero > 1 else ""))
+                    resultado.append((tipo, caminho, numero, linha))
     return resultado
+
+
+def contagem_por_tipo():
+    """{tipo: quantos} dos alarmes silenciados de hoje."""
+    contagem = {}
+    for tipo, *_ in alarmes():
+        contagem[tipo] = contagem.get(tipo, 0) + 1
+    return contagem
 
 
 def regras_ligadas_no_ruff(arquivo):
@@ -65,21 +73,24 @@ def regras_ligadas_no_ruff(arquivo):
 class AlarmesComMotivo(unittest.TestCase):
 
     def test_cada_alarme_tem_motivo(self):
-        for tipo, caminho, numero, linha, de_cima in alarmes():
+        for tipo, caminho, numero, linha in alarmes():
             with self.subTest(alarme=f"{caminho}:{numero} {tipo}"):
-                self.assertTrue(" — " in linha or COMENTARIO.match(de_cima),
-                                "falta o motivo (depois de — ou na linha de cima)")
+                self.assertIn(" — ", linha, "falta o motivo na mesma linha, depois de —")
 
     def test_a_contagem_nao_sobe(self):
-        contagem = {}
-        for tipo, *_ in alarmes():
-            contagem[tipo] = contagem.get(tipo, 0) + 1
-        for tipo, quantos in contagem.items():
+        for tipo, quantos in contagem_por_tipo().items():
             with self.subTest(tipo=tipo):
                 self.assertLessEqual(quantos, MAXIMO_POR_TIPO.get(tipo, 0), "corrija o apontado em vez de silenciar")
 
+    def test_a_linha_de_base_desce_com_a_contagem(self):
+        contagem = contagem_por_tipo()
+        for tipo, maximo in MAXIMO_POR_TIPO.items():
+            with self.subTest(tipo=tipo):
+                self.assertGreaterEqual(contagem.get(tipo, 0), maximo,
+                                        f"saiu um alarme: baixe MAXIMO_POR_TIPO['{tipo}'] para {contagem.get(tipo, 0)}")
+
     def test_noqa_so_de_regras_ligadas(self):
-        noqas = [(caminho, numero, linha) for tipo, caminho, numero, linha, _ in alarmes() if tipo == "noqa"]
+        noqas = [(caminho, numero, linha) for tipo, caminho, numero, linha in alarmes() if tipo == "noqa"]
         if not noqas:
             self.skipTest("nenhum noqa no código")
         self.assertTrue(shutil.which("ruff") or subprocess.run([sys.executable, "-m", "ruff", "--version"],
