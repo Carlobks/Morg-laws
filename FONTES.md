@@ -18,7 +18,6 @@ Fonte secundária leva a marca *(secundária)* até ser conferida na original.
   Sustenta: os arquivos de contexto «do not generally improve task success rates» e sobem o custo de inferência em mais de 20%, em média. O resumo não fala do tamanho dos arquivos, e a página não mostra a afiliação dos autores.
 - **agents.md** — https://agents.md — lido em 2026-10-30 (numa auditoria independente). Sustenta: o formato é mantido pela Agentic AI Foundation, sob a Linux Foundation, e a página lista 23 ferramentas que o leem.
 - **Claude Code — hooks** — https://code.claude.com/docs/en/hooks — lido em 2026-11-01 (a primeira parte da página). Sustenta: o `PreToolUse` decide com `permissionDecision` (`allow`, `deny`, `ask`, `defer`) e o `ask` passa a decisão ao usuário; sair com 2 «Blocks the tool call», com o motivo no stderr; `onFailure` aceita `continue` ou `block` (desde o Claude Code v2.1.295); o `CLAUDE_PROJECT_DIR` é a pasta onde a sessão começou e não muda com a sessão. Que as regras `ask` do `settings.json` não perguntam no modo automático foi **medido** num projeto real, não está na página (usado na skill `auditoria-de-seguranca` e em `modelos/claude/`).
-
 ## Git e contas
 
 - **Git Credential Manager — várias contas** — https://github.com/git-ecosystem/git-credential-manager/blob/main/docs/multiple-users.md — lido em 2026-10-29.
@@ -86,7 +85,12 @@ Lidas em 2026-10-30 numa auditoria independente das skills `sql-postgres` e `sup
 - **Apple HIG — Accessibility** — https://developer.apple.com/design/human-interface-guidelines/accessibility — lido em 2026-10-30. Sustenta: controles de 44 × 44 pt (padrão) e 28 × 28 pt (mínimo) em iOS e iPadOS.
 - **Apple HIG — Tab bars** — https://developer.apple.com/design/human-interface-guidelines/tab-bars — lido em 2026-10-30. Sustenta: menos abas navegam melhor; aba "Mais"; lista personalizável com 5 ou menos. **Não** traz um teto de 6.
 - **Material Design 3 — Tabs** — https://m3.material.io/components/tabs/guidelines — lido em 2026-10-30. Sustenta: não mais de 4 abas fixas.
-- Os demais (NN/g, Rams, Tesler, Dynamics, Fiori e os tetos por confirmar do Oracle Redwood) estão em `skills/desenhando-telas/references/tetos-e-fontes.md`.
+- **WCAG 2.2 — Use of Color, 1.4.1** — https://www.w3.org/WAI/WCAG22/Understanding/use-of-color.html — citada desde 2026-10-30 em `skills/desenhando-telas/references/tetos-e-fontes.md` *(secundária: não relida; a skill cita-a de memória)*.
+- **Nielsen Norman Group — 10 Usability Heuristics** — https://www.nngroup.com/articles/ten-usability-heuristics/ — citada desde 2026-10-30 no mesmo arquivo (heurística 8) *(secundária: não relida)*.
+- **Nielsen Norman Group — Tabs, Used Right** — https://www.nngroup.com/articles/tabs-used-right/ — citada desde 2026-10-30 no mesmo arquivo *(secundária: não relida)*.
+- **Microsoft Dynamics 365 — Workspace form pattern** — https://learn.microsoft.com/en-us/dynamics365/fin-ops-core/dev-itpro/user-interface/workspace-form-pattern — citada desde 2026-10-30 no mesmo arquivo *(secundária: veio de uma pesquisa anterior, não relida)*.
+- **SAP Fiori — When to use which floorplan** — https://www.sap.com/design-system/fiori-design-web/v1-136/page-types/floorplans/when-to-use-which-floorplan — citada desde 2026-10-30 no mesmo arquivo *(secundária: veio de uma pesquisa anterior, não relida)*.
+- Os demais (Rams, Tesler e os tetos por confirmar do Oracle Redwood, sem link) estão em `skills/desenhando-telas/references/tetos-e-fontes.md`.
 
 ## Relatório de erros
 
