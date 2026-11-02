@@ -37,8 +37,9 @@ URL = re.compile(r"https?://[^\s<>()\[\]`\"'*|]+")
 DATA = re.compile(r"\b20\d\d-\d\d-\d\d\b")
 DATA_NA_ULTIMA_COLUNA = re.compile(r"\|\s*20\d\d-\d\d-\d\d\s*\|\s*$")
 MARCADOR_DE_LISTA = re.compile(r"(?:[-*+]|\d+\.) ")
-PROPRIO_REPOSITORIO = re.compile(r"https?://(?:github\.com|raw\.githubusercontent\.com)/Carlobks/Morg-laws(?:[/.]|$)",
-                                 re.IGNORECASE)
+# Depois do nome, só `/`, `.git` ou o fim: `Morg-laws.copia` é outro repositório (o GitHub aceita pontos no nome).
+PROPRIO_REPOSITORIO = re.compile(r"https?://(?:github\.com|raw\.githubusercontent\.com)/Carlobks/Morg-laws"
+                                 r"(?:/|\.git(?:/|$)|$)", re.IGNORECASE)
 DOMINIOS_DE_EXEMPLO = ("example.com", "example.org", "example.net")
 SECOES_DA_PESQUISA = ("Pergunta", "Fontes", "O que se mediu", "O que não se verificou", "Conclusão")
 CERCAS_DE_CODIGO = ("```", "~~~")
@@ -353,6 +354,17 @@ class RegressoesDaAuditoria(PastaTemporaria):
         self.assertTrue(isento("https://raw.githubusercontent.com/Carlobks/Morg-laws/main/x"))
         self.assertFalse(isento("https://raw.githubusercontent.com/Carlobks/Morg-laws-copia/main/x"))
         self.assertFalse(isento("https://raw.githubusercontent.com/outra/Morg-laws/main/x"))
+
+    def test_n6_morg_laws_com_sufixo_e_outro_repositorio(self):
+        for dominio in ("github.com", "raw.githubusercontent.com"):
+            with self.subTest(dominio=dominio):
+                self.assertFalse(isento(f"https://{dominio}/Carlobks/Morg-laws.copia/main/x"))
+                self.assertFalse(isento(f"https://{dominio}/Carlobks/Morg-laws.copia"))
+                self.assertTrue(isento(f"https://{dominio}/Carlobks/Morg-laws/main/x"))
+                self.assertTrue(isento(f"https://{dominio}/Carlobks/Morg-laws"))
+        self.assertTrue(isento("https://github.com/Carlobks/Morg-laws.git"))
+        self.assertTrue(isento("https://github.com/Carlobks/Morg-laws.git/info/refs"))
+        self.assertFalse(isento("https://github.com/Carlobks/Morg-laws.github"))
 
     def test_a11_link_colado_a_barra_de_tabela(self):
         self.escrever("FONTES.md", "## A\n\n- **A** — https://a.test — lido em 2026-11-02. Sustenta: x.\n")
