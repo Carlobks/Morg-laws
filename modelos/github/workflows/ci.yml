@@ -26,6 +26,8 @@ jobs:
         id: python
         with:
           python-version: "3.11.9"
+      # Versões fixas sem --require-hashes, por escolha: um pacote republicado com a mesma versão passaria, mas
+      # este job só lê o repositório e não tem segredos. Com segredos ou escrita, use um requirements com hashes.
       - name: Ferramentas com versões fixas
         run: ${{ steps.python.outputs.python-path }} -m pip install --disable-pip-version-check coverage==7.17.0 ruff==0.17.2
       - name: Ligar os portões do git (os testes da guarda do git exigem-no)
