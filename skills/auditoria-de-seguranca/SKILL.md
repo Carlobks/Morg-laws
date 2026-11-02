@@ -107,7 +107,7 @@ Achados: … · Cobertura: …
 
 As permissões do agente são uma camada de segurança e falham como as outras. Num projeto real, cada item abaixo foi uma brecha medida. Modelos em `modelos/claude/`.
 
-- **As regras `ask` do `settings.json` não perguntam no modo automático.** Um `git push` saiu sem pergunta. O que tem de perguntar vai num hook `PreToolUse` que devolve `permissionDecision: "ask"`: esse pergunta em qualquer modo. Inclua o PR (`gh pr create`, `gh pr merge`, `gh release create`) junto com o push.
+- **As regras `ask` do `settings.json` não perguntam no modo automático.** Um `git push` saiu sem pergunta. O que tem de perguntar vai num hook `PreToolUse` que devolve `permissionDecision: "ask"`: esse pergunta em qualquer modo. Inclua junto com o push tudo o que escreve no GitHub: criar, comentar, aprovar e fechar PR ou issue, as versões e o `gh api` que não seja GET (que passa a POST quando leva `-f`/`-F`).
 - **O `deny` de leitura só cobre a ferramenta Read.** Um `cat .env` pelo terminal passava. Um hook para a shell recusa o comando que cita um segredo (`.env`, `*.pem`, `*.key`, `.ssh`, credenciais do agente) e o download que vai direto para uma shell (`curl … | sh`, `iex (irm …)`).
 - **`"disableBypassPermissionsMode": "disable"`** no `settings.json` do projeto. Sem ele, o modo que salta as permissões desliga todas as barreiras acima de uma vez.
 - **Prove cada barreira com uma sonda:** um JSON de exemplo no stdin do hook e a saída esperada (recusa ou "ask"). Uma barreira que nunca se viu recusar não prova nada.

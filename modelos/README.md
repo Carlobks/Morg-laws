@@ -11,7 +11,7 @@ testes a 100 %. Os scripts são Python só com a biblioteca padrão; os hooks do
 | `claude/settings.json` | `.claude/settings.json` | Permissões em três colunas (deny, ask, allow), `disableBypassPermissionsMode` e os hooks abaixo ligados com `onFailure: block` |
 | `claude/hooks/guarda_do_git.py` | `.claude/hooks/` | Recusa `--no-verify`, mudar o `core.hooksPath`, `git add -A`, `commit -a`, commit sem caminhos, `-m` com várias linhas e `git stash` |
 | `claude/hooks/bloquear_segredos.py` | `.claude/hooks/` | Recusa ler segredos pela shell (o `deny` só cobre a ferramenta Read) e `curl … \| sh` |
-| `claude/hooks/perguntar_antes.py` | `.claude/hooks/` | Pergunta antes de push, PR, instalações e mudanças às regras do agente, também no modo automático (onde as regras `ask` não perguntam) |
+| `claude/hooks/perguntar_antes.py` | `.claude/hooks/` | Pergunta antes de push, de tudo o que escreve no GitHub (PR, issue, comentário, versão, `gh api` de escrita), instalações e mudanças às regras do agente, também no modo automático (onde as regras `ask` não perguntam) |
 | `claude/hooks/limite_de_linhas.py` | `.claude/hooks/` | Recusa que um arquivo de código passe de 500 linhas e cresça |
 | `git/hooks/pre-commit` | `.githooks/` | Identidade, lista negra e o comando único de testes (defina `COMANDO_DOS_TESTES`) |
 | `git/hooks/commit-msg` | `.githooks/` | Formato da mensagem e lista negra |

@@ -26,6 +26,26 @@ class Decisao(unittest.TestCase):
             with self.subTest(comando=comando):
                 self.assertIsNotNone(perguntar.motivo_para_perguntar(comando))
 
+    def test_pergunta_com_opcoes_globais_e_antes_de_escrever_no_github(self):
+        # Comentar, aprovar ou editar uma PR também é público; e uma opção global do git não esconde o push.
+        for comando in ["git --no-pager push", "git -P push origin", "git --git-dir=.git --work-tree=. push",
+                        "git -c a=b --no-pager -C x push", "gh pr review 1 --approve", "gh pr comment 1 --body x",
+                        "gh pr edit 1 --title x", "gh pr close 1", "gh pr ready 1", "gh pr reopen 1",
+                        "gh issue create --title x", "gh issue comment 2 --body x", "gh issue close 2",
+                        "gh release upload v1 a.zip", "gh release edit v1", "gh api -X POST repos/o/r/issues",
+                        "gh api --method=PATCH repos/o/r", "gh api --method DELETE repos/o/r/x",
+                        "gh api repos/o/r/issues -f title=x", "gh api graphql -F query=@q.graphql",
+                        "gh api repos/o/r/x --input corpo.json", "x; gh.exe api -XPUT repos/o/r/y"]:
+            with self.subTest(comando=comando):
+                self.assertIsNotNone(perguntar.motivo_para_perguntar(comando))
+
+    def test_nao_pergunta_nas_leituras_do_github(self):
+        for comando in ["gh api repos/o/r/pulls", "gh api -X GET repos/o/r", "gh api --method get search -f q=x",
+                        "gh issue view 2", "gh issue list", "gh pr diff 3", "git --no-pager log --grep push",
+                        "git -C pasta status && echo push"]:
+            with self.subTest(comando=comando):
+                self.assertIsNone(perguntar.motivo_para_perguntar(comando))
+
     def test_nao_pergunta_o_resto(self):
         for comando in ["git status", "git log --grep push", "git commit -F m -- a.py", "npm audit --json",
                         "npm --version", "pip list", "winget show Gitleaks.Gitleaks", "Get-Module Pester",

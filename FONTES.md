@@ -27,6 +27,8 @@ Fonte secundária leva a marca *(secundária)* até ser conferida na original.
 - **Git — `lockfile.c` (mensagem do `index.lock`)** — https://github.com/git/git/blob/master/lockfile.c — lido em 2026-10-29.
   Sustenta: o git não manda apagar o lock; só diz que outro processo pode estar a correr ou que o lock pode estar velho.
 - **Pro Git — 2.6 Tagging** — https://git-scm.com/book/en/v2/Git-Basics-Tagging — lido em 2026-10-31 (no projeto de origem). Sustenta: a tag anotada guarda autor, data e mensagem; usada para marcar cada versão (`modelos/changelog/`).
+- **Git — `git` (opções globais)** — https://git-scm.com/docs/git — lido em 2026-11-02. Sustenta: as opções entre o `git` e o subcomando (`-C <caminho>` e `-c <nome>=<valor>` com o valor à parte; `--git-dir=`, `--work-tree=`, `--no-pager`/`-P` e outras), que o `perguntar_antes.py` salta para achar o `push`.
+- **GitHub CLI — `gh api`** — https://cli.github.com/manual/gh_api — lido em 2026-11-02. Sustenta: «The default HTTP request method is GET normally and POST if any parameters were added»; os parâmetros vêm de `-f`/`--raw-field` e `-F`/`--field`, o corpo de `--input`, e o método muda com `-X`/`--method` (usado no `perguntar_antes.py`).
 
 ## Changelog e versões
 

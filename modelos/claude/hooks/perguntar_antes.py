@@ -3,7 +3,9 @@
 As regras "ask" do settings.json não bastam: no modo automático elas não perguntam (num projeto real, um
 `git push --dry-run` e a escrita de um hook rodaram sem pergunta). Este hook devolve ao Claude Code a decisão
 "ask", que pergunta seja qual for o modo. Pergunta antes de:
-- Bash/PowerShell: `git push`; `gh pr create|merge` e `gh release create`; instalar pacotes (npm install/i/ci/add,
+- Bash/PowerShell: `git push` (também depois de opções globais como `--no-pager`); o que escreve no GitHub
+  (`gh pr create|merge|comment|review|edit|close|ready|reopen`, `gh issue create|comment|edit|close|reopen`,
+  `gh release create|upload|edit|delete` e `gh api` que não seja GET); instalar pacotes (npm install/i/ci/add,
   npx, pip install) ou programas (winget, choco, scoop, Install-Module/Install-Package);
 - Write/Edit: os arquivos de REGRAS_DO_AGENTE deste repositório (permissões e hooks).
 Reconhece os comandos pelo texto (uma escrita pela shell não passa pelo Write/Edit). Sai sempre com 0; com
@@ -19,7 +21,13 @@ from pathlib import Path
 RAIZ = Path(__file__).resolve().parents[2]
 REGRAS_DO_AGENTE = (".claude/settings.json", ".claude/settings.local.json", ".claude/hooks/", ".githooks/")
 
-_GIT = r"\bgit(?:\.exe)?(?:\s+-[cC]\s+(?:\"[^\"]*\"|'[^']*'|\S+))*\s+"
+# Opções globais entre o `git` e o subcomando: -C e -c levam o valor à parte; as longas, depois de "=".
+_VALOR = r"(?:\"[^\"]*\"|'[^']*'|\S+)"
+_GIT = rf"\bgit(?:\.exe)?(?:\s+(?:-[cC]\s+{_VALOR}|--?[\w-]+(?:={_VALOR})?))*\s+"
+# Sem -X/--method, o gh api usa GET, ou POST se levar parâmetros (-f, -F) ou um corpo (--input).
+_GH_API = re.compile(r"\bgh(?:\.exe)?\s+api\b([^;&|\n]*)", re.IGNORECASE)
+_GH_METODO = re.compile(r"(?:^|\s)(?:-X\s*|--method[\s=]+)(\w+)", re.IGNORECASE)
+_GH_PARAMETROS = re.compile(r"(?:^|\s)(?:-[fF]|--(?:field|raw-field|input))(?:\s|=|$)")
 PERGUNTAS = [
     (re.compile(_GIT + r"push\b", re.IGNORECASE), "git push envia o trabalho para fora desta máquina"),
     (re.compile(r"\bnpm(?:\.cmd)?\s+(?:install|i|ci|add)\b", re.IGNORECASE), "npm instala pacotes"),
@@ -27,9 +35,11 @@ PERGUNTAS = [
     (re.compile(r"\bpip3?(?:\.exe)?\s+install\b", re.IGNORECASE), "pip instala pacotes"),
     (re.compile(r"\b(?:winget|choco|scoop)(?:\.exe)?\s+install\b", re.IGNORECASE), "instala um programa"),
     (re.compile(r"\bInstall-(?:Module|Package)\b", re.IGNORECASE), "instala um módulo do PowerShell"),
-    # Criar ou juntar um PR, ou lançar uma versão, publica como o push.
-    (re.compile(r"\bgh(?:\.exe)?\s+(?:pr\s+(?:create|merge)|release\s+create)\b", re.IGNORECASE),
-     "publica no GitHub (PR ou versão)"),
+    # Criar, comentar, aprovar ou fechar uma PR ou issue, ou lançar uma versão, publica como o push.
+    (re.compile(r"\bgh(?:\.exe)?\s+(?:pr\s+(?:create|merge|comment|review|edit|close|ready|reopen)"
+                r"|issue\s+(?:create|comment|edit|close|reopen)|release\s+(?:create|upload|edit|delete))\b",
+                re.IGNORECASE),
+     "publica no GitHub (PR, issue, comentário ou versão)"),
 ]
 
 
@@ -38,7 +48,17 @@ def motivo_para_perguntar(comando):
     for padrao, motivo in PERGUNTAS:
         if padrao.search(comando):
             return motivo
+    if any(gh_api_escreve(trecho) for trecho in _GH_API.findall(comando)):
+        return "gh api com um método que escreve no GitHub"
     return None
+
+
+def gh_api_escreve(argumentos):
+    """True se um `gh api <argumentos>` não for um GET (pelo -X/--method, ou pelos parâmetros sem método)."""
+    metodo = _GH_METODO.search(argumentos)
+    if metodo:
+        return metodo.group(1).upper() != "GET"
+    return bool(_GH_PARAMETROS.search(argumentos))
 
 
 def motivo_para_perguntar_arquivo(caminho):
