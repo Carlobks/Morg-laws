@@ -5,8 +5,9 @@ Os portões (testes, identidade, lista negra, mensagem) rodam nos hooks do git (
 - `--no-verify` (ou `-n` num commit), que salta os hooks do git;
 - mudar ou desligar o `core.hooksPath` (só se pode pô-lo em `.githooks`);
 - um commit com o `core.hooksPath` que não é `.githooks` (os portões não rodariam);
-- preparar tudo de uma vez (`git add -A` / `.` / `--all` / `:/`, `git commit -a`, commit de `.` ou sem caminhos,
-  fora de um merge): o commit é por caminho, para não levar o trabalho de outra sessão;
+- preparar tudo de uma vez (`git add -A` / `-u` / `.` / `--all` / `--update` / `:/`, `git commit -a`, commit de `.`
+  ou sem caminhos, fora de um merge): o commit é por caminho, para não levar o trabalho de outra sessão. No
+  `git add` passam só caminhos e as opções da lista `_ADD_…_QUE_PASSAM`: uma opção desconhecida é recusada;
 - `MORG_A_TESTAR` num commit: é a marca que faz o pre-commit saltar os testes dentro de uma corrida de testes;
 - `git commit -m` com várias linhas ou com heredoc: no Windows estraga os acentos; usar `-F <arquivo>`;
 - `git stash` (fora de `list` e `show`): leva o trabalho de todas as sessões que partilham a pasta.
@@ -30,6 +31,9 @@ _CURTAS_COM_VALOR = "mFCct"  # opções de uma letra do git commit que levam val
 _LONGAS_COM_VALOR = {"--file", "--author", "--date", "--template", "--fixup", "--squash", "--reuse-message",
                      "--reedit-message", "--cleanup", "--trailer", "--pathspec-from-file"}
 _TUDO = {".", "./", ":/", "*", "-A", "--all"}
+# Opções do git add que não alargam o que se prepara; qualquer outra (-A, -u, -p, --pathspec-from-file…) recusa.
+_ADD_CURTAS_QUE_PASSAM = set("vnfN")
+_ADD_LONGAS_QUE_PASSAM = {"--verbose", "--dry-run", "--force", "--intent-to-add", "--chmod"}
 
 
 def palavras(comando):
@@ -121,6 +125,14 @@ def motivo_do_commit(args, ler_hooks):
     return None
 
 
+def motivo_do_add(args):
+    """Motivo para recusar um `git add …`: passam só caminhos e as opções que não alargam o que se prepara."""
+    curtas, longas, _, caminhos = opcoes(args)
+    if curtas - _ADD_CURTAS_QUE_PASSAM or longas - _ADD_LONGAS_QUE_PASSAM or _TUDO & set(caminhos):
+        return "prepare por caminho (git add -- <arquivos>), nunca tudo (-A, -u, --all, --update, ., :/)."
+    return None
+
+
 def motivo_do_hooks_path(globais, subcomando, args):
     """Motivo para recusar uma mudança ao core.hooksPath (pô-lo em .githooks ou lê-lo pode)."""
     if any(valor.lower().startswith("core.hookspath") for valor in globais):
@@ -146,8 +158,8 @@ def motivo_para_bloquear(comando, ler_hooks):
         return f"{MARCA_DOS_TESTES} é só para dentro dos testes: num commit faria o pre-commit saltar os testes."
     for globais, subcomando, args in comandos:
         motivo = motivo_do_hooks_path(globais, subcomando, args)
-        if not motivo and subcomando == "add" and (_TUDO & set(args) or any(re.fullmatch(r"-\w*A\w*", a) for a in args)):
-            motivo = "prepare por caminho (git add -- <arquivos>), nunca tudo (-A, --all, ., :/)."
+        if not motivo and subcomando == "add":
+            motivo = motivo_do_add(args)
         if not motivo and subcomando == "commit":
             motivo = motivo_do_commit(args, ler_hooks)
         if not motivo and subcomando in ("push", "merge", "rebase", "am", "cherry-pick") and "--no-verify" in args:

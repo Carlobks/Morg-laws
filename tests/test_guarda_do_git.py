@@ -44,6 +44,13 @@ class Recusa(unittest.TestCase):
                            "git commit -a -F m", "git commit -am x", "git commit --all -F m",
                            "git commit -F m -- .", "cd x && git add . && git commit -F m"], "caminho")
 
+    def test_preparar_todos_os_seguidos(self):
+        # -u prepara de uma vez todos os arquivos já seguidos, também os que outra sessão mudou na mesma pasta.
+        # Só passam as opções conhecidas por não alargar o que se prepara: uma opção nova cai aqui.
+        self.assertRecusa(["git add -u", "git add --update", "git add -uv", "git add -vu", "git add -u -- a.py",
+                           "git -C pasta add --update", "git add --pathspec-from-file=lista.txt",
+                           "git add -p", "git add --no-ignore-removal"], "caminho")
+
     def test_commit_sem_caminhos(self):
         # Um commit sem caminhos leva o que outra sessão deixou preparado.
         self.assertRecusa(["git commit -F m.txt", "git commit --amend -F m.txt", "git commit -q -F m && git log"],
@@ -74,7 +81,9 @@ class DeixaPassar(unittest.TestCase):
                         'git log --oneline -5', 'git commit --amend -F m.txt -- a.py', "echo 'sem aspas fechadas",
                         'git commit -F m --author "Ana <a@example.com>" -- a.py', 'git commit -C HEAD -- a.py',
                         'git commit -F m -- -arquivo-com-hifen.py', 'git -C pasta --no-pager log', 'ls -la',
-                        'git stash list', 'git stash show -p stash@{0}', '']:
+                        'git stash list', 'git stash show -p stash@{0}', '', 'git add a.py', 'git add -v -- a.py',
+                        'git add --chmod=+x -- .githooks/pre-commit', 'git add -N -- novo.py', 'git add -f -- x.log',
+                        'git add --dry-run -- a.py']:
             with self.subTest(comando=comando):
                 self.assertIsNone(guarda.motivo_para_bloquear(comando, lido))
 

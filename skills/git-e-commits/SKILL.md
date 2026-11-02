@@ -36,7 +36,7 @@ git commit -F msg.txt -- <arquivo1> <arquivo2>
 - **Uma guarda no agente fecha as saídas** (modelo em `modelos/claude/hooks/`). Ela recusa:
   - `--no-verify` (ou `-n` num commit);
   - mudar ou desligar o `core.hooksPath`;
-  - `git add -A`, `.`, `--all` ou `:/`, e `git commit -a`;
+  - `git add -A`, `-u`, `.`, `--all`, `--update` ou `:/` (no `git add` só passam caminhos e opções que não alargam o que se prepara), e `git commit -a`;
   - commit sem caminhos fora de um merge;
   - `-m` com várias linhas;
   - `git stash`.
