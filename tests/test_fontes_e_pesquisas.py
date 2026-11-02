@@ -8,8 +8,9 @@
    base, que só encolhe: não passa de LINHA_DE_BASE_INICIAL e não guarda uma entrada que já está certa;
 3. cada pesquisa fica direto em `pesquisas/`, está no índice com a data na última coluna e tem as cinco seções
    `## `, na ordem (um título dentro de um bloco de código não conta);
-4. nenhum arquivo do git cita uma decisão pelo número (a letra D seguida de algarismos): o número só existe num
-   registro privado, e quem lê o repositório não o consegue seguir. A decisão escreve-se em palavras.
+4. nenhum texto escrito por pessoas (`.md`, `.py`, `.sh`, `.yml` do git) cita uma decisão pelo número (a letra D
+   seguida de algarismos): o número só existe num registro privado, e quem lê o repositório não o consegue seguir.
+   A decisão escreve-se em palavras. Os lockfiles ficam de fora: um hash em base64 pode casar com o padrão.
 As funções recebem a raiz e a lista de arquivos, para os casos de erro serem provados numa pasta temporária.
 """
 
@@ -44,6 +45,8 @@ DOMINIOS_DE_EXEMPLO = ("example.com", "example.org", "example.net")
 SECOES_DA_PESQUISA = ("Pergunta", "Fontes", "O que se mediu", "O que não se verificou", "Conclusão")
 CERCAS_DE_CODIGO = ("```", "~~~")
 NUMERO_DE_DECISAO = re.compile(r"\bD\d+\b")
+# Só o texto escrito por pessoas: um hash de lockfile em base64 pode conter a letra D seguida de algarismos.
+TEXTO_ESCRITO_POR_PESSOAS = (".md", ".py", ".sh", ".yml")
 
 
 def normalizar(url):
@@ -168,13 +171,13 @@ def erros_das_pesquisas(pasta):
 
 
 def numeros_de_decisoes(raiz, arquivos):
-    """Mensagens para cada número de decisão (a letra D seguida de algarismos) num arquivo de texto."""
+    """Mensagens para cada número de decisão (a letra D seguida de algarismos) no texto escrito por pessoas."""
     erros = []
     for nome in sorted(arquivos):
-        dados = (raiz / nome).read_bytes()
-        if b"\0" in dados:  # binário
+        if not nome.endswith(TEXTO_ESCRITO_POR_PESSOAS):  # lockfiles, imagens e outros gerados ficam de fora
             continue
-        for numero, linha in enumerate(dados.decode("utf-8", "replace").splitlines(), start=1):
+        texto = (raiz / nome).read_text(encoding="utf-8", errors="replace")
+        for numero, linha in enumerate(texto.splitlines(), start=1):
             erros += [f"{nome}:{numero}: {achado} — escreva a decisão em palavras; o número só existe num registro "
                       "privado" for achado in NUMERO_DE_DECISAO.findall(linha)]
     return erros
@@ -377,6 +380,19 @@ class RegressoesDaAuditoria(PastaTemporaria):
         (self.raiz / "imagem.png").write_bytes(b"\x89PNG\0" + decisao.encode())
         esperado = f"doc.md:1: {decisao} — escreva a decisão em palavras; o número só existe num registro privado"
         self.assertEqual(numeros_de_decisoes(self.raiz, ["doc.md", "imagem.png"]), [esperado])
+
+    def test_n2_so_le_o_texto_escrito_por_pessoas(self):
+        # Um sha512 em base64 tem / e +, que são fronteiras de palavra: este casa com o padrão (a barra, a letra D,
+        # o zero e o +). Montado aos pedaços, para este arquivo .py não se acusar a si mesmo.
+        hash_do_lockfile = ("sha512-HRwfEzL8RUtXu80d19IA/Z/D" + "0+wZ1HAlfdhFyEY9d4rLlQquhH/+Z//aR5jipkCZsIyqNacU/"
+                            "d2WQqtysLz+eQ==")
+        self.escrever("package-lock.json", f'{{"integrity": "{hash_do_lockfile}"}}\n')
+        decisao = "D" + "9"
+        for nome in ("a.md", "b.py", "c.sh", "d.yml"):
+            self.escrever(nome, f"x {decisao}\n")
+        self.assertEqual([erro.split(":")[0] for erro in
+                          numeros_de_decisoes(self.raiz, ["package-lock.json", "a.md", "b.py", "c.sh", "d.yml"])],
+                         ["a.md", "b.py", "c.sh", "d.yml"])
 
 
 if __name__ == "__main__":
