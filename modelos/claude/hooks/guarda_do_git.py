@@ -146,9 +146,12 @@ def motivo_do_hooks_path(globais, subcomando, args):
     return None
 
 
-def merge_em_curso():
-    """True a meio de um merge: o commit que o fecha leva tudo o que o merge preparou, sem caminhos."""
-    return (RAIZ / ".git" / "MERGE_HEAD").exists()
+def merge_em_curso(raiz=RAIZ):
+    """True a meio de um merge: o commit que o fecha leva tudo o que o merge preparou, sem caminhos.
+    O git diz onde está o MERGE_HEAD: num worktree o .git é um arquivo e ele fica noutra pasta."""
+    caminho = subprocess.run(["git", "-C", str(raiz), "rev-parse", "--path-format=absolute", "--git-path",
+                              "MERGE_HEAD"], capture_output=True, text=True, encoding="utf-8", check=False).stdout
+    return bool(caminho.strip()) and Path(caminho.strip()).exists()
 
 
 def motivo_para_bloquear(comando, ler_hooks):

@@ -3,12 +3,14 @@
 import json
 import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 from types import SimpleNamespace
 from unittest import mock
 
 from carregar_modelos import PASTA_HOOKS, carregar_hook, correr_como_script
+from projeto_de_exemplo import apagar, git
 
 guarda = carregar_hook("guarda_do_git")
 
@@ -91,8 +93,26 @@ class DeixaPassar(unittest.TestCase):
         with mock.patch.object(guarda, "merge_em_curso", return_value=True):
             self.assertIsNone(guarda.motivo_para_bloquear("git commit -F m.txt", hooks_certos))
 
-    def test_merge_em_curso_ve_o_merge_head(self):
-        self.assertEqual(guarda.merge_em_curso(), (Path(guarda.RAIZ) / ".git" / "MERGE_HEAD").exists())
+    def test_fora_de_um_repositorio_nao_ha_merge(self):
+        pasta = Path(tempfile.mkdtemp(prefix="morg-sem-git-"))
+        self.addCleanup(apagar, pasta)
+        self.assertFalse(guarda.merge_em_curso(pasta))
+
+    def test_merge_em_curso_num_worktree(self):
+        # Num worktree o .git é um arquivo e o MERGE_HEAD fica na pasta do worktree dentro do repositório principal.
+        principal = Path(tempfile.mkdtemp(prefix="morg-merge-"))
+        self.addCleanup(apagar, principal)
+        git(principal, "init", "-q", "-b", "main")
+        arvore_vazia = git(principal, "write-tree").stdout.strip()
+        commit = git(principal, "-c", "user.name=Ana", "-c", "user.email=a@example.com", "commit-tree", arvore_vazia,
+                     "-m", "x").stdout.strip()
+        git(principal, "update-ref", "refs/heads/main", commit)
+        git(principal, "worktree", "add", "-q", "-b", "outro", str(principal / "arvore"))
+        arvore = principal / "arvore"
+        self.assertFalse(guarda.merge_em_curso(arvore))
+        merge_head = Path(git(arvore, "rev-parse", "--path-format=absolute", "--git-path", "MERGE_HEAD").stdout.strip())
+        merge_head.write_text(commit + "\n", encoding="utf-8")
+        self.assertTrue(guarda.merge_em_curso(arvore))
 
     def test_so_le_o_hooks_path_quando_ha_commit(self):
         lido = mock.Mock(return_value="")
