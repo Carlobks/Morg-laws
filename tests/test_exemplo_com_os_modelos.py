@@ -48,7 +48,7 @@ class ProjetoDeExemplo(unittest.TestCase):
         self.assertFalhaEm("test_cada_alarme_tem_motivo")
 
     def test_alarme_com_comentario_qualquer_em_cima(self):
-        # D9: o motivo vai na mesma linha; um TODO ou outro alarme em cima não é motivo.
+        # A regra do alarme: o motivo vai na mesma linha; um TODO ou outro alarme em cima não é motivo.
         escrever(self.pasta / "src" / "calado.py", "# TODO ver depois\nimport os  # noqa: F401\n")
         self.assertFalhaEm("test_cada_alarme_tem_motivo")
 
