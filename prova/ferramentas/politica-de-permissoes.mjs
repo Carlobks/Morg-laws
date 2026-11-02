@@ -7,12 +7,16 @@
 // - `Bash(npm test *)` também casa com `npm test` sem argumentos; num comando composto
 //   (`&&`, `;`, `|`…) cada parte tem de estar permitida.
 // - Uma negação vence sempre uma permissão; um nome de ferramenta sozinho a tira do contexto.
+//
+// Também aqui: a versão e o modelo fixos, e a vigilância do PostgreSQL e dos processos da corrida.
 
-import { spawnSync } from 'node:child_process'
-import fs from 'node:fs'
-import path from 'node:path'
+import { execFile, spawnSync } from 'node:child_process'
+import net from 'node:net'
+import { promisify } from 'node:util'
 
 export const VERSAO_FIXA_DO_CLAUDE_CODE = '2.1.311'
+// O ID completo, não o apelido `sonnet`: um apelido pode passar a outro modelo entre corridas.
+export const MODELO_FIXO = 'claude-sonnet-5-5'
 export const MODO_DE_PERMISSAO = 'dontAsk'
 
 // Read, Glob e Grep dentro da cópia não pedem licença; fora dela, o dontAsk recusa.
@@ -26,6 +30,13 @@ export const REGRAS_PERMITIDAS = [
   { regra: 'Bash(npm test *)', motivo: 'correr os testes' },
   { regra: 'Bash(npm run tipos *)', motivo: 'conferir os tipos' },
   { regra: 'Bash(npx vitest run *)', motivo: 'correr um arquivo de teste' },
+  // A cópia é um repositório local, sem remoto: as regras da condição «com» mandam commitar,
+  // e recusar o git pesaria só nesse braço (B5 da auditoria 4.3).
+  { regra: 'Bash(git status *)', motivo: 'git local: ver o estado' },
+  { regra: 'Bash(git diff *)', motivo: 'git local: ver o diff' },
+  { regra: 'Bash(git add *)', motivo: 'git local: preparar o commit' },
+  { regra: 'Bash(git commit *)', motivo: 'git local: commitar' },
+  { regra: 'Bash(git log *)', motivo: 'git local: ver o histórico' },
 ]
 
 export const REGRAS_NEGADAS = [
@@ -37,12 +48,13 @@ export const REGRAS_NEGADAS = [
   { regra: 'Workflow', motivo: 'orquestra subagentes' },
   { regra: 'Edit(./package.json)', motivo: 'o npm test executa o script que estiver lá: mudar o script mudaria o que «npm test» corre' },
   { regra: 'Edit(./package-lock.json)', motivo: 'as dependências ficam fixas' },
-  { regra: 'Edit(./vitest.config.*)', motivo: 'a configuração escolhe que testes correm; o oráculo do T3 corre os testes do projeto com ela' },
+  { regra: 'Edit(./vitest.config.*)', motivo: 'a configuração escolhe que testes correm durante a tentativa' },
   { regra: 'Edit(./tsconfig.json)', motivo: 'a configuração do npm run tipos' },
-  {
-    regra: 'Edit(./node_modules/**)',
-    motivo: 'o oráculo corre com o node_modules da tentativa (por junção na cópia dele): mudar uma dependência mudaria o veredito',
-  },
+  { regra: 'Edit(./node_modules/**)', motivo: 'o npm test da tentativa corre com estas dependências; o oráculo instala as suas, limpas' },
+  { regra: 'Edit(./.git/**)', motivo: 'os hooks e a configuração do repositório da cópia' },
+  { regra: 'Bash(git push *)', motivo: 'a cópia não tem remoto, e nada sai da máquina' },
+  { regra: 'Bash(git remote *)', motivo: 'sem remoto' },
+  { regra: 'Bash(git config *)', motivo: 'a identidade e os hooks do repositório da cópia ficam fixos' },
 ]
 
 export function argumentosDaPolitica() {
@@ -58,35 +70,28 @@ export function lerVersaoDoClaudeCode() {
   return /^(\d+\.\d+\.\d+)/.exec((execucao.stdout ?? '').trim())?.[1] ?? null
 }
 
-// ---------- PATH sem PostgreSQL ----------
+// ---------- vigilância: portas do Postgres e serviços postgresql* (antes e depois) ----------
+// As portas são sondadas com uma ligação TCP, e não lidas no netstat: a partir do shell
+// em que as corridas são lançadas, o netstat e o Get-NetTCPConnection mostram só algumas
+// escutas (nem a do serviço do Windows na 5432, que aceita ligações).
 
-const PROGRAMAS_DO_POSTGRES = ['psql.exe', 'pg_ctl.exe', 'initdb.exe', 'psql', 'pg_ctl', 'initdb']
+const PORTAS_VIGIADAS = [5432, 5433, 5434, 5435, 5436, 5437, 5438, 5439, 55432]
 
-export function tirarPostgresDoPath(ambiente) {
-  const chave = Object.keys(ambiente).find((nome) => nome.toUpperCase() === 'PATH') ?? 'PATH'
-  const pastas = (ambiente[chave] ?? '').split(path.delimiter).filter(Boolean)
-  const temPostgres = (pasta) => PROGRAMAS_DO_POSTGRES.some((programa) => fs.existsSync(path.join(pasta, programa)))
-  const removidas = pastas.filter(temPostgres)
-  ambiente[chave] = pastas.filter((pasta) => !temPostgres(pasta)).join(path.delimiter)
-  return { chave, removidas, pastas_antes: pastas.length, pastas_depois: pastas.length - removidas.length }
+export function aceitaLigacao(porta, host) {
+  return new Promise((resolver) => {
+    const socket = net.connect({ port: porta, host, timeout: 1500 })
+    socket.once('connect', () => { socket.destroy(); resolver(true) })
+    socket.once('timeout', () => { socket.destroy(); resolver(false) })
+    socket.once('error', () => resolver(false))
+  })
 }
 
-// ---------- vigilância: portas do Postgres e serviços postgresql* ----------
-
-const PORTAS_VIGIADAS = [5432, 55432]
-
-function quemEscuta() {
-  const netstat = spawnSync('netstat', ['-ano'], { encoding: 'utf8' })
-  const escutas = []
-  for (const linha of (netstat.stdout ?? '').split(/\r?\n/)) {
-    const colunas = linha.trim().split(/\s+/)
-    if (colunas.length < 4 || !/^TCP$/i.test(colunas[0])) continue
-    const [, local, remoto] = colunas
-    // Só as escutas (o endereço remoto é 0.0.0.0:0 ou [::]:0): ligações de passagem não contam.
-    if (!/^(0\.0\.0\.0|\[::\]):0$/.test(remoto)) continue
-    if (PORTAS_VIGIADAS.some((porta) => local.endsWith(`:${porta}`))) escutas.push(`${local} pid=${colunas.at(-1)}`)
+async function portasQueAceitam() {
+  const abertas = []
+  for (const porta of PORTAS_VIGIADAS) {
+    for (const host of ['127.0.0.1', '::1']) if (await aceitaLigacao(porta, host)) abertas.push(`${host === '::1' ? '[::1]' : host}:${porta}`)
   }
-  return escutas.sort()
+  return abertas
 }
 
 function servicosDoPostgres() {
@@ -99,14 +104,93 @@ function servicosDoPostgres() {
   return (execucao.stdout ?? '').split(/\r?\n/).map((linha) => linha.trim()).filter(Boolean).sort()
 }
 
-export function fotografarPostgres() {
-  return { momento: new Date().toISOString(), escutas: quemEscuta(), servicos: servicosDoPostgres() }
+export async function fotografarPostgres() {
+  return { momento: new Date().toISOString(), portas_que_aceitam: await portasQueAceitam(), servicos: servicosDoPostgres() }
 }
 
 export function compararFotografias(antes, depois) {
   const mudou = (a, b) => JSON.stringify(a) !== JSON.stringify(b)
   const diferencas = []
-  if (mudou(antes.escutas, depois.escutas)) diferencas.push(`escutas: ${antes.escutas.join(', ') || 'nenhuma'} → ${depois.escutas.join(', ') || 'nenhuma'}`)
+  if (mudou(antes.portas_que_aceitam, depois.portas_que_aceitam)) {
+    diferencas.push(`portas: ${antes.portas_que_aceitam.join(', ') || 'nenhuma'} → ${depois.portas_que_aceitam.join(', ') || 'nenhuma'}`)
+  }
   if (mudou(antes.servicos, depois.servicos)) diferencas.push(`serviços: ${antes.servicos.join(', ')} → ${depois.servicos.join(', ')}`)
   return diferencas
+}
+
+// ---------- vigilância durante a corrida: processos dos descendentes do claude e portas ----------
+// O código do agente sai da política pelo `npm test` (B4 da auditoria 4.3). Sem sandbox, isto
+// pelo menos vê um postgres, initdb, pg_ctl ou psql novo, e uma porta do Postgres que passe a
+// aceitar ligações. Uma escuta noutra porta qualquer não é visível daqui (ver acima).
+
+const executarAssincrono = promisify(execFile)
+const PROGRAMAS_VIGIADOS = new Set(['postgres.exe', 'initdb.exe', 'pg_ctl.exe', 'psql.exe'])
+
+async function listarProcessos() {
+  const { stdout } = await executarAssincrono('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command',
+    'Get-CimInstance Win32_Process | Select-Object ProcessId,ParentProcessId,Name | ConvertTo-Json -Compress'],
+  { maxBuffer: 32 * 1024 * 1024, timeout: 30_000 })
+  return JSON.parse(stdout).map((processo) => ({ pid: processo.ProcessId, pai: processo.ParentProcessId, nome: String(processo.Name).toLowerCase() }))
+}
+
+export async function iniciarVigilancia(intervaloMs = 5000) {
+  const linhaDeBase = await listarProcessos()
+  const portasDaBase = new Set(await portasQueAceitam())
+  const pidsDaBase = new Set(linhaDeBase.map(({ pid }) => pid))
+  const postgresDaBase = new Set(linhaDeBase.filter(({ nome }) => nome === 'postgres.exe').map(({ pid }) => pid))
+  const descendentes = new Set()
+  const ocorrencias = []
+  let raiz = null
+  let amostras = 0
+  let falhasDeAmostra = 0
+  let emCurso = Promise.resolve()
+
+  const amostrar = async () => {
+    try {
+      const [processos, portas] = await Promise.all([listarProcessos(), portasQueAceitam()])
+      amostras++
+      if (raiz) {
+        // Os descendentes acumulam: um pai que já morreu continua a contar para os filhos.
+        let cresceu = true
+        while (cresceu) {
+          cresceu = false
+          for (const { pid, pai } of processos) {
+            if ((pai === raiz || descendentes.has(pai)) && !descendentes.has(pid)) {
+              descendentes.add(pid)
+              cresceu = true
+            }
+          }
+        }
+      }
+      for (const processo of processos) {
+        const novo = !pidsDaBase.has(processo.pid)
+        // Um postgres filho do serviço do Windows é uma ligação ao serviço, não um servidor novo.
+        if (novo && PROGRAMAS_VIGIADOS.has(processo.nome) && !postgresDaBase.has(processo.pai)) {
+          const origem = descendentes.has(processo.pid) ? 'da corrida' : 'de fora da corrida'
+          ocorrencias.push(`processo ${processo.nome} pid=${processo.pid} pai=${processo.pai} (${origem})`)
+        }
+      }
+      for (const porta of portas) if (!portasDaBase.has(porta)) ocorrencias.push(`a porta ${porta} passou a aceitar ligações`)
+      for (const porta of portasDaBase) if (!portas.includes(porta)) ocorrencias.push(`a porta ${porta} deixou de aceitar ligações`)
+    } catch {
+      falhasDeAmostra++
+    }
+  }
+  const relogio = setInterval(() => { emCurso = emCurso.then(amostrar) }, intervaloMs)
+  return {
+    definirRaiz(pid) { raiz = pid },
+    async parar() {
+      clearInterval(relogio)
+      await emCurso
+      await amostrar()
+      return {
+        intervalo_ms: intervaloMs,
+        amostras,
+        falhas_de_amostra: falhasDeAmostra,
+        descendentes: descendentes.size,
+        portas_da_base: [...portasDaBase],
+        ocorrencias: [...new Set(ocorrencias)],
+      }
+    },
+  }
 }

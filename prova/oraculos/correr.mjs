@@ -18,6 +18,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { montarAmbienteDoFilho } from '../ferramentas/ambiente-do-filho.mjs'
+import { aceitaLigacao } from '../ferramentas/politica-de-permissoes.mjs'
 import {
   apagarPastaTemporaria,
   copiarProjetoSemDependencias,
@@ -215,12 +216,9 @@ function oraculoT3(projeto) {
 
 // ---------- T1: PostgreSQL descartável ----------
 
-function portaEmUso(porta) {
-  const netstat = spawnSync('netstat', ['-ano'], { encoding: 'utf8' })
-  return netstat.stdout.split(/\r?\n/).some((linha) => {
-    const colunas = linha.trim().split(/\s+/)
-    return colunas.length >= 2 && /^TCP|^UDP/i.test(colunas[0]) && colunas[1].endsWith(`:${porta}`)
-  })
+// Sonda-se com uma ligação: daqui o netstat não mostra todas as escutas (nem a 5432 do serviço).
+async function portaEmUso(porta) {
+  return (await aceitaLigacao(porta, '127.0.0.1')) || (await aceitaLigacao(porta, '::1'))
 }
 
 function psql(contexto, script, usuario = 'teste') {
@@ -400,9 +398,9 @@ select count(*) || '|' || count(*) filter (where usuario_id is distinct from ${u
   return verificacoes
 }
 
-function oraculoT1(projeto) {
+async function oraculoT1(projeto) {
   const protocolo = { porta: PORTA_DESCARTAVEL }
-  protocolo.porta_livre_antes = !portaEmUso(PORTA_DESCARTAVEL)
+  protocolo.porta_livre_antes = !(await portaEmUso(PORTA_DESCARTAVEL))
   if (!protocolo.porta_livre_antes) {
     throw Object.assign(new Error(`a porta ${PORTA_DESCARTAVEL} já está em uso: o oráculo não sobe o banco`), { protocolo })
   }
@@ -432,13 +430,13 @@ function oraculoT1(projeto) {
   } finally {
     if (iniciado) protocolo.stop = executar('pg_ctl', ['-D', dados, 'stop', '-m', 'fast', '-w'], { env: contexto.ambiente }).codigo
     protocolo.pasta_apagada = apagarPastaTemporaria(pasta)
-    protocolo.porta_livre_depois = !portaEmUso(PORTA_DESCARTAVEL)
+    protocolo.porta_livre_depois = !(await portaEmUso(PORTA_DESCARTAVEL))
   }
 }
 
 // ---------- entrada ----------
 
-function principal() {
+async function principal() {
   const [pastaDoProjeto, tarefa] = process.argv.slice(2)
   if (!pastaDoProjeto || !['T1', 'T2', 'T3'].includes(tarefa)) {
     console.error('uso: node prova/oraculos/correr.mjs <pasta-do-projeto> <T1|T2|T3>')
@@ -449,9 +447,9 @@ function principal() {
   const resultado = { tarefa, projeto, passou: false, resolveu: false, cumpriu_a_norma: false, verificacoes: [] }
   try {
     // A guarda das portas lê o netstat do Windows; noutro sistema ela não protegeria nada.
-    if (process.platform !== 'win32') throw new Error('o oráculo só corre no Windows (netstat -ano, junções)')
+    if (process.platform !== 'win32') throw new Error('o oráculo só corre no Windows (junções, powershell)')
     if (!fs.existsSync(path.join(projeto, 'package.json'))) throw new Error(`não é o projeto de teste: ${projeto}`)
-    if (tarefa === 'T1') Object.assign(resultado, oraculoT1(projeto))
+    if (tarefa === 'T1') Object.assign(resultado, await oraculoT1(projeto))
     if (tarefa === 'T2') resultado.verificacoes = oraculoT2(projeto)
     if (tarefa === 'T3') resultado.verificacoes = oraculoT3(projeto)
     const doTipo = (tipo) => resultado.verificacoes.filter((verificacao) => verificacao.tipo === tipo)
@@ -467,4 +465,4 @@ function principal() {
   process.exit(resultado.erro ? 2 : resultado.passou ? 0 : 1)
 }
 
-principal()
+await principal()
