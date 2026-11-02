@@ -55,6 +55,8 @@ export const REGRAS_NEGADAS = [
   { regra: 'Bash(git push *)', motivo: 'a cópia não tem remoto, e nada sai da máquina' },
   { regra: 'Bash(git remote *)', motivo: 'sem remoto' },
   { regra: 'Bash(git config *)', motivo: 'a identidade e os hooks do repositório da cópia ficam fixos' },
+  { regra: 'Bash(git diff *--output*)', motivo: '--output escreve o diff num arquivo, também fora da cópia' },
+  { regra: 'Bash(git log *--output*)', motivo: '--output escreve num arquivo, também fora da cópia' },
 ]
 
 export function argumentosDaPolitica() {
@@ -65,8 +67,20 @@ export function argumentosDaPolitica() {
   ]
 }
 
-export function lerVersaoDoClaudeCode() {
-  const execucao = spawnSync('claude', ['--version'], { encoding: 'utf8', timeout: 60_000 })
+// O runner lança o claude sem shell, e sem shell o Windows só acha um .exe: um claude.cmd (o atalho
+// que um `npm i -g` pode deixar no PATH) não serve. Por isso procura-se o .exe e diz-se porque falha.
+export function localizarClaude() {
+  const onde = spawnSync('where.exe', ['claude'], { encoding: 'utf8' })
+  const caminhos = (onde.stdout ?? '').split(/\r?\n/).map((linha) => linha.trim()).filter(Boolean)
+  const executavel = caminhos.find((caminho) => caminho.toLowerCase().endsWith('.exe'))
+  if (!executavel) {
+    throw new Error(`não achei um claude.exe no PATH (achei: ${caminhos.join(', ') || 'nada'}). Instale o Claude Code nativo, que deixa um claude.exe.`)
+  }
+  return executavel
+}
+
+export function lerVersaoDoClaudeCode(executavel) {
+  const execucao = spawnSync(executavel, ['--version'], { encoding: 'utf8', timeout: 60_000 })
   return /^(\d+\.\d+\.\d+)/.exec((execucao.stdout ?? '').trim())?.[1] ?? null
 }
 

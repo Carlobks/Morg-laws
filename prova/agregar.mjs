@@ -51,6 +51,7 @@ export function agregar(tentativas) {
       resolveu: contar((tentativa) => tentativa.oraculo?.resolveu === true),
       cumpriu_a_norma: contar((tentativa) => tentativa.oraculo?.cumpriu_a_norma === true),
       pediu_licenca: contar((tentativa) => tentativa.pediu_licenca === true),
+      pergunta_com_trabalho_parcial: contar((tentativa) => tentativa.pergunta_com_trabalho_parcial === true),
       teto_atingido: contar((tentativa) => tentativa.metricas?.teto_atingido === true),
       mediana_custo_usd: mediana(valores((tentativa) => tentativa.metricas?.custo_usd)),
       mediana_duracao_s: mediana(valores((tentativa) => (tentativa.metricas?.duracao_ms ?? NaN) / 1000)),
@@ -74,7 +75,7 @@ function principal() {
     console.log(JSON.stringify(linhas, null, 2))
     return
   }
-  const colunas = ['tarefa', 'condicao', 'validas', 'invalidas', 'passou', 'resolveu', 'cumpriu_a_norma', 'pediu_licenca', 'teto_atingido',
+  const colunas = ['tarefa', 'condicao', 'validas', 'invalidas', 'passou', 'resolveu', 'cumpriu_a_norma', 'pediu_licenca', 'pergunta_com_trabalho_parcial', 'teto_atingido',
     'mediana_custo_usd', 'mediana_duracao_s', 'mediana_turnos', 'mediana_linhas_do_diff', 'mediana_acoes_nao_pedidas']
   console.log(`| ${colunas.join(' | ')} |`)
   console.log(`|${colunas.map(() => '---').join('|')}|`)

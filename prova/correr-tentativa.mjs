@@ -34,6 +34,7 @@ import {
   fotografarPostgres,
   iniciarVigilancia,
   lerVersaoDoClaudeCode,
+  localizarClaude,
   MODELO_FIXO,
   MODO_DE_PERMISSAO,
   REGRAS_NEGADAS,
@@ -199,12 +200,12 @@ function resumirParte(arquivoJsonl) {
   }
 }
 
-function correrClaude({ argumentos, copia, ambiente, arquivoJsonl, arquivoDeErros, vigilancia }) {
+function correrClaude({ executavel, argumentos, copia, ambiente, arquivoJsonl, arquivoDeErros, vigilancia }) {
   return new Promise((resolver) => {
     const jsonl = fs.openSync(arquivoJsonl, 'w')
     const erros = fs.openSync(arquivoDeErros, 'w')
     const inicio = Date.now()
-    const filho = spawn('claude', argumentos, { cwd: copia, env: ambiente, stdio: ['ignore', jsonl, erros] })
+    const filho = spawn(executavel, argumentos, { cwd: copia, env: ambiente, stdio: ['ignore', jsonl, erros] })
     vigilancia.definirRaiz(filho.pid)
     const limite = setTimeout(() => filho.kill(), 45 * 60_000)
     const terminar = (codigo, erro) => {
@@ -241,10 +242,12 @@ function contarAcoesNaoPedidas(tarefa, arquivos, recusas) {
 
 // ---------- oráculo ----------
 
+// O oráculo corre com o ambiente por lista, mas com o PostgreSQL no PATH (o T1 precisa dele).
 function correrOraculo(copia, tarefa) {
   const execucao = spawnSync(process.execPath, [path.join(PASTA_DA_PROVA, 'oraculos', 'correr.mjs'), copia, tarefa], {
     encoding: 'utf8',
     timeout: 900_000,
+    env: montarAmbienteDoFilho({ semPostgres: false }).ambiente,
   })
   let json = null
   try {
@@ -280,7 +283,9 @@ async function principal() {
   try {
     if (process.platform !== 'win32') throw new Error('o banco de provas só corre no Windows (junções, powershell, serviços)')
     meta.node = process.version
-    meta.versao_do_claude_code = lerVersaoDoClaudeCode()
+    const executavel = localizarClaude()
+    meta.executavel_do_claude = executavel
+    meta.versao_do_claude_code = lerVersaoDoClaudeCode(executavel)
     if (meta.versao_do_claude_code !== VERSAO_FIXA_DO_CLAUDE_CODE) {
       throw new Error(`Claude Code ${meta.versao_do_claude_code}; a Fase 4 está fixada na ${VERSAO_FIXA_DO_CLAUDE_CODE}`)
     }
@@ -315,23 +320,29 @@ async function principal() {
     const partes = []
     const correrParte = async (numero, argumentos) => {
       const arquivoJsonl = path.join(saida, numero === 1 ? 'sessao.jsonl' : `sessao-${numero}.jsonl`)
-      const processo = await correrClaude({ argumentos, copia, ambiente, arquivoJsonl, arquivoDeErros: path.join(saida, `stderr-${numero}.txt`), vigilancia })
+      const processo = await correrClaude({ executavel, argumentos, copia, ambiente, arquivoJsonl, arquivoDeErros: path.join(saida, `stderr-${numero}.txt`), vigilancia })
       const lida = resumirParte(arquivoJsonl)
       partes.push({ numero, processo, ...lida.resumo })
+      // O modelo confere-se em cada parte: uma retoma também declara o seu init.
+      if (lida.resumo.modelo !== MODELO_FIXO) invalidar(`a parte ${numero} declarou o modelo ${lida.resumo.modelo}, não ${MODELO_FIXO}`)
       return lida
     }
     const primeira = await correrParte(1, ['-p', pedido, ...comum, '--max-budget-usd', opcoes.orcamento])
-    if (primeira.resumo.modelo !== MODELO_FIXO) invalidar(`o init declarou o modelo ${primeira.resumo.modelo}, não ${MODELO_FIXO}`)
+    let segunda = null
 
     // Parte 2, no máximo uma: terminou sem mudanças e a pedir licença.
+    // Quem pergunta depois de já ter mexido não é retomado (decisão do dono), mas fica contado à parte.
     meta.pediu_licenca = false
+    meta.pergunta_com_trabalho_parcial = false
     if (TAREFAS_COM_ORACULO.includes(opcoes.tarefa) && primeira.resumo.sessao) {
       const semMudancas = diffContraABase(copia, ambiente, base).arquivos.length === 0
-      if (semMudancas && terminouComPergunta(primeira.texto_final)) {
+      const perguntou = terminouComPergunta(primeira.texto_final)
+      meta.pergunta_com_trabalho_parcial = perguntou && !semMudancas
+      if (semMudancas && perguntou) {
         meta.pediu_licenca = true
         meta.texto_que_pediu_licenca = primeira.texto_final.slice(-400)
         const resto = Math.max(0.01, meta.teto_usd - primeira.resumo.custo_usd).toFixed(2)
-        await correrParte(2, ['-p', TEXTO_DA_RETOMA, '--resume', primeira.resumo.sessao, ...comum, '--max-budget-usd', resto])
+        segunda = await correrParte(2, ['-p', TEXTO_DA_RETOMA, '--resume', primeira.resumo.sessao, ...comum, '--max-budget-usd', resto])
       }
     }
     meta.vigilancia = await vigilancia.parar()
@@ -380,6 +391,12 @@ async function principal() {
     if (transcript) {
       fs.copyFileSync(transcript, path.join(saida, 'transcript.jsonl'))
       meta.transcript = { origem: transcript, ...resumirTranscript(transcript) }
+    }
+    // A retoma pode continuar a mesma sessão ou abrir outra: guarda-se a da 2.ª parte se for outra.
+    const transcriptDaRetoma = segunda ? localizarTranscript(segunda.init) : null
+    if (transcriptDaRetoma && transcriptDaRetoma !== transcript) {
+      fs.copyFileSync(transcriptDaRetoma, path.join(saida, 'transcript-2.jsonl'))
+      meta.transcript_da_retoma = { origem: transcriptDaRetoma, ...resumirTranscript(transcriptDaRetoma) }
     }
     meta.memoria_automatica = primeira.init?.memory_paths ?? null
     if (meta.invalida) throw new Error(`tentativa inválida: ${meta.motivos_de_invalidez.join(' | ')}`)
