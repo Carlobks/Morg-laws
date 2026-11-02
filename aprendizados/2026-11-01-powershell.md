@@ -37,5 +37,5 @@
 
 ## `$USERPROFILE` (sintaxe do Bash) vem vazio
 
-**O que aconteceu:** um comando dado ao dono com `$USERPROFILE` virou o caminho `/.glzr/...` no PowerShell, e o `pyw.exe` (sem console) saiu sem mostrar nada: parecia que a funcionalidade não funcionava.
+**O que aconteceu:** um comando dado ao dono com `$USERPROFILE` virou o caminho `/<pasta>/...` no PowerShell, e o `pyw.exe` (sem console) saiu sem mostrar nada: parecia que a funcionalidade não funcionava.
 **Como fazer:** comandos para o dono vão na sintaxe do terminal dele (`$env:USERPROFILE`, `& <exe>`). Para diagnosticar, rode com `py.exe`, que mostra os erros, em vez do `pyw.exe`.
