@@ -15,3 +15,4 @@ está no `FONTES.md`.
 | Arquivo | Pergunta | Data |
 |---|---|---|
 | [Hooks de compactação](2026-11-02-hooks-de-compactacao.md) | Que hooks do Claude Code disparam em volta de uma compactação, o que recebem e o que podem fazer? | 2026-11-02 |
+| [Compactação no Claude Code e no Codex](2026-11-02-compactacao-claude-code-e-codex.md) | O que o `/compact` aceita em cada ferramenta, quando compactam sozinhas, o que volta depois e se a mesma skill serve às duas? | 2026-11-02 |
