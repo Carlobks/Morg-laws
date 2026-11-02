@@ -10,7 +10,7 @@ Os portões (testes, identidade, lista negra, mensagem) rodam nos hooks do git (
   `git add` passam só caminhos e as opções da lista `_ADD_…_QUE_PASSAM`: uma opção desconhecida é recusada;
 - `MORG_A_TESTAR` num commit: é a marca que faz o pre-commit saltar os testes dentro de uma corrida de testes;
 - `git commit -m` com várias linhas ou com heredoc: no Windows estraga os acentos; usar `-F <arquivo>`;
-- `git stash` (fora de `list` e `show`): leva o trabalho de todas as sessões que partilham a pasta.
+- `git stash` (fora de `list` e `show`): leva o trabalho de todas as sessões que compartilham a pasta.
 Reconhece os comandos pelo texto: um comando montado de outra forma (variáveis, scripts) escapa.
 Sai com 2 e o motivo no stderr; sai com 0 nos outros casos.
 Instalar: copiar para `.claude/hooks/` do projeto e ligar no `.claude/settings.json` (modelo ao lado).

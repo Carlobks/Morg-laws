@@ -5,7 +5,7 @@ Conta os `noqa`, `pragma: no cover`, `node:coverage disable`, `biome-ignore`, `e
 JSX). Cada um tem o motivo na mesma linha, depois de " — ": um comentário na linha de cima não conta, porque pode
 ser um TODO ou outro alarme. A contagem por tipo não pode subir, e quem tira um baixa o número no mesmo commit
 (catraca nos dois sentidos). Um `noqa` só pode citar regras que o ruff tem ligadas, e isso pergunta-se ao
-próprio ruff: uma auditoria real deu duas regras como desligadas, e o ruff liga-as por omissão.
+próprio ruff: uma auditoria real deu duas regras como desligadas, e o ruff liga-as por padrão.
 Instalar: copiar para `tests/` do projeto e ajustar o bloco abaixo.
 """
 

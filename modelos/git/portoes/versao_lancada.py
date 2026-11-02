@@ -27,7 +27,7 @@ def erros(texto, arquivos, antes, depois, versao):
     if "CHANGELOG.md" in arquivos and not depois.endswith(parte_lancada(antes)) \
             and not CHANGELOG_CORRIGIDO.search(texto):
         motivos.append("ERRO: o commit muda uma versão já lançada do CHANGELOG.md, e uma versão lançada não muda. "
-                       "Se é mesmo para corrigir, diga porquê na linha 'Changelog-corrigido: <motivo>'.")
+                       "Se é mesmo para corrigir, diga por quê na linha 'Changelog-corrigido: <motivo>'.")
     if "VERSION" in arquivos:
         topo = SECAO.search(depois)
         if versao is None or not topo or topo[1] != versao or f"## [{versao}]" in antes:

@@ -98,7 +98,7 @@ def erros_das_linhas_de_motivo(texto, tipo, arquivos, testes_mudados):
                        "changelog.d/AAAA-MM-DD-assunto.md ou a linha 'Sem-changelog: <motivo concreto>'.")
     if testes_mudados and not TESTE_MUDADO.search(texto):
         motivos.append(f"ERRO: o commit tira ou muda linhas de testes que já existiam ({', '.join(testes_mudados)}): "
-                       "diga porquê na linha 'Teste-mudado: <motivo>'.")
+                       "diga por quê na linha 'Teste-mudado: <motivo>'.")
     return motivos
 
 

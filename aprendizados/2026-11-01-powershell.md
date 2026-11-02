@@ -5,7 +5,7 @@
 **O que aconteceu:** um JSON gravado pelo instalador foi recusado pelo programa que o lia, e acentos de um `.ps1` saíram trocados.
 **Por que:** no 5.1, `Set-Content` grava na página de código local (ANSI) e `Out-File` em UTF-8 **com** BOM; muitos leitores de JSON recusam o BOM. Ao contrário, um `.ps1` sem BOM é lido como ANSI.
 **Como fazer:** grave com `[IO.File]::WriteAllText($caminho, $texto, (New-Object Text.UTF8Encoding $false))`. Os `.ps1` com acentos levam BOM; JSON, YAML e HTML não. Um teste pode conferir as duas coisas.
-**Versão:** Windows PowerShell 5.1 (o PowerShell 7 grava UTF-8 sem BOM por omissão).
+**Versão:** Windows PowerShell 5.1 (o PowerShell 7 grava UTF-8 sem BOM por padrão).
 
 ## Um programa que escreve no stderr vira exceção
 

@@ -66,7 +66,7 @@ description: Guia como provar que um trabalho de agente funciona — o teste que
 ## 9. Provar que os testes pegam
 
 - **Estragos (mutação feita à mão):** uma lista de pares (texto certo, texto estragado). O script troca o texto num arquivo, roda os testes, espera que falhem e repõe o arquivo, também se der erro. Antes de estragar, confirma que os testes passam com o código certo; senão, tudo daria "pego".
-- **Rode numa cópia:** `git worktree add --detach <pasta temporária>`. No disco partilhado, durante os minutos da bateria, outra sessão vê os testes falharem sem bug, e pode commitar o mutante.
+- **Rode numa cópia:** `git worktree add --detach <pasta temporária>`. No disco compartilhado, durante os minutos da bateria, outra sessão vê os testes falharem sem bug, e pode commitar o mutante.
 - **A bateria tem catraca:** um teste fixa o número mínimo de estragos. Tirar um estrago enfraquece a prova sem que nada falhe.
 - **Cobertura de scripts:** rodar o script num subprocesso prova o interpretador real, mas não conta na cobertura. Rode também no próprio processo (`runpy.run_path(caminho, run_name="__main__")`). Cuidado: o processo de teste herda o que o script instala, como um gancho global de exceções; desfaça-o no fim do teste.
 

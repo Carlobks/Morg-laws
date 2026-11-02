@@ -8,7 +8,7 @@ não dizia o que ficava fora do escopo.
 - as armadilhas (`| A1 | … |`) seguem A1, A2, … sem saltos, cada uma com a regra para a evitar;
 - cada plano diz o que fica "Fora do escopo" e a "Prova";
 - cada handoff é um arquivo por assunto, com as seções e só hashes de commits que existem.
-Uma parte cuja pasta ou arquivo não existe no projeto é saltada. Instalar: copiar para `tests/` e ajustar abaixo.
+Uma parte cuja pasta ou arquivo não existe no projeto é pulada. Instalar: copiar para `tests/` e ajustar abaixo.
 """
 
 import re

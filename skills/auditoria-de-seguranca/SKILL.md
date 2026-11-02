@@ -112,7 +112,7 @@ As permissões do agente são uma camada de segurança e falham como as outras. 
 - **`"disableBypassPermissionsMode": "disable"`** no `settings.json` do projeto. Sem ele, o modo que salta as permissões desliga todas as barreiras acima de uma vez.
 - **Um hook que não arranca deixa passar.** Sem `"onFailure": "block"`, um hook que falha ao começar (o Python em falta, saída 127) é um erro que não bloqueia, e a ação segue. O campo exige o Claude Code v2.1.295 ou mais novo: numa versão antiga ele é ignorado em silêncio. Confira a versão (`claude --version`) antes de confiar nas barreiras.
 - **Prove cada barreira com uma sonda:** um JSON de exemplo no stdin do hook e a saída esperada (recusa ou "ask"). Uma barreira que nunca se viu recusar não prova nada.
-- **Pergunte à ferramenta, não suponha.** Uma auditoria deu duas regras de lint como desligadas e mandou apagar os avisos que as citavam. Perguntado ao próprio lint, estavam ligadas por omissão. O que uma ferramenta tem ligado mede-se nela.
+- **Pergunte à ferramenta, não suponha.** Uma auditoria deu duas regras de lint como desligadas e mandou apagar os avisos que as citavam. Perguntado ao próprio lint, estavam ligadas por padrão. O que uma ferramenta tem ligado mede-se nela.
 
 ## Fontes
 

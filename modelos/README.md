@@ -49,7 +49,7 @@ testes a 100 %. Os scripts são Python só com a biblioteca padrão; os hooks do
 4. Lista negra fora do repositório (um termo por linha): `git config morg.listaNegra ~/.config/morg-laws/lista-negra.txt`.
    A pasta `~/.config/morg-laws` já está no `deny` e no `bloquear_segredos.py`; se usar outra, ajuste os dois.
 5. Ajuste ao projeto: `COMANDO_DOS_TESTES` no `pre-commit`; `TESTE` e `PUBLICADO` no `mensagem_commit.py`; o
-   bloco "Ajuste ao projeto" no início de cada teste. Uma parte cuja pasta não existe é saltada, não falha.
+   bloco "Ajuste ao projeto" no início de cada teste. Uma parte cuja pasta não existe é pulada, não falha.
 6. Python: os hooks usam `MORG_PY`, ou `py` (Windows), ou `python3`, sempre com `-I`.
    Os hooks do agente travam se falharem (`"onFailure": "block"`), o que exige o Claude Code v2.1.295 ou mais
    novo; numa versão antiga o campo é ignorado e um hook que não arranca deixa passar.
