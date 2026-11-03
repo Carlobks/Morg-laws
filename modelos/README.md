@@ -3,6 +3,7 @@
 Arquivos prontos para copiar para um projeto. Cada um transforma uma regra do `AGENTS.md` numa barreira de máquina
 ("texto é conselho; o que tem de ser cumprido vira hook, teste ou CI"). Saíram de um projeto real, onde rodam com
 testes a 100 %. Os scripts são Python só com a biblioteca padrão; os hooks do git são `sh` (o Git for Windows traz um).
+Os testes prontos de `testes-ts/` são a exceção: TypeScript, com o `vitest` e o `typescript`.
 
 ## O que tem aqui
 
@@ -15,7 +16,7 @@ testes a 100 %. Os scripts são Python só com a biblioteca padrão; os hooks do
 | `claude/hooks/limite_de_linhas.py` | `.claude/hooks/` | Recusa que um arquivo de código passe de 500 linhas e cresça |
 | `git/hooks/pre-commit` | `.githooks/` | Identidade, lista negra e o comando único de testes (defina `COMANDO_DOS_TESTES`) |
 | `git/hooks/commit-msg` | `.githooks/` | Formato da mensagem e lista negra |
-| `git/hooks/pre-push` | `.githooks/` | Mostra o que sai, gitleaks e `npm audit` com linha de base |
+| `git/hooks/pre-push` | `.githooks/` | Mostra o que sai, gitleaks e `npm audit` com linha de base em cada pasta com `package-lock.json` |
 | `git/portoes/*.py` | `scripts/portoes/` | A lógica dos hooks do git: `identidade`, `lista_negra`, `mensagem_commit` (marcas `Sem-teste:`, `Teste-mudado:`, `Sem-changelog:`), `versao_lancada`, `antes_do_push` |
 | `pre-push` | `.githooks/pre-push` | Alternativa só em `sh`, sem Python |
 | `changelog/juntar_changelog.py` | `scripts/changelog/` | Junta os fragmentos no `CHANGELOG.md`, calcula a versão SemVer pelas categorias e escreve o `VERSION` |
@@ -25,7 +26,12 @@ testes a 100 %. Os scripts são Python só com a biblioteca padrão; os hooks do
 | `testes/test_regras.py` | `tests/` | O arquivo de regras curto, cada regra com motivo e com linha no mapa das barreiras, caminhos citados que existem, índice das skills igual ao instalado |
 | `testes/test_docs_indices.py` | `tests/` | Índice dos docs, ADRs seguidas, pesquisa com data, armadilhas A1…An, planos com "Fora do escopo" e "Prova", handoffs com hashes que existem |
 | `testes/test_alarmes.py` | `tests/` | Alarme calado só com o motivo na mesma linha (também em `/* */`), contagem por tipo que não sobe e desce com quem tira um, `noqa` só de regras que o ruff tem ligadas |
-| `testes/test_nomes.py` | `tests/` | Nenhum arquivo, pasta ou identificador com nome genérico solto |
+| `testes/test_nomes.py` | `tests/` | Nenhum arquivo, pasta ou identificador Python (lido pela árvore) com nome genérico solto; a lista é a do molde TypeScript |
+| `testes/test_tamanho_dos_arquivos.py` | `tests/` | Arquivos de código até 500 linhas, de todas as línguas (o limite do hook `limite_de_linhas.py`), com linha de base |
+| `testes/test_nomes_unicos.py` | `tests/` | Nomes de topo do Python e nomes de arquivo de código únicos, com linha de base; isenta `main`, `__x__` e a interface comum dos portões e hooks |
+| `testes/test_testes_saltados.py` | `tests/` | Nenhum `skip` sem condição nem sem motivo escrito (unittest e pytest), com linha de base |
+| `testes/linha_de_base.py` | `tests/` | O motor dos três acima: a linha de base em `tests/linhas-de-base/<regra>.json` não piora, não tem folga e só encolhe; `MORG_CRIAR_LINHA_DE_BASE=1` cria a que falta |
+| `testes-ts/*.test.ts` | `tests/catracas/` | Os mesmos seis em TypeScript/vitest (tamanho de arquivo e de função, nomes genéricos e únicos, alarmes e testes saltados), com os mesmos limites e listas e a linha de base no mesmo formato; o código lê-se pela árvore do `typescript` (`ler-codigo-ts.ts`, `linha-de-base.ts`) |
 | `testes/test_dados_pessoais.py` | `tests/` | Sem caminhos de pastas pessoais, e-mails pessoais, termos da lista negra nem os números de documento que o projeto ligar |
 | `testes/test_tamanho_das_funcoes.py` | `tests/` | Funções Python até 20 linhas (decisão do dono), com catraca para as antigas |
 | `testes/test_fins_de_linha.py` | `tests/` | LF no git; CRLF no disco só no que o Windows roda |
@@ -51,6 +57,10 @@ testes a 100 %. Os scripts são Python só com a biblioteca padrão; os hooks do
    A pasta `~/.config/morg-laws` já está no `deny` e no `bloquear_segredos.py`; se usar outra, ajuste os dois.
 5. Ajuste ao projeto: `COMANDO_DOS_TESTES` no `pre-commit`; `TESTE` e `PUBLICADO` no `mensagem_commit.py`; o
    bloco "Ajuste ao projeto" no início de cada teste. Uma parte cuja pasta não existe é pulada, não falha.
+   Projeto em TypeScript: copie `testes-ts/` para `tests/catracas/`, instale o `vitest` e o `typescript` com as
+   versões fixadas no `package-lock.json` e ponha `npx vitest run` no comando único. Projeto que já viola: rode os
+   testes uma vez com `MORG_CRIAR_LINHA_DE_BASE=1`, leia as bases criadas em `tests/linhas-de-base/` e faça
+   `git add` (skill `codigo-legivel`).
 6. Python: os hooks usam `MORG_PY`, ou `py` (Windows), ou `python3`, sempre com `-I`.
    Os hooks do agente travam se falharem (`"onFailure": "block"`), o que exige o Claude Code v2.1.295 ou mais
    novo; numa versão antiga o campo é ignorado e um hook que não arranca deixa passar.

@@ -12,8 +12,8 @@ o que deu errado, a regra que nasceu disso e a fonte que a sustenta.
 | `skills/` | Regras por assunto (SQL, Supabase, Next.js, segurança, sessões…). O agente só abre o que o projeto usa. |
 | `biblia-akita/` | Resumo, com palavras nossas, do livro *Competente o Suficiente*, de Fabio Akita, com capítulo e página. |
 | `aprendizados/` | Notas datadas sobre bibliotecas, ferramentas e erros que custaram caro. |
-| `modelos/` | Arquivos prontos para copiar, que transformam as regras em barreiras de máquina: hooks do Claude Code e `settings.json` em três colunas, hooks e portões do git, testes das regras, changelog por fragmentos, CI e moldes de documento (AGENTS.md, CLAUDE.md, mapa das barreiras, plano, handoff, ADR). Índice em [modelos/README.md](modelos/README.md). |
-| `tests/` e `scripts/testar.sh` | Os testes dos modelos: cobertura de linhas e ramos a 100 % e um projeto de exemplo montado só com eles. |
+| `modelos/` | Arquivos prontos para copiar, que transformam as regras em barreiras de máquina: hooks do Claude Code e `settings.json` em três colunas, hooks e portões do git, testes das regras, testes prontos da forma do código em Python e em TypeScript (vitest), changelog por fragmentos, CI e moldes de documento (AGENTS.md, CLAUDE.md, mapa das barreiras, plano, handoff, ADR). Índice em [modelos/README.md](modelos/README.md). |
+| `tests/` e `scripts/testar.sh` | Os testes dos modelos: cobertura de linhas e ramos a 100 %, um projeto de exemplo em Python e outro em TypeScript (`tests/exemplo-ts/`, com o `package-lock.json` fixado) montados só com eles, e a prova de que as duas línguas dão o mesmo veredito. |
 | `pesquisas/` | As pesquisas feitas para o repositório, uma por arquivo, com o índice em [pesquisas/README.md](pesquisas/README.md). |
 | `FONTES.md` | Todas as fontes usadas, com a data em que foram lidas. |
 
@@ -30,7 +30,10 @@ O comando instala as skills em `.claude/skills/` (ou na pasta do agente que esco
 Para que as regras sejam cumpridas e não só lidas, copie os modelos que servem ao projeto: os passos estão em
 [modelos/README.md](modelos/README.md). O mínimo recomendado é a guarda do git, o hook de segredos e o que pergunta
 antes do push (`modelos/claude/`), o `pre-commit` com o comando único de testes (`modelos/git/`) e o
-`test_regras.py`, que liga cada regra do `AGENTS.md` à barreira que a obriga.
+`test_regras.py`, que liga cada regra do `AGENTS.md` à barreira que a obriga. Para a forma do código (arquivo até 500
+linhas, função nova até 20, nomes únicos, alarmes e testes saltados), copie os testes prontos de `modelos/testes/`
+(Python) ou de `modelos/testes-ts/` (TypeScript, vitest); a skill `codigo-legivel` diz as regras e como adotá-las num
+projeto que já viola.
 
 ## Para quem contribui
 
@@ -44,7 +47,8 @@ O `pre-commit` recusa commits com e-mail que não seja o noreply do GitHub, com 
 Ele também procura nomes e dados sensíveis numa lista que fica **fora** do repositório
 (`git config morg.listaNegra <arquivo>`); sem essa lista, só avisa. No GitHub, o `gitleaks` procura segredos em todo push.
 
-Mudou um modelo? Rode os testes antes de commitar (o CI roda os mesmos em todo push):
+Mudou um modelo? Rode os testes antes de commitar (o CI roda os mesmos em todo push). Precisam do Python, do Node da
+versão em `tests/exemplo-ts/.nvmrc` e do npm; o script roda o `npm ci` do exemplo quando o lockfile muda:
 
 ```bash
 pip install coverage ruff
