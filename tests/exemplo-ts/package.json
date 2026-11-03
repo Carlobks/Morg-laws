@@ -1,0 +1,16 @@
+{
+  "name": "exemplo-ts-do-morg-laws",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Projeto mínimo onde os testes do Morg-laws copiam os moldes TypeScript (modelos/testes-ts/) e os rodam.",
+  "type": "module",
+  "scripts": {
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.2",
+    "typescript": "6.0.3",
+    "vite": "8.3.4",
+    "vitest": "5.0.5"
+  }
+}

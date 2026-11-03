@@ -1,0 +1,85 @@
+// Alarmes silenciados só com motivo, e nunca mais do que hoje (Morg-laws: sem silenciar alarme; não piorar).
+//
+// A regra é de texto e é a do molde Python test_alarmes.py, com os mesmos padrões, extensões e pastas: as duas
+// línguas julgam os mesmos arquivos e dão o mesmo veredito. Conta os `noqa`, `pragma: no cover`,
+// `node:coverage disable`, `biome-ignore`, `eslint-disable`, `@ts-expect-error`, `@ts-ignore` e `SuppressMessage`
+// do código (a pasta tests/ fica de fora: lá são exemplos), em `//` e em `/* */` (a forma do JSX). Cada um tem o
+// motivo na mesma linha, depois de " — ": um comentário na linha de cima não conta, porque pode ser um TODO.
+// A contagem por tipo não sobe: aqui por arquivo, na linha de base (`{ "src/a.ts": { "eslint-disable": 1 } }`);
+// quem tira um desce a base no mesmo commit. Só o Python confere se o `noqa` é de uma regra que o ruff tem ligada.
+// Linha de base: tests/linhas-de-base/alarmes.json (linha-de-base.ts).
+// Instalar: copiar esta pasta para tests/catracas/ do projeto e ajustar o bloco abaixo.
+import { describe, expect, it } from 'vitest'
+import { arquivosDoIndice, estaFora, lerDoGit, testarCatraca, type ExcessoPorArquivo } from './linha-de-base.js'
+
+// Ajuste ao projeto. Os mesmos do molde Python test_alarmes.py.
+const EXTENSOES_COM_ALARMES_CONTADOS = ['.py', '.js', '.mjs', '.jsx', '.ts', '.tsx', '.ps1', '.psm1', '.html']
+const FORA_DOS_ALARMES_CONTADOS = ['tests/', 'vendor/', 'node_modules/']
+
+// Só a diretiva verdadeira (um comentário que fala dela não conta). Iguais aos do test_alarmes.py.
+const PADROES_DOS_ALARMES: Record<string, RegExp> = {
+    'noqa': /^\s*[^#\s].*#\s*noqa\b/,
+    'pragma: no cover': /^\s*[^#\s].*#\s*pragma:\s*no cover/,
+    'node:coverage disable': /^\s*\/\*\s*node:coverage (?:disable|ignore)/,
+    'biome-ignore': /^\s*\/\/\s*biome-ignore/,
+    'eslint-disable': /(?:\/\/|\/\*)\s*eslint-disable/,
+    '@ts-expect-error': /(?:\/\/|\/\*)\s*@ts-expect-error/,
+    '@ts-ignore': /(?:\/\/|\/\*)\s*@ts-ignore/,
+    'SuppressMessage': /\[\s*(?:System\.)?Diagnostics\.CodeAnalysis\.SuppressMessage/,
+}
+// As quebras de linha que o splitlines() do Python conhece: as duas línguas contam as mesmas linhas.
+const QUEBRA_COMO_NO_PYTHON = /\r\n|[\n\r\v\f\x1c\x1d\x1e\x85\u2028\u2029]/
+
+type AlarmeAchado = { tipo: string, linha: number, texto: string }
+
+function alarmesDoTexto(texto: string): AlarmeAchado[] {
+    const linhas = texto.split(QUEBRA_COMO_NO_PYTHON)
+    if (linhas.at(-1) === '') linhas.pop()
+    return linhas.flatMap((textoDaLinha, indice) => Object.entries(PADROES_DOS_ALARMES)
+        .filter(([, padrao]) => padrao.test(textoDaLinha))
+        .map(([tipo]) => ({ tipo, linha: indice + 1, texto: textoDaLinha })))
+}
+
+const contaAlarmes = (caminho: string) => EXTENSOES_COM_ALARMES_CONTADOS.some((extensao) => caminho.endsWith(extensao))
+    && !estaFora(caminho, FORA_DOS_ALARMES_CONTADOS)
+
+function alarmesDoIndice(): Map<string, AlarmeAchado[]> {
+    const textos = lerDoGit(arquivosDoIndice().filter(contaAlarmes))
+    return new Map([...textos].map(([caminho, texto]) => [caminho, alarmesDoTexto(texto)]))
+}
+
+function contagemPorTipo(alarmesPorArquivo: Map<string, AlarmeAchado[]>): ExcessoPorArquivo {
+    const contagem: ExcessoPorArquivo = {}
+    for (const [caminho, alarmes] of alarmesPorArquivo) {
+        for (const { tipo } of alarmes) contagem[caminho] = { ...contagem[caminho], [tipo]: (contagem[caminho]?.[tipo] ?? 0) + 1 }
+    }
+    return contagem
+}
+
+describe('detector de alarmes', () => {
+    it('pega a diretiva em // e em /* */ e deixa o texto que fala dela', () => {
+        const barra = '/' // montado por partes, para este arquivo não ter as diretivas
+        const texto = [`${barra}/ eslint-disable-next-line no-console — o CLI escreve no terminal`,
+            `const a = <div>{${barra}* @ts-expect-error — tipo da lib */}</div>`, "const aviso = 'não use eslint-disable'",
+            'import os  # noqa: F401', '# noqa: F401 num comentário solto'].join('\n')
+        expect(alarmesDoTexto(texto).map(({ tipo, linha }) => `${linha} ${tipo}`))
+            .toEqual(['1 eslint-disable', '2 @ts-expect-error', '4 noqa'])
+    })
+
+    it('conta por arquivo e por tipo', () => {
+        const alarmes = new Map([['a.ts', [{ tipo: 'eslint-disable', linha: 1, texto: '' }, { tipo: 'eslint-disable', linha: 2, texto: '' }]]])
+        expect(contagemPorTipo(alarmes)).toEqual({ 'a.ts': { 'eslint-disable': 2 } })
+    })
+})
+
+describe('alarmes com motivo', () => {
+    it('cada alarme tem o motivo na mesma linha, depois de —', () => {
+        const semMotivo = [...alarmesDoIndice()].flatMap(([caminho, alarmes]) => alarmes
+            .filter(({ texto }) => !texto.includes(' — ')).map(({ tipo, linha }) => `${caminho}:${linha} ${tipo}`))
+        expect(semMotivo, 'falta o motivo na mesma linha, depois de —').toEqual([])
+    })
+})
+
+testarCatraca('alarmes', 'corrija o apontado em vez de silenciar',
+    () => contagemPorTipo(alarmesDoIndice()),
+    (caminho) => contaAlarmes(caminho))
