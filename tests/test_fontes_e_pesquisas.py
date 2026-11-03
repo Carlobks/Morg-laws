@@ -16,13 +16,13 @@ As funções recebem a raiz e a lista de arquivos, para os casos de erro serem p
 
 import json
 import re
-import subprocess
 import tempfile
 import unittest
 from pathlib import Path
 from urllib.parse import urlsplit
 
 from carregar_modelos import RAIZ
+from leitura_do_repositorio import arquivos_do_git, ler
 
 LINHA_DE_BASE = RAIZ / "tests" / "linhas-de-base" / "fontes.json"
 # As entradas que já falhavam quando o teste entrou. Só encolhe: quem corrige uma tira-a daqui e do JSON.
@@ -62,10 +62,6 @@ def isento(url):
 
 def links(texto):
     return {normalizar(url) for url in URL.findall(texto)}
-
-
-def ler(caminho):
-    return caminho.read_text(encoding="utf-8-sig")
 
 
 def links_sem_fonte(raiz, arquivos):
@@ -181,12 +177,6 @@ def numeros_de_decisoes(raiz, arquivos):
             erros += [f"{nome}:{numero}: {achado} — escreva a decisão em palavras; o número só existe num registro "
                       "privado" for achado in NUMERO_DE_DECISAO.findall(linha)]
     return erros
-
-
-def arquivos_do_git(raiz, *padroes):
-    # Só os arquivos que o git conhece: um arquivo novo é conferido depois do `git add`.
-    return subprocess.run(["git", "ls-files", *padroes], cwd=raiz, capture_output=True, text=True,
-                          encoding="utf-8", check=True).stdout.splitlines()
 
 
 def carregar_linha_de_base(caminho):
