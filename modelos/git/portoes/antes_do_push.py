@@ -3,8 +3,9 @@
 Para cada ref enviada (o git dá uma por linha no stdin: <ref local> <sha local> <ref remota> <sha remoto>):
 1. mostra os arquivos de cada commit a enviar, também os apagados depois, para o dono ver o que sai;
 2. roda o gitleaks nesses commits; sem gitleaks o push não sai (falhar fechado);
-3. com package-lock.json, roda o npm audit e só trava um aviso crítico ou alto que não esteja na linha de base
-   .seguranca/audit-linha-de-base.txt (um ID por linha; a lista só encolhe, nunca se acrescenta para passar).
+3. em cada pasta com package-lock.json (a raiz e as subpastas, fora do node_modules), roda o npm audit e só trava
+   um aviso crítico ou alto que não esteja na linha de base .seguranca/audit-linha-de-base.txt (um ID por linha; a
+   lista só encolhe, nunca se acrescenta para passar).
 Uso: no .githooks/pre-push. Sai com 1 se travar e com 0 se o push puder sair.
 """
 
@@ -19,7 +20,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import lista_negra
 
-RAIZ = Path(__file__).resolve().parents[2]
+RAIZ_DO_PUSH = Path(__file__).resolve().parents[2]
 ZEROS = "0" * 40
 GRAVES = ("critical", "high")
 # No Windows o winget instala o gitleaks aqui; o PATH novo só chega aos terminais abertos depois da instalação.
@@ -89,27 +90,46 @@ def verificar_commits(intervalo, correr, gitleaks):
     return True
 
 
-def verificar_bibliotecas(correr, which, raiz):
-    """npm audit contra a linha de base; devolve True se não houver aviso grave novo."""
-    if not (raiz / "package-lock.json").is_file():
-        return True
-    npm = (which or shutil.which)("npm") or "npm"
+def pastas_com_lockfile(raiz):
+    """As pastas com um package-lock.json, a raiz e as subpastas (um projeto de exemplo, um monorepo), sem entrar
+    em node_modules nem em .git."""
+    pastas = []
+    for pasta, subpastas, arquivos in os.walk(raiz):
+        subpastas[:] = sorted(nome for nome in subpastas if nome not in ("node_modules", ".git"))
+        if "package-lock.json" in arquivos:
+            pastas.append(Path(pasta))
+    return pastas
+
+
+def auditar_pasta(correr, npm, pasta, base):
+    """npm audit numa pasta com lockfile; devolve True se não houver aviso grave novo."""
     saida = correr([npm, "audit", "--json"], capture_output=True, text=True, encoding="utf-8", errors="replace",
-                   check=False, cwd=raiz).stdout
+                   check=False, cwd=pasta).stdout
     try:
-        novos = avisos_novos(saida, ler_base(raiz / ".seguranca" / "audit-linha-de-base.txt"))
+        novos = avisos_novos(saida, base)
     except ValueError as erro:
-        lista_negra.escrever_erro(f"ERRO: npm audit sem relatório legível ({erro}). O push não sai sem a verificação.")
+        lista_negra.escrever_erro(f"ERRO: npm audit em {pasta} sem relatório legível ({erro}). O push não sai.")
         return False
     for aviso in novos:
-        lista_negra.escrever_erro(f"ERRO: aviso novo de segurança nas dependências: {aviso}")
+        lista_negra.escrever_erro(f"ERRO: aviso novo de segurança nas dependências de {pasta}: {aviso}")
     if novos:
         lista_negra.escrever_erro("Atualize a biblioteca. Não acrescente o ID à linha de base para passar.")
     return not novos
 
 
+def verificar_bibliotecas(correr, which, raiz):
+    """npm audit de cada lockfile contra a linha de base; devolve True se não houver aviso grave novo."""
+    pastas = pastas_com_lockfile(raiz)
+    if not pastas:
+        return True
+    npm = (which or shutil.which)("npm") or "npm"
+    base = ler_base(raiz / ".seguranca" / "audit-linha-de-base.txt")
+    resultados = [auditar_pasta(correr, npm, pasta, base) for pasta in pastas]  # todas, mesmo depois de uma falha
+    return all(resultados)
+
+
 def main(entrada=None, correr=None, achar=None, which=None, raiz=None):
-    correr, raiz = correr or subprocess.run, raiz or RAIZ
+    correr, raiz = correr or subprocess.run, raiz or RAIZ_DO_PUSH
     linhas = (entrada or sys.stdin.buffer).read().decode("utf-8", errors="replace").splitlines()
     pedidos = intervalos(linhas)
     gitleaks = (achar or achar_gitleaks)() if pedidos else None

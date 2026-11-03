@@ -79,22 +79,26 @@ class Auditoria(unittest.TestCase):
 class Corrida(unittest.TestCase):
     """main(): o que o hook faz de ponta a ponta, com o git, o gitleaks e o npm simulados."""
 
-    def correr_main(self, gitleaks_sai=0, npm_saida=None, gitleaks="gitleaks", lock=True):
-        chamadas = []
-
-        def correr(comando, **_):
-            chamadas.append(comando)
+    @staticmethod
+    def correr_simulado(chamadas, gitleaks_sai, npm_saida):
+        """O subprocess.run falso: guarda cada comando (com a pasta do npm) e responde como o git, o gitleaks e o npm."""
+        def correr(comando, **opcoes):
+            chamadas.append(comando + ([f"cwd={Path(opcoes['cwd']).name}"] if "cwd" in opcoes else []))
             if comando[0] == "git":
                 return SimpleNamespace(returncode=0, stdout="b1 commit\nM\tsrc/a.py\n")
             if comando[0] == "gitleaks":
                 return SimpleNamespace(returncode=gitleaks_sai, stdout="")
             return SimpleNamespace(returncode=1, stdout=relatorio() if npm_saida is None else npm_saida)
+        return correr
 
-        falso = io.TextIOWrapper(io.BytesIO(), encoding="utf-8")
+    def correr_main(self, gitleaks_sai=0, npm_saida=None, gitleaks="gitleaks", lock=True, locks=()):
+        chamadas, falso = [], io.TextIOWrapper(io.BytesIO(), encoding="utf-8")
+        correr = self.correr_simulado(chamadas, gitleaks_sai, npm_saida)
         with tempfile.TemporaryDirectory() as pasta, mock.patch("sys.stderr", falso):
             raiz = Path(pasta)
-            if lock:
-                (raiz / "package-lock.json").write_text("{}", encoding="utf-8")
+            for nome in (["package-lock.json"] if lock else []) + list(locks):
+                (raiz / nome).parent.mkdir(parents=True, exist_ok=True)
+                (raiz / nome).write_text("{}", encoding="utf-8")
             entrada = io.BytesIO(f"refs/heads/x {B} refs/heads/x {A}\n".encode())
             codigo = push.main(entrada, correr, lambda: gitleaks, lambda nome: "npm", raiz)
         falso.flush()
@@ -130,6 +134,16 @@ class Corrida(unittest.TestCase):
         codigo, _, chamadas = self.correr_main(lock=False)
         self.assertEqual(codigo, 0)
         self.assertFalse(any(comando[0] == "npm" for comando in chamadas))
+
+    def test_audita_tambem_os_lockfiles_das_subpastas_e_nao_os_do_node_modules(self):
+        # Um projeto de exemplo numa subpasta tem o seu package-lock.json: o push não pode sair sem o auditar.
+        codigo, erro, chamadas = self.correr_main(npm_saida=relatorio((9, "high")), lock=False,
+                                                  locks=("exemplo/package-lock.json",
+                                                         "exemplo/node_modules/x/package-lock.json"))
+        self.assertEqual(codigo, 1)
+        self.assertIn("9 high", erro)
+        self.assertIn("exemplo", erro)
+        self.assertEqual([comando[-1] for comando in chamadas if comando[0] == "npm"], ["cwd=exemplo"])
 
     def test_roda_como_script(self):
         entrada = io.TextIOWrapper(io.BytesIO(b""), encoding="utf-8")
