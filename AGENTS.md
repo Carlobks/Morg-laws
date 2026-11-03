@@ -5,24 +5,28 @@ Lido inteiro em todo turno: por isso fica curto (máximo 60 linhas, o hook confe
 
 ## Núcleo (vale para qualquer projeto)
 
-- **Plano antes de mexer.** Mudança com vários arquivos começa por um plano e pelo "sim" do dono do projeto.
-- **Decisão a meio vai ao dono**, explicada, com a opção recomendada marcada. Não se decide sozinho o que é dele.
-- **Commitar não precisa de pedido; push e PR precisam, a cada vez.** Commit atômico, por caminho; nunca `git add -A` ou `.`.
-- **Os hooks são a rede.** Nunca saltar (`--no-verify`) nem desligar. Hook recusou: corrige-se a causa.
-- **O que já viola não pode piorar;** arquivo novo nasce limpo. *Senão a dívida só cresce.*
-- **Sem silenciar alarme sem motivo:** corrige-se o apontado. Um `eslint-disable`, `@ts-expect-error` ou `noqa` novo
-  só com o motivo na mesma linha, e a contagem por tipo não sobe. *Um alarme calado sem motivo esconde o seguinte.*
-- **Bug corrigido traz o teste que o pega**, visto a falhar antes da correção.
-- **Provar medindo** (comando e saída, tela, consulta), nunca "pronto". Dizer também o que não se verificou.
-- **Nomes únicos e pesquisáveis.** Nada de `data`, `utils`, `Props` genéricos: `grep` antes de criar.
-- **Texto é conselho; o que tem de ser cumprido vira hook, teste ou CI.** Regra só escrita não se cumpre.
+- **PLANO ANTES DE MEXER:** mudança com vários arquivos começa por um plano e pelo "sim" do dono do projeto.
+  · *Cada palpite errado custa uma volta de retrabalho.*
+- **DECISÃO É DO DONO:** decisão a meio vai ao dono, explicada, com a opção recomendada marcada. · *Não se decide sozinho o que é dele.*
+- **COMMIT SEM PEDIDO, PUSH COM O SIM:** commitar não precisa de pedido; push e PR precisam, a cada vez. Commit atômico, por caminho; nunca `git add -A` ou `.`.
+  · *O push publica no momento em que sai.*
+- **OS HOOKS SÃO A REDE:** nunca saltar (`--no-verify`) nem desligar. Hook recusou: corrige-se a causa. · *Saltado, deixa passar o erro.*
+- **NÃO PIORAR:** o que já viola não pode piorar; arquivo novo nasce limpo. · *Senão a dívida só cresce.*
+- **SEM SILENCIAR ALARME SEM MOTIVO:** corrige-se o apontado. Um `eslint-disable`, `@ts-expect-error` ou `noqa` novo só com o motivo na mesma linha,
+  e a contagem por tipo não sobe. · *Um alarme calado sem motivo esconde o seguinte.*
+- **BUG TRAZ TESTE:** bug corrigido traz o teste que o pega, visto a falhar antes da correção. · *Um teste que nunca falhou não prova nada.*
+- **PROVAR MEDINDO:** comando e saída, tela, consulta; nunca "pronto". Dizer também o que não se verificou. · *Parecer certo não é prova.*
+- **NOMES ÚNICOS E PESQUISÁVEIS:** nada de `data`, `utils`, `Props` genéricos: `grep` antes de criar. · *Um nome genérico esconde onde está a lógica.*
+- **TEXTO VIRA BARREIRA:** texto é conselho; o que tem de ser cumprido vira hook, teste ou CI. · *Regra só escrita não se cumpre.*
 
 ## Nunca
 
-- Escrever no banco de produção (esquema ou dados) sem o "sim" explícito do dono.
-- Dados reais (nomes, documentos, IDs de pessoas) em testes, exemplos ou commits.
-- Ler `.env` e segredos; rodar `curl | sh`; mudar as próprias permissões do agente.
-- Commitar trabalho de outra sessão ou de outra pessoa que esteja na mesma pasta.
+- **SEM ESCRITA NO BANCO:** escrever no banco de produção (esquema ou dados) sem o "sim" explícito do dono. · *O banco de produção é de toda a gente.*
+- **SEM DADOS REAIS:** dados reais (nomes, documentos, IDs de pessoas) em testes, exemplos ou commits. · *O que entra num repositório público não sai mais.*
+- **SEM SEGREDOS:** ler `.env` e segredos; rodar `curl | sh`; mudar as próprias permissões do agente.
+  · *Um segredo lido vai para o contexto e pode sair num commit.*
+- **SÓ O PRÓPRIO TRABALHO:** commitar trabalho de outra sessão ou de outra pessoa que esteja na mesma pasta.
+  · *Um commit de tudo leva o trabalho de outra sessão.*
 
 ## Índice: quando ler o quê
 

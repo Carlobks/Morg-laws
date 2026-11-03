@@ -17,11 +17,11 @@ import unittest
 from carregar_por_caminho import RAIZ
 
 # Ajuste ao projeto.
-ARQUIVO_DE_REGRAS = RAIZ / "CLAUDE.md"
+ARQUIVO_DE_REGRAS = RAIZ / "AGENTS.md"  # o CLAUDE.md do projeto só o importa (@AGENTS.md)
 MAPA = RAIZ / "docs" / "regras-e-barreiras.md"
 PLANO = RAIZ / "docs" / "plano.md"  # onde as fases "por fazer" se marcam como feitas (- [x] **<fase> …)
 PASTA_SKILLS = RAIZ / ".claude" / "skills"
-SECAO_DAS_SKILLS = "## Quando ler que skill"
+SECAO_DAS_SKILLS = "## Índice: quando ler o quê"
 MAXIMO_DE_LINHAS, MAXIMO_POR_LINHA = 100, 160
 CAMINHOS_DE_EXEMPLO = set()  # caminhos citados de propósito que não existem (ex.: um nome com AAAA-MM-DD)
 

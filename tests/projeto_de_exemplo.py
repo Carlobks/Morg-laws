@@ -11,8 +11,10 @@ from pathlib import Path
 
 from carregar_modelos import MODELOS, RAIZ
 
-SKILLS = ("escrevendo-regras-de-agente", "git-e-commits", "testes-e-provas", "auditoria-de-seguranca")
+# Todas, como instala o `npx skills add`: o índice do molde AGENTS.md cita todas.
+SKILLS = tuple(sorted(pasta.name for pasta in (RAIZ / "skills").iterdir() if (pasta / "SKILL.md").is_file()))
 COPIAS = {
+    "documentos/AGENTS.md": "AGENTS.md",
     "documentos/CLAUDE.md": "CLAUDE.md",
     "documentos/regras-e-barreiras.md": "docs/regras-e-barreiras.md",
     "documentos/plano.md": "docs/planos/0001-exemplo.md",

@@ -1,7 +1,7 @@
 # Regras e barreiras
 
-Cada regra do `CLAUDE.md` e o que a obriga. Texto é conselho; o que tem de ser cumprido vira hook, teste ou CI
-(skill `escrevendo-regras-de-agente`). O `tests/test_regras.py` exige que cada título do `CLAUDE.md` tenha aqui uma
+Cada regra do `AGENTS.md` e o que a obriga. Texto é conselho; o que tem de ser cumprido vira hook, teste ou CI
+(skill `escrevendo-regras-de-agente`). O `tests/test_regras.py` exige que cada título do `AGENTS.md` tenha aqui uma
 linha, e que cada caminho citado exista.
 
 **Tipos de barreira:**
@@ -21,11 +21,12 @@ linha, e que cada caminho citado exista.
 | COMMIT SEM PEDIDO, PUSH COM O SIM | hook | `.claude/hooks/perguntar_antes.py` pergunta antes de cada push e PR |
 | OS HOOKS SÃO A REDE | hook + CI | `.claude/hooks/guarda_do_git.py` (`--no-verify`, `core.hooksPath`); o CI pega quem saltar à mão |
 | NÃO PIORAR | teste | catracas: `tests/test_tamanho_das_funcoes.py`, `tests/test_alarmes.py` |
-| SEM SILENCIAR ALARME | teste | `tests/test_alarmes.py` (motivo, contagem, só regras ligadas) |
+| SEM SILENCIAR ALARME SEM MOTIVO | teste | `tests/test_alarmes.py` (motivo, contagem, só regras ligadas) |
 | BUG TRAZ TESTE | git | `.githooks/commit-msg` → `scripts/portoes/mensagem_commit.py` (fix sem teste exige `Sem-teste:`) |
 | PROVAR MEDINDO | git; texto | `.githooks/pre-commit` roda os testes; dizer o que não se verificou é texto |
-| NOMES PESQUISÁVEIS | teste | `tests/test_nomes.py` (arquivos, pastas e identificadores) |
+| NOMES ÚNICOS E PESQUISÁVEIS | teste | `tests/test_nomes.py` (arquivos, pastas e identificadores) |
 | TEXTO VIRA BARREIRA | teste | `tests/test_regras.py` (este mapa) |
+| SEM ESCRITA NO BANCO | texto | nenhuma máquina sabe se houve o "sim" do dono; skill `sql-postgres` |
 | SEM DADOS REAIS | teste + git | `tests/test_dados_pessoais.py`; `.githooks/pre-commit` e `commit-msg` com a lista negra |
 | SEM SEGREDOS | permissão + hook + git | `.claude/settings.json` (deny), `.claude/hooks/bloquear_segredos.py`, `.githooks/pre-push` (gitleaks) |
 | SÓ O PRÓPRIO TRABALHO | hook | `.claude/hooks/guarda_do_git.py` (`add -A`, `.`, `commit -a`, commit sem caminhos, `git stash`) |
