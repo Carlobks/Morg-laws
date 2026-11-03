@@ -30,7 +30,7 @@ PUBLICADO = ()  # ex.: ("src/", "instalador/")
 TIPOS = ("feat", "fix", "docs", "test", "refactor", "chore", "build", "ci", "perf", "style")
 EXIGEM_CORPO = ("feat", "fix", "refactor")
 MAXIMO_DO_TITULO = 72
-TITULO = re.compile(r"^(?P<tipo>[a-z]+)(?:\([a-z0-9-]+\))?: \S")
+TITULO_DO_COMMIT = re.compile(r"^(?P<tipo>[a-z]+)(?:\([a-z0-9-]+\))?: \S")
 TITULOS_DO_GIT = ("Merge ", 'Revert "')
 # Linhas finais de metadados: não contam como corpo.
 RODAPE = re.compile(r"^(?:Co-Authored-By|Signed-off-by|Sem-teste|Sem-changelog|Teste-mudado|Changelog-corrigido):",
@@ -54,7 +54,7 @@ def erros_do_titulo(titulo):
     motivos = []
     if len(titulo) > MAXIMO_DO_TITULO:
         motivos.append(f"ERRO: o título tem {len(titulo)} caracteres (máximo {MAXIMO_DO_TITULO}).")
-    formato = TITULO.match(titulo)
+    formato = TITULO_DO_COMMIT.match(titulo)
     if not formato or formato["tipo"] not in TIPOS:
         motivos.append(f"ERRO: o título tem de começar por tipo(área): … com um destes tipos: {', '.join(TIPOS)}.")
         return motivos, None

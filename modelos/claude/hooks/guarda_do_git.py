@@ -23,7 +23,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-RAIZ = Path(__file__).resolve().parents[2]
+RAIZ_DA_GUARDA = Path(__file__).resolve().parents[2]
 CAMINHO_DOS_HOOKS = ".githooks"
 MARCA_DOS_TESTES = "MORG_A_TESTAR"
 _SEPARADORES = {";", "&", "&&", "|", "||", "\n", "(", ")"}
@@ -146,7 +146,7 @@ def motivo_do_hooks_path(globais, subcomando, args):
     return None
 
 
-def merge_em_curso(raiz=RAIZ):
+def merge_em_curso(raiz=RAIZ_DA_GUARDA):
     """True a meio de um merge: o commit que o fecha leva tudo o que o merge preparou, sem caminhos.
     O git diz onde está o MERGE_HEAD: num worktree o .git é um arquivo e ele fica noutra pasta."""
     caminho = subprocess.run(["git", "-C", str(raiz), "rev-parse", "--path-format=absolute", "--git-path",
@@ -176,7 +176,7 @@ def motivo_para_bloquear(comando, ler_hooks):
 
 def ler_hooks_path(correr=None):
     """Valor de core.hooksPath deste repositório (texto vazio se não houver)."""
-    return (correr or subprocess.run)(["git", "-C", str(RAIZ), "config", "--get", "core.hooksPath"],
+    return (correr or subprocess.run)(["git", "-C", str(RAIZ_DA_GUARDA), "config", "--get", "core.hooksPath"],
                                       capture_output=True, text=True, encoding="utf-8", check=False).stdout.strip()
 
 

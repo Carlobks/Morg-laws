@@ -20,7 +20,7 @@ class WorkflowsDoMorgLaws(modelo.Workflows):
         self.assertEqual([workflow.name for workflow in modelo.WORKFLOWS], ["seguranca.yml"])
 
     def test_roda_o_comando_unico_e_confere_o_agents_md(self):
-        texto = modelo.texto(modelo.WORKFLOWS[0])
+        texto = modelo.texto_do_workflow(modelo.WORKFLOWS[0])
         self.assertIn("run: sh scripts/testar.sh", texto)
         self.assertIn("git config core.hooksPath .githooks", texto)
         self.assertIn('test "$linhas" -le 60', texto)

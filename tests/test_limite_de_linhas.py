@@ -51,8 +51,8 @@ class ComoHook(unittest.TestCase):
 
     def test_conta_o_arquivo_que_ja_existe(self):
         este_hook = PASTA_HOOKS / "limite_de_linhas.py"
-        self.assertEqual(correr("Edit", file_path=str(este_hook), old_string="LIMITE = 500",
-                                new_string="LIMITE = 500  "), (0, "", ""))
+        self.assertEqual(correr("Edit", file_path=str(este_hook), old_string="LIMITE_POR_ARQUIVO = 500",
+                                new_string="LIMITE_POR_ARQUIVO = 500  "), (0, "", ""))
 
     def test_deixa_passar_o_que_nao_da_para_saber_ou_nao_e_do_projeto(self):
         with tempfile.TemporaryDirectory() as pasta:

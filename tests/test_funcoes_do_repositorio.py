@@ -17,7 +17,7 @@ class FuncoesDoMorgLaws(modelo.TamanhoDasFuncoes):
     """As regras do modelo (limite e catraca das antigas), aplicadas aqui."""
 
     def test_o_limite_e_o_da_decisao_do_dono(self):
-        self.assertEqual(modelo.LIMITE, 20)
+        self.assertEqual(modelo.LIMITE_POR_FUNCAO, 20)
 
 
 del modelo.TamanhoDasFuncoes  # senão o unittest roda a classe do modelo uma segunda vez

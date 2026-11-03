@@ -18,7 +18,7 @@ import re
 import sys
 from pathlib import Path
 
-RAIZ = Path(__file__).resolve().parents[2]
+RAIZ_DAS_PERGUNTAS = Path(__file__).resolve().parents[2]
 REGRAS_DO_AGENTE = (".claude/settings.json", ".claude/settings.local.json", ".claude/hooks/", ".githooks/")
 
 # Opções globais entre o `git` e o subcomando: -C e -c levam o valor à parte; as longas, depois de "=".
@@ -66,7 +66,7 @@ def motivo_para_perguntar_arquivo(caminho):
     if not caminho:
         return None
     try:
-        relativo = Path(caminho).resolve().relative_to(RAIZ).as_posix()
+        relativo = Path(caminho).resolve().relative_to(RAIZ_DAS_PERGUNTAS).as_posix()
     except ValueError:
         return None
     if any(relativo == regra or relativo.startswith(regra) for regra in REGRAS_DO_AGENTE):

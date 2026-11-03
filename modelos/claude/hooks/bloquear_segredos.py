@@ -23,14 +23,14 @@ _PALAVRA = re.compile(r"""[^\s"'`;|&<>()=,]+""")
 _ENV = re.compile(r"\.env(?:rc|\.(?!example$|sample$)[\w.-]+)?", re.IGNORECASE)
 _CHAVE = re.compile(r".+\.(?:pem|key)", re.IGNORECASE)
 _PASTAS = re.compile(r"(?:^|[/\\])(?:" + "|".join(PASTAS_SECRETAS) + ")", re.IGNORECASE)
-_DOWNLOAD = r"(?:curl|wget|iwr|irm|Invoke-WebRequest|Invoke-RestMethod)"
-_SHELL = r"(?:sh|bash|zsh|iex|Invoke-Expression|powershell|pwsh|python3?|py)"
+_DOWNLOAD_NO_COMANDO = r"(?:curl|wget|iwr|irm|Invoke-WebRequest|Invoke-RestMethod)"
+_SHELL_NO_COMANDO = r"(?:sh|bash|zsh|iex|Invoke-Expression|powershell|pwsh|python3?|py)"
 _PARA_SHELL = [
-    re.compile(rf"\b{_DOWNLOAD}\b[^|]*\|\s*(?:sudo\s+)?{_SHELL}\b", re.IGNORECASE),
-    re.compile(rf"\b(?:iex|Invoke-Expression)\b.*(?:\b{_DOWNLOAD}\b|DownloadString)", re.IGNORECASE),
+    re.compile(rf"\b{_DOWNLOAD_NO_COMANDO}\b[^|]*\|\s*(?:sudo\s+)?{_SHELL_NO_COMANDO}\b", re.IGNORECASE),
+    re.compile(rf"\b(?:iex|Invoke-Expression)\b.*(?:\b{_DOWNLOAD_NO_COMANDO}\b|DownloadString)", re.IGNORECASE),
     # A saída do download vira o script: sh -c "$(curl …)" e bash <(curl …) (ou source <(curl …)).
-    re.compile(rf"\b{_SHELL}\s+-c\s+[\"']?\$\(\s*{_DOWNLOAD}\b", re.IGNORECASE),
-    re.compile(rf"(?:\b{_SHELL}|\bsource|(?:^|[;&|]\s*)\.)\s+<\(\s*{_DOWNLOAD}\b", re.IGNORECASE),
+    re.compile(rf"\b{_SHELL_NO_COMANDO}\s+-c\s+[\"']?\$\(\s*{_DOWNLOAD_NO_COMANDO}\b", re.IGNORECASE),
+    re.compile(rf"(?:\b{_SHELL_NO_COMANDO}|\bsource|(?:^|[;&|]\s*)\.)\s+<\(\s*{_DOWNLOAD_NO_COMANDO}\b", re.IGNORECASE),
 ]
 
 

@@ -26,7 +26,7 @@ import sys
 from datetime import date
 from pathlib import Path
 
-RAIZ = Path(__file__).resolve().parents[2]
+RAIZ_DO_CHANGELOG = Path(__file__).resolve().parents[2]
 CATEGORIAS = ("Adicionado", "Alterado", "Obsoleto", "Removido", "Corrigido", "Segurança")
 NOME = re.compile(r"^\d{4}-\d{2}-\d{2}-[a-z0-9]+(?:-[a-z0-9]+)*\.md$")
 CATEGORIA = re.compile(r"^Categoria: (.+)$")
@@ -173,7 +173,7 @@ def escrever(canal, texto):
     canal.flush()
 
 
-def main(argv, raiz=RAIZ, hoje=date.today):
+def main(argv, raiz=RAIZ_DO_CHANGELOG, hoje=date.today):
     rascunho = argv[-1:] == ["--rascunho"]
     resto = argv[1:-1] if rascunho else argv[1:]
     if len(resto) > 1 or any(a.startswith("--") for a in resto):

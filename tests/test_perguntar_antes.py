@@ -58,7 +58,7 @@ class RegrasDoProprioAgente(unittest.TestCase):
     """O agente não muda as próprias regras de segurança sem o "sim" do dono."""
 
     def test_pergunta_ao_editar_as_regras(self):
-        raiz = perguntar.RAIZ
+        raiz = perguntar.RAIZ_DAS_PERGUNTAS
         for caminho in [raiz / ".claude" / "settings.json", raiz / ".claude" / "settings.local.json",
                         raiz / ".claude" / "hooks" / "guarda_do_git.py", raiz / ".githooks" / "pre-commit",
                         str(raiz / ".claude" / "hooks" / "novo.py").replace("\\", "/")]:
@@ -66,8 +66,8 @@ class RegrasDoProprioAgente(unittest.TestCase):
                 self.assertIsNotNone(perguntar.motivo_para_perguntar_arquivo(str(caminho)))
 
     def test_nao_pergunta_nos_outros_arquivos(self):
-        for caminho in [perguntar.RAIZ / "scripts" / "testar.sh", perguntar.RAIZ / "docs" / "README.md",
-                        perguntar.RAIZ.parent.parent / ".claude" / "settings.json", ""]:
+        for caminho in [perguntar.RAIZ_DAS_PERGUNTAS / "scripts" / "testar.sh", perguntar.RAIZ_DAS_PERGUNTAS / "docs" / "README.md",
+                        perguntar.RAIZ_DAS_PERGUNTAS.parent.parent / ".claude" / "settings.json", ""]:
             with self.subTest(caminho=str(caminho)):
                 self.assertIsNone(perguntar.motivo_para_perguntar_arquivo(str(caminho)))
 
@@ -87,12 +87,12 @@ class ComoHook(unittest.TestCase):
         self.assertIn("push", decisao["permissionDecisionReason"])
 
     def test_no_edit_das_regras_tambem_pergunta(self):
-        _, saida, _ = self.correr(str(perguntar.RAIZ / ".claude" / "settings.json"), "Edit")
+        _, saida, _ = self.correr(str(perguntar.RAIZ_DAS_PERGUNTAS / ".claude" / "settings.json"), "Edit")
         self.assertIn(".claude/settings.json", json.loads(saida)["hookSpecificOutput"]["permissionDecisionReason"])
 
     def test_sem_motivo_nao_diz_nada(self):
         self.assertEqual(self.correr("git status"), (0, "", ""))
-        self.assertEqual(self.correr(str(perguntar.RAIZ / "README.md"), "Write"), (0, "", ""))
+        self.assertEqual(self.correr(str(perguntar.RAIZ_DAS_PERGUNTAS / "README.md"), "Write"), (0, "", ""))
 
     def test_no_python_isolado_de_verdade(self):
         resultado = subprocess.run([sys.executable, "-I", str(PASTA_HOOKS / "perguntar_antes.py")],

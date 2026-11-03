@@ -21,17 +21,17 @@ ESCRITA_PERMITIDA = {}
 WORKFLOWS = sorted((RAIZ / ".github" / "workflows").glob("*.y*ml"))
 SHA = re.compile(r"^\s*-?\s*uses: [\w.-]+/[\w./-]+@[0-9a-f]{40} # v\d+(?:\.\d+){0,2}$")
 ESCRITA = re.compile(r"^\s*(permissions:\s*write-all|[\w-]+:\s*write)\s*(?:#.*)?$", re.MULTILINE)
-_DOWNLOAD = r"\b(?:curl|wget)\b"
-_SHELL = r"(?:ba|z)?sh"
+_DOWNLOAD_NO_CI = r"\b(?:curl|wget)\b"
+_SHELL_NO_CI = r"(?:ba|z)?sh"
 PARA_SHELL = (
-    re.compile(rf"{_DOWNLOAD}[^\n|]*\|\s*(?:sudo\s+)?{_SHELL}\b"),
-    re.compile(rf"\b{_SHELL}\s+-c\s+[\"']?\$\(\s*{_DOWNLOAD}"),
-    re.compile(rf"(?:\b{_SHELL}|\bsource)\s+<\(\s*{_DOWNLOAD}"),
+    re.compile(rf"{_DOWNLOAD_NO_CI}[^\n|]*\|\s*(?:sudo\s+)?{_SHELL_NO_CI}\b"),
+    re.compile(rf"\b{_SHELL_NO_CI}\s+-c\s+[\"']?\$\(\s*{_DOWNLOAD_NO_CI}"),
+    re.compile(rf"(?:\b{_SHELL_NO_CI}|\bsource)\s+<\(\s*{_DOWNLOAD_NO_CI}"),
 )
-BAIXADO = re.compile(rf"{_DOWNLOAD}[^\n]*?(?:\s-[oO]\s*|\s--output[\s=]|\s>\s*)([^\s\"']+)")
+BAIXADO = re.compile(rf"{_DOWNLOAD_NO_CI}[^\n]*?(?:\s-[oO]\s*|\s--output[\s=]|\s>\s*)([^\s\"']+)")
 
 
-def texto(caminho):
+def texto_do_workflow(caminho):
     return caminho.read_bytes().decode("utf-8")
 
 
@@ -43,14 +43,14 @@ class Workflows(unittest.TestCase):
 
     def test_cada_action_fixada_por_sha_com_a_versao(self):
         for workflow in WORKFLOWS:
-            for linha in texto(workflow).splitlines():
+            for linha in texto_do_workflow(workflow).splitlines():
                 if "uses:" in linha and "uses: ./" not in linha:
                     with self.subTest(workflow=workflow.name, linha=linha.strip()):
                         self.assertRegex(linha, SHA)
 
     def test_o_token_so_le_e_o_checkout_nao_guarda_a_credencial(self):
         for workflow in WORKFLOWS:
-            conteudo = texto(workflow)
+            conteudo = texto_do_workflow(workflow)
             with self.subTest(workflow=workflow.name):
                 self.assertIn("\npermissions:\n  contents: read\n", conteudo)
                 self.assertEqual(conteudo.count("actions/checkout@"), conteudo.count("persist-credentials: false"))
@@ -62,7 +62,7 @@ class Workflows(unittest.TestCase):
 
     def test_nada_baixado_direto_para_uma_shell(self):
         for workflow in WORKFLOWS:
-            conteudo = texto(workflow)
+            conteudo = texto_do_workflow(workflow)
             with self.subTest(workflow=workflow.name):
                 for padrao in PARA_SHELL:
                     self.assertNotRegex(conteudo, padrao)

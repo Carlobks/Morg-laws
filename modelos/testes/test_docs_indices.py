@@ -23,18 +23,18 @@ ARMADILHAS = DOCS / "armadilhas.md"
 PLANOS = ("docs/planos/*.md",)
 HANDOFFS = RAIZ / ".context"
 
-DATA = re.compile(r"\|\s*20\d\d-\d\d-\d\d(?:/\d\d)?\s*\|\s*$")  # aceita um intervalo: 2026-10-22/23
+DATA_NA_ULTIMA_COLUNA = re.compile(r"\|\s*20\d\d-\d\d-\d\d(?:/\d\d)?\s*\|\s*$")  # aceita um intervalo: 2026-10-22/23
 SECOES_DO_HANDOFF = ("Objetivo", "Estado verificado", "Decisões", "Descartado", "Próximos passos")
 HASH = re.compile(r"`([0-9a-f]{7,40})`")
 
 
-def texto(caminho):
+def texto_do_doc(caminho):
     return caminho.read_text(encoding="utf-8-sig")
 
 
 def titulos(caminho):
     """Títulos (# …) de um arquivo Markdown."""
-    return [linha.lstrip("#").strip() for linha in texto(caminho).splitlines() if linha.startswith("#")]
+    return [linha.lstrip("#").strip() for linha in texto_do_doc(caminho).splitlines() if linha.startswith("#")]
 
 
 def exigir(teste, caminho):
@@ -46,7 +46,7 @@ class IndiceDosDocs(unittest.TestCase):
 
     def test_cada_arquivo_e_pasta_de_docs_estao_no_indice(self):
         exigir(self, DOCS / "README.md")
-        indice = texto(DOCS / "README.md")
+        indice = texto_do_doc(DOCS / "README.md")
         for caminho in sorted(DOCS.iterdir()):
             if caminho.name == "README.md" or caminho.suffix not in ("", ".md"):
                 continue
@@ -56,7 +56,7 @@ class IndiceDosDocs(unittest.TestCase):
 
     def test_cada_adr_esta_na_tabela_com_numeros_seguidos(self):
         exigir(self, DOCS / "decisoes")
-        indice = texto(DOCS / "README.md")
+        indice = texto_do_doc(DOCS / "README.md")
         adrs = sorted(caminho.name for caminho in (DOCS / "decisoes").glob("*.md"))
         self.assertEqual([nome[:4] for nome in adrs], [f"{n:04d}" for n in range(1, len(adrs) + 1)])
         for nome in adrs:
@@ -68,20 +68,20 @@ class Pesquisa(unittest.TestCase):
 
     def test_cada_pesquisa_esta_no_indice_com_data(self):
         exigir(self, DOCS / "pesquisa" / "README.md")
-        linhas = texto(DOCS / "pesquisa" / "README.md").splitlines()
+        linhas = texto_do_doc(DOCS / "pesquisa" / "README.md").splitlines()
         for caminho in sorted((DOCS / "pesquisa").glob("*.md")):
             if caminho.name == "README.md":
                 continue
             with self.subTest(pesquisa=caminho.name):
                 linha = next((linha for linha in linhas if f"]({caminho.name})" in linha), "")
-                self.assertRegex(linha, DATA, "linha no índice da pesquisa com a data na última coluna")
+                self.assertRegex(linha, DATA_NA_ULTIMA_COLUNA, "linha no índice da pesquisa com a data na última coluna")
 
 
 class Armadilhas(unittest.TestCase):
 
     def test_numeracao_seguida_e_cada_uma_com_a_regra(self):
         exigir(self, ARMADILHAS)
-        linhas = [linha for linha in texto(ARMADILHAS).splitlines() if re.match(r"\| A\d+ \|", linha)]
+        linhas = [linha for linha in texto_do_doc(ARMADILHAS).splitlines() if re.match(r"\| A\d+ \|", linha)]
         numeros = [int(re.match(r"\| A(\d+)", linha).group(1)) for linha in linhas]
         self.assertEqual(numeros, list(range(1, len(numeros) + 1)), "A1, A2, … sem saltos nem repetidos")
         for linha in linhas:
@@ -114,7 +114,7 @@ class Handoffs(unittest.TestCase):
                 secoes = titulos(handoff)
                 for secao in SECOES_DO_HANDOFF:
                     self.assertTrue(any(s.startswith(secao) for s in secoes), f"falta a seção {secao}")
-                for sha in HASH.findall(texto(handoff)):
+                for sha in HASH.findall(texto_do_doc(handoff)):
                     existe = subprocess.run(["git", "cat-file", "-e", f"{sha}^{{commit}}"], cwd=RAIZ,
                                             capture_output=True, check=False).returncode == 0
                     self.assertTrue(existe, f"o commit {sha} não existe: o estado não foi verificado")

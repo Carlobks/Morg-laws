@@ -33,7 +33,7 @@ EMAILS_ACEITOS = re.compile(r"@(?:users\.noreply\.github\.com|anthropic\.com|exa
                             re.IGNORECASE)
 
 
-def arquivos_do_repositorio():
+def arquivos_de_texto():
     """Caminhos (relativos) dos arquivos de texto guardados e dos novos que o .gitignore não esconde."""
     saida = subprocess.run(["git", "ls-files", "--cached", "--others", "--exclude-standard"], cwd=RAIZ,
                            capture_output=True, text=True, encoding="utf-8", check=True).stdout
@@ -56,7 +56,7 @@ def termos_da_lista_negra():
 def achados(padrao, aceito=lambda achado: False):
     """{arquivo: [linhas]} onde o padrão aparece (menos os achados que `aceito` deixa passar)."""
     resultado = {}
-    for caminho in arquivos_do_repositorio():
+    for caminho in arquivos_de_texto():
         texto = (RAIZ / caminho).read_text(encoding="utf-8-sig", errors="replace")
         for numero, linha in enumerate(texto.splitlines(), 1):
             if any(not aceito(achado) for achado in padrao.finditer(linha)):
@@ -77,7 +77,7 @@ def email_aceito(achado):
 class SemDadosPessoais(unittest.TestCase):
 
     def test_ha_arquivos_para_verificar(self):
-        self.assertGreater(len(arquivos_do_repositorio()), 0)
+        self.assertGreater(len(arquivos_de_texto()), 0)
 
     def test_sem_caminhos_de_pastas_pessoais(self):
         self.assertEqual(achados(CONTA_EM_CAMINHO, conta_de_exemplo), {},

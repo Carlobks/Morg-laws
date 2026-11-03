@@ -23,7 +23,7 @@ from carregar_modelos import MODELOS, PASTA_TESTES_MODELO, RAIZ, carregar
 
 # O modelo importa RAIZ de carregar_por_caminho; aqui a raiz é a deste repositório.
 sys.modules["carregar_por_caminho"] = types.SimpleNamespace(RAIZ=RAIZ)
-TITULO = carregar(PASTA_TESTES_MODELO / "test_regras.py", "test_regras_modelo_do_nucleo").TITULO
+TITULO = carregar(PASTA_TESTES_MODELO / "test_regras.py", "test_regras_modelo_do_nucleo").TITULO_DA_REGRA
 del sys.modules["carregar_por_caminho"]
 
 SECOES_IGUAIS = ("Núcleo", "Nunca")

@@ -23,8 +23,8 @@ def estado_dos_arquivos():
                            encoding="utf-8", check=True).stdout
     resultado = []
     for linha in saida.splitlines():
-        info, caminho = linha.split("\t", 1)
-        indice, disco, atributos = info.split(None, 2)
+        marcas, caminho = linha.split("\t", 1)
+        indice, disco, atributos = marcas.split(None, 2)
         if indice != "i/-text":  # binário
             resultado.append((indice[2:], disco[2:], atributos.strip()[5:], caminho))
     return resultado

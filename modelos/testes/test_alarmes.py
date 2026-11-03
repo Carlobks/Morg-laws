@@ -19,8 +19,8 @@ from carregar_por_caminho import RAIZ
 
 # Ajuste ao projeto. Linha de base: a contagem de hoje por tipo. Só desce.
 MAXIMO_POR_TIPO = {}
-EXTENSOES_DE_CODIGO = (".py", ".js", ".mjs", ".jsx", ".ts", ".tsx", ".ps1", ".psm1", ".html")
-FORA = ("tests/", "vendor/", "node_modules/")
+EXTENSOES_COM_ALARMES = (".py", ".js", ".mjs", ".jsx", ".ts", ".tsx", ".ps1", ".psm1", ".html")
+FORA_DOS_ALARMES = ("tests/", "vendor/", "node_modules/")
 
 # Só a diretiva verdadeira (um comentário que fala dela não conta).
 ALARMES = {
@@ -38,8 +38,8 @@ ALARMES = {
 def arquivos_de_codigo():
     saida = subprocess.run(["git", "ls-files"], cwd=RAIZ, capture_output=True, text=True, encoding="utf-8",
                            check=True).stdout.splitlines()
-    return [caminho for caminho in saida if caminho.endswith(EXTENSOES_DE_CODIGO)
-            and not any(caminho.startswith(fora) or f"/{fora}" in caminho for fora in FORA)]
+    return [caminho for caminho in saida if caminho.endswith(EXTENSOES_COM_ALARMES)
+            and not any(caminho.startswith(fora) or f"/{fora}" in caminho for fora in FORA_DOS_ALARMES)]
 
 
 def alarmes():
