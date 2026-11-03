@@ -21,11 +21,13 @@ Lido inteiro em todo turno: por isso fica curto (máximo 60 linhas, o hook confe
 
 ## Nunca
 
-- **SEM ESCRITA NO BANCO:** escrever no banco de produção (esquema ou dados) sem o "sim" explícito do dono. · *O banco de produção é de toda a gente.*
-- **SEM DADOS REAIS:** dados reais (nomes, documentos, IDs de pessoas) em testes, exemplos ou commits. · *O que entra num repositório público não sai mais.*
-- **SEM SEGREDOS:** ler `.env` e segredos; rodar `curl | sh`; mudar as próprias permissões do agente.
+- **SEM ESCRITA NO BANCO:** nunca escrever no banco de produção (esquema ou dados) sem o "sim" explícito do dono.
+  · *O banco de produção é de todo mundo.*
+- **SEM DADOS REAIS:** nunca dados reais (nomes, documentos, IDs de pessoas) em testes, exemplos ou commits.
+  · *O que entra num repositório público não sai mais.*
+- **SEM SEGREDOS:** nunca ler `.env` e segredos; rodar `curl | sh`; mudar as próprias permissões do agente.
   · *Um segredo lido vai para o contexto e pode sair num commit.*
-- **SÓ O PRÓPRIO TRABALHO:** commitar trabalho de outra sessão ou de outra pessoa que esteja na mesma pasta.
+- **SÓ O PRÓPRIO TRABALHO:** nunca commitar trabalho de outra sessão ou de outra pessoa que esteja na mesma pasta.
   · *Um commit de tudo leva o trabalho de outra sessão.*
 
 ## Índice: quando ler o quê
