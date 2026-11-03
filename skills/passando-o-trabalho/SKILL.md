@@ -45,7 +45,8 @@ sobrescrito e apaga o estado da outra. Sem datas nem ids de sessão no nome, e n
 
 - Antes de gravar, liste `.context/HANDOFF-*.md`. O do **mesmo assunto** se atualiza; nos **dos outros** não se toca.
 - **Leia o anterior antes de reescrever.** Reescreva o arquivo inteiro, mas leve para a versão nova as decisões e o
-  «Descartado» que continuam válidos. Perder essa lista é o que faz o agente repetir o que já falhou.
+  «Descartado» que continuam válidos. Perder essa lista é o que faz o agente repetir o que já falhou. Um anterior
+  com títulos antigos passa aos novos (seção 5).
 
 **O formato.** Os títulos são estes, nesta ordem (o teste `test_docs_indices.py` dos modelos os confere); o molde
 está em `modelos/documentos/handoff.md`.
@@ -136,6 +137,10 @@ Quando o pedido ou o resumo mandar ler o handoff:
    de agir: outra sessão pode ter mexido.
 3. Releia o «Descartado». Só se volta a uma dessas abordagens com um fato novo, e dizendo qual.
 4. Siga o passo 1 dos «Próximos passos».
+
+**Títulos antigos.** Um handoff gravado com outro molde pode trazer `## Estado do código (…)` e
+`## Abordagens descartadas (…)`: valem como «Estado verificado» e «Descartado». A gravação seguinte usa os títulos
+novos e leva o conteúdo. Até lá, o `test_docs_indices.py`, se o projeto o tiver, acusa a falta dessas duas seções.
 
 No Claude Code, o handoff pode voltar sozinho depois de compactar (voltam até cinco arquivos lidos ou editados, e só
 os pequenos inteiros), mas não conte com isso: leia-o.
