@@ -116,4 +116,4 @@ As permissões do agente são uma camada de segurança e falham como as outras. 
 
 ## Fontes
 
-Ver `FONTES.md`, na seção "Segurança": gitleaks, `npm audit`, osv-scanner, os avisos do React e do Next e o postmortem da Vercel. O `onFailure` e a versão que o exige estão na entrada "Claude Code — hooks"; o `gh api`, na seção "Git e contas". A ideia de "investigar antes de reportar, por confiança" foi inspirada nos guias de segurança abertos citados ali, mas o texto aqui é próprio. A lista de exceções que escondia uma biblioteca vulnerável está no livro do Akita, p. 165.
+Ver [`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md#segurança), na seção "Segurança": gitleaks, `npm audit`, osv-scanner, os avisos do React e do Next e o postmortem da Vercel. O `onFailure` e a versão que o exige estão na entrada "Claude Code — hooks"; o `gh api`, na seção "Git e contas". A ideia de "investigar antes de reportar, por confiança" foi inspirada nos guias de segurança abertos citados ali, mas o texto aqui é próprio. A lista de exceções que escondia uma biblioteca vulnerável está no livro do Akita, p. 165.

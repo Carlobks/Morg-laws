@@ -91,4 +91,4 @@ Antes de dizer "feito":
 
 ## Fontes
 
-As regras vêm da prática dos projetos de origem. Os números (109 arquivos, 86 de 199) foram medidos lá. A parte do `index.lock` apoia-se no código do git (`lockfile.c`). O changelog e a versão apoiam-se no Keep a Changelog, no towncrier e no SemVer. Todas estão em `FONTES.md`.
+As regras vêm da prática dos projetos de origem. Os números (109 arquivos, 86 de 199) foram medidos lá. A parte do `index.lock` apoia-se no código do git (`lockfile.c`). O changelog e a versão apoiam-se no Keep a Changelog, no towncrier e no SemVer. Todas estão em [`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md).

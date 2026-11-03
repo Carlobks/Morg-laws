@@ -51,4 +51,4 @@ Guarde o resumo junto ao plano. Se a resposta do dono for um texto dele, guarde-
 
 ## Fontes
 
-Ver `FONTES.md`. Esta skill foi escrita do zero. A ideia de interrogar o dono antes de executar foi inspirada na skill "grill-me", de Matt Pocock, e no método de pedir com "o que não fazer" e "como validar", de Fabio Akita.
+Ver [`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md#inspirações-nada-copiado). Esta skill foi escrita do zero. A ideia de interrogar o dono antes de executar foi inspirada na skill "grill-me", de Matt Pocock, e no método de pedir com "o que não fazer" e "como validar", de Fabio Akita.

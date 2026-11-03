@@ -103,7 +103,7 @@ ALTER TABLE public.registro ENABLE ALWAYS TRIGGER registro_sem_truncate;
 
 ## Fontes
 
-Documentação do PostgreSQL 18, consultada em 30 de outubro de 2026 (as mesmas linhas estão em `FONTES.md`):
+Documentação do PostgreSQL 18, consultada em 30 de outubro de 2026 (as mesmas linhas estão em [`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md#banco-de-dados-postgresql-supabase-postgrest)):
 
 - Row Security Policies: https://www.postgresql.org/docs/18/ddl-rowsecurity.html
 - CREATE FUNCTION («Writing SECURITY DEFINER Functions Safely»): https://www.postgresql.org/docs/18/sql-createfunction.html

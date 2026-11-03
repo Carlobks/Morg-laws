@@ -58,4 +58,4 @@ Trabalhar só na `main`, sem branches nem worktrees, simplifica a coordenação 
 
 ## Fontes
 
-Ver `FONTES.md`: código do git sobre o `index.lock` (`lockfile.c`). As regras de sessões vêm da prática do projeto de origem.
+Ver [`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md#git-e-contas): código do git sobre o `index.lock` (`lockfile.c`). As regras de sessões vêm da prática do projeto de origem.

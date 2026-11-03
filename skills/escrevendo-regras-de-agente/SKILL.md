@@ -72,4 +72,4 @@ Pergunte, para cada regra: o que acontece se o agente a ignorar?
 
 ## Fontes
 
-Ver `FONTES.md`: documentação do Claude Code (memória e skills), AAIF (medição do AGENTS.md), ETH Zurich (avaliação de arquivos de contexto) e o livro *Competente o Suficiente*, de Fabio Akita (pp. 128–129, sobre skills de terceiros; p. 165, sobre listas de exceção).
+Ver [`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md#entrega-de-regras-a-agentes): documentação do Claude Code (memória e skills), AAIF (medição do AGENTS.md), ETH Zurich (avaliação de arquivos de contexto) e o livro *Competente o Suficiente*, de Fabio Akita (pp. 128–129, sobre skills de terceiros; p. 165, sobre listas de exceção).

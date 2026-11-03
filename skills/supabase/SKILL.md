@@ -115,7 +115,7 @@ Uma Edge Function que chama uma API externa em nome do usuário cria o cliente S
 
 ## Fontes
 
-Consultadas em 30 de outubro de 2026 (as mesmas linhas estão em `FONTES.md`):
+Consultadas em 30 de outubro de 2026 (as mesmas linhas estão em [`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md#banco-de-dados-postgresql-supabase-postgrest)):
 
 - Supabase, Row Level Security: https://supabase.com/docs/guides/database/postgres/row-level-security
 - Supabase, Securing your API: https://supabase.com/docs/guides/api/securing-your-api

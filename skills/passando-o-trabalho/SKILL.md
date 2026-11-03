@@ -48,8 +48,10 @@ sobrescrito e apaga o estado da outra. Sem datas nem ids de sessão no nome, e n
   «Descartado» que continuam válidos. Perder essa lista é o que faz o agente repetir o que já falhou. Um anterior
   com títulos antigos passa aos novos (seção 5).
 
-**O formato.** Os títulos são estes, nesta ordem (o teste `test_docs_indices.py` dos modelos os confere); o molde
-está em `modelos/documentos/handoff.md`.
+**O formato.** Os títulos são estes, nesta ordem (o teste
+[`test_docs_indices.py`](https://github.com/Carlobks/Morg-laws/blob/main/modelos/testes/test_docs_indices.py) dos
+modelos os confere); o molde está em
+[`modelos/documentos/handoff.md`](https://github.com/Carlobks/Morg-laws/blob/main/modelos/documentos/handoff.md).
 
 | Título | O que leva |
 |---|---|
@@ -143,14 +145,18 @@ Quando o pedido ou o resumo mandar ler o handoff:
 
 **Títulos antigos.** Um handoff gravado com outro molde pode trazer `## Estado do código (…)` e
 `## Abordagens descartadas (…)`: valem como «Estado verificado» e «Descartado». A gravação seguinte usa os títulos
-novos e leva o conteúdo. Até lá, o `test_docs_indices.py`, se o projeto o tiver, acusa a falta dessas duas seções.
+novos e leva o conteúdo. Até lá, o
+[`test_docs_indices.py`](https://github.com/Carlobks/Morg-laws/blob/main/modelos/testes/test_docs_indices.py), se o
+projeto o tiver, acusa a falta dessas duas seções.
 
 No Claude Code, o handoff pode voltar sozinho depois de compactar (voltam até cinco arquivos lidos ou editados, e só
 os pequenos inteiros), mas não conte com isso: leia-o.
 
 ## Fontes
 
-Ver `FONTES.md`, seção «Compactação da conversa», e `pesquisas/2026-11-02-compactacao-claude-code-e-codex.md`: a
+Ver [`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md#compactação-da-conversa), seção
+«Compactação da conversa», e
+[`pesquisas/2026-11-02-compactacao-claude-code-e-codex.md`](https://github.com/Carlobks/Morg-laws/blob/main/pesquisas/2026-11-02-compactacao-claude-code-e-codex.md): a
 documentação do Claude Code (o `/compact`, a compactação automática e por inatividade, o que volta depois) e a do
 Codex (o `/compact` e as skills); a especificação Agent Skills; o livro *Competente o Suficiente*, de Fabio Akita
 (pp. 30–32, 124 e 411). O formato do handoff, o commit a cada compactação e os 50% são prática do autor do

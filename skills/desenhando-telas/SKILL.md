@@ -176,4 +176,4 @@ O que aparece no hover fica visível em ecrãs sem hover (`@media (hover: none)`
 
 ## Fontes
 
-Ver `references/tetos-e-fontes.md` e `FONTES.md`.
+Ver `references/tetos-e-fontes.md` e [`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md#interface-e-acessibilidade).

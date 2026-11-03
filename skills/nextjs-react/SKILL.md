@@ -53,4 +53,4 @@ Muitos dos erros desta lista passam pelo compilador, pelo lint e pelos testes, e
 
 ## Fontes
 
-Ver `FONTES.md`: avisos do Next.js (CVE-2025-29927) e do React (React2Shell).
+Ver [`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md#segurança): avisos do Next.js (CVE-2025-29927) e do React (React2Shell).
