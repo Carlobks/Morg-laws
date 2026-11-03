@@ -104,6 +104,9 @@ cheia custa dinheiro, porque é relida a cada mensagem, custa tempo e torna mais
 atenção cai à medida que ela enche (p. 124); e uma sessão longa fica cheia de tentativas antigas (p. 411). No Claude
 Code, o `/context` mostra o que ocupa a janela.
 
+**A língua:** o comando de compactação e a mensagem de retomada escrevem-se na língua do usuário, a mesma em que ele
+escreve na conversa. Os blocos abaixo estão em português do Brasil só como modelo do conteúdo.
+
 **Claude Code:** o `/compact` aceita instruções de foco. Entregue-o numa linha só, com os colchetes preenchidos:
 
 ```text
