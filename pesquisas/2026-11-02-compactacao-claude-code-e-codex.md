@@ -54,18 +54,20 @@ Tudo foi **lido** nas páginas; só a instalação (último item) foi executada,
   por modelo (nos de 1 milhão de tokens, por volta de 967 mil). O `/autocompact` (ou `autoCompactWindow`, a opção
   `--autocompact` e a variável `CLAUDE_CODE_AUTO_COMPACT_WINDOW`) muda o tamanho em tokens a partir do qual compacta,
   entre 100 mil e 1 milhão. O `autoCompactEnabled` desliga a automática; o `/compact` manual continua.
-- **Claude Code, por inatividade:** liga-se sozinha numa conversa longa (por padrão a partir de 200 mil tokens)
-  parada há cerca de uma hora, em sessão interativa, com a automática ligada. A chave `idleCompaction` desliga-a.
+- **Claude Code, por inatividade:** vem ligada por padrão e compacta uma conversa longa (a partir de 200 mil tokens)
+  parada há cerca de uma hora, com o computador acordado. Vale na sessão interativa do terminal, no painel do VS Code
+  e na aba Code da app de desktop. Também exige a automática ligada, a cache de uma hora e as *feature flags*
+  alcançáveis. A chave `idleCompaction` a desliga.
 - **Codex:** `model_auto_compact_token_limit` é o limite em tokens da compactação automática (sem valor, vale o do
   modelo). `model_post_turn_compact_threshold_percent` compacta no fim de um turno quando o contexto passa de uma
   **percentagem** da janela útil; desligada por padrão. A página não recomenda nenhum valor.
 
 **O que volta depois (Claude Code):** o prompt de sistema e o estilo continuam; o CLAUDE.md da raiz, as regras sem
-`paths:`, a memória automática e o plano do modo de plano voltam do disco; as descrições das skills são refeitas; o
-retrato do `git status` é lido de novo; as regras com `paths:` e os CLAUDE.md das subpastas só voltam quando um
+`paths:`, a memória automática e o plano do modo de plano voltam do disco; as descrições das skills são refeitas (a partir
+da v2.1.304); o retrato do `git status` é lido de novo, se a sessão começou com um; as regras com `paths:` e os CLAUDE.md das subpastas só voltam quando um
 arquivo delas é aberto. Até **cinco** arquivos lidos ou editados voltam, os mudados mais recentemente; um arquivo com
 mais de 5 mil tokens volta só como caminho. O corpo das skills usadas volta, cortado em 5 mil tokens por skill e 25
-mil no total, e o corte guarda o começo: **o mais importante vai no topo do `SKILL.md`**. O que um hook pôs no
+mil no total (passado o total, as usadas há mais tempo caem inteiras), e o corte guarda o começo: **o mais importante vai no topo do `SKILL.md`**. O que um hook pôs no
 contexto entra no resumo; os `SessionStart` com a origem `compact` rodam e o que devolvem entra no contexto
 compactado (pesquisa dos hooks, `2026-11-02-hooks-de-compactacao.md`).
 
@@ -84,8 +86,8 @@ compactado (pesquisa dos hooks, `2026-11-02-hooks-de-compactacao.md`).
 
 - Nenhuma página foi lida de ponta a ponta, fora a das skills do Codex: as ausências abaixo valem para os trechos
   lidos.
-- **O `/compact` do Codex com texto a seguir** não foi experimentado: a página não diz que aceita argumentos, nem que
-  os recusa. A skill trata-o como comando sem argumentos.
+- **O `/compact` do Codex com texto depois do comando** não foi experimentado: a página não diz que aceita
+  argumentos, nem que os recusa. A skill o trata como comando sem argumentos.
 - **Quando compactar:** nenhuma página lida dá uma percentagem da janela para compactar à mão. As do Claude Code
   dizem só que dá para compactar antes da automática, com um foco. A percentagem do Codex é uma configuração, sem
   valor recomendado.
@@ -101,7 +103,7 @@ compactado (pesquisa dos hooks, `2026-11-02-hooks-de-compactacao.md`).
    duas ferramentas garante que um arquivo escrito na sessão volte inteiro (no Claude Code voltam até cinco, e só os
    pequenos).
 2. **Claude Code:** `/compact` com instruções que apontam para o arquivo; depois, uma mensagem que manda lê-lo.
-   **Codex:** `/compact` sozinho, e a mensagem de retoma logo a seguir, porque não há onde pôr as instruções.
+   **Codex:** `/compact` sozinho, e a mensagem de retomada logo depois, porque não há onde pôr as instruções.
 3. As instruções importantes da skill vão **no começo** do `SKILL.md`: depois de compactar, o Claude Code corta o
    corpo das skills pelo fim.
 4. O `npx skills add` instala a mesma skill para o Claude Code e para o Codex, com `-a`.

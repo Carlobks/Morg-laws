@@ -138,5 +138,5 @@ Lidas em 2026-10-31 no projeto de origem, para os campos do formulário `modelos
 - **Fabio Akita — Competente o Suficiente** (livro). Citado por capítulo e página.
   - pp. 128–129: skills e ferramentas de terceiros só com leitura completa e uma dor concreta (usado em `escrevendo-regras-de-agente`).
   - p. 165: modelos esconderam uma biblioteca vulnerável numa lista de exceções (base de "sem silenciar alarme").
-  - pp. 30–32, 124 e 411: a janela cheia custa dinheiro, tempo e atenção; o resumo da compactação perde o detalhe e o agente volta a propor o que já se descartou; a atenção cai à medida que a janela enche; uma sessão longa enche-se de tentativas antigas (usado em `passando-o-trabalho`; o livro não dá nenhuma percentagem para compactar).
+  - pp. 30–32, 124 e 411: a janela cheia custa dinheiro, tempo e atenção; o resumo da compactação perde o detalhe e o agente volta a propor o que já se descartou; a atenção cai à medida que a janela enche; uma sessão longa se enche de tentativas antigas (usado em `passando-o-trabalho`; o livro não dá nenhuma percentagem para compactar).
 - **Fabio Akita — blog** — https://akitaonrails.com
