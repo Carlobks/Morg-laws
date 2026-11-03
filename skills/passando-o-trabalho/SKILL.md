@@ -14,7 +14,7 @@ O essencial, se esta skill chegar cortada depois de uma compactação:
 
 1. Conferir o estado no git, sem despejar diffs na conversa.
 2. Gravar `.context/HANDOFF-<assunto>.md` com Objetivo, Estado verificado, Decisões, Descartado e Próximos passos.
-3. Commitar **só** esse arquivo, pelo caminho, com os hooks do projeto.
+3. Commitar **só** esse arquivo, pelo caminho, com os hooks do projeto. Pasta ignorada: ver a seção 3.
 4. Entregar o comando de compactação e a mensagem de retomada.
 5. Ao retomar: ler o handoff inteiro, comparar com o `git status -s`, reler o «Descartado», seguir o passo 1.
 
@@ -81,9 +81,14 @@ git commit -F <arquivo-da-mensagem> -- .context/HANDOFF-<assunto>.md
 - Pelo caminho, sempre: um `git commit` sem caminho leva o que outra sessão deixou preparado. O `git add` é preciso
   porque o git recusa um commit por caminho de um arquivo que ainda não conhece.
 - Os hooks do projeto rodam. Hook recusou: a causa é corrigida, e o hook nunca é pulado.
-- **`.context/` ignorado:** o handoff é gravado mesmo assim. Diga ao dono do projeto que a pasta está no `.gitignore` e
-  pergunte se a tira de lá. Nunca mexa no `.gitignore` sozinho nem force o `git add`. Com um «não», o handoff fica
-  só no disco, e a resposta diz isso.
+- **`.context/` ignorado:** o handoff é gravado mesmo assim. Nunca mexa no `.gitignore` nem force o `git add`. O
+  resto depende de haver um motivo escrito:
+  - **Com motivo:** um comentário no `.gitignore` ou um arquivo de decisão do projeto explica por que a pasta está
+    ignorada. Um projeto pode ignorá-la, por exemplo, porque uma ferramenta lê tudo o que o git não ignora e um
+    handoff a quebra. Não pergunte nada: o handoff fica só no disco, e a resposta diz isso numa linha.
+  - **Sem motivo:** procure a resposta nas «Decisões e porquê» dos `HANDOFF-*.md` da pasta e, se ela estiver lá,
+    siga-a. Se não estiver, pergunte ao dono se tira a pasta do `.gitignore`, uma única vez por projeto, e registe a
+    resposta nas Decisões deste handoff. Com um «não», o handoff fica só no disco, e a resposta diz isso.
 
 ## 4. Compactar
 
@@ -118,7 +123,8 @@ para colar logo depois:
 A conversa acabou de ser compactada. Objetivo: [uma linha]. Arquivos ativos: [lista]. Não repetir: [o essencial do Descartado]. Erro atual: [literal, ou "nenhum"]. O estado completo está em .context/HANDOFF-<assunto>.md; os outros HANDOFF-*.md dessa pasta são de outros assuntos e não se tocam. Leia esse arquivo inteiro, rode git status -s e diga o que mudou em relação à tabela, releia o «Descartado» e não proponha nada dele. Diga numa frase onde estávamos e siga o passo 1 dos próximos passos ([resumo do passo]). Se ele pedir uma decisão minha, pergunte antes.
 ```
 
-Nos dois, o comando sai no fim da resposta, depois de uma linha com o caminho do handoff e o hash do commit.
+Nos dois, o comando sai no fim da resposta, depois de uma linha com o caminho do handoff e o hash do commit (ou «só no
+disco», se a pasta estiver ignorada).
 
 ## 5. Retomar
 
