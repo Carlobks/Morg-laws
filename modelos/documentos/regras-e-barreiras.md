@@ -18,7 +18,7 @@ linha, e que cada caminho citado exista.
 | <O PERIGO MAIS CARO> | por fazer (F1) | <o hook ou teste que vai obrigá-la> |
 | PLANO ANTES DE MEXER | teste; texto | `tests/test_docs_indices.py`: os planos têm "Fora do escopo" e a prova; o "sim" do dono é texto |
 | DECISÃO É DO DONO | texto | nenhuma máquina sabe o que é uma decisão do dono; skill `pondo-o-plano-a-prova` |
-| COMMIT SEM PEDIDO, PUSH COM O SIM | hook | `.claude/hooks/perguntar_antes.py` pergunta antes de cada push e PR |
+| COMMIT SEM PEDIDO, PUSH COM O SIM | hook | `.claude/hooks/perguntar_antes.py` pergunta antes de cada push e PR; `.claude/hooks/guarda_do_git.py` recusa `add -A`, `.` e `commit -a` |
 | OS HOOKS SÃO A REDE | hook + CI | `.claude/hooks/guarda_do_git.py` (`--no-verify`, `core.hooksPath`); o CI pega quem saltar à mão |
 | NÃO PIORAR | teste | catracas: `tests/test_tamanho_das_funcoes.py`, `tests/test_alarmes.py` |
 | SEM SILENCIAR ALARME SEM MOTIVO | teste | `tests/test_alarmes.py` (motivo, contagem, só regras ligadas) |
@@ -29,4 +29,4 @@ linha, e que cada caminho citado exista.
 | SEM ESCRITA NO BANCO | texto | nenhuma máquina sabe se houve o "sim" do dono; skill `sql-postgres` |
 | SEM DADOS REAIS | teste + git | `tests/test_dados_pessoais.py`; `.githooks/pre-commit` e `commit-msg` com a lista negra |
 | SEM SEGREDOS | permissão + hook + git | `.claude/settings.json` (deny), `.claude/hooks/bloquear_segredos.py`, `.githooks/pre-push` (gitleaks) |
-| SÓ O PRÓPRIO TRABALHO | hook | `.claude/hooks/guarda_do_git.py` (`add -A`, `.`, `commit -a`, commit sem caminhos, `git stash`) |
+| SÓ O PRÓPRIO TRABALHO | hook | `.claude/hooks/guarda_do_git.py` (commit sem caminhos, `git stash`) |
