@@ -32,7 +32,8 @@ testes a 100 %. Os scripts são Python só com a biblioteca padrão; os hooks do
 | `testes/test_permissoes.py` | `tests/` | As três colunas, o modo que salta as permissões desligado, os hooks ligados com `onFailure: block` |
 | `testes/test_ci.py` | `tests/` | Actions fixadas por SHA, token só de leitura, nada baixado direto para uma shell |
 | `testes/carregar_por_caminho.py` | `tests/` | Carrega os scripts pelo caminho e roda-os como `__main__` no processo, para contarem na cobertura |
-| `documentos/CLAUDE.md` | `CLAUDE.md` | Arquivo de regras no formato que o `test_regras.py` confere (`- **TÍTULO:** regra. · *motivo*`) |
+| `documentos/AGENTS.md` | `AGENTS.md` | Arquivo de regras no formato que o `test_regras.py` confere (`- **TÍTULO:** regra. · *motivo*`): a Regra n.º 1 por preencher, o núcleo e o "Nunca" (iguais aos do `AGENTS.md` do Morg-laws, um teste confere) e o índice das skills |
+| `documentos/CLAUDE.md` | `CLAUDE.md` | A linha `@AGENTS.md` e o que vale só no Claude Code; não repete as regras |
 | `documentos/regras-e-barreiras.md` | `docs/` | O mapa: cada regra e a barreira que a obriga, ou o motivo de ficar em texto |
 | `documentos/plano.md` | `docs/planos/` | Contexto, decisões do dono, fora do escopo, passos com caixas e prova |
 | `documentos/verificacao.md` | `docs/` | Verificação independente: contagens fechadas antes de ler a anterior |

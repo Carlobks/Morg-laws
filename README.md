@@ -12,7 +12,7 @@ o que deu errado, a regra que nasceu disso e a fonte que a sustenta.
 | `skills/` | Regras por assunto (SQL, Supabase, Next.js, segurança, sessões…). O agente só abre o que o projeto usa. |
 | `biblia-akita/` | Resumo, com palavras nossas, do livro *Competente o Suficiente*, de Fabio Akita, com capítulo e página. |
 | `aprendizados/` | Notas datadas sobre bibliotecas, ferramentas e erros que custaram caro. |
-| `modelos/` | Arquivos prontos para copiar, que transformam as regras em barreiras de máquina: hooks do Claude Code e `settings.json` em três colunas, hooks e portões do git, testes das regras, changelog por fragmentos, CI e moldes de documento (CLAUDE.md, mapa das barreiras, plano, handoff, ADR). Índice em [modelos/README.md](modelos/README.md). |
+| `modelos/` | Arquivos prontos para copiar, que transformam as regras em barreiras de máquina: hooks do Claude Code e `settings.json` em três colunas, hooks e portões do git, testes das regras, changelog por fragmentos, CI e moldes de documento (AGENTS.md, CLAUDE.md, mapa das barreiras, plano, handoff, ADR). Índice em [modelos/README.md](modelos/README.md). |
 | `tests/` e `scripts/testar.sh` | Os testes dos modelos: cobertura de linhas e ramos a 100 % e um projeto de exemplo montado só com eles. |
 | `pesquisas/` | As pesquisas feitas para o repositório, uma por arquivo, com o índice em [pesquisas/README.md](pesquisas/README.md). |
 | `FONTES.md` | Todas as fontes usadas, com a data em que foram lidas. |
@@ -25,12 +25,12 @@ O repositório está em construção: as pastas aparecem conforme as fases avan�
 npx skills add Carlobks/Morg-laws
 ```
 
-O comando instala as skills em `.claude/skills/` (ou na pasta do agente que escolher). O `AGENTS.md` não vem com elas: copie-o para a raiz do projeto. No Claude Code, junte um `CLAUDE.md` com a linha `@AGENTS.md`. Detalhes e versão testada em [aprendizados/2026-10-30-instalacao-das-skills.md](aprendizados/2026-10-30-instalacao-das-skills.md).
+O comando instala as skills em `.claude/skills/` (ou na pasta do agente que escolher). As regras não vêm com elas: copie o molde [modelos/documentos/AGENTS.md](modelos/documentos/AGENTS.md) para a raiz do projeto, como `AGENTS.md`, e preencha o que está entre `<…>`. No Claude Code, junte um `CLAUDE.md` com a linha `@AGENTS.md` (molde em [modelos/documentos/CLAUDE.md](modelos/documentos/CLAUDE.md)). O `AGENTS.md` da raiz deste repositório não se copia: leva também as regras de quem trabalha no próprio Morg-laws. Detalhes e versão testada em [aprendizados/2026-10-30-instalacao-das-skills.md](aprendizados/2026-10-30-instalacao-das-skills.md).
 
 Para que as regras sejam cumpridas e não só lidas, copie os modelos que servem ao projeto: os passos estão em
 [modelos/README.md](modelos/README.md). O mínimo recomendado é a guarda do git, o hook de segredos e o que pergunta
 antes do push (`modelos/claude/`), o `pre-commit` com o comando único de testes (`modelos/git/`) e o
-`test_regras.py`, que liga cada regra do `CLAUDE.md` à barreira que a obriga.
+`test_regras.py`, que liga cada regra do `AGENTS.md` à barreira que a obriga.
 
 ## Para quem contribui
 
