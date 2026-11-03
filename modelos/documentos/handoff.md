@@ -1,7 +1,7 @@
 # Handoff: <assunto>
 
 Para retomar numa sessão nova. Confirme o estado no repositório (`git status -s` e `git log --oneline`) antes de
-confiar neste arquivo. Vive em `.context/HANDOFF-<assunto>.md` e commita-se sozinho, pelo caminho, a cada
+confiar neste arquivo. Vive em `.context/HANDOFF-<assunto>.md` e é commitado sozinho, pelo caminho, a cada
 compactação e no fecho de cada fase (skill `passando-o-trabalho`). O `tests/test_docs_indices.py` exige as seções
 abaixo e confere cada hash citado. Menos de 150 linhas; seção vazia leva "nenhum".
 
