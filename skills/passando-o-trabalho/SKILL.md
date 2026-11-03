@@ -1,6 +1,6 @@
 ---
 name: passando-o-trabalho
-description: Guarda o trabalho em curso num handoff por assunto (.context/HANDOFF-<assunto>.md) antes de compactar a conversa ou de parar, commita só esse arquivo, entrega o /compact pronto para o Claude Code ou para o Codex e conduz a retomada depois. O handoff leva o estado conferido no git, as decisões, o que já falhou e não se repete, e os próximos passos. Usar quando a conversa está longa e vai ser compactada, quando o trabalho para e continua noutra sessão ou noutro dia, ou ao retomar depois de compactar («lê o handoff»). Não usar para dividir trabalho entre sessões nem pedir uma auditoria independente (é a orquestrando-sessoes), nem para commits, mensagens ou push do dia a dia (é a git-e-commits), nem para resumir documentos ou escrever changelog.
+description: Guarda o trabalho em curso num handoff por assunto (.context/HANDOFF-<assunto>.md) antes de compactar a conversa ou de parar, commita só esse arquivo, entrega o /compact pronto para o Claude Code ou para o Codex e conduz a retomada depois. O handoff leva o estado conferido no git, as decisões, o que já falhou e não se repete, e os próximos passos. Usar quando a conversa está longa e vai ser compactada, quando a dúvida é compactar ou abrir uma sessão nova porque a conversa cresceu, quando o trabalho para e continua em outra sessão ou em outro dia, ou ao retomar depois de compactar («lê o handoff»). Não usar para dividir trabalho entre sessões nem pedir uma auditoria independente (é a orquestrando-sessoes), nem para commits, mensagens ou push do dia a dia (é a git-e-commits), nem para resumir documentos ou escrever changelog.
 ---
 
 # Passando o trabalho
@@ -33,19 +33,21 @@ git diff --cached --stat
   poupar a janela.
 - **Testes:** o resultado da última execução real que aparece na conversa, com a mensagem de erro literal. Nada
   rodado: «não executado nesta sessão». Não rode a suíte inteira só para o handoff.
-- Sem git: escreva «sem git» no estado e marque cada arquivo citado como **não verificado**.
+- **Sem git:** grave o handoff em `.context/` da pasta atual (crie a pasta se ela não existir), escreva «sem git» no
+  estado e marque cada arquivo citado como **não verificado**. Pule a seção 3 e diga na resposta que o handoff ficou
+  só no disco.
 
 ## 2. Gravar o handoff
 
 **Um arquivo por assunto:** `.context/HANDOFF-<assunto>.md`, com um assunto curto, em minúsculas e com hífens, que
-se reconheça daqui a uma semana. Nunca um `HANDOFF.md` genérico: noutra sessão na mesma pasta, ele é sobrescrito e
-apaga o estado da outra. Sem datas nem ids de sessão no nome, e nada fora de `.context/`.
+se reconheça daqui a uma semana. Nunca um `HANDOFF.md` genérico: com outra sessão na mesma pasta, ele é
+sobrescrito e apaga o estado da outra. Sem datas nem ids de sessão no nome, e nada fora de `.context/`.
 
-- Antes de gravar, liste `.context/HANDOFF-*.md`. O do **mesmo assunto** atualiza-se; os **dos outros** não se tocam.
+- Antes de gravar, liste `.context/HANDOFF-*.md`. O do **mesmo assunto** se atualiza; nos **dos outros** não se toca.
 - **Leia o anterior antes de reescrever.** Reescreva o arquivo inteiro, mas leve para a versão nova as decisões e o
   «Descartado» que continuam válidos. Perder essa lista é o que faz o agente repetir o que já falhou.
 
-**O formato.** Os títulos são estes, nesta ordem (o teste `test_docs_indices.py` dos modelos confere-os); o molde
+**O formato.** Os títulos são estes, nesta ordem (o teste `test_docs_indices.py` dos modelos os confere); o molde
 está em `modelos/documentos/handoff.md`.
 
 | Título | O que leva |
@@ -59,16 +61,16 @@ está em `modelos/documentos/handoff.md`.
 Regras do conteúdo:
 
 - **O literal vence a paráfrase:** caminhos, nomes, números de linha e erros exatamente como são.
-- **O verificado separa-se do suposto:** o que veio do git ou de uma execução real é verificado; o que veio só da
+- **O verificado fica separado do suposto:** o que veio do git ou de uma execução real é verificado; o que veio só da
   conversa leva «(não verificado)».
 - **Nada de segredos nem dados pessoais:** chaves, tokens, senhas e strings de conexão viram `<REDIGIDO>`.
 - **Curto:** menos de 150 linhas. Seção vazia leva «nenhum» e não some.
-- Um hash entre crases tem de ser de um commit que existe. O commit do próprio handoff não se cita nele.
+- Um hash entre crases tem de ser de um commit que existe. O commit do próprio handoff não é citado nele.
 
 ## 3. Commitar o handoff, sozinho
 
 O handoff vai para o git **a cada compactação**, antes do `/compact`, **e no fecho de cada fase**. Assim, quem
-retoma noutra máquina ou noutra sessão acha-o, e o histórico mostra como o estado mudou.
+retoma em outra máquina ou em outra sessão o encontra, e o histórico mostra como o estado mudou.
 
 ```
 git check-ignore -q .context/HANDOFF-<assunto>.md   # sai com 0 se o arquivo estiver ignorado
@@ -78,16 +80,20 @@ git commit -F <arquivo-da-mensagem> -- .context/HANDOFF-<assunto>.md
 
 - Pelo caminho, sempre: um `git commit` sem caminho leva o que outra sessão deixou preparado. O `git add` é preciso
   porque o git recusa um commit por caminho de um arquivo que ainda não conhece.
-- Os hooks do projeto correm. Hook recusou: corrige-se a causa, nunca se salta.
-- **`.context/` ignorado:** o handoff grava-se na mesma. Diga ao dono do projeto que a pasta está no `.gitignore` e
+- Os hooks do projeto rodam. Hook recusou: a causa é corrigida, e o hook nunca é pulado.
+- **`.context/` ignorado:** o handoff é gravado mesmo assim. Diga ao dono do projeto que a pasta está no `.gitignore` e
   pergunte se a tira de lá. Nunca mexa no `.gitignore` sozinho nem force o `git add`. Com um «não», o handoff fica
   só no disco, e a resposta diz isso.
 
 ## 4. Compactar
 
-**Quando:** a prática do dono deste repositório é compactar à mão por volta de **50% da janela**, com instruções, em
-vez de esperar pela automática no limite. **O número é dele**, escolhido para uso próprio: nem o livro abaixo nem a
-documentação oficial dão uma percentagem. O porquê de compactar cedo vem do livro *Competente o Suficiente*: a janela
+**Compactar ou abrir uma sessão nova?** Quando a conversa cresceu, a pergunta é desta skill. Para continuar o mesmo
+trabalho, compacte com o handoff. Para um trabalho sem relação com este, grave o handoff e abra uma sessão nova: ela
+não precisa do histórico desta. Dividir o trabalho em várias sessões é da skill `orquestrando-sessoes`.
+
+**Quando:** a prática do autor do Morg-laws é compactar à mão por volta de **50% da janela**, com instruções, em vez
+de esperar pela automática no limite. **O número é dele**, escolhido para uso próprio: nem o livro abaixo nem a
+documentação oficial recomendam uma percentagem. O porquê de compactar cedo vem do livro *Competente o Suficiente*: a janela
 cheia custa dinheiro, porque é relida a cada mensagem, custa tempo e torna mais difícil achar o que importa (p. 31); a
 atenção cai à medida que ela enche (p. 124); e uma sessão longa fica cheia de tentativas antigas (p. 411). No Claude
 Code, o `/context` mostra o que ocupa a janela.
@@ -98,14 +104,19 @@ Code, o `/context` mostra o que ocupa a janela.
 /compact Guarde: 1) objetivo: [uma linha]; 2) arquivos ativos: [lista]; 3) não repetir: [o essencial do Descartado]; 4) erro atual: [literal, ou "nenhum"]. Deixe de fora saídas brutas de ferramentas e leituras antigas. No próximo turno, leia primeiro .context/HANDOFF-<assunto>.md.
 ```
 
-E, a seguir, a mensagem para mandar depois de compactar (o primeiro pedido da conversa nova):
+E, depois dele, a mensagem para mandar quando a compactação terminar (o primeiro pedido da conversa nova):
 
 ```text
 A conversa acabou de ser compactada. O estado está em .context/HANDOFF-<assunto>.md; os outros HANDOFF-*.md dessa pasta são de outros assuntos e não se tocam. Leia esse arquivo inteiro, rode git status -s e diga o que mudou em relação à tabela, releia o «Descartado» e não proponha nada dele. Diga numa frase onde estávamos e siga o passo 1 dos próximos passos ([resumo do passo]). Se ele pedir uma decisão minha, pergunte antes.
 ```
 
-**Codex:** a documentação mostra o `/compact` sem argumentos, com uma confirmação antes de resumir. Diga para o rodar
-primeiro e entregue a mensagem de retomada acima num bloco só, para colar logo depois.
+**Codex:** a documentação mostra o `/compact` sem argumentos, com uma confirmação antes de resumir. Como não há onde
+pôr as instruções, elas vão na mensagem de retomada. Diga para rodar o `/compact` primeiro e entregue, num bloco só,
+para colar logo depois:
+
+```text
+A conversa acabou de ser compactada. Objetivo: [uma linha]. Arquivos ativos: [lista]. Não repetir: [o essencial do Descartado]. Erro atual: [literal, ou "nenhum"]. O estado completo está em .context/HANDOFF-<assunto>.md; os outros HANDOFF-*.md dessa pasta são de outros assuntos e não se tocam. Leia esse arquivo inteiro, rode git status -s e diga o que mudou em relação à tabela, releia o «Descartado» e não proponha nada dele. Diga numa frase onde estávamos e siga o passo 1 dos próximos passos ([resumo do passo]). Se ele pedir uma decisão minha, pergunte antes.
+```
 
 Nos dois, o comando sai no fim da resposta, depois de uma linha com o caminho do handoff e o hash do commit.
 
@@ -128,5 +139,5 @@ os pequenos inteiros), mas não conte com isso: leia-o.
 Ver `FONTES.md`, seção «Compactação da conversa», e `pesquisas/2026-11-02-compactacao-claude-code-e-codex.md`: a
 documentação do Claude Code (o `/compact`, a compactação automática e por inatividade, o que volta depois) e a do
 Codex (o `/compact` e as skills); a especificação Agent Skills; o livro *Competente o Suficiente*, de Fabio Akita
-(pp. 30–32, 124 e 411). O formato do handoff, o commit a cada compactação e os 50% são prática do dono deste
-repositório.
+(pp. 30–32, 124 e 411). O formato do handoff, o commit a cada compactação e os 50% são prática do autor do
+Morg-laws.
