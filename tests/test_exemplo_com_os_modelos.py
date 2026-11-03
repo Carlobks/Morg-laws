@@ -5,9 +5,12 @@ Num ensaio real, a primeira corrida deu dois vermelhos verdadeiros: arquivos gra
 Windows e uma skill instalada fora do índice.
 """
 
+import json
+import os
 import subprocess
 import sys
 import unittest
+from unittest import mock
 
 from projeto_de_exemplo import apagar, escrever, git, montar, rodar_testes
 
@@ -139,6 +142,56 @@ class ProjetoDeExemplo(unittest.TestCase):
         self.assertIn(b"## [0.1.0]", resultado.stdout)
         self.assertIn(b"### Adicionado\n\n- Tudo novo.", resultado.stdout.replace(b"\r\n", b"\n"))
         self.assertFalse((self.pasta / "VERSION").exists(), "o rascunho não grava")
+
+    def test_identificador_generico_desempacotado(self):
+        # Lido pela árvore: o regex antigo só via `def data` e `class data`, não `data, erro = ler()`.
+        escrever(self.pasta / "src" / "carregar.py", "data, erro = ler()\n")
+        self.assertFalhaEm("test_nenhum_identificador_generico_solto")
+
+    def test_arquivo_acima_de_500_linhas(self):
+        escrever(self.pasta / "src" / "grande.py", "x = 1\n" * 501)
+        self.assertFalhaEm("test_nao_piora (test_tamanho_dos_arquivos")
+
+    def test_nome_de_topo_repetido(self):
+        escrever(self.pasta / "src" / "caixa.py", "def total_do_pedido(itens):\n    return 0\n")
+        self.assertFalhaEm("test_nao_piora (test_nomes_unicos")
+
+    def test_teste_saltado_sem_condicao(self):
+        escrever(self.pasta / "tests" / "test_pedido.py",
+                 "import unittest\n\n\nclass Pedido(unittest.TestCase):\n    @unittest.skip('lento')\n"
+                 "    def test_soma(self):\n        pass\n")
+        self.assertFalhaEm("test_nao_piora (test_testes_saltados")
+
+    def gravar_base(self, regra, valores):
+        escrever(self.pasta / "tests" / "linhas-de-base" / f"{regra}.json",
+                 json.dumps({"regra": regra, "valores": valores}, indent=2) + "\n")
+
+    def test_a_base_deixa_passar_o_que_ja_violava_mas_sem_folga(self):
+        escrever(self.pasta / "src" / "grande.py", "x = 1\n" * 501)
+        self.gravar_base("tamanho-de-arquivo", {"src/grande.py": {"linhasAcima": 1}})
+        git(self.pasta, "add", "--", ".")
+        codigo, saida = rodar_testes(self.pasta)
+        self.assertEqual(codigo, 0, saida[-3000:])
+        self.gravar_base("tamanho-de-arquivo", {"src/grande.py": {"linhasAcima": 4}})
+        self.assertFalhaEm("test_a_linha_de_base_nao_tem_folga (test_tamanho_dos_arquivos")
+
+    def test_entrada_nova_na_base_ja_commitada(self):
+        self.gravar_base("tamanho-de-arquivo", {})
+        git(self.pasta, "add", "--", ".")
+        git(self.pasta, "commit", "-q", "-m", "chore: base vazia", env={**os.environ, "MORG_A_TESTAR": "1"})
+        escrever(self.pasta / "src" / "grande.py", "x = 1\n" * 501)
+        self.gravar_base("tamanho-de-arquivo", {"src/grande.py": {"linhasAcima": 1}})
+        self.assertFalhaEm("test_a_linha_de_base_so_encolhe (test_tamanho_dos_arquivos")
+
+    def test_criar_a_base_num_projeto_que_ja_viola(self):
+        escrever(self.pasta / "src" / "grande.py", "x = 1\n" * 501)
+        with mock.patch.dict(os.environ, {"MORG_CRIAR_LINHA_DE_BASE": "1"}):
+            self.assertFalhaEm("test_nao_piora (test_tamanho_dos_arquivos")
+        base = json.loads((self.pasta / "tests" / "linhas-de-base" / "tamanho-de-arquivo.json").read_text("utf-8"))
+        self.assertEqual(base, {"regra": "tamanho-de-arquivo", "valores": {"src/grande.py": {"linhasAcima": 1}}})
+        git(self.pasta, "add", "--", ".")
+        codigo, saida = rodar_testes(self.pasta)
+        self.assertEqual(codigo, 0, saida[-3000:])
 
     def test_permissao_perigosa_no_allow(self):
         settings = self.pasta / ".claude" / "settings.json"

@@ -1,4 +1,4 @@
-"""Hook PreToolUse (Write/Edit): recusa que um arquivo de código do projeto fique acima de LIMITE linhas.
+"""Hook PreToolUse (Write/Edit): recusa que um arquivo de código do projeto fique acima de LIMITE_POR_ARQUIVO linhas.
 
 Só bloqueia se o arquivo passar o limite **e crescer**: encolher um arquivo antigo grande (refatoração) é sempre
 permitido. As edições feitas pela shell escapam a este hook; um teste do projeto deve medir todos os arquivos.
@@ -10,9 +10,10 @@ import json
 import sys
 from pathlib import Path
 
-LIMITE = 500
-EXTENSOES = {".py", ".ps1", ".psm1", ".sh", ".js", ".mjs", ".jsx", ".ts", ".tsx", ".html", ".css", ".sql",
-             ".cmd", ".bat", ".yaml", ".yml", ".md"}
+LIMITE_POR_ARQUIVO = 500
+# As mesmas dos testes prontos de tamanho de arquivo (test_tamanho_dos_arquivos.py e tamanho-de-arquivo.test.ts).
+EXTENSOES = {".py", ".ps1", ".psm1", ".sh", ".js", ".mjs", ".cjs", ".jsx", ".ts", ".mts", ".cts", ".tsx", ".html",
+             ".css", ".sql", ".cmd", ".bat", ".yaml", ".yml", ".md"}
 _RAIZ = Path(__file__).resolve().parents[2]
 
 
@@ -37,9 +38,9 @@ def motivo_para_bloquear(caminho, linhas_antes, linhas_depois):
     """Devolve o motivo (texto) se a alteração deve ser recusada; None se puder seguir."""
     if caminho.suffix.lower() not in EXTENSOES:
         return None
-    if linhas_depois > LIMITE and linhas_depois > linhas_antes:
+    if linhas_depois > LIMITE_POR_ARQUIVO and linhas_depois > linhas_antes:
         return (
-            f"{caminho.name} ficaria com {linhas_depois} linhas (limite {LIMITE}; antes {linhas_antes}). "
+            f"{caminho.name} ficaria com {linhas_depois} linhas (limite {LIMITE_POR_ARQUIVO}; antes {linhas_antes}). "
             "Divida-o por responsabilidade antes de acrescentar."
         )
     return None
@@ -72,7 +73,7 @@ def main():
     motivo = motivo_para_bloquear(caminho, contar_linhas(texto_antes), contar_linhas(depois))
     if motivo:
         sys.stderr.reconfigure(encoding="utf-8")
-        sys.stderr.write(f"Bloqueado (limite de {LIMITE} linhas, Morg-laws): {motivo}\n")
+        sys.stderr.write(f"Bloqueado (limite de {LIMITE_POR_ARQUIVO} linhas, Morg-laws): {motivo}\n")
         sys.exit(2)
 
 
