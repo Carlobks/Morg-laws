@@ -1,0 +1,12 @@
+[
+  {"query": "este arquivo já tem 900 linhas, como o parto?", "should_trigger": true},
+  {"query": "posso pôr um eslint-disable aqui para o lint passar?", "should_trigger": true},
+  {"query": "que nome dou a esta função que formata a data do recibo?", "should_trigger": true},
+  {"query": "instala no projeto os testes prontos de tamanho de função", "should_trigger": true},
+  {"query": "o projeto já tem centenas de funções longas, como adoto a regra das 20 linhas sem travar tudo?", "should_trigger": true},
+  {"query": "vou marcar este teste com it.skip até amanhã", "should_trigger": true},
+  {"query": "corrige o bug do total do pedido e prova que funciona", "should_trigger": false},
+  {"query": "faz o commit e o push disto", "should_trigger": false},
+  {"query": "esta rota tem alguma brecha de segurança?", "should_trigger": false},
+  {"query": "escreve a regra das 20 linhas no AGENTS.md", "should_trigger": false}
+]
