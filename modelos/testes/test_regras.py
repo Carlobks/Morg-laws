@@ -7,6 +7,8 @@
 - Uma barreira "por fazer (<fase>)" só vale enquanto a fase não está marcada como feita no plano.
 - Um caminho citado que já não existe ensina o agente a saltar a regra inteira: todos têm de existir.
 - As skills do índice estão instaladas, e as instaladas estão no índice (e no skills-lock.json, se houver).
+- O CLAUDE.md, se existir ao lado, importa o arquivo de regras (`@AGENTS.md`): sem a linha, o Claude Code não lê regra
+  nenhuma. O Claude Code carrega os dois juntos: a soma das linhas fica no limite e os caminhos dele também existem.
 Instalar: copiar para `tests/` do projeto e ajustar o bloco abaixo.
 """
 
@@ -17,7 +19,8 @@ import unittest
 from carregar_por_caminho import RAIZ
 
 # Ajuste ao projeto.
-ARQUIVO_DE_REGRAS = RAIZ / "AGENTS.md"  # o CLAUDE.md do projeto só o importa (@AGENTS.md)
+ARQUIVO_DE_REGRAS = RAIZ / "AGENTS.md"
+ARQUIVO_DO_CLAUDE = RAIZ / "CLAUDE.md"  # importa o de regras (@AGENTS.md) e leva só o que vale no Claude Code
 MAPA = RAIZ / "docs" / "regras-e-barreiras.md"
 PLANO = RAIZ / "docs" / "plano.md"  # onde as fases "por fazer" se marcam como feitas (- [x] **<fase> …)
 PASTA_SKILLS = RAIZ / ".claude" / "skills"
@@ -32,6 +35,12 @@ CAMINHO = re.compile(r"`((?![\w+.-]*://)[\w.-]+/[^`<>{}*\s]*|[\w.-]+\.(?:md|py|p
 
 def texto(caminho):
     return caminho.read_text(encoding="utf-8")
+
+
+def arquivos_lidos_sempre():
+    """O arquivo de regras e, se existir e for outro, o CLAUDE.md que o importa: o Claude Code carrega os dois."""
+    claude = [ARQUIVO_DO_CLAUDE] if ARQUIVO_DO_CLAUDE.is_file() and ARQUIVO_DO_CLAUDE != ARQUIVO_DE_REGRAS else []
+    return [ARQUIVO_DE_REGRAS, *claude]
 
 
 def linhas_do_mapa():
@@ -62,10 +71,18 @@ def regras():
 class RegrasCurtas(unittest.TestCase):
 
     def test_tamanho(self):
-        linhas = texto(ARQUIVO_DE_REGRAS).splitlines()
-        self.assertLessEqual(len(linhas), MAXIMO_DE_LINHAS)
-        longas = [numero for numero, linha in enumerate(linhas, 1) if len(linha) > MAXIMO_POR_LINHA]
+        por_arquivo = {arquivo.name: texto(arquivo).splitlines() for arquivo in arquivos_lidos_sempre()}
+        self.assertLessEqual(sum(map(len, por_arquivo.values())), MAXIMO_DE_LINHAS,
+                             "as linhas somadas de todos os arquivos lidos sempre")
+        longas = [f"{nome}:{numero}" for nome, linhas in por_arquivo.items()
+                  for numero, linha in enumerate(linhas, 1) if len(linha) > MAXIMO_POR_LINHA]
         self.assertEqual(longas, [], f"linhas com mais de {MAXIMO_POR_LINHA} caracteres")
+
+    def test_o_claude_md_importa_o_arquivo_de_regras(self):
+        if arquivos_lidos_sempre() == [ARQUIVO_DE_REGRAS]:
+            self.skipTest("sem CLAUDE.md à parte")
+        self.assertIn(f"@{ARQUIVO_DE_REGRAS.name}", texto(ARQUIVO_DO_CLAUDE).splitlines(),
+                      "sem a linha de importação, o Claude Code não lê as regras")
 
     def test_regras_com_titulo_unico(self):
         titulos = TITULO.findall(texto(ARQUIVO_DE_REGRAS))
@@ -104,7 +121,7 @@ class NadaApontaParaOQueNaoExiste(unittest.TestCase):
     def test_caminhos_citados_existem(self):
         # Um caminho com pasta conta a partir da raiz; um nome solto pode estar em qualquer pasta.
         nomes = {caminho.name for caminho in RAIZ.rglob("*") if not {"node_modules", ".git"} & set(caminho.parts)}
-        for arquivo in (ARQUIVO_DE_REGRAS, MAPA):
+        for arquivo in (*arquivos_lidos_sempre(), MAPA):
             for caminho in set(CAMINHO.findall(texto(arquivo))) - CAMINHOS_DE_EXEMPLO:
                 with self.subTest(arquivo=arquivo.name, caminho=caminho):
                     existe = (RAIZ / caminho.rstrip("/")).exists() if "/" in caminho else caminho in nomes

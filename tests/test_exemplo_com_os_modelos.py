@@ -35,6 +35,22 @@ class ProjetoDeExemplo(unittest.TestCase):
         escrever(mapa, "".join(linha for linha in texto.splitlines(True) if not linha.startswith("| NÃO PIORAR")))
         self.assertFalhaEm("test_cada_regra_esta_no_mapa_e_o_mapa_nao_tem_regras_a_mais")
 
+    def estragar_o_claude_md(self, texto):
+        escrever(self.pasta / "CLAUDE.md", texto)
+
+    def test_claude_md_sem_importar_o_agents_md(self):
+        self.estragar_o_claude_md("## Só no Claude Code\n\nNada.\n")
+        self.assertFalhaEm("test_o_claude_md_importa_o_arquivo_de_regras")
+
+    def test_claude_md_com_caminho_que_nao_existe(self):
+        self.estragar_o_claude_md("@AGENTS.md\n\nVer `docs/nao-existe.md`.\n")
+        self.assertFalhaEm("test_caminhos_citados_existem")
+
+    def test_claude_md_que_passa_o_limite_somado(self):
+        # Sozinhos, os dois ficam abaixo de 100 linhas; o Claude Code carrega-os juntos.
+        self.estragar_o_claude_md("@AGENTS.md\n" + "- nota\n" * 60)
+        self.assertFalhaEm("test_tamanho")
+
     def test_arquivo_em_crlf(self):
         (self.pasta / "src" / "pedido.py").write_bytes(b"x = 1\r\n")
         self.assertFalhaEm("test_no_disco_crlf_so_no_que_o_windows_roda")
