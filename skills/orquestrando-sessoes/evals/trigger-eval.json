@@ -8,5 +8,5 @@
   {"query": "faz o commit só dos meus arquivos", "should_trigger": false},
   {"query": "escreve a regra sobre sub-agentes no CLAUDE.md", "should_trigger": false},
   {"query": "abre o arquivo de sessão do usuário no Supabase", "should_trigger": false},
-  {"query": "o teste de login está a falhar", "should_trigger": false}
+  {"query": "a conversa está enorme, prepara tudo para eu compactar", "should_trigger": false}
 ]

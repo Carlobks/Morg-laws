@@ -1,11 +1,11 @@
 ---
 name: orquestrando-sessoes
-description: Guia como dividir trabalho entre sessões de agente — quando abrir uma sessão nova em vez de continuar ou de usar sub-agentes, como escrever o pedido para uma leitura independente e como várias sessões convivem na mesma pasta sem se atropelar. Usar ao planejar trabalho grande, ao querer uma auditoria ou revisão independente, ou quando várias sessões ou pessoas mexem no mesmo repositório. Não usar para escrever o handoff, compactar ou retomar o trabalho (é a passando-o-trabalho), para escrever o conteúdo das regras (é a escrevendo-regras-de-agente) nem para os comandos de git do dia a dia (é a git-e-commits).
+description: Guia como dividir trabalho entre sessões de agente — quando abrir uma sessão nova em vez de continuar ou de usar sub-agentes, como escrever o pedido para uma leitura independente e como várias sessões convivem na mesma pasta sem se atropelar. Usar ao planejar trabalho grande, ao querer uma auditoria ou revisão independente, ou quando várias sessões ou pessoas mexem no mesmo repositório. Não usar para escrever o handoff, compactar, retomar o trabalho ou decidir se uma conversa que cresceu se compacta ou passa para uma sessão nova (é a passando-o-trabalho), para escrever o conteúdo das regras (é a escrevendo-regras-de-agente) nem para os comandos de git do dia a dia (é a git-e-commits).
 ---
 
 # Orquestrando sessões
 
-Trabalho grande com agentes falha menos quando cada pedaço tem dono, contexto limpo e um resultado que alguém confere. Esta skill diz como dividir, como passar o trabalho e como evitar que sessões estraguem o trabalho umas das outras.
+Trabalho grande com agentes falha menos quando cada pedaço tem dono, contexto limpo e um resultado que alguém confere. Esta skill diz como dividir e como evitar que sessões estraguem o trabalho umas das outras.
 
 ## 1. Sub-agentes ou sessões novas: uma escolha, não uma lei
 
