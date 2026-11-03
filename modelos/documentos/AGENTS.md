@@ -47,7 +47,7 @@ As skills abrem pelo nome, estejam onde estiverem instaladas. Instalar ou atuali
 | Vai dividir trabalho entre sessões ou agentes | `orquestrando-sessoes` |
 | Vai compactar a conversa, parar ou retomar trabalho | `passando-o-trabalho` |
 | Vai commitar ou fechar um ciclo de trabalho | `git-e-commits` |
-| Vai corrigir um bug, testar ou provar que algo funciona | `testes-e-provas` |
+| Vai escrever ou partir código, corrigir um bug, testar ou provar que funciona | `codigo-legivel`, `testes-e-provas` |
 | Vai criar, redesenhar ou rever uma tela | `desenhando-telas` |
 | Vai fazer push de código | `auditoria-de-seguranca` |
 | O projeto usa SQL, Supabase, Next.js ou React | `sql-postgres`, `supabase`, `nextjs-react` |
