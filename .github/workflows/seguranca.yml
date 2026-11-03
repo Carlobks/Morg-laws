@@ -55,9 +55,13 @@ jobs:
       # este job só lê o repositório e não tem segredos. Com segredos ou escrita, use um requirements com hashes.
       - name: Ferramentas com versões fixas
         run: ${{ steps.python.outputs.python-path }} -m pip install --disable-pip-version-check coverage==7.17.0 ruff==0.17.2
+      # O Node da versão fixada no projeto de exemplo TypeScript; o scripts/testar.sh roda o npm ci do lockfile dele.
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: tests/exemplo-ts/.nvmrc
       - name: Ligar os portões do git (os testes da guarda do git exigem-no)
         run: git config core.hooksPath .githooks
-      - name: Modelos testados a 100 % e ruff (scripts/testar.sh)
+      - name: Modelos testados a 100 %, moldes TypeScript, as duas línguas e ruff (scripts/testar.sh)
         env:
           MORG_PY: ${{ steps.python.outputs.python-path }}
         run: sh scripts/testar.sh
