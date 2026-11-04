@@ -1,6 +1,6 @@
 # Os "não faça" do livro
 
-Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A página é a impressa. `#n` é o número da nota de leitura de origem (de 1 a 83). A barreira diz como impor o item: **texto** (regra escrita) ou **máquina** (permissão, hook, teste, CI, configuração). «Onde aplicar» diz que skill do Morg-laws já o aplica, ou «ainda nenhuma».
+Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A página é a impressa. `#n` é o número da nota de leitura de origem (de 1 a 83); o item sem `#n` veio da revisão da leitura inteira. A barreira diz como impor o item: **texto** (regra escrita) ou **máquina** (permissão, hook, teste, CI, configuração). «Onde aplicar» diz que skill do Morg-laws já o aplica, ou «ainda nenhuma».
 
 ## 1. Adotar ferramentas, modelos e cursos
 
@@ -105,4 +105,5 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A pági
 ## 10. Aprender e enviar
 
 - Não pedir a solução pronta quando o objetivo é aprender. Tente sozinho primeiro e peça uma pista. (p. 363) #72 · **texto** · onde aplicar: ainda nenhuma
+- Não trocar a versão difícil pela fácil só porque a fácil impressiona logo: o começo de um trabalho engana sobre o que falta. (pp. 343–344) · **texto** · onde aplicar: ainda nenhuma
 - Não aprovar um push sem ver a lista de arquivos de todos os commits por enviar, incluindo os removidos depois. (p. 386) #78 · **máquina** (`pre-push` com scanner de segredos) · onde aplicar: `auditoria-de-seguranca`, `git-e-commits`

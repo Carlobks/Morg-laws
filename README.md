@@ -10,7 +10,7 @@ o que deu errado, a regra que nasceu disso e a fonte que a sustenta.
 |---|---|
 | `AGENTS.md` | O núcleo das regras e o índice. É o que o agente lê primeiro. |
 | `skills/` | Regras por assunto (SQL, Supabase, Next.js, segurança, sessões…). O agente só abre o que o projeto usa. |
-| `biblia-akita/` | Resumo, com palavras nossas, do livro *Competente o Suficiente*, de Fabio Akita, com capítulo e página. |
+| `biblia-akita/` | Resumo, com palavras nossas, do livro *Competente o Suficiente*, de Fabio Akita, um arquivo por tema, cada conselho com a página e a skill que já o aplica. |
 | `aprendizados/` | Notas datadas sobre bibliotecas, ferramentas e erros que custaram caro. |
 | `modelos/` | Arquivos prontos para copiar, que transformam as regras em barreiras de máquina: hooks do Claude Code e `settings.json` em três colunas, hooks e portões do git, testes das regras, testes prontos da forma do código em Python e em TypeScript (vitest), changelog por fragmentos, CI e moldes de documento (AGENTS.md, CLAUDE.md, mapa das barreiras, plano, handoff, ADR). Índice em [modelos/README.md](modelos/README.md). |
 | `tests/` e `scripts/testar.sh` | Os testes dos modelos: cobertura de linhas e ramos a 100 %, um projeto de exemplo em Python e outro em TypeScript (`tests/exemplo-ts/`, com o `package-lock.json` fixado) montados só com eles, e a prova de que as duas línguas dão o mesmo veredito. |
