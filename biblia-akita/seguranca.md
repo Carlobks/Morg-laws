@@ -27,7 +27,7 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A pági
 
 ## 4. Software de terceiros
 
-- Faça o inventário dos componentes de terceiros (SDKs, bibliotecas): é por eles que entram a recolha de dados e boa parte do risco. (p. 258) · **máquina** (lista de dependências conferida) · onde aplicar: `auditoria-de-seguranca`
+- Saiba que quase todo aplicativo leva dentro SDKs de outras empresas (anúncios, métricas, identificação do aparelho) e que cada um recolhe a sua parte: nenhum precisa de espiar sozinho, porque a recolha se faz em conjunto. (p. 258) · **texto** · onde aplicar: ainda nenhuma
 - Cumpra a licença do que usa ou adapta: mantenha os avisos de autoria e diga de onde veio. (pp. 169–170) · **texto** · onde aplicar: ainda nenhuma
 
 ## 5. Auditar e endurecer

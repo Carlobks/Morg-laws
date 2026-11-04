@@ -19,7 +19,7 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A pági
 
 - Ponha uma porta trancada entre planejar e executar: a execução só começa depois de o plano ser aprovado, e nada se apaga da origem. (p. 119) · **máquina** (o script só executa com o plano aprovado) · onde aplicar: ainda nenhuma
 - Peça o trabalho longo em etapas numeradas, que se podem repetir e que gravam o progresso. Toda tarefa automática tem de poder rodar duas vezes sem estragar nada. (pp. 99, 119) · **texto** · onde aplicar: ainda nenhuma
-- Nunca deixe um erro passar calado: registre o detalhe técnico e avise onde já se olha todos os dias. Uma falha em silêncio é a que a especificação não previu. (pp. 77, 83) · **máquina** (alerta) · onde aplicar: ainda nenhuma
+- Nunca deixe um erro passar calado: registre o detalhe técnico e avise onde já se olha todos os dias. Muitas vezes a verificação que faltava só nasce depois da falha que ninguém tinha previsto. (pp. 77, 83) · **máquina** (alerta) · onde aplicar: ainda nenhuma
 - Ponha uma conferência entre cada etapa de uma cadeia automática: dez etapas que acertam 90% cada uma acertam juntas só cerca de 35%. (p. 209) · **máquina** · onde aplicar: ainda nenhuma
 - Decida você o que o sistema faz quando um serviço externo falha, por exemplo cortar as chamadas por um tempo em vez de repetir sem fim. (pp. 94–95) · **texto** · onde aplicar: ainda nenhuma
 - Peça a outro agente, ou a outra pessoa, que execute e confira o procedimento que o primeiro escreveu. Ajuste as travas aos dados reais: uma trava exagerada recusa também o que é legítimo. (pp. 223–224) · **texto** · onde aplicar: `orquestrando-sessoes`
@@ -36,7 +36,7 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A pági
 ## 4. Fornecedores e continuidade
 
 - Prepare-se para o dia em que o fornecedor de IA desligar o modelo para todos, e tenha um plano para quando ele recusar um pedido pela política de conteúdo. (pp. 147–148, 200) · **texto** · onde aplicar: ainda nenhuma
-- Não aposte tudo no mesmo fornecedor: quando uma bolha estoura, as empresas que viviam dela somem e a tecnologia fica. (pp. 24, 365–368) · **texto** · onde aplicar: ainda nenhuma
+- Não ponha tudo numa aposta só: quando uma bolha estoura, as empresas que viviam dela desaparecem e a tecnologia fica. (pp. 24, 365–368) · **texto** · onde aplicar: ainda nenhuma
 - Trate os dados da empresa como o patrimônio que o código deixou de ser. (pp. 139–140) · **texto** · onde aplicar: ainda nenhuma
 - Pague por um serviço quando ele poupa horas de operação. Compare o tempo, o trabalho de manter e o custo por unidade. (p. 180) · **texto** · onde aplicar: ainda nenhuma
 - Só compre hardware para IA local se a máquina já existir ou se os dados não puderem sair. A conta é a memória (o que cabe) vezes a largura de banda (a velocidade), somando os pesos do modelo e a memória da conversa. (pp. 175–176, 183, 417–420) · **texto** · onde aplicar: ainda nenhuma
