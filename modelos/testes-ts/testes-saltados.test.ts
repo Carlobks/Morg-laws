@@ -7,12 +7,15 @@
 //   e `test.skip(semRede, 'motivo')` regista um teste saltado chamado `false` (é a assinatura do Playwright, não a
 //   do vitest);
 // - `contexto.skip()` sem condição nem `if`/`catch` à volta, ou sem a nota escrita (um texto que não está vazio);
-// - as opções do teste: `it('a', { skip: true }, …)` e `{ only: true }` (também `it['only']`); um
-//   `{ skip: condição }` não leva nota e recusa-se como o `contexto.skip(condição)` sem ela.
+// - as opções do teste: `it('a', { skip: true }, …)` e `{ only: true }` (também `it['only']`, a forma abreviada
+//   `{ only }` e as opções com `as` ou `satisfies`); um `{ skip: condição }` não leva nota e recusa-se como o
+//   `contexto.skip(condição)` sem ela.
 // A forma certa diz quando e porquê: `it.skipIf(semRede)(…)`, `contexto.skip(semRede, 'precisa da rede')`, ou
 // `if (semRede) contexto.skip('precisa da rede')` (também num `catch`). É a regra do molde Python
 // test_testes_saltados.py (`@unittest.skip`, `skipIf(condição, motivo)`, `skipTest` num `if` ou num `except`).
-// Limites conhecidos: uma condição constante (`it.skipIf(true)`) passa; um `.skip(…)` de outra coisa num arquivo de
+// Limites conhecidos: as opções por um caminho que a árvore não mostra passam: numa variável
+// (`const opcoes = { skip: true }; it('a', opcoes, …)`), espalhadas (`{ ...{ skip: true } }`) ou depois de um
+// `.each` (`it.each([1])('a', { skip: true }, …)`). Uma condição constante (`it.skipIf(true)`) passa; um `.skip(…)` de outra coisa num arquivo de
 // teste (`leitor.skip(3)`) é recusado; não serve o Playwright, cujo `test.skip(condição, motivo)` é a forma certa lá.
 // Linha de base: tests/linhas-de-base/testes-saltados.json (linha-de-base.ts).
 // Instalar: copiar esta pasta para tests/catracas/ do projeto e ajustar o bloco abaixo.
@@ -52,15 +55,30 @@ function nomesDaCadeia(expressao: ts.Expression): string[] | null {
     return antes && [...antes, nome]
 }
 
-/** `it('a', { skip: true }, …)`, `test('a', { only: true }, …)`: as opções do teste (o 2.º argumento no vitest). */
+/** O objeto por baixo de `x as T`, `x satisfies T`, `<T>x` e `(x)`. */
+function semAsNemParenteses(expressao: ts.Expression): ts.Expression {
+    const embrulhada = ts.isAsExpression(expressao) || ts.isSatisfiesExpression(expressao)
+        || ts.isTypeAssertionExpression(expressao) || ts.isParenthesizedExpression(expressao)
+    return embrulhada ? semAsNemParenteses(expressao.expression) : expressao
+}
+
+/** O nome e o valor de `skip: true` ou da forma abreviada `{ skip }` (o valor é a variável com o mesmo nome). */
+function nomeEValor(propriedade: ts.ObjectLiteralElementLike): [string, ts.Expression] | null {
+    if (ts.isShorthandPropertyAssignment(propriedade)) return [propriedade.name.text, propriedade.name]
+    if (!ts.isPropertyAssignment(propriedade)) return null
+    const nome = ts.isIdentifier(propriedade.name) || ts.isStringLiteral(propriedade.name) ? propriedade.name.text : ''
+    return [nome, propriedade.initializer]
+}
+
+/** `it('a', { skip: true }, …)`, `test('a', { only }, …)`: as opções do teste (o 2.º argumento no vitest). */
 function erroDasOpcoes(chamada: ts.CallExpression): string | null {
-    const propriedades = chamada.arguments.filter(ts.isObjectLiteralExpression).flatMap((opcoes) => [...opcoes.properties])
-    for (const propriedade of propriedades.filter(ts.isPropertyAssignment)) {
-        const nome = ts.isIdentifier(propriedade.name) || ts.isStringLiteral(propriedade.name) ? propriedade.name.text : ''
-        const desligada = propriedade.initializer.kind === ts.SyntaxKind.FalseKeyword
+    const propriedades = chamada.arguments.map(semAsNemParenteses).filter(ts.isObjectLiteralExpression)
+        .flatMap((opcoes) => [...opcoes.properties])
+    for (const [nome, valor] of propriedades.map(nomeEValor).filter((par) => par !== null)) {
+        const desligada = valor.kind === ts.SyntaxKind.FalseKeyword
         if (nome === 'only' && !desligada) return '{ only } esconde todos os outros testes'
         // Uma condição nas opções não leva nota: no vitest, diga-a com it.skipIf(condição) ou contexto.skip.
-        if (nome === 'skip' && !desligada) return propriedade.initializer.kind === ts.SyntaxKind.TrueKeyword ? SALTA_SEMPRE : SEM_MOTIVO_ESCRITO
+        if (nome === 'skip' && !desligada) return valor.kind === ts.SyntaxKind.TrueKeyword ? SALTA_SEMPRE : SEM_MOTIVO_ESCRITO
     }
     return null
 }
@@ -143,6 +161,12 @@ describe('detector de saltos', () => {
             "describe('c', { skip: true }, () => {})", "it('d', { skip: semRede }, () => {})", "it['only']('e', () => {})",
             "it('f', { timeout: 10 }, () => {})", "it('g', { skip: false }, () => {})"].join('\n')
         expect(linhasProibidas(fonte)).toEqual([1, 2, 3, 4, 5])
+    })
+
+    it('lê a forma abreviada { only } e as opções com as ou satisfies', () => {
+        const fonte = ["it('a', { only }, () => {})", "it('b', { skip }, () => {})", "it('c', { skip: true } as object, () => {})",
+            "it('d', ({ only: true }) satisfies object, () => {})", "it('e', { timeout } as object, () => {})"].join('\n')
+        expect(linhasProibidas(fonte)).toEqual([1, 2, 3, 4])
     })
 
     it('deixa o que tem condição e motivo', () => {

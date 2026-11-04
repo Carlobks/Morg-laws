@@ -40,7 +40,9 @@ pelos dois moldes de cada regra e exige o mesmo veredito.
 - **Alarme:** corrija o que ele aponta. Se não der, o motivo vai na mesma linha, depois de « — »
   (`// eslint-disable-line no-console — o CLI escreve no terminal`). A contagem por tipo, no projeto inteiro, não
   sobe: um alarme novo justificado sobe a linha de base e leva a linha `Alarme-novo: <motivo>` na mensagem do
-  commit. O commit-msg confere-a na máquina e o CI de novo, commit a commit; nas duas línguas é a mesma regra.
+  commit. O commit-msg confere-a na máquina e o CI de novo, commit a commit (sem os merges: numa PR, o merge de
+  teste não a traz e não é acusado; e uma base apagada num commit e recriada mais alta no seguinte conta contra a
+  última conhecida); nas duas línguas é a mesma regra.
   Mudar um alarme de arquivo não sobe nada.
 - **Teste saltado:** diga quando e porquê. No vitest: `it.skipIf(semRede)(…)`, ou, dentro do teste,
   `contexto.skip(semRede, 'precisa da rede')` ou `if (semRede) contexto.skip('precisa da rede')`. **Não** use
@@ -104,6 +106,9 @@ um arquivo novo nasce limpo.
   `import … as data`; uma condição constante (`skipIf(True, "x")`, `it.skipIf(true)`). Só no Python,
   `pytestmark = pytest.mark.skip`; só no TypeScript, uma função longa passada a um `describe` no código de produção.
   E um caso certo que as duas recusam: um `.skip(…)` de outra coisa num arquivo de teste (`leitor.skip(3)`).
+- No TypeScript, as opções `{ skip }` e `{ only }` de um teste por um caminho que a árvore não mostra passam: numa
+  variável (`const opcoes = { skip: true }; it('a', opcoes, …)`), espalhadas (`{ ...{ skip: true } }`) ou depois de
+  um `.each` (`it.each([1])('a', { skip: true }, …)`).
 
 ## 5. Fronteira com outras skills
 
