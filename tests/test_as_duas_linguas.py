@@ -85,6 +85,8 @@ GEMEOS = [  # (regra, caso, arquivos para o molde Python, arquivos para o molde 
      {"pagar.ts": "export function pagar(info: string) {\n    return info\n}\n"}, "reprova"),
     ("nomes-genericos", "campo genérico de um tipo", {"pedido.py": "class Pedido(TypedDict):\n    data: str\n"},
      {"pedido.ts": "interface Pedido { data: string }\n"}, "reprova"),
+    ("nomes-genericos", "membro genérico de um enum", {"cor.py": "class Cor(Enum):\n    data = 1\n"},
+     {"cor.ts": "export enum Cor { data = 1 }\n"}, "reprova"),
     ("nomes-genericos", "uso não é declaração", {"mostrar.py": "print(pedido.data)\n"},
      {"mostrar.ts": "usar(pedido.data)\n"}, "aprova"),
     ("nomes-genericos", "nome composto", {"somar.py": "dados_do_pedido = 1\n"},
@@ -117,6 +119,8 @@ GEMEOS = [  # (regra, caso, arquivos para o molde Python, arquivos para o molde 
      "aprova"),
     ("testes-saltados", ".only.each (só TypeScript)", None, {"so.test.ts": "test.only.each([1])('a', () => {})\n"},
      "reprova"),
+    ("testes-saltados", "as opções { skip: true } do vitest (só TypeScript)", None,
+     {"opcoes.test.ts": "it('a', { skip: true }, () => {})\n"}, "reprova"),
 ]
 
 
