@@ -29,6 +29,7 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A pági
 
 - Saiba que quase todo aplicativo leva dentro SDKs de outras empresas (anúncios, métricas, identificação do aparelho) e que cada um recolhe a sua parte: nenhum precisa de espiar sozinho, porque a recolha se faz em conjunto. (p. 258) · **texto** · onde aplicar: ainda nenhuma
 - Cumpra a licença do que usa ou adapta: mantenha os avisos de autoria e diga de onde veio. (pp. 169–170) · **texto** · onde aplicar: ainda nenhuma
+- O instalador que o livro mostra é ele próprio um `curl … | sh`, mas só instala depois de conferir o arquivo com a soma de verificação que o projeto publica. (p. 397) · **máquina** (pedir confirmação) · onde aplicar: `auditoria-de-seguranca`
 
 ## 5. Auditar e endurecer
 

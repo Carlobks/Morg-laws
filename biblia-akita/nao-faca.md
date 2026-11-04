@@ -16,7 +16,7 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A pági
 ## 2. Verdade e fontes
 
 - Não aceitar do agente uma lei, uma data ou uma obra sem a conferir: ele inventa com o mesmo à-vontade com que fala do que existe, e não tem como saber se é verdade. (pp. 17–18) #3 · **texto** · onde aplicar: ainda nenhuma
-- Não aceitar a explicação do agente sobre uma decisão passada sem a fonte (commit, registro de decisão). Ele pode inventar o que não lembra. (p. 32) #7 · **texto** · onde aplicar: `testes-e-provas`
+- Não aceitar a explicação do agente sobre uma decisão passada sem a fonte. Ele pode criar um motivo plausível para o que não lembra. (p. 32) #7 · **texto** · onde aplicar: `testes-e-provas`
 - Não usar um chat sem busca para decidir sobre saúde, dinheiro ou lei. Prefira a fonte primária e compare modelos. (p. 51) #11 · **texto** · onde aplicar: ainda nenhuma
 - Não pedir validação com uma pergunta que já traz a resposta ("isto está certo, não está?"). Pergunte quais são os problemas, ou peça uma coisa fechada: as falácias, o contexto que falta. (pp. 52–54, 56) #12 · **texto** · onde aplicar: `orquestrando-sessoes`
 - Não pôr num documento oficial uma citação, um estudo ou um número que o agente trouxe sem abrir a fonte. O tom seguro não prova nada. (pp. 55–56) #13 · **texto** · onde aplicar: ainda nenhuma
@@ -83,7 +83,6 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A pági
 - Não rodar o agente com acesso à pasta pessoal inteira e às credenciais do usuário. No Windows, considere o WSL2 ou a sandbox do agente. (pp. 381–382) #73 · **máquina** · onde aplicar: ainda nenhuma
 - Não aprovar "sim a tudo" por cansaço. Organize as permissões em três colunas: pode sem perguntar, pergunta antes, nunca. (p. 385) #76 · **máquina** · onde aplicar: `auditoria-de-seguranca`
 - Não deixar o agente ler o `.env`: dentro da jaula, ele vê os segredos do projeto a menos que se escondam. A configuração vinda do próprio projeto só pode apertar a jaula, nunca afrouxar, salvo se a pasta for marcada como confiável. (p. 389) #79 · **máquina + texto** · onde aplicar: `auditoria-de-seguranca`
-- Não confundir um `curl … | sh` qualquer com um instalador que confere: o da página só instala depois de ver que o arquivo bate com a soma de verificação que o projeto divulga. (p. 397) #81 · **máquina** (pedir confirmação) · onde aplicar: `auditoria-de-seguranca`
 
 ## 8. Dados, lotes e backups
 
@@ -91,7 +90,7 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A pági
 - Não autorizar uma operação destrutiva em lote sem ver antes a contagem do que será protegido e do que será apagado. Uma lista de proteção vazia é um alarme. (pp. 222, 224) #49 · **máquina** (o script exige o número esperado) · onde aplicar: `sql-postgres`
 - Não apagar a origem antes de conferir a cópia no destino. (pp. 235–236) #53 · **texto** · onde aplicar: ainda nenhuma
 - Não trocar de uma vez um formato de dados que já roda em produção: acrescente o novo sem tirar o velho, espere todos migrarem, e só então remova. (p. 293) #66 · **máquina** (aviso em `DROP`) · onde aplicar: ainda nenhuma
-- Não trabalhar com agentes no Windows sem backup externo automático da pasta de trabalho. (p. 383) #74 · **máquina** · onde aplicar: ainda nenhuma
+- Não trabalhar com agentes no Windows sem backup externo automático da pasta de trabalho. (pp. 383–384) #74 · **máquina** · onde aplicar: ainda nenhuma
 - Não confiar num backup que nunca foi restaurado. Abra alguns arquivos da cópia todo mês. (p. 385) #75 · **máquina** (tarefa recorrente) · onde aplicar: ainda nenhuma
 - Não restaurar a partir de um arquivo só porque se chama "último". Confira o hash, o passo exato e o estado guardado: o "último" pode ter voltado no tempo. (p. 423) #83 · **máquina** · onde aplicar: ainda nenhuma
 
