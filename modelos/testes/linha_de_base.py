@@ -11,7 +11,9 @@ e compara-o com a linha de base em `tests/linhas-de-base/<regra>.json`. O format
   com que commit comparar (a ponta anterior do ramo de destino), e o checkout precisa do histórico (fetch-depth: 0).
   Uma regra pode deixar a base subir com uma linha na mensagem do commit (MARCA_PARA_SUBIR; a dos alarmes é
   `Alarme-novo:`): na máquina quem a confere é o commit-msg (o pre-commit corre antes da mensagem); no CI, este
-  teste confere-a commit a commit (a base em C^ contra a de C, e a marca na mensagem de C). Se a base de comparação
+  teste confere-a commit a commit, sem os merges (o merge de teste de uma PR não traz a linha): a base de C contra a
+  do commit de antes, ou, se ele a não tem (foi apagada), a última conhecida; e a marca na mensagem de C. Uma
+  subida do intervalo que nenhum commit marcado explica é acusada. Se a base de comparação
   não for um commit que o git conheça (os 40 zeros de um ramo novo, um push forçado, um nome errado), o teste salta,
   com o motivo escrito, em vez de passar calado.
 Lê do índice do git (o que vai no commit), nunca do disco: o trabalho a meio de outra sessão na mesma pasta não
@@ -83,17 +85,24 @@ def commit_conhecido(commit):
                           capture_output=True, check=False).returncode == 0
 
 
-def subidas_sem_marca(regra, commit, marca):
-    """Commit a commit de `commit..HEAD`: os que sobem a base face ao commit de antes sem a marca na própria mensagem."""
-    commits = correr_git(["rev-list", "--reverse", f"{commit}..HEAD"]).decode("utf-8").split()
-    erros = []
+def subidas_sem_marca(regra, commit, marca, novas):
+    """Commit a commit de `commit..HEAD`, sem os merges (o de teste de uma PR não traz a linha): os que sobem a base
+    face à última base conhecida (a do commit de antes, ou, se ele a não tem, a anterior, a começar pela de
+    `commit`) sem a marca na própria mensagem. Se a base subiu no intervalo e nenhum commit subiu com a marca nem foi
+    acusado, acusam-se as `novas` (a subida toda)."""
+    commits = correr_git(["rev-list", "--reverse", "--no-merges", f"{commit}..HEAD"]).decode("utf-8").split()
+    conhecida, erros, marcadas = ler_linha_de_base(regra, f"{commit}:"), [], 0
     for atual in commits:
-        antes, depois = ler_linha_de_base(regra, f"{atual}^:"), ler_linha_de_base(regra, f"{atual}:")
+        antes = ler_linha_de_base(regra, f"{atual}^:")
+        antes, depois = conhecida if antes is None else antes, ler_linha_de_base(regra, f"{atual}:")
         mensagem = correr_git(["log", "-1", "--format=%B", atual]).decode("utf-8", errors="replace")
-        subiu = antes is not None and depois is not None and acima_de(depois, antes, "")
-        if subiu and not re.search(rf"^{re.escape(marca)} *\S", mensagem, re.MULTILINE):
-            erros.append(f"{atual[:10]} «{mensagem.splitlines()[0]}» sobe a base sem a linha '{marca} <motivo>'")
-    return erros
+        if antes is not None and depois is not None and acima_de(depois, antes, ""):
+            if re.search(rf"^{re.escape(marca)} *\S", mensagem, re.MULTILINE):
+                marcadas += 1
+            else:
+                erros.append(f"{atual[:10]} «{mensagem.splitlines()[0]}» sobe a base sem a linha '{marca} <motivo>'")
+        conhecida = conhecida if depois is None else depois
+    return erros or ([] if marcadas else novas)
 
 
 def acima_de(valores, teto, frase, detalhe=lambda caminho, metrica: ""):
@@ -167,5 +176,5 @@ class TresVerificacoesDaCatraca:
         if novas and self.MARCA_PARA_SUBIR:
             if commit == "HEAD":
                 self.skipTest(f"a subida pede a linha '{self.MARCA_PARA_SUBIR}' na mensagem; o commit-msg confere-a")
-            novas = subidas_sem_marca(self.REGRA, commit, self.MARCA_PARA_SUBIR)
+            novas = subidas_sem_marca(self.REGRA, commit, self.MARCA_PARA_SUBIR, novas)
         self.assertEqual(novas, [], "a linha de base só desce: corrija o código em vez de a subir")

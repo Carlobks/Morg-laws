@@ -10,7 +10,9 @@
 //   diz com que commit comparar (a ponta anterior do ramo de destino), e o checkout precisa do histórico
 //   (fetch-depth: 0). Uma regra pode deixar a base subir com uma linha na mensagem do commit (marcaParaSubir; a dos
 //   alarmes é `Alarme-novo:`): na máquina quem a confere é o commit-msg (o pre-commit corre antes da mensagem); no
-//   CI, este teste confere-a commit a commit (a base em C^ contra a de C, e a marca na mensagem de C). Se a base de
+//   CI, este teste confere-a commit a commit, sem os merges (o merge de teste de uma PR não traz a linha): a base
+//   de C contra a do commit de antes, ou, se ele a não tem (foi apagada), a última conhecida; e a marca na mensagem
+//   de C. Uma subida do intervalo que nenhum commit marcado explica é acusada. Se a base de
 //   comparação não for um commit que o git conheça (os 40 zeros de um ramo novo, um push forçado, um nome errado), o
 //   teste salta, com o motivo escrito, em vez de passar calado.
 // Lê do índice do git (o que vai no commit), nunca do disco: o trabalho a meio de outra sessão na mesma pasta não
@@ -151,24 +153,33 @@ function conferirUmaVez(regra: string, medir: () => ExcessoPorArquivo): () => Co
     }
 }
 
-/** Commit a commit de `commit..HEAD`: os que sobem a base face ao commit de antes sem a marca na própria mensagem. */
-function subidasSemMarca(regra: string, commit: string, marca: string): string[] {
+/** Commit a commit de `commit..HEAD`, sem os merges (o de teste de uma PR não traz a linha): os que sobem a base
+ *  face à última base conhecida (a do commit de antes, ou, se ele a não tem, a anterior, a começar pela de `commit`)
+ *  sem a marca na própria mensagem. Se a base subiu no intervalo e nenhum commit subiu com a marca nem foi acusado,
+ *  acusam-se as `novas` (a subida toda). */
+function subidasSemMarca(regra: string, commit: string, marca: string, novas: string[]): string[] {
     const comAMarca = new RegExp(`^${marca.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')} *\\S`, 'm')
-    const commits = correrGit(['rev-list', '--reverse', `${commit}..HEAD`]).toString('utf8').split(/\s+/).filter(Boolean)
-    return commits.flatMap((atual) => {
-        const antes = lerLinhaDeBase(regra, `${atual}^:`)
+    const commits = correrGit(['rev-list', '--reverse', '--no-merges', `${commit}..HEAD`]).toString('utf8').split(/\s+/).filter(Boolean)
+    let conhecida = lerLinhaDeBase(regra, `${commit}:`)
+    let marcadas = 0
+    const erros: string[] = []
+    for (const atual of commits) {
+        const antes = lerLinhaDeBase(regra, `${atual}^:`) ?? conhecida
         const depois = lerLinhaDeBase(regra, `${atual}:`)
         const mensagem = correrGit(['log', '-1', '--format=%B', atual]).toString('utf8')
-        const subiu = antes !== null && depois !== null && acimaDe(depois, antes, '').length > 0
-        return subiu && !comAMarca.test(mensagem)
-            ? [`${atual.slice(0, 10)} «${mensagem.split('\n')[0]}» sobe a base sem a linha '${marca} <motivo>'`] : []
-    })
+        if (antes !== null && depois !== null && acimaDe(depois, antes, '').length > 0) {
+            if (comAMarca.test(mensagem)) marcadas += 1
+            else erros.push(`${atual.slice(0, 10)} «${mensagem.split('\n')[0]}» sobe a base sem a linha '${marca} <motivo>'`)
+        }
+        conhecida = depois ?? conhecida
+    }
+    return erros.length > 0 ? erros : (marcadas > 0 ? [] : novas)
 }
 
 /** O que o «só encolhe» acusa: as entradas novas, ou, com a marca e no CI, os commits que subiram sem ela. */
 function entradasNovas(regra: string, { base, daComparacao }: Conferencia, marcaParaSubir: string | undefined): string[] {
     const novas = daComparacao === null ? [] : acimaDe(base, daComparacao, 'a base de comparação deixava')
-    return novas.length > 0 && marcaParaSubir !== undefined ? subidasSemMarca(regra, baseDeComparacao(), marcaParaSubir) : novas
+    return novas.length > 0 && marcaParaSubir !== undefined ? subidasSemMarca(regra, baseDeComparacao(), marcaParaSubir, novas) : novas
 }
 
 /** Porque o «só encolhe» não pode julgar agora: a base de comparação que o git não conhece, ou a subida com marca

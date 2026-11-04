@@ -141,6 +141,34 @@ class ProjetoDeExemploTs(unittest.TestCase):
         saida = self.assertFalhaEm("alarmes", "catraca alarmes > a linha de base só encolhe")
         self.assertIn("feat: c sem a linha", saida)
 
+    def test_no_ci_apagar_e_recriar_a_base_dos_alarmes_mais_alta_e_recusado(self):
+        # Um commit apaga a base, o seguinte recria-a mais alta sem a linha: conta a última base conhecida.
+        escrever(self.pasta / "src" / "a.ts", ALARME_COM_MOTIVO)
+        self.gravar_base("alarmes", {"*": {"eslint-disable": 1}})
+        anterior = self.commitar()
+        git(self.pasta, "rm", "-q", "--", "tests/linhas-de-base/alarmes.json")
+        self.commitar("chore: sem a base")
+        for numero in (2, 3):
+            escrever(self.pasta / "src" / f"{numero}.ts", ALARME_COM_MOTIVO)
+        self.gravar_base("alarmes", {"*": {"eslint-disable": 3}})
+        self.commitar("feat: a base de volta, mais alta")
+        os.environ["MORG_BASE_DE_COMPARACAO"] = anterior
+        self.assertFalhaEm("alarmes", "catraca alarmes > a linha de base só encolhe")
+
+    def test_numa_pr_a_subida_com_a_linha_passa_pelo_merge_de_teste(self):
+        # O CI de uma PR tira o merge de teste (pais: a base e a PR); o merge não traz a linha, e não é acusado.
+        escrever(self.pasta / "src" / "a.ts", ALARME_COM_MOTIVO)
+        self.gravar_base("alarmes", {"*": {"eslint-disable": 1}})
+        base = self.commitar()
+        escrever(self.pasta / "src" / "b.ts", ALARME_COM_MOTIVO)
+        self.gravar_base("alarmes", {"*": {"eslint-disable": 2}})
+        da_pr = self.commitar("feat: alarme\n\nAlarme-novo: o CLI escreve no terminal")
+        arvore = git(self.pasta, "write-tree").stdout.strip()
+        merge = git(self.pasta, "commit-tree", arvore, "-p", base, "-p", da_pr, "-m", "Merge pr into main").stdout.strip()
+        git(self.pasta, "update-ref", "HEAD", merge)
+        os.environ["MORG_BASE_DE_COMPARACAO"] = base
+        self.assertPassa("alarmes")
+
     def test_a_base_de_comparacao_que_o_git_nao_conhece_salta_com_o_motivo(self):
         self.gravar_base("tamanho-de-funcao", {})
         self.commitar()

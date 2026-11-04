@@ -241,6 +241,39 @@ class ProjetoDeExemplo(unittest.TestCase):
             saida = self.assertFalhaEm("test_a_linha_de_base_so_encolhe (test_alarmes", "test_alarmes.py")
         self.assertIn("feat: c sem a linha", saida)
 
+    def test_no_ci_apagar_e_recriar_a_base_dos_alarmes_mais_alta_e_recusado(self):
+        # Um commit apaga a base, o seguinte recria-a mais alta sem a linha: conta a última base conhecida.
+        alarme = "// eslint-disable-next-line no-console — o CLI escreve no terminal\n"
+        escrever(self.pasta / "src" / "a.ts", alarme)
+        self.gravar_base("alarmes", {"*": {"eslint-disable": 1}})
+        self.commitar()
+        anterior = git(self.pasta, "rev-parse", "HEAD").stdout.strip()
+        git(self.pasta, "rm", "-q", "--", "tests/linhas-de-base/alarmes.json")
+        self.commit_sem_hooks("chore: sem a base")
+        for numero in (2, 3):
+            escrever(self.pasta / "src" / f"{numero}.ts", alarme)
+        self.gravar_base("alarmes", {"*": {"eslint-disable": 3}})
+        self.commit_sem_hooks("feat: a base de volta, mais alta")
+        with mock.patch.dict(os.environ, {"MORG_BASE_DE_COMPARACAO": anterior}):
+            self.assertFalhaEm("test_a_linha_de_base_so_encolhe (test_alarmes", "test_alarmes.py")
+
+    def test_numa_pr_a_subida_com_a_linha_passa_pelo_merge_de_teste(self):
+        # O CI de uma PR tira o merge de teste (pais: a base e a PR); o merge não traz a linha, e não é acusado.
+        alarme = "// eslint-disable-next-line no-console — o CLI escreve no terminal\n"
+        escrever(self.pasta / "src" / "a.ts", alarme)
+        self.gravar_base("alarmes", {"*": {"eslint-disable": 1}})
+        self.commitar()
+        base = git(self.pasta, "rev-parse", "HEAD").stdout.strip()
+        escrever(self.pasta / "src" / "b.ts", alarme)
+        self.gravar_base("alarmes", {"*": {"eslint-disable": 2}})
+        self.commit_sem_hooks("feat: alarme\n\nAlarme-novo: o CLI escreve no terminal")
+        da_pr = git(self.pasta, "rev-parse", "HEAD").stdout.strip()
+        arvore = git(self.pasta, "write-tree").stdout.strip()
+        merge = git(self.pasta, "commit-tree", arvore, "-p", base, "-p", da_pr, "-m", "Merge pr into main").stdout.strip()
+        git(self.pasta, "update-ref", "HEAD", merge)
+        with mock.patch.dict(os.environ, {"MORG_BASE_DE_COMPARACAO": base}):
+            self.assertPassa("test_alarmes.py")
+
     def test_a_base_de_comparacao_que_o_git_nao_conhece_salta_com_o_motivo(self):
         # Um ramo novo (40 zeros), um push forçado ou um nome errado: o teste diz que não pôde comparar.
         self.gravar_base("tamanho-de-arquivo", {})
