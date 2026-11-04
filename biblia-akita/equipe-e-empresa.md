@@ -6,7 +6,7 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita, sobre c
 
 - Um sistema de que a empresa depende pede muito mais cuidado do que uma experiência. Quando o trabalho passa a ter IA, o controle de qualidade precisa aumentar na mesma medida; senão, o que se economiza na programação se paga em bugs, e a conta só aumenta. A revisão por quem sabe é proporcional ao risco. (pp. 72, 138, 248, 276) · **texto** · onde aplicar: ainda nenhuma
 - Quando a decisão destrói algo, peça a outra pessoa, ou a outra sessão, que olhe o plano antes. (p. 236) · **texto** · onde aplicar: `orquestrando-sessoes`
-- Não monte uma orquestra de agentes para um trabalho que é uma peça só: ela serve para lotes independentes e custa mais tokens e mais coordenação. Agentes em produção ainda precisam de uma pessoa em poucos pontos do caminho. (pp. 49, 153–155, 210) · **texto** · onde aplicar: `orquestrando-sessoes`
+- Não monte uma orquestra de agentes para um trabalho que é uma peça só: ela serve para lotes independentes e custa mais tokens e mais coordenação. Em produção, a maioria dos agentes ainda precisa de uma pessoa ao fim de poucos passos. (pp. 49, 153–155, 210) · **texto** · onde aplicar: `orquestrando-sessoes`
 
 ## 2. Quem decide e como se organiza
 
