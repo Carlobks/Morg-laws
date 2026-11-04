@@ -20,6 +20,7 @@ Notas de leitura do livro **_Competente o Suficiente_**, de **Fabio Akita**, sob
 | [testes-e-revisao.md](testes-e-revisao.md) | O juiz de fora, os testes que enganam, conferir a entrega, revisão e o processo de testes |
 | [pedidos-e-sessoes.md](pedidos-e-sessoes.md) | Como montar um pedido, conduzir o trabalho e escolher que trabalho dar ao agente |
 | [aprender-com-agentes.md](aprender-com-agentes.md) | Como estudar com IA, o que não perde valor e o que esperar de verdade dos agentes |
+| [equipe-e-empresa.md](equipe-e-empresa.md) | O cuidado à medida do risco, quem decide, como a equipe se organiza e as pessoas |
 
 Os demais conselhos do livro (576 anotados no total) entram aos poucos, por tema.
 
