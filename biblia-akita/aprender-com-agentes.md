@@ -18,11 +18,11 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita, sobre o
 - Uma base que não envelhece: algoritmos e estruturas de dados, como o computador funciona, matemática básica, estatística e probabilidade, ou a base do seu ofício. Com ela a IA amplia a sua força; sem ela, vira bengala. (pp. 276, 364) · **texto** · onde aplicar: ainda nenhuma
 - Fique com estas tarefas para si: escolher o que se faz e o que se deixa, a arquitetura e as peças, quando é suficiente, perceber quando se anda em círculos, olhar por dentro, responder pelo resultado, abandonar um caminho, recusar o que não entende, dar ao agente a forma de medir e trazer o conhecimento do negócio. (pp. 72, 115, 276) · **texto** · onde aplicar: ainda nenhuma
 - A IA devolve o que você leva: acelera tanto o bom trabalho como o desastre. A diferença está na disciplina. (pp. 87, 144) · **texto** · onde aplicar: ainda nenhuma
-- Sênior é quem decide e responde pelo que decidiu, e volta a ser júnior em cada área nova. Defina-se pelo problema que resolve, não pela ferramenta, e invista em aprender o problema seguinte. (pp. 109–110, 278–279, 301, 366) · **texto** · onde aplicar: ainda nenhuma
-- Separe o trabalho de digitar dados do trabalho de engenharia e de julgamento; o prompt é só a interface. (pp. 269–272) · **texto** · onde aplicar: ainda nenhuma
+- Sênior é quem decide e responde pelo que decidiu, e volta a ser júnior em cada área nova. O autor conta que nunca se definiu por uma ferramenta: o que o levou por todas as trocas foi saber aprender o problema seguinte. (pp. 109–110, 278–279, 301, 366) · **texto** · onde aplicar: ainda nenhuma
+- Pôr as instruções na máquina e fazer engenharia de software nunca foram a mesma coisa; o prompt é só a interface da vez. (pp. 269–272) · **texto** · onde aplicar: ainda nenhuma
 
 ## 3. Expectativas realistas
 
-- A maior parte do trabalho é engenharia, e as funcionalidades novas são só uma fatia. Num projeto novo, com alguém experiente, o ganho pode ser grande; num código antigo, pode quase desaparecer. (pp. 65–66, 76, 136–137, 318) · **texto** · onde aplicar: ainda nenhuma
+- A maior parte do trabalho é engenharia, e as funcionalidades novas são só uma fatia. Na leitura do autor, o ganho aparece num projeto novo, com alguém experiente a conferir cada passo; num código antigo e já conhecido, pode sumir ou até virar perda. (pp. 65–66, 76, 136–137, 318) · **texto** · onde aplicar: ainda nenhuma
 - Use os agentes para resolver as pequenas chatices do dia a dia, com a mesma disciplina, e gaste o tempo que sobra estudando a parte que costumava evitar. (pp. 141–143, 308) · **texto** · onde aplicar: ainda nenhuma
 - Ignore o ruído: cursos e certificados com o nome da moda, anúncios do fim do mundo ou da inteligência geral, discussões de ranking por décimas, a promessa do próximo modelo e os vídeos de quem monta um aplicativo num instante. (pp. 329–330) · **texto** · onde aplicar: ainda nenhuma
