@@ -68,9 +68,9 @@ describe('detector de nomes genéricos', () => {
             ['Coisa', 'Helper', 'bar', 'dados', 'data', 'foo', 'handler', 'info', 'props', 'tmp'])
     })
 
-    it('conta os membros de uma interface e de um tipo, como os campos de uma classe no Python', () => {
-        const fonte = 'interface Pedido { info: string; handler(): void }\ntype Linha = { data: number }\n'
-        expect(identificadoresGenericos('a.ts', fonte).sort()).toEqual(['data', 'handler', 'info'])
+    it('conta os membros de uma interface, de um tipo e de um enum, como os campos de uma classe no Python', () => {
+        const fonte = 'interface Pedido { info: string; handler(): void }\ntype Linha = { data: number }\nenum Cor { temp = 1 }\n'
+        expect(identificadoresGenericos('a.ts', fonte).sort()).toEqual(['data', 'handler', 'info', 'temp'])
     })
 
     it('resume por arquivo', () => {
