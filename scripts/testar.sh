@@ -12,6 +12,11 @@ py=${MORG_PY:-$(command -v py || command -v python3)}
 
 echo "== TypeScript (npm ci no projeto de exemplo, só se o package-lock.json mudou)"
 exemplo=tests/exemplo-ts
+node_fixado=v$(tr -d '[:space:]' < "$exemplo/.nvmrc")
+node_daqui=$(node --version 2>/dev/null)
+if [ "$node_daqui" != "$node_fixado" ]; then
+  echo "AVISO: o Node daqui é ${node_daqui:-nenhum} e o fixado em $exemplo/.nvmrc é $node_fixado; o CI usa o fixado." >&2
+fi
 if [ ! -f "$exemplo/node_modules/.package-lock.json" ] || [ "$exemplo/package-lock.json" -nt "$exemplo/node_modules/.package-lock.json" ]; then
   (cd "$exemplo" && npm ci --ignore-scripts --no-audit --no-fund) || { echo "FALHOU: npm ci do exemplo." >&2; exit 1; }
 fi

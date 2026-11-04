@@ -26,6 +26,19 @@ class WorkflowsDoMorgLaws(modelo.Workflows):
         self.assertIn('test "$linhas" -le 60', texto)
         self.assertNotIn("gitleaks/gitleaks-action", texto, "o gitleaks é o binário conferido, sem action de terceiros")
 
+    def test_o_so_encolhe_compara_com_o_ramo_de_destino_e_o_lockfile_e_auditado(self):
+        for nome, texto in (("seguranca.yml", modelo.texto_do_workflow(modelo.WORKFLOWS[0])),
+                            ("molde ci.yml", (RAIZ / "modelos" / "github" / "workflows" / "ci.yml").read_text("utf-8"))):
+            with self.subTest(workflow=nome):
+                self.assertEqual(erros_do_so_encolhe(texto), [])
+        self.assertIn("npm audit --audit-level=high", modelo.texto_do_workflow(modelo.WORKFLOWS[0]))
+
+
+def erros_do_so_encolhe(texto):
+    """O que falta a um workflow para o «só encolhe» das linhas de base funcionar no CI e numa PR."""
+    pedidos = ("fetch-depth: 0", "MORG_BASE_DE_COMPARACAO: ${{ github.event.pull_request.base.sha || github.event.before }}")
+    return [pedido for pedido in pedidos if pedido not in texto]
+
 
 del modelo.Workflows  # senão o unittest roda a classe do modelo uma segunda vez, sem os testes daqui
 

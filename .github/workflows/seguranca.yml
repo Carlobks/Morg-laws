@@ -44,8 +44,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
+      # Todo o histórico: o «só encolhe» das linhas de base compara com a base do ramo de destino.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          fetch-depth: 0
           persist-credentials: false
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         id: python
@@ -64,4 +66,9 @@ jobs:
       - name: Modelos testados a 100 %, moldes TypeScript, as duas línguas e ruff (scripts/testar.sh)
         env:
           MORG_PY: ${{ steps.python.outputs.python-path }}
+          # A base do ramo de destino: numa PR, a ponta da base; num push, a ponta de antes do push.
+          MORG_BASE_DE_COMPARACAO: ${{ github.event.pull_request.base.sha || github.event.before }}
         run: sh scripts/testar.sh
+      - name: npm audit do lockfile do exemplo (só trava alto ou crítico)
+        working-directory: tests/exemplo-ts
+        run: npm audit --audit-level=high
