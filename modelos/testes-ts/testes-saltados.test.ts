@@ -1,12 +1,17 @@
 // Nenhum teste desligado para sempre nem isolado (Morg-laws: não piorar; um teste saltado deixa de proteger).
 //
 // Um teste saltado sem condição nunca mais corre, e um `.only` esconde todos os outros. Nos arquivos de teste, lidos
-// pela árvore, é recusado:
-// - `.only` (`it.only`, `describe.only`, `test.describe.only`) e `xit`, `xdescribe`, `xtest`, `fit`, `fdescribe`;
-// - `.skip` sem condição: `it.skip('nome', …)`, `test.skip()`, `contexto.skip('nota')`;
-// - `.skip` com condição sem o motivo escrito (um texto literal que não está vazio): `test.skip(semRede)`.
-// A forma certa diz quando e porquê: `test.skip(semRede, 'precisa da rede')`, ou `it.skipIf(semRede)(…)`. É a regra
-// do molde Python test_testes_saltados.py (`@unittest.skip`, `skipIf(condição, motivo)`, `skipTest` num `if`).
+// pela árvore, olhando a cadeia toda (`it.skip.each`, `test.only.each`, `test.concurrent.only`), é recusado:
+// - `.only` e `xit`, `xdescribe`, `xtest`, `fit`, `fdescribe`;
+// - `it.skip`, `test.skip` e `describe.skip`, com qualquer argumento: no vitest o 1.º argumento é o NOME do teste,
+//   e `test.skip(semRede, 'motivo')` regista um teste saltado chamado `false` (é a assinatura do Playwright, não a
+//   do vitest);
+// - `contexto.skip()` sem condição nem `if`/`catch` à volta, ou sem a nota escrita (um texto que não está vazio).
+// A forma certa diz quando e porquê: `it.skipIf(semRede)(…)`, `contexto.skip(semRede, 'precisa da rede')`, ou
+// `if (semRede) contexto.skip('precisa da rede')` (também num `catch`). É a regra do molde Python
+// test_testes_saltados.py (`@unittest.skip`, `skipIf(condição, motivo)`, `skipTest` num `if` ou num `except`).
+// Limites conhecidos: uma condição constante (`it.skipIf(true)`) passa; um `.skip(…)` de outra coisa num arquivo de
+// teste (`leitor.skip(3)`) é recusado; não serve o Playwright, cujo `test.skip(condição, motivo)` é a forma certa lá.
 // Linha de base: tests/linhas-de-base/testes-saltados.json (linha-de-base.ts).
 // Instalar: copiar esta pasta para tests/catracas/ do projeto e ajustar o bloco abaixo.
 import ts from 'typescript'
@@ -18,6 +23,10 @@ import { eCodigoJsOuTs, lerArvore, linhaDaPosicao } from './ler-codigo-ts.js'
 const ARQUIVO_DE_TESTE_JS_OU_TS = /(?:^|\/)(?:tests?|__tests__)\/|\.(?:test|spec)\.[^/]+$/
 const FORA_DOS_TESTES_SALTADOS_TS = ['vendor/', 'node_modules/']
 const CHAMADAS_QUE_SEMPRE_DESLIGAM = new Set(['xit', 'xdescribe', 'xtest', 'fit', 'fdescribe'])
+const APIS_DE_TESTES = new Set(['it', 'test', 'describe', 'suite', 'bench'])
+
+const SALTA_SEMPRE = 'salta sempre: use it.skipIf(condição) ou contexto.skip(condição, "nota"), ou apague o teste'
+const SEM_MOTIVO_ESCRITO = 'falta o motivo escrito'
 
 type SaltoProibido = { linha: number, motivo: string }
 
@@ -27,21 +36,39 @@ function eMotivoEscrito(no: ts.Node | undefined): boolean {
     return ts.isTemplateExpression(no)
 }
 
-function erroDoSkip(argumentos: ts.NodeArray<ts.Expression>): string | null {
-    const primeiro = argumentos[0]
-    if (!primeiro || ts.isStringLiteralLike(primeiro) || ts.isTemplateExpression(primeiro)) {
-        return 'salta sempre: diga a condição (skipIf) ou apague o teste'
-    }
-    return eMotivoEscrito(argumentos[1]) ? null : 'falta o motivo escrito'
+const eTextoLiteral = (no: ts.Node) => ts.isStringLiteralLike(no) || ts.isTemplateExpression(no)
+
+/** Os nomes da cadeia chamada: `it.skip.each` → ['it', 'skip', 'each']; null se não for uma cadeia de nomes. */
+function nomesDaCadeia(expressao: ts.Expression): string[] | null {
+    if (ts.isIdentifier(expressao)) return [expressao.text]
+    if (!ts.isPropertyAccessExpression(expressao)) return null
+    const antes = nomesDaCadeia(expressao.expression)
+    return antes && [...antes, expressao.name.text]
+}
+
+function dentroDeUmIfOuCatch(no: ts.Node): boolean {
+    for (let pai = no.parent; pai; pai = pai.parent) if (ts.isIfStatement(pai) || ts.isCatchClause(pai)) return true
+    return false
+}
+
+/** `contexto.skip(condição, 'nota')`, ou `contexto.skip('nota')` num if ou num catch: a forma dinâmica do vitest. */
+function erroDoSkipDoContexto(chamada: ts.CallExpression): string | null {
+    const [condicao, nota] = chamada.arguments
+    if (condicao && !eTextoLiteral(condicao)) return eMotivoEscrito(nota) ? null : SEM_MOTIVO_ESCRITO
+    if (!dentroDeUmIfOuCatch(chamada)) return SALTA_SEMPRE
+    return eMotivoEscrito(condicao) ? null : SEM_MOTIVO_ESCRITO
 }
 
 /** Porque esta chamada desliga ou isola um teste; null se não o fizer. */
 function erroDaChamada(chamada: ts.CallExpression): string | null {
-    const alvo = chamada.expression
-    if (ts.isIdentifier(alvo) && CHAMADAS_QUE_SEMPRE_DESLIGAM.has(alvo.text)) return `${alvo.text} desliga ou isola o teste`
-    if (!ts.isPropertyAccessExpression(alvo)) return null
-    if (alvo.name.text === 'only') return '.only esconde todos os outros testes'
-    return alvo.name.text === 'skip' ? erroDoSkip(chamada.arguments) : null
+    const cadeia = nomesDaCadeia(chamada.expression)
+    if (!cadeia) return null
+    if (CHAMADAS_QUE_SEMPRE_DESLIGAM.has(cadeia[0])) return `${cadeia[0]} desliga ou isola o teste`
+    const daApiDeTestes = APIS_DE_TESTES.has(cadeia[0])
+    if (daApiDeTestes && cadeia.includes('only')) return '.only esconde todos os outros testes'
+    // No vitest o 1.º argumento de test.skip é o NOME do teste: `test.skip(condição, …)` salta sempre.
+    if (daApiDeTestes && cadeia.includes('skip')) return SALTA_SEMPRE
+    return cadeia.length > 1 && cadeia[cadeia.length - 1] === 'skip' ? erroDoSkipDoContexto(chamada) : null
 }
 
 function saltosProibidos(caminho: string, texto: string): SaltoProibido[] {
@@ -74,14 +101,35 @@ describe('detector de saltos', () => {
     it('recusa o .only, o skip sem condição e o skip sem motivo', () => {
         const fonte = ["it.only('a', () => {})", "test.describe.only('a', () => {})", "it.skip('a', () => {})",
             'test.skip()', "xit('a', () => {})", "it('a', (contexto) => { contexto.skip('nota') })",
-            'test.skip(!temAviso)', "test.skip(semRede, '')"].join('\n')
+            "it('a', (contexto) => { contexto.skip(semRede) })", "it('a', (contexto) => { contexto.skip(semRede, '') })"]
+            .join('\n')
         expect(linhasProibidas(fonte)).toEqual([1, 2, 3, 4, 5, 6, 7, 8])
     })
 
+    it('no vitest, test.skip salta sempre, com qualquer 1.º argumento (é o nome do teste)', () => {
+        const fonte = ["test.skip(semRede, 'precisa da rede')", 'it.skip(!id, `defina ${nome}`)',
+            "describe.skip(semRede, () => {})"].join('\n')
+        expect(linhasProibidas(fonte)).toEqual([1, 2, 3])
+    })
+
+    it('olha a cadeia toda: .skip.each e .only.each', () => {
+        const fonte = ["it.skip.each([1])('a', () => {})", "describe.skip.each([1])('b', () => {})",
+            "test.only.each([1])('c', () => {})", "test.concurrent.only('d', () => {})"].join('\n')
+        expect(linhasProibidas(fonte)).toEqual([1, 2, 3, 4])
+    })
+
     it('deixa o que tem condição e motivo', () => {
-        const fonte = ["test.skip(semRede, 'precisa da rede')", 'test.skip(!id, `defina ${nome}`)',
-            "it.skipIf(semRede)('a', () => {})", "it.todo('por construir')", "const aviso = 'não use it.only'"].join('\n')
+        const fonte = ["it.skipIf(semRede)('a', () => {})", "it.runIf(comRede)('a', () => {})",
+            "it('a', (contexto) => { contexto.skip(semRede, 'precisa da rede') })", "it.todo('por construir')",
+            "const aviso = 'não use it.only'", "it.skipIf(semRede).each([1])('a', () => {})"].join('\n')
         expect(linhasProibidas(fonte)).toEqual([])
+    })
+
+    it('o salto com nota dentro de um if ou de um catch vale, como no Python', () => {
+        const fonte = ["it('a', (contexto) => { if (semRede) contexto.skip('sem rede') })",
+            "it('b', async (contexto) => { try { await abrir() } catch { contexto.skip('sem o serviço') } })",
+            "it('c', (contexto) => { if (semRede) contexto.skip() })"].join('\n')
+        expect(linhasProibidas(fonte)).toEqual([3])
     })
 
     it('só julga os arquivos de teste', () => {
@@ -90,6 +138,6 @@ describe('detector de saltos', () => {
     })
 })
 
-testarCatraca('testes-saltados', 'diga a condição e o motivo (test.skip(condição, "motivo")) ou apague o teste',
+testarCatraca('testes-saltados', 'diga a condição e o motivo (it.skipIf(condição) ou contexto.skip(condição, "nota")) ou apague o teste',
     () => excessoDosSaltos(lerDoGit(arquivosDoIndice().filter(eTesteJsOuTs))),
     (caminho) => eTesteJsOuTs(caminho))

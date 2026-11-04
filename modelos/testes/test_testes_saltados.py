@@ -4,10 +4,14 @@ Um teste saltado sem condição nunca mais corre, e ninguém volta a ele. Nos ar
 - `@unittest.skip(…)` e `@pytest.mark.skip(…)`: saltam sempre, mesmo com motivo;
 - `@unittest.skipIf/skipUnless(condição, motivo)` e `@pytest.mark.skipif(condição, reason=…)` sem o motivo escrito
   (um texto literal que não está vazio);
-- `self.skipTest(…)`, `pytest.skip(…)` e `raise SkipTest(…)` fora de um `if`, ou sem o motivo escrito.
-A forma certa diz quando e porquê: `@unittest.skipIf(sys.platform == "win32", "o hook só corre em sh")`, ou
-`if not instalado: self.skipTest("sem o ruff não há o que conferir")`. É a mesma regra do molde TypeScript
-testes-saltados.test.ts (`it.skip`, `.only`, `test.skip(condição, 'motivo')`).
+- `self.skipTest(…)`, `pytest.skip(…)` e `raise SkipTest(…)` fora de um `if` ou de um `except`, ou sem o motivo
+  escrito.
+A forma certa diz quando e porquê: `@unittest.skipIf(sys.platform == "win32", "o hook só corre em sh")`,
+`if not instalado: self.skipTest("sem o ruff não há o que conferir")`, ou `except ImportError:` com o `skipTest`
+(uma dependência opcional). É a mesma regra do molde TypeScript testes-saltados.test.ts (`it.skip`, `.only`,
+`it.skipIf(condição)`, `contexto.skip` num `if` ou num `catch`).
+Limites conhecidos: uma condição constante (`skipIf(True, "x")`) passa; `pytestmark = pytest.mark.skip` (o salto de
+um módulo inteiro) não é visto; um `.skip(…)` de outra coisa num arquivo de teste (`leitor.skip(3)`) é recusado.
 Linha de base: tests/linhas-de-base/testes-saltados.json (linha_de_base.py).
 Instalar: copiar para `tests/` do projeto e ajustar o bloco abaixo.
 """
@@ -24,7 +28,7 @@ FORA_DOS_TESTES_SALTADOS = ("vendor/", "node_modules/")
 
 SALTA_SEMPRE = "salta sempre: diga a condição (skipIf) ou apague o teste"
 SEM_MOTIVO = "falta o motivo escrito"
-FORA_DE_UM_IF = "salta sempre: ponha-o dentro de um if com a condição"
+FORA_DE_UM_IF = "salta sempre: ponha-o dentro de um if com a condição (ou de um except)"
 
 
 def nome_chamado(no):
@@ -78,7 +82,7 @@ def percorrer(no, dentro_de_um_if, achados):
     if isinstance(no, ast.Call) and (erro := erro_da_chamada(no, dentro_de_um_if)):
         achados.append((no.lineno, erro))
     for filho in filhos:
-        percorrer(filho, dentro_de_um_if or isinstance(no, ast.If), achados)
+        percorrer(filho, dentro_de_um_if or isinstance(no, (ast.If, ast.ExceptHandler)), achados)
     return achados
 
 
@@ -111,6 +115,13 @@ class DetectorDeSaltos(unittest.TestCase):
                  "def test_c(self):\n    if not y:\n        self.skipTest(f'falta {y}')\n"
                  "    if z:\n        raise unittest.SkipTest('sem dados')\n")
         self.assertEqual(saltos_proibidos(fonte), [])
+
+    def test_o_salto_com_motivo_num_except_vale_como_num_if(self):
+        # A forma do unittest para uma dependência opcional; no TypeScript, o contexto.skip num catch.
+        fonte = ("def test_a(self):\n    try:\n        import numpy\n    except ImportError:\n"
+                 "        self.skipTest('sem numpy')\n"
+                 "def test_b(self):\n    try:\n        pass\n    except ImportError:\n        self.skipTest('')\n")
+        self.assertEqual(saltos_proibidos(fonte), [(10, SEM_MOTIVO)])
 
     def test_so_julga_os_arquivos_de_teste(self):
         self.assertEqual([e_teste_python(c) for c in ("tests/x.py", "src/test_y.py", "src/y_test.py", "src/y.py")],
