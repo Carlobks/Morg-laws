@@ -105,5 +105,5 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A pági
 ## 10. Aprender e enviar
 
 - Não pedir a solução pronta quando o objetivo é aprender. Tente sozinho primeiro e peça uma pista. (p. 363) #72 · **texto** · onde aplicar: ainda nenhuma
-- Não trocar a versão difícil pela fácil só porque a fácil impressiona logo: o começo de um trabalho engana sobre o que falta. (pp. 343–344) · **texto** · onde aplicar: ainda nenhuma
+- Não publicar o rascunho só porque ele impressiona: os primeiros esboços dizem pouco sobre o resto, e o trabalho está na leitura, no corte e na correção que vêm depois. A versão fácil recusa-se. (pp. 343–344) · **texto** · onde aplicar: ainda nenhuma
 - Não aprovar um push sem ver a lista de arquivos de todos os commits por enviar, incluindo os removidos depois. (p. 386) #78 · **máquina** (`pre-push` com scanner de segredos) · onde aplicar: `auditoria-de-seguranca`, `git-e-commits`

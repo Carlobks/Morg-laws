@@ -1,6 +1,6 @@
 # Aprender a usar agentes
 
-Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita, sobre o crescimento de quem trabalha com agentes. A página é a impressa. A barreira diz como impor o item: **texto** (regra escrita) ou **máquina** (permissão, hook, teste, CI, configuração). «Onde aplicar» diz que skill do Morg-laws já o aplica, ou «ainda nenhuma». O que o livro diz em forma de proibição está no [nao-faca.md](nao-faca.md), e as leituras que ele recomenda estão em [leituras.md](leituras.md).
+Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita, sobre o crescimento de quem trabalha com agentes. A página é a impressa. A barreira diz como impor o item: **texto** (regra escrita) ou **máquina** (permissão, hook, teste, CI, configuração). «Onde aplicar» diz que skill do Morg-laws já o aplica, ou «ainda nenhuma». O que o livro diz em forma de proibição está no [nao-faca.md](nao-faca.md), as leituras que ele recomenda estão em [leituras.md](leituras.md), e os termos estão definidos no glossário do próprio livro (pp. 459–473).
 
 ## 1. Estudar com IA
 
@@ -11,7 +11,6 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita, sobre o
 - Estude com um problema seu, de verdade. O resumo do agente serve de mapa; a fonte é para ler. (pp. 362–363) · **texto** · onde aplicar: ainda nenhuma
 - Desconfie da armadilha dos primeiros 20%: a IA entrega a parte fácil e esconde o que falta. Ter muitas respostas não é o mesmo que ter aprendido. (pp. 111, 306–308) · **texto** · onde aplicar: ainda nenhuma
 - De vez em quando, faça à mão o que costuma delegar. (p. 331) · **texto** · onde aplicar: ainda nenhuma
-- Mantenha um glossário seu com os termos do trabalho com agentes. (pp. 459–473) · **texto** · onde aplicar: ainda nenhuma
 
 ## 2. O que não perde valor
 

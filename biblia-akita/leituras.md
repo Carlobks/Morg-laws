@@ -1,6 +1,6 @@
 # Leituras recomendadas pelo livro
 
-Artigos do blog do autor que *Competente o Suficiente*, de Fabio Akita, indica como as fontes originais dos seus capítulos (secção «Fontes», pp. 433–455). A data é a da publicação; o resumo é nosso, feito ao reler cada artigo em 2026-11-04, e cada um tem a sua entrada no [FONTES.md](../FONTES.md).
+Artigos do blog do autor que *Competente o Suficiente*, de Fabio Akita, indica como as fontes originais dos seus capítulos (secção «Fontes», pp. 434–455). A data é a da publicação; o resumo é nosso, feito ao reler cada artigo em 2026-11-04, e cada um tem a sua entrada no [FONTES.md](../FONTES.md).
 
 ## Por onde começar
 
@@ -8,7 +8,7 @@ Artigos do blog do autor que *Competente o Suficiente*, de Fabio Akita, indica c
 - [Clean Code pra Agentes de IA](https://akitaonrails.com/2026/04/20/clean-code-para-agentes-de-ia/) (2026-04-20): o código escrito para o agente ler, com arquivos e funções pequenos, nomes que não se confundem e testes que ele roda sozinho, e as regras guardadas no arquivo de instruções.
 - [Como me precaver pros meus agentes não apagarem minhas coisas?](https://akitaonrails.com/2026/07/11/como-me-precaver-pros-meus-agentes-nao-apagarem-minhas-coisas/) (2026-07-11): camadas que tornam qualquer engano recuperável: jaula, snapshots automáticos e backup externo com retenção.
 - [Dicas e Toolkit de IA do Akita: ai-jail, ai-memory, ai-usagebar](https://akitaonrails.com/2026/05/24/dicas-e-toolkit-de-ia-do-akita-ai-jail-ai-memory-ai-usagebar/) (2026-05-24): poucas ferramentas e muita engenharia (testes, CI, refatoração, deploy automático), com cercas de segurança e decisões registradas no git.
-- [Desastre no meu NAS! Como quase perdi 90 TB de dados](https://akitaonrails.com/2026/10/06/desastre-no-meu-nas-como-quase-perdi-90-tb-de-dados/) (2026-10-06): discos em espelho não são backup; com discos grandes, duas paridades, e uma cópia separada, fora de casa, do que não tem substituto.
+- [Desastre no meu NAS! Como quase perdi 90 TB de dados](https://akitaonrails.com/2026/10/06/desastre-no-meu-nas-como-quase-perdi-90-tb-de-dados/) (2026-10-06): RAID (espelho ou paridade) não é backup; com discos grandes, duas paridades, e uma cópia separada, fora de casa, do que não tem substituto.
 - [Por que LLMs vão falhar na Sua Empresa?](https://akitaonrails.com/2026/06/24/por-que-llms-vao-falhar-na-sua-empresa/) (2026-06-24): pôr IA no processo antigo não chega; é preciso encurtar o ciclo entre decidir, fazer, testar e rever, e voltar a decidir em vez de delegar.
 - [Parem de inventar desculpas e façam mais deploy! Com a IA, a premissa mudou. Entendam.](https://akitaonrails.com/2026/09/22/parem-de-inventar-desculpas-e-facam-mais-deploy-a-premissa-mudou/) (2026-09-22): entregar mais vezes, com a base já montada (testes, CI, voltar atrás de verdade, observação e um ambiente de testes).
 - [O código fonte do Claude Code vazou. O que achamos dentro.](https://akitaonrails.com/2026/03/31/codigo-fonte-do-claude-code-vazou-o-que-achamos-dentro/) (2026-03-31): o que o vazamento mostra sobre memória, compactação e limites de leitura, e as verificações que um processo de publicação devia ter.

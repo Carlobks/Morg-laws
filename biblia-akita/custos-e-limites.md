@@ -5,8 +5,8 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A pági
 ## 1. Tokens e cota
 
 - O modelo lê, escreve e cobra por token, e cada ferramenta, MCP e skill instalada gasta tokens antes de você escrever a primeira palavra. (pp. 16, 43–46) · **texto** · onde aplicar: `escrevendo-regras-de-agente`
-- Mantenha estável o começo da conversa para aproveitar o cache do pedido; trocar de modelo no meio joga esse cache fora. (p. 46) · **texto** · onde aplicar: ainda nenhuma
-- Use as assinaturas mensais das empresas, que custam menos que a cobrança token a token. Um modelo barato pode baixar a qualidade. (p. 137) · **texto** · onde aplicar: ainda nenhuma
+- Mantenha estável o começo da conversa, para aproveitar o cache do pedido: o fornecedor reaproveita o início já processado e cobra muito menos pela parte repetida. (p. 46) · **texto** · onde aplicar: ainda nenhuma
+- Na época do livro (maio de 2026), as assinaturas mensais das empresas custavam menos que a cobrança token a token. Um modelo barato pode baixar a qualidade. (p. 137) · **texto** · onde aplicar: ainda nenhuma
 - Não trabalhe em hiperfoco. Deixe o consumo à vista, com um alerta antes do teto, e ponha teto e alarme no saldo pré-pago. (pp. 70–71, 159, 388) · **máquina** (alerta de consumo) · onde aplicar: ainda nenhuma
 
 ## 2. Fazer as contas certas

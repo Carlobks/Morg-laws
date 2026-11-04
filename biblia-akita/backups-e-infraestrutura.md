@@ -17,7 +17,7 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A pági
 
 ## 2. Operações destrutivas e tarefas automáticas
 
-- Ponha uma porta trancada entre planejar e executar: a execução só começa depois de o plano ser aprovado, e nada se apaga da origem. (p. 119) · **máquina** (o script só executa com o plano aprovado) · onde aplicar: `pondo-o-plano-a-prova`
+- Ponha uma porta trancada entre planejar e executar: a execução só começa depois de o plano ser aprovado, e nada se apaga da origem. (p. 119) · **máquina** (o script só executa com o plano aprovado) · onde aplicar: ainda nenhuma
 - Peça o trabalho longo em etapas numeradas, que se podem repetir e que gravam o progresso. Toda tarefa automática tem de poder rodar duas vezes sem estragar nada. (pp. 99, 119) · **texto** · onde aplicar: ainda nenhuma
 - Nunca deixe um erro passar calado: registre o detalhe técnico e avise onde se olha todos os dias. Quando algo falhou em silêncio na produção, crie a verificação que impede a repetição. (pp. 77, 83) · **máquina** (alerta) · onde aplicar: ainda nenhuma
 - Ponha uma conferência entre cada etapa de uma cadeia automática: dez etapas que acertam 90% cada uma acertam juntas só cerca de 35%. (p. 209) · **máquina** · onde aplicar: ainda nenhuma
@@ -28,7 +28,7 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A pági
 
 ## 3. Entregar sem medo
 
-- Antes de acelerar as entregas, monte as travas: testes de lógica e de integração, CI, revisão automática desconfiada, interruptores por funcionalidade, um ambiente de testes, voltar atrás em minutos e monitorização. (p. 292) · **máquina** · onde aplicar: `nextjs-react`
+- Antes de acelerar as entregas, monte as travas: testes de lógica e de integração, CI, revisão automática desconfiada, interruptores por funcionalidade, um ambiente de testes, voltar atrás em minutos e monitorização. (p. 292) · **máquina** · onde aplicar: ainda nenhuma
 - Garanta que sabe mesmo desfazer uma entrega. O ritmo certo de entregas mede-se pelo preço de um engano no seu ramo. (p. 294) · **texto** · onde aplicar: ainda nenhuma
 - Padronize o deploy, as versões e os scripts, para que «faz o deploy» não deixe nada por adivinhar. (p. 127) · **máquina** (script único) · onde aplicar: ainda nenhuma
 - Até as ferramentas pequenas (scripts de backup, utilitários) levam testes, versão e configuração no lugar certo. (p. 143) · **máquina** (testes) · onde aplicar: `codigo-legivel`

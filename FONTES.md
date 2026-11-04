@@ -151,13 +151,13 @@ Lidas em 2026-11-04 para os moldes de `modelos/testes-ts/` e a skill `codigo-leg
 
 ## Artigos que o livro recomenda
 
-Lidas em 2026-11-04, para a `biblia-akita/leituras.md`. São as fontes originais que o livro aponta na secção «Fontes» (pp. 433–455). Cada entrada diz o título e o que o artigo sustenta, com palavras nossas.
+Lidas em 2026-11-04, para a `biblia-akita/leituras.md`. São as fontes originais que o livro aponta na secção «Fontes» (pp. 434–455). Cada entrada diz o título e o que o artigo sustenta, com palavras nossas.
 
 - **Por que as LLMs não te dão o resultado esperado** (2026-04-15) — https://akitaonrails.com/2026/04/15/como-falar-com-o-claude-code-efetivamente/ — Sustenta: o pedido em partes (objetivo, o que não se quer, como validar, contexto) e a conversa que continua durante o trabalho.
 - **Clean Code pra Agentes de IA** (2026-04-20) — https://akitaonrails.com/2026/04/20/clean-code-para-agentes-de-ia/ — Sustenta: arquivos e funções pequenos, nomes distintos, tipos explícitos, testes que o agente roda sozinho, e as regras no arquivo de instruções.
 - **Como me precaver pros meus agentes não apagarem minhas coisas?** (2026-07-11) — https://akitaonrails.com/2026/07/11/como-me-precaver-pros-meus-agentes-nao-apagarem-minhas-coisas/ — Sustenta: jaula, snapshots automáticos e backup externo com retenção, para que um engano seja recuperável.
 - **Dicas e Toolkit de IA do Akita: ai-jail, ai-memory, ai-usagebar** (2026-05-24) — https://akitaonrails.com/2026/05/24/dicas-e-toolkit-de-ia-do-akita-ai-jail-ai-memory-ai-usagebar/ — Sustenta: poucas ferramentas, testes, CI, refatoração, deploy automático, cercas de segurança e decisões registradas no git.
-- **Desastre no meu NAS! Como quase perdi 90 TB de dados** (2026-10-06) — https://akitaonrails.com/2026/10/06/desastre-no-meu-nas-como-quase-perdi-90-tb-de-dados/ — Sustenta: discos em espelho não substituem o backup; duas paridades com discos grandes; uma cópia fora de casa.
+- **Desastre no meu NAS! Como quase perdi 90 TB de dados** (2026-10-06) — https://akitaonrails.com/2026/10/06/desastre-no-meu-nas-como-quase-perdi-90-tb-de-dados/ — Sustenta: RAID (espelho ou paridade) não é backup; duas paridades com discos grandes; uma cópia fora de casa.
 - **Por que LLMs vão falhar na Sua Empresa?** (2026-06-24) — https://akitaonrails.com/2026/06/24/por-que-llms-vao-falhar-na-sua-empresa/ — Sustenta: ciclos curtos entre decidir, fazer, testar e rever, em vez de somar IA ao processo antigo.
 - **Parem de inventar desculpas e façam mais deploy!** (2026-09-22) — https://akitaonrails.com/2026/09/22/parem-de-inventar-desculpas-e-facam-mais-deploy-a-premissa-mudou/ — Sustenta: entregas mais frequentes, só com testes, CI, voltar atrás, observação e ambiente de testes já montados.
 - **O código fonte do Claude Code vazou. O que achamos dentro.** (2026-03-31) — https://akitaonrails.com/2026/03/31/codigo-fonte-do-claude-code-vazou-o-que-achamos-dentro/ — Sustenta: as verificações de um processo de publicação e os limites de leitura e de resultados que o arquivo de instruções deve ter em conta.
