@@ -274,6 +274,27 @@ class ProjetoDeExemplo(unittest.TestCase):
         with mock.patch.dict(os.environ, {"MORG_BASE_DE_COMPARACAO": base}):
             self.assertPassa("test_alarmes.py")
 
+    def test_numa_pr_o_merge_que_sobe_a_base_por_si_e_recusado(self):
+        # A sobe a 2 com a linha; o merge sobe a 3 por si. O controlo (o merge que não sobe): o teste do merge de teste.
+        alarme = "// eslint-disable-next-line no-console — o CLI escreve no terminal\n"
+        escrever(self.pasta / "src" / "a.ts", alarme)
+        self.gravar_base("alarmes", {"*": {"eslint-disable": 1}})
+        self.commitar()
+        base = git(self.pasta, "rev-parse", "HEAD").stdout.strip()
+        escrever(self.pasta / "src" / "b.ts", alarme)
+        self.gravar_base("alarmes", {"*": {"eslint-disable": 2}})
+        self.commit_sem_hooks("feat: alarme\n\nAlarme-novo: o CLI escreve no terminal")
+        da_pr = git(self.pasta, "rev-parse", "HEAD").stdout.strip()
+        escrever(self.pasta / "src" / "c.ts", alarme)
+        self.gravar_base("alarmes", {"*": {"eslint-disable": 3}})
+        git(self.pasta, "add", "--", ".")
+        arvore = git(self.pasta, "write-tree").stdout.strip()
+        merge = git(self.pasta, "commit-tree", arvore, "-p", base, "-p", da_pr, "-m", "Merge pr into main").stdout.strip()
+        git(self.pasta, "update-ref", "HEAD", merge)
+        with mock.patch.dict(os.environ, {"MORG_BASE_DE_COMPARACAO": base}):
+            saida = self.assertFalhaEm("test_a_linha_de_base_so_encolhe (test_alarmes", "test_alarmes.py")
+        self.assertIn("*: eslint-disable 3", saida)
+
     def test_a_base_de_comparacao_que_o_git_nao_conhece_salta_com_o_motivo(self):
         # Um ramo novo (40 zeros), um push forçado ou um nome errado: o teste diz que não pôde comparar.
         self.gravar_base("tamanho-de-arquivo", {})

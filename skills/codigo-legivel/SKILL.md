@@ -42,7 +42,8 @@ pelos dois moldes de cada regra e exige o mesmo veredito.
   sobe: um alarme novo justificado sobe a linha de base e leva a linha `Alarme-novo: <motivo>` na mensagem do
   commit. O commit-msg confere-a na máquina e o CI de novo, commit a commit (sem os merges: numa PR, o merge de
   teste não a traz e não é acusado; e uma base apagada num commit e recriada mais alta no seguinte conta contra a
-  última conhecida); nas duas línguas é a mesma regra.
+  última conhecida). No fim, a base só pode chegar à de comparação mais as subidas dos commits com a linha:
+  um merge que sobe a base por si é acusado. Nas duas línguas é a mesma regra.
   Mudar um alarme de arquivo não sobe nada.
 - **Teste saltado:** diga quando e porquê. No vitest: `it.skipIf(semRede)(…)`, ou, dentro do teste,
   `contexto.skip(semRede, 'precisa da rede')` ou `if (semRede) contexto.skip('precisa da rede')`. **Não** use
@@ -97,6 +98,9 @@ um arquivo novo nasce limpo.
 - Apagar a base e criá-la de novo: o commit que a apaga com o código ainda a violar falha no «não piora», e no CI
   os dois commits no mesmo push são apanhados. Só passa com o primeiro feito sem os hooks e os dois enviados em
   pushes separados; aí só a revisão do histórico o apanha.
+- Nas regras com marca (os alarmes), o CI aceita na base do fim só a soma das subidas dos commits com a linha: um
+  merge que sobe a base por si (ao resolver um conflito, por exemplo) é acusado, mesmo ao lado de um commit marcado.
+  O merge de teste de uma PR, que não sobe nada, passa.
 - Num projeto TypeScript com um `index.ts` por pasta, junte `index` aos nomes impostos dos nomes únicos (nas duas
   línguas), ou os `index.ts` reprovam todos.
 - Mudar de caminho um arquivo que está na base (`git mv`) conta como entrada nova: corrija-o antes, ou faça um

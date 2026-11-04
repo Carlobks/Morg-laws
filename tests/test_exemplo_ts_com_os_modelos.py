@@ -169,6 +169,25 @@ class ProjetoDeExemploTs(unittest.TestCase):
         os.environ["MORG_BASE_DE_COMPARACAO"] = base
         self.assertPassa("alarmes")
 
+    def test_numa_pr_o_merge_que_sobe_a_base_por_si_e_recusado(self):
+        # A sobe a 2 com a linha; o merge junta outro alarme e sobe a 3: só o que A explica (2) passa. O controlo,
+        # o merge que não sobe nada, é o test_numa_pr_a_subida_com_a_linha_passa_pelo_merge_de_teste.
+        escrever(self.pasta / "src" / "a.ts", ALARME_COM_MOTIVO)
+        self.gravar_base("alarmes", {"*": {"eslint-disable": 1}})
+        base = self.commitar()
+        escrever(self.pasta / "src" / "b.ts", ALARME_COM_MOTIVO)
+        self.gravar_base("alarmes", {"*": {"eslint-disable": 2}})
+        da_pr = self.commitar("feat: alarme\n\nAlarme-novo: o CLI escreve no terminal")
+        escrever(self.pasta / "src" / "c.ts", ALARME_COM_MOTIVO)
+        self.gravar_base("alarmes", {"*": {"eslint-disable": 3}})
+        git(self.pasta, "add", "--", ".")
+        arvore = git(self.pasta, "write-tree").stdout.strip()
+        merge = git(self.pasta, "commit-tree", arvore, "-p", base, "-p", da_pr, "-m", "Merge pr into main").stdout.strip()
+        git(self.pasta, "update-ref", "HEAD", merge)
+        os.environ["MORG_BASE_DE_COMPARACAO"] = base
+        saida = self.assertFalhaEm("alarmes", "catraca alarmes > a linha de base só encolhe")
+        self.assertIn("*: eslint-disable 3", saida)
+
     def test_a_base_de_comparacao_que_o_git_nao_conhece_salta_com_o_motivo(self):
         self.gravar_base("tamanho-de-funcao", {})
         self.commitar()

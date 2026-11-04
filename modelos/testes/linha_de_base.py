@@ -12,8 +12,9 @@ e compara-o com a linha de base em `tests/linhas-de-base/<regra>.json`. O format
   Uma regra pode deixar a base subir com uma linha na mensagem do commit (MARCA_PARA_SUBIR; a dos alarmes é
   `Alarme-novo:`): na máquina quem a confere é o commit-msg (o pre-commit corre antes da mensagem); no CI, este
   teste confere-a commit a commit, sem os merges (o merge de teste de uma PR não traz a linha): a base de C contra a
-  do commit de antes, ou, se ele a não tem (foi apagada), a última conhecida; e a marca na mensagem de C. Uma
-  subida do intervalo que nenhum commit marcado explica é acusada. Se a base de comparação
+  do commit de antes, ou, se ele a não tem (foi apagada), a última conhecida; e a marca na mensagem de C. E a base do
+  fim só pode chegar à de comparação mais as subidas dos commits marcados: o que passa disso (um merge que sobe a
+  base por si, ao resolver um conflito, por exemplo) é acusado. Se a base de comparação
   não for um commit que o git conheça (os 40 zeros de um ramo novo, um push forçado, um nome errado), o teste salta,
   com o motivo escrito, em vez de passar calado.
 Lê do índice do git (o que vai no commit), nunca do disco: o trabalho a meio de outra sessão na mesma pasta não
@@ -85,24 +86,33 @@ def commit_conhecido(commit):
                           capture_output=True, check=False).returncode == 0
 
 
-def subidas_sem_marca(regra, commit, marca, novas):
-    """Commit a commit de `commit..HEAD`, sem os merges (o de teste de uma PR não traz a linha): os que sobem a base
-    face à última base conhecida (a do commit de antes, ou, se ele a não tem, a anterior, a começar pela de
-    `commit`) sem a marca na própria mensagem. Se a base subiu no intervalo e nenhum commit subiu com a marca nem foi
-    acusado, acusam-se as `novas` (a subida toda)."""
+def somar_as_subidas(teto, antes, depois):
+    """Junta a `teto` o que `depois` sobe face a `antes`, por arquivo e por métrica."""
+    for caminho, metricas in depois.items():
+        for metrica, valor in metricas.items():
+            subida = valor - antes.get(caminho, {}).get(metrica, 0)
+            if subida > 0:
+                teto.setdefault(caminho, {})[metrica] = teto.get(caminho, {}).get(metrica, 0) + subida
+
+
+def subidas_sem_marca(regra, commit, marca, base):
+    """Commit a commit de `commit..HEAD`, sem os merges: acusa quem sobe a base face à última base conhecida sem a
+    marca na própria mensagem. Depois, a `base` só pode chegar à de `commit` mais as subidas dos commits marcados;
+    o que passa disso (um merge que sobe a base por si, por exemplo) também é acusado."""
     commits = correr_git(["rev-list", "--reverse", "--no-merges", f"{commit}..HEAD"]).decode("utf-8").split()
-    conhecida, erros, marcadas = ler_linha_de_base(regra, f"{commit}:"), [], 0
+    conhecida, erros = ler_linha_de_base(regra, f"{commit}:"), []
+    teto = {caminho: dict(metricas) for caminho, metricas in (conhecida or {}).items()}
     for atual in commits:
         antes = ler_linha_de_base(regra, f"{atual}^:")
         antes, depois = conhecida if antes is None else antes, ler_linha_de_base(regra, f"{atual}:")
         mensagem = correr_git(["log", "-1", "--format=%B", atual]).decode("utf-8", errors="replace")
         if antes is not None and depois is not None and acima_de(depois, antes, ""):
             if re.search(rf"^{re.escape(marca)} *\S", mensagem, re.MULTILINE):
-                marcadas += 1
+                somar_as_subidas(teto, antes, depois)
             else:
                 erros.append(f"{atual[:10]} «{mensagem.splitlines()[0]}» sobe a base sem a linha '{marca} <motivo>'")
         conhecida = conhecida if depois is None else depois
-    return erros or ([] if marcadas else novas)
+    return erros + acima_de(base, teto, "os commits com a linha explicam")
 
 
 def acima_de(valores, teto, frase, detalhe=lambda caminho, metrica: ""):
@@ -176,5 +186,5 @@ class TresVerificacoesDaCatraca:
         if novas and self.MARCA_PARA_SUBIR:
             if commit == "HEAD":
                 self.skipTest(f"a subida pede a linha '{self.MARCA_PARA_SUBIR}' na mensagem; o commit-msg confere-a")
-            novas = subidas_sem_marca(self.REGRA, commit, self.MARCA_PARA_SUBIR, novas)
+            novas = subidas_sem_marca(self.REGRA, commit, self.MARCA_PARA_SUBIR, base)
         self.assertEqual(novas, [], "a linha de base só desce: corrija o código em vez de a subir")
