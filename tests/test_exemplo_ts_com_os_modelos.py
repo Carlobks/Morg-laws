@@ -128,6 +128,34 @@ class ProjetoDeExemploTs(unittest.TestCase):
         git(self.pasta, "commit", "-q", "--amend", "-m", "feat: alarme novo\n\nAlarme-novo: o CLI escreve no terminal")
         self.assertPassa("alarmes")
 
+    def test_no_ci_cada_subida_dos_alarmes_pede_a_sua_linha(self):
+        # Uma linha Alarme-novo: num commit não cobre a subida de outro commit do mesmo push.
+        escrever(self.pasta / "src" / "a.ts", ALARME_COM_MOTIVO)
+        self.gravar_base("alarmes", {"*": {"eslint-disable": 1}})
+        anterior = self.commitar()
+        for numero, mensagem in ((2, "feat: b\n\nAlarme-novo: o CLI escreve no terminal"), (3, "feat: c sem a linha")):
+            escrever(self.pasta / "src" / f"{numero}.ts", ALARME_COM_MOTIVO)
+            self.gravar_base("alarmes", {"*": {"eslint-disable": numero}})
+            self.commitar(mensagem)
+        os.environ["MORG_BASE_DE_COMPARACAO"] = anterior
+        saida = self.assertFalhaEm("alarmes", "catraca alarmes > a linha de base só encolhe")
+        self.assertIn("feat: c sem a linha", saida)
+
+    def test_a_base_de_comparacao_que_o_git_nao_conhece_salta_com_o_motivo(self):
+        self.gravar_base("tamanho-de-funcao", {})
+        self.commitar()
+        escrever(self.pasta / "src" / "longa.ts", FUNCAO_DE_21_LINHAS)
+        self.gravar_base("tamanho-de-funcao", {"src/longa.ts": {"funcoesAcima": 1, "linhasAcima": 1}})
+        self.commitar("feat: entrada nova")
+        for desconhecida in ("0" * 40, "nao-existe"):
+            with self.subTest(base=desconhecida):
+                os.environ["MORG_BASE_DE_COMPARACAO"] = desconhecida
+                git(self.pasta, "add", "--", ".")
+                codigo, saida = rodar_vitest(self.pasta, "tests/catracas/tamanho-de-funcao", "--reporter=verbose")
+                self.assertEqual(codigo, 0, saida[-3000:])
+                self.assertIn("↓ tests/catracas/tamanho-de-funcao.test.ts > catraca tamanho-de-funcao > a linha de base só encolhe", saida)
+                self.assertIn(f"a base de comparação {desconhecida}", saida)
+
     def test_criar_a_base_num_projeto_que_ja_viola(self):
         escrever(self.pasta / "src" / "longa.ts", FUNCAO_DE_21_LINHAS)
         os.environ["MORG_CRIAR_LINHA_DE_BASE"] = "1"

@@ -11,15 +11,18 @@ e compara-o com a linha de base em `tests/linhas-de-base/<regra>.json`. O format
   com que commit comparar (a ponta anterior do ramo de destino), e o checkout precisa do histórico (fetch-depth: 0).
   Uma regra pode deixar a base subir com uma linha na mensagem do commit (MARCA_PARA_SUBIR; a dos alarmes é
   `Alarme-novo:`): na máquina quem a confere é o commit-msg (o pre-commit corre antes da mensagem); no CI, este
-  teste procura-a nos commits do intervalo.
+  teste confere-a commit a commit (a base em C^ contra a de C, e a marca na mensagem de C). Se a base de comparação
+  não for um commit que o git conheça (os 40 zeros de um ramo novo, um push forçado, um nome errado), o teste salta,
+  com o motivo escrito, em vez de passar calado.
 Lê do índice do git (o que vai no commit), nunca do disco: o trabalho a meio de outra sessão na mesma pasta não
 trava o commit desta. Um arquivo novo conta depois do `git add`.
 Projeto que já viola: rode uma vez com MORG_CRIAR_LINHA_DE_BASE=1. A base que falta é criada com os valores de
 hoje; uma que existe no índice mas ainda não no último commit ganha as métricas que lhe faltam (o caso de um projeto
 com as duas línguas, que partilham a pasta). O teste falha até ela entrar no git. Uma base já commitada nunca muda.
 Limites conhecidos: mudar de caminho um arquivo que está na base (`git mv`) conta como entrada nova; corrija-o ou
-faça um commit só da base, revisto. Apagar a base num commit e criá-la de novo no seguinte passa: só a revisão do
-histórico o apanha.
+faça um commit só da base, revisto. Apagar a base e criá-la de novo: o commit que a apaga com o código ainda a
+violar falha no «não piora», e no CI os dois commits no mesmo push são apanhados; só passa com o primeiro feito sem
+os hooks e os dois enviados em pushes separados, e aí só a revisão do histórico o apanha.
 Instalar: copiar para `tests/` do projeto, ao lado do carregar_por_caminho.py.
 """
 
@@ -74,9 +77,23 @@ def base_de_comparacao():
     return os.environ.get("MORG_BASE_DE_COMPARACAO") or "HEAD"
 
 
-def mensagens_desde(commit):
-    """O texto das mensagens dos commits entre `commit` e o HEAD (vazio na máquina, onde `commit` é o HEAD)."""
-    return correr_git(["log", "--format=%B", f"{commit}..HEAD"], check=False).decode("utf-8", errors="replace")
+def commit_conhecido(commit):
+    """True se o git conhece este commit (num ramo novo o CI dá 40 zeros; um push forçado tira o de antes)."""
+    return subprocess.run(["git", "rev-parse", "--verify", "--quiet", f"{commit}^{{commit}}"], cwd=RAIZ,
+                          capture_output=True, check=False).returncode == 0
+
+
+def subidas_sem_marca(regra, commit, marca):
+    """Commit a commit de `commit..HEAD`: os que sobem a base face ao commit de antes sem a marca na própria mensagem."""
+    commits = correr_git(["rev-list", "--reverse", f"{commit}..HEAD"]).decode("utf-8").split()
+    erros = []
+    for atual in commits:
+        antes, depois = ler_linha_de_base(regra, f"{atual}^:"), ler_linha_de_base(regra, f"{atual}:")
+        mensagem = correr_git(["log", "-1", "--format=%B", atual]).decode("utf-8", errors="replace")
+        subiu = antes is not None and depois is not None and acima_de(depois, antes, "")
+        if subiu and not re.search(rf"^{re.escape(marca)} *\S", mensagem, re.MULTILINE):
+            erros.append(f"{atual[:10]} «{mensagem.splitlines()[0]}» sobe a base sem a linha '{marca} <motivo>'")
+    return erros
 
 
 def acima_de(valores, teto, frase, detalhe=lambda caminho, metrica: ""):
@@ -142,10 +159,13 @@ class TresVerificacoesDaCatraca:
 
     def test_a_linha_de_base_so_encolhe(self):
         _, base, da_comparacao, _ = self.conferir()
+        commit = base_de_comparacao()
+        if commit != "HEAD" and not commit_conhecido(commit):
+            self.skipTest(f"a base de comparação {commit} não é um commit que o git conheça (ramo novo, push forçado "
+                          "ou nome errado): o «só encolhe» não pôde comparar")
         novas = [] if da_comparacao is None else acima_de(base, da_comparacao, "a base de comparação deixava")
         if novas and self.MARCA_PARA_SUBIR:
-            if base_de_comparacao() == "HEAD":
+            if commit == "HEAD":
                 self.skipTest(f"a subida pede a linha '{self.MARCA_PARA_SUBIR}' na mensagem; o commit-msg confere-a")
-            if re.search(rf"^{re.escape(self.MARCA_PARA_SUBIR)} *\S", mensagens_desde(base_de_comparacao()), re.MULTILINE):
-                novas = []
+            novas = subidas_sem_marca(self.REGRA, commit, self.MARCA_PARA_SUBIR)
         self.assertEqual(novas, [], "a linha de base só desce: corrija o código em vez de a subir")

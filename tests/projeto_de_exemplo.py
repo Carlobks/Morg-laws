@@ -79,10 +79,11 @@ def montar():
     return pasta
 
 
-def rodar_testes(pasta, padrao="test*.py"):
+def rodar_testes(pasta, padrao="test*.py", verboso=False):
     """Roda os testes-modelo (ou só os arquivos que `padrao` pede) no projeto de exemplo; devolve (código de saída,
-    saída do unittest)."""
-    resultado = subprocess.run([sys.executable, "-I", "-m", "unittest", "discover", "-s", "tests", "-p", padrao],
+    saída do unittest). Verboso, a saída diz cada teste e o motivo de cada salto."""
+    resultado = subprocess.run([sys.executable, "-I", "-m", "unittest", "discover", "-s", "tests", "-p", padrao,
+                                *(["-v"] if verboso else [])],
                                cwd=pasta,
                                capture_output=True, text=True, encoding="utf-8", errors="replace", check=False,
                                timeout=300)

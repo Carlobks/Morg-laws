@@ -10,14 +10,18 @@
 //   diz com que commit comparar (a ponta anterior do ramo de destino), e o checkout precisa do histórico
 //   (fetch-depth: 0). Uma regra pode deixar a base subir com uma linha na mensagem do commit (marcaParaSubir; a dos
 //   alarmes é `Alarme-novo:`): na máquina quem a confere é o commit-msg (o pre-commit corre antes da mensagem); no
-//   CI, este teste procura-a nos commits do intervalo.
+//   CI, este teste confere-a commit a commit (a base em C^ contra a de C, e a marca na mensagem de C). Se a base de
+//   comparação não for um commit que o git conheça (os 40 zeros de um ramo novo, um push forçado, um nome errado), o
+//   teste salta, com o motivo escrito, em vez de passar calado.
 // Lê do índice do git (o que vai no commit), nunca do disco: o trabalho a meio de outra sessão na mesma pasta não
 // trava o commit desta. Um arquivo novo conta depois do `git add`.
 // Projeto que já viola: rode uma vez com MORG_CRIAR_LINHA_DE_BASE=1. A base que falta é criada com os valores de
 // hoje; uma que existe mas ainda não está no último commit ganha as métricas que lhe faltam (um projeto com as duas
 // línguas partilha a pasta). O teste falha até ela entrar no git. Uma base já commitada nunca muda.
 // Limites conhecidos: mudar de caminho um arquivo que está na base (`git mv`) conta como entrada nova; corrija-o ou
-// faça um commit só da base, revisto. Apagar a base num commit e criá-la no seguinte passa: só a revisão o apanha.
+// faça um commit só da base, revisto. Apagar a base e criá-la de novo: o commit que a apaga com o código ainda a
+// violar falha no «não piora», e no CI os dois commits no mesmo push são apanhados; só passa com o primeiro feito sem
+// os hooks e os dois enviados em pushes separados, e aí só a revisão do histórico o apanha.
 // Instalar: copiar esta pasta para tests/catracas/ do projeto (precisa do vitest e do typescript).
 import { execFileSync, spawnSync } from 'node:child_process'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
@@ -88,10 +92,9 @@ export function baseDeComparacao(): string {
     return process.env.MORG_BASE_DE_COMPARACAO || 'HEAD'
 }
 
-/** O texto das mensagens dos commits entre `commit` e o HEAD (vazio na máquina, onde `commit` é o HEAD). */
-function mensagensDesde(commit: string): string {
-    const resultado = spawnSync('git', ['log', '--format=%B', `${commit}..HEAD`], { cwd: RAIZ_DO_PROJETO, encoding: 'utf8' })
-    return resultado.status === 0 ? resultado.stdout : ''
+/** O git conhece este commit? (num ramo novo o CI dá 40 zeros; um push forçado tira o de antes) */
+export function commitConhecido(commit: string): boolean {
+    return spawnSync('git', ['rev-parse', '--verify', '--quiet', `${commit}^{commit}`], { cwd: RAIZ_DO_PROJETO }).status === 0
 }
 
 /** Mensagens de cada métrica de `valores` que passa do mesmo valor em `teto` (o que falta conta como 0). */
@@ -148,13 +151,36 @@ function conferirUmaVez(regra: string, medir: () => ExcessoPorArquivo): () => Co
     }
 }
 
-/** A subida que a marca na mensagem deixa passar: no CI, se um commit do intervalo a traz. */
-function subidaComAMarca(marca: string): boolean {
+/** Commit a commit de `commit..HEAD`: os que sobem a base face ao commit de antes sem a marca na própria mensagem. */
+function subidasSemMarca(regra: string, commit: string, marca: string): string[] {
     const comAMarca = new RegExp(`^${marca.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')} *\\S`, 'm')
-    return comAMarca.test(mensagensDesde(baseDeComparacao()))
+    const commits = correrGit(['rev-list', '--reverse', `${commit}..HEAD`]).toString('utf8').split(/\s+/).filter(Boolean)
+    return commits.flatMap((atual) => {
+        const antes = lerLinhaDeBase(regra, `${atual}^:`)
+        const depois = lerLinhaDeBase(regra, `${atual}:`)
+        const mensagem = correrGit(['log', '-1', '--format=%B', atual]).toString('utf8')
+        const subiu = antes !== null && depois !== null && acimaDe(depois, antes, '').length > 0
+        return subiu && !comAMarca.test(mensagem)
+            ? [`${atual.slice(0, 10)} «${mensagem.split('\n')[0]}» sobe a base sem a linha '${marca} <motivo>'`] : []
+    })
 }
 
-function registrarAsTresVerificacoes(conferir: () => Conferencia, conselho: string, julga: JulgaAMetrica,
+/** O que o «só encolhe» acusa: as entradas novas, ou, com a marca e no CI, os commits que subiram sem ela. */
+function entradasNovas(regra: string, { base, daComparacao }: Conferencia, marcaParaSubir: string | undefined): string[] {
+    const novas = daComparacao === null ? [] : acimaDe(base, daComparacao, 'a base de comparação deixava')
+    return novas.length > 0 && marcaParaSubir !== undefined ? subidasSemMarca(regra, baseDeComparacao(), marcaParaSubir) : novas
+}
+
+/** Porque o «só encolhe» não pode julgar agora: a base de comparação que o git não conhece, ou a subida com marca
+ *  na máquina, que o commit-msg confere; null se pode. */
+function porQueNaoCompara(conferencia: Conferencia, marcaParaSubir: string | undefined): 'desconhecida' | 'marca' | null {
+    const commit = baseDeComparacao()
+    if (commit !== 'HEAD' && !commitConhecido(commit)) return 'desconhecida'
+    const subiu = conferencia.daComparacao !== null && acimaDe(conferencia.base, conferencia.daComparacao, '').length > 0
+    return commit === 'HEAD' && subiu && marcaParaSubir !== undefined ? 'marca' : null
+}
+
+function registrarAsTresVerificacoes(regra: string, conferir: () => Conferencia, conselho: string, julga: JulgaAMetrica,
     { marcaParaSubir, detalhe }: OpcoesDaCatraca): void {
     it('não piora', () => {
         const { atuais, criada, base } = conferir()
@@ -165,12 +191,13 @@ function registrarAsTresVerificacoes(conferir: () => Conferencia, conselho: stri
         expect(acimaDe(soOQueJulga(base, julga), atuais, 'hoje há'), 'desça a linha de base no mesmo commit').toEqual([])
     })
     it('a linha de base só encolhe', (contexto) => {
-        const { base, daComparacao } = conferir()
-        const novas = daComparacao === null ? [] : acimaDe(base, daComparacao, 'a base de comparação deixava')
-        const comMarca = novas.length > 0 && marcaParaSubir !== undefined
-        if (comMarca && baseDeComparacao() === 'HEAD') contexto.skip('a subida pede a marca na mensagem; o commit-msg confere-a')
-        const aceitas = comMarca && subidaComAMarca(marcaParaSubir) ? [] : novas
-        expect(aceitas, 'a linha de base só desce: corrija o código em vez de a subir').toEqual([])
+        const porQue = porQueNaoCompara(conferir(), marcaParaSubir)
+        if (porQue === 'desconhecida') {
+            contexto.skip(`a base de comparação ${baseDeComparacao()} não é um commit que o git conheça (ramo novo, push forçado ou nome errado): o «só encolhe» não pôde comparar`)
+        }
+        if (porQue === 'marca') contexto.skip(`a subida pede a linha '${marcaParaSubir}' na mensagem; o commit-msg confere-a`)
+        expect(entradasNovas(regra, conferir(), marcaParaSubir), 'a linha de base só desce: corrija o código em vez de a subir')
+            .toEqual([])
     })
 }
 
@@ -178,5 +205,5 @@ function registrarAsTresVerificacoes(conferir: () => Conferencia, conselho: stri
 export function testarCatraca(regra: string, conselho: string, medir: () => ExcessoPorArquivo, julga: JulgaAMetrica,
     opcoes: OpcoesDaCatraca = {}): void {
     const conferir = conferirUmaVez(regra, medir)
-    describe(`catraca ${regra}`, () => registrarAsTresVerificacoes(conferir, conselho, julga, opcoes))
+    describe(`catraca ${regra}`, () => registrarAsTresVerificacoes(regra, conferir, conselho, julga, opcoes))
 }

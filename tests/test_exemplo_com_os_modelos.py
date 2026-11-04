@@ -226,6 +226,36 @@ class ProjetoDeExemplo(unittest.TestCase):
         with mock.patch.dict(os.environ, {"MORG_BASE_DE_COMPARACAO": anterior}):
             self.assertFalhaEm("test_a_linha_de_base_so_encolhe (test_alarmes", "test_alarmes.py")
 
+    def test_no_ci_cada_subida_dos_alarmes_pede_a_sua_linha(self):
+        # Uma linha Alarme-novo: num commit não cobre a subida de outro commit do mesmo push.
+        alarme = "// eslint-disable-next-line no-console — o CLI escreve no terminal\n"
+        escrever(self.pasta / "src" / "a.ts", alarme)
+        self.gravar_base("alarmes", {"*": {"eslint-disable": 1}})
+        self.commitar()
+        anterior = git(self.pasta, "rev-parse", "HEAD").stdout.strip()
+        for numero, mensagem in ((2, "feat: b\n\nAlarme-novo: o CLI escreve no terminal"), (3, "feat: c sem a linha")):
+            escrever(self.pasta / "src" / f"{numero}.ts", alarme)
+            self.gravar_base("alarmes", {"*": {"eslint-disable": numero}})
+            self.commit_sem_hooks(mensagem)
+        with mock.patch.dict(os.environ, {"MORG_BASE_DE_COMPARACAO": anterior}):
+            saida = self.assertFalhaEm("test_a_linha_de_base_so_encolhe (test_alarmes", "test_alarmes.py")
+        self.assertIn("feat: c sem a linha", saida)
+
+    def test_a_base_de_comparacao_que_o_git_nao_conhece_salta_com_o_motivo(self):
+        # Um ramo novo (40 zeros), um push forçado ou um nome errado: o teste diz que não pôde comparar.
+        self.gravar_base("tamanho-de-arquivo", {})
+        self.commitar()
+        escrever(self.pasta / "src" / "grande.py", "x = 1\n" * 501)
+        self.gravar_base("tamanho-de-arquivo", {"src/grande.py": {"linhasAcima": 1}})
+        self.commitar("feat: entrada nova\n\nSem passar pela revisão.\n")
+        for desconhecida in ("0" * 40, "nao-existe"):
+            with self.subTest(base=desconhecida), mock.patch.dict(os.environ, {"MORG_BASE_DE_COMPARACAO": desconhecida}):
+                codigo, saida = rodar_testes(self.pasta, "test_tamanho_dos_arquivos.py", verboso=True)
+                self.assertEqual(codigo, 0, saida[-2000:])
+                # Sem os acentos: o processo filho escreve na página de código da consola do Windows.
+                self.assertIn("TamanhoDosArquivos.test_a_linha_de_base_so_encolhe) ... skipped 'a base de compara", saida)
+                self.assertIn(f"{desconhecida} n", saida)
+
     def test_criar_a_base_num_projeto_que_ja_viola(self):
         escrever(self.pasta / "src" / "grande.py", "x = 1\n" * 501)
         with mock.patch.dict(os.environ, {"MORG_CRIAR_LINHA_DE_BASE": "1"}):
