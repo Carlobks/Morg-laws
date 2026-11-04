@@ -15,9 +15,9 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A pági
 
 - Guarde senhas e chaves num gestor de senhas. Se uma vazar, troque-a: limpar o histórico do repositório não chega. (p. 386) · **texto** · onde aplicar: ainda nenhuma
 - Antes de publicar um pacote ou um deploy, confira o que vai dentro e ponha uma verificação automática curta no caminho. Um mapa de código-fonte esquecido já expôs o código inteiro de uma ferramenta conhecida. (pp. 28–29, 39) · **máquina** (verificação no CI) · onde aplicar: ainda nenhuma
-- Procure no código publicado os atalhos de teste esquecidos e os segredos que entram por variáveis de ambiente. Tudo o que chega ao navegador ou ao aplicativo do cliente pode ser lido. (pp. 232, 253) · **máquina** · onde aplicar: `auditoria-de-seguranca`, `nextjs-react`
+- Uma auditoria achou um atalho de teste esquecido no programa publicado e uma senha que entrava por variáveis de ambiente onde não devia. E um aplicativo instalado no aparelho abre-se e lê-se com uma ferramenta gratuita. (pp. 232, 253) · **máquina** · onde aplicar: `auditoria-de-seguranca`
 - Não conte com esconder como forma de proteger: o que está escondido acaba por ser achado. (pp. 244–245) · **texto** · onde aplicar: ainda nenhuma
-- Rode no CI uma bateria fixa: estilo, dependências com falhas conhecidas, análise estática de segurança e os testes. (pp. 408–409) · **máquina** (CI) · onde aplicar: `auditoria-de-seguranca`
+- No projeto contado, cada commit passava sempre pela mesma bateria: estilo, dependências com falhas conhecidas, análise estática de segurança e os testes. (pp. 408–409) · **máquina** (CI) · onde aplicar: `auditoria-de-seguranca`
 
 ## 3. Injeção de instruções e conteúdo de fora
 
@@ -34,8 +34,8 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A pági
 
 - Pensar como um invasor não é coisa que o agente faça sozinho: peça o endurecimento por escrito e confira-o. Exemplos: comandos negados de início, com poucos liberados por nome; assinatura conferida em cada mensagem de um serviço externo, com proteção contra repetição; dados cifrados no disco; o dono aprova antes de apagar ou alterar. (pp. 242–243, 262) · **texto** · onde aplicar: `auditoria-de-seguranca`
 - Peça auditorias com perguntas concretas, não um «revê a segurança». Por exemplo: um segredo com valor padrão no código, um código de segundo fator que se pode reutilizar, o destino do redirecionamento depois do login, dois pedidos ao mesmo contador ao mesmo tempo. (pp. 89–90) · **texto** · onde aplicar: `auditoria-de-seguranca`
-- O agente só encontra as falhas que você sabe mandar procurar. Use listas de falhas reais já catalogadas: dados de um cliente vistos por outro, injeção em consultas, biblioteca vulnerável, teste adulterado, soma errada. (pp. 21, 69, 158) · **texto** · onde aplicar: `auditoria-de-seguranca`
-- Faça duas auditorias independentes, a segunda sem ler a primeira, de preferência com agentes de fabricantes diferentes, e corrija a soma das duas listas. Procure também você. Uma auditoria feita por IA e não conferida é um sinal, não a lista certa. (pp. 81, 156, 232, 239) · **texto** · onde aplicar: `orquestrando-sessoes`
+- O agente só encontra as falhas que você sabe mandar procurar. Uma prova de modelos planta falhas reais já catalogadas: dados de um cliente vistos por outro, injeção em consultas, biblioteca vulnerável, teste adulterado, soma errada. (pp. 21, 69, 158) · **texto** · onde aplicar: `auditoria-de-seguranca`
+- Faça duas auditorias independentes, a segunda sem ler a primeira, e corrija a soma das duas listas; no caso contado, nem dois agentes de empresas diferentes acharam tudo, e o autor ainda achou mais sozinho. Uma auditoria feita por IA e não conferida é um sinal, não a lista certa. (pp. 81, 156, 231–232, 239) · **texto** · onde aplicar: `orquestrando-sessoes`
 - Procure por conta própria os erros silenciosos: o agente apanha o que quebra, mas deixa passar o que só está errado. (pp. 160–161) · **texto** · onde aplicar: `testes-e-provas`
 - Um sistema muito bom pode ter um ponto cego que só aparece quando alguém o procura de propósito. (p. 219) · **texto** · onde aplicar: ainda nenhuma
 - Retire as funcionalidades que ninguém usa: cada uma a menos é uma porta a menos. (pp. 241–242) · **texto** · onde aplicar: ainda nenhuma
@@ -46,7 +46,7 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A pági
 - Cifre no banco os dados pessoais sensíveis e não instale rastreadores. (p. 81) · **máquina** · onde aplicar: ainda nenhuma
 - Para dados que não podem sair de casa, pense num modelo que roda localmente. (p. 91) · **texto** · onde aplicar: ainda nenhuma
 - Saiba o que é a impressão digital de um aparelho e quanto um aplicativo pode recolher além do que precisa. Os SDKs de métricas e de erros costumam vir com a recolha ligada por padrão. (pp. 254–257) · **texto** · onde aplicar: ainda nenhuma
-- Imagens de pessoas reais nunca são geradas por IA. Registre a origem, a licença e a autorização de cada foto. (pp. 336, 456–458) · **texto** · onde aplicar: ainda nenhuma
+- No livro, nenhuma pessoa real aparece numa imagem feita por IA, e a origem, a licença e a autorização de cada foto ficaram registradas. (pp. 336, 456–458) · **texto** · onde aplicar: ainda nenhuma
 - Separe o que um código consegue fazer do que ele faz: ter a função que lê um dado não prova quando nem para quem ele o envia. (pp. 258–259) · **texto** · onde aplicar: ainda nenhuma
 
 ## 7. Golpes
