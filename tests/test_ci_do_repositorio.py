@@ -34,6 +34,21 @@ class WorkflowsDoMorgLaws(modelo.Workflows):
         self.assertIn("npm audit --audit-level=high", modelo.texto_do_workflow(modelo.WORKFLOWS[0]))
 
 
+class MoldeDeCiServeTypeScript(unittest.TestCase):
+    """Um projeto TypeScript que copia o molde de CI tem o Node fixado, o npm ci do lockfile e o npm audit."""
+
+    def test_o_molde_tem_o_bloco_typescript(self):
+        texto = (RAIZ / "modelos" / "github" / "workflows" / "ci.yml").read_text("utf-8")
+        self.assertEqual(erros_do_bloco_typescript(texto), [])
+
+
+def erros_do_bloco_typescript(texto):
+    """O que falta ao molde de CI para servir um projeto com package-lock.json."""
+    pedidos = ("actions/setup-node@", "node-version-file: .nvmrc", "npm ci", "npm audit --audit-level=high",
+               "hashFiles('package-lock.json')")
+    return [pedido for pedido in pedidos if pedido not in texto]
+
+
 def erros_do_so_encolhe(texto):
     """O que falta a um workflow para o «só encolhe» das linhas de base funcionar no CI e numa PR."""
     pedidos = ("fetch-depth: 0", "MORG_BASE_DE_COMPARACAO: ${{ github.event.pull_request.base.sha || github.event.before }}")

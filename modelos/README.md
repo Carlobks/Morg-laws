@@ -58,7 +58,7 @@ Os testes prontos de `testes-ts/` são a exceção: TypeScript, com o `vitest` e
 5. Ajuste ao projeto: `COMANDO_DOS_TESTES` no `pre-commit`; `TESTE` e `PUBLICADO` no `mensagem_commit.py`; o
    bloco "Ajuste ao projeto" no início de cada teste. Uma parte cuja pasta não existe é pulada, não falha.
    Projeto em TypeScript: copie `testes-ts/` para `tests/catracas/`, instale o `vitest` e o `typescript` com as
-   versões fixadas no `package-lock.json` e ponha `npx vitest run` no comando único. Projeto que já viola: rode os
+   versões fixadas no `package-lock.json`, fixe o Node num `.nvmrc` (o bloco TypeScript do molde de CI usa-o) e ponha `npx vitest run` no comando único. Projeto que já viola: rode os
    testes uma vez com `MORG_CRIAR_LINHA_DE_BASE=1`, leia as bases criadas em `tests/linhas-de-base/` e faça
    `git add` (skill `codigo-legivel`).
 6. Python: os hooks usam `MORG_PY`, ou `py` (Windows), ou `python3`, sempre com `-I`.

@@ -30,6 +30,18 @@ jobs:
       # este job só lê o repositório e não tem segredos. Com segredos ou escrita, use um requirements com hashes.
       - name: Ferramentas com versões fixas
         run: ${{ steps.python.outputs.python-path }} -m pip install --disable-pip-version-check coverage==7.17.0 ruff==0.17.2
+      # Projeto TypeScript (só corre se houver package-lock.json): o Node da versão fixada no .nvmrc, as dependências
+      # do lockfile, sem os scripts de instalação, e o npm audit, que só trava um aviso alto ou crítico. O comando único
+      # (scripts/testar.sh) leva então o `npx vitest run` dos testes prontos de modelos/testes-ts/ do Morg-laws.
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        if: hashFiles('package-lock.json') != ''
+        with:
+          node-version-file: .nvmrc
+      - name: Dependências do lockfile e npm audit
+        if: hashFiles('package-lock.json') != ''
+        run: |
+          npm ci --ignore-scripts --no-audit --no-fund
+          npm audit --audit-level=high
       - name: Ligar os portões do git (os testes da guarda do git exigem-no)
         run: git config core.hooksPath .githooks
       - name: Testes, cobertura e lint (o mesmo comando do pre-commit)
