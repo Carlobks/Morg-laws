@@ -7,6 +7,7 @@ Notas de leitura do livro **_Competente o Suficiente_**, de **Fabio Akita**, sob
 - É um **resumo com palavras nossas**, organizado para consulta. Cada item leva a página do livro, para quem quiser ler o original.
 - **Não** reproduz o texto do livro. Para o raciocínio completo, os exemplos e o contexto, leia o livro.
 - As páginas são as **impressas** (as do rodapé do livro).
+- Os resumos são **nossos** e podem ter erros: um conselho pode dizer mais, ou menos, do que a página. Se achar um, abra uma issue com o arquivo, a linha e a página.
 - Cada conselho aparece uma vez só: o que o livro diz em forma de proibição fica no `nao-faca.md`, e os arquivos de tema não o repetem.
 
 ## Arquivos
