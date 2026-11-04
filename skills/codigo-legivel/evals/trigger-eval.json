@@ -7,6 +7,6 @@
   {"query": "vou marcar este teste com it.skip até amanhã", "should_trigger": true},
   {"query": "corrige o bug do total do pedido e prova que funciona", "should_trigger": false},
   {"query": "faz o commit e o push disto", "should_trigger": false},
-  {"query": "esta rota tem alguma brecha de segurança?", "should_trigger": false},
+  {"query": "cria o componente React do formulário de cadastro", "should_trigger": false},
   {"query": "escreve a regra das 20 linhas no AGENTS.md", "should_trigger": false}
 ]

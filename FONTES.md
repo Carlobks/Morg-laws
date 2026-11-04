@@ -127,6 +127,13 @@ Lidas em 2026-10-31 no projeto de origem, para os campos do formulário `modelos
 - **Martin Fowler — Humble Object** — https://martinfowler.com/bliki/HumbleObject.html — lido em 2026-10-23 no projeto de origem. Sustenta: deixar a cola com o sistema fina e sem lógica, para o resto ser testável (a cobertura a 100 % dos modelos).
 - **Michael Nygard — Documenting Architecture Decisions** — https://www.cognitect.com/blog/2011/11/15/documenting-architecture-decisions — lido em 2026-10-23 no projeto de origem. Sustenta: o formato contexto, decisão, consequências e as decisões numeradas que não se reutilizam (`modelos/documentos/adr.md`).
 
+## Testes prontos (vitest)
+
+Lidas em 2026-11-04 para os moldes de `modelos/testes-ts/` e a skill `codigo-legivel`.
+
+- **Vitest — Test API** — https://vitest.dev/api/test — Sustenta: o 1.º argumento de `test.skip` é o nome do teste (`test.skip('skipped test', …)`), por isso `test.skip(condição, 'motivo')` salta sempre; `test.skipIf(condição)` salta quando a condição é verdadeira e `test.runIf` é o contrário; `test.each` e `test.only`; no contexto do teste, `context.skip(condição, mensagem)`, com os dois argumentos opcionais.
+- **Node.js — lista das versões** — https://nodejs.org/dist/index.json — Sustenta: a 24 mais nova com pelo menos duas semanas (a 24.22.1, de 2026-10-20, uma versão de segurança), fixada em `tests/exemplo-ts/.nvmrc`.
+
 ## Inspirações (nada copiado)
 
 - **Matt Pocock — skill "grill-me"** (licença MIT) — https://github.com/mattpocock/skills — consultado em 2026-10-29.

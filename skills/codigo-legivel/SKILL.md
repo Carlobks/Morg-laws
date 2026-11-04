@@ -1,6 +1,6 @@
 ---
 name: codigo-legivel
-description: Diz as regras da forma do código que um agente escreve — arquivo até 500 linhas, função nova até 20, nomes únicos e pesquisáveis, nada de nome genérico, nenhum alarme calado sem motivo, nenhum teste saltado sem condição, os testes num só comando — com o porquê de cada uma e o teste pronto que a impõe em Python e em TypeScript (vitest), e como adotar esses testes num projeto que já viola, com uma linha de base que só encolhe. Usar ao escrever, partir ou rever código, quando um arquivo ou uma função crescem demais, ao escolher um nome, antes de calar um aviso do lint ou de saltar um teste, ou ao instalar os testes prontos num projeto. Não usar para provar que um trabalho funciona ou corrigir um bug (é a testes-e-provas), nem para os commits (é a git-e-commits).
+description: Diz as regras da forma do código que um agente escreve — arquivo até 500 linhas, função nova até 20, nomes únicos e pesquisáveis, nada de nome genérico, nenhum alarme calado sem motivo, nenhum teste saltado sem condição, os testes num só comando — com o porquê de cada uma e o teste pronto que a impõe em Python e em TypeScript (vitest), e como adotar esses testes num projeto que já viola, com uma linha de base que só encolhe. Usar quando um arquivo ou uma função crescem demais ou é preciso parti-los, ao escolher um nome, antes de calar um aviso do lint ou de saltar um teste, ou ao instalar os testes prontos num projeto. Não usar para provar que um trabalho funciona ou corrigir um bug (é a testes-e-provas), nem para os commits (é a git-e-commits).
 ---
 
 # Código legível
@@ -38,10 +38,16 @@ pelos dois moldes de cada regra e exige o mesmo veredito.
   `main`, `__x__`) e os nomes de uma interface comum de propósito, que o projeto lista no bloco «Ajuste ao projeto»
   (no Next.js, `page.tsx` e `GET`).
 - **Alarme:** corrija o que ele aponta. Se não der, o motivo vai na mesma linha, depois de « — »
-  (`// eslint-disable-line no-console — o CLI escreve no terminal`), e a linha de base sobe no mesmo commit, à
-  vista de quem revê.
-- **Teste saltado:** diga quando e porquê: `test.skip(semRede, 'precisa da rede')` ou
-  `@unittest.skipIf(sys.platform == "win32", "o hook só corre em sh")`. Um teste que não vai voltar apaga-se.
+  (`// eslint-disable-line no-console — o CLI escreve no terminal`). A contagem por tipo, no projeto inteiro, não
+  sobe: um alarme novo justificado sobe a linha de base e leva a linha `Alarme-novo: <motivo>` na mensagem do
+  commit. O commit-msg confere-a na máquina e o CI de novo; nas duas línguas é a mesma regra. Mudar um alarme de
+  arquivo não sobe nada.
+- **Teste saltado:** diga quando e porquê. No vitest: `it.skipIf(semRede)(…)`, ou, dentro do teste,
+  `contexto.skip(semRede, 'precisa da rede')` ou `if (semRede) contexto.skip('precisa da rede')`. **Não** use
+  `test.skip(semRede, '…')`: no vitest o 1.º argumento de `test.skip` é o nome do teste, e ele salta sempre
+  ([API do vitest](https://vitest.dev/api/test)); é a forma do Playwright. No Python:
+  `@unittest.skipIf(sys.platform == "win32", "o hook só corre em sh")`, ou o `skipTest` dentro de um `if` ou de um
+  `except ImportError`. Um teste que não vai voltar apaga-se.
 
 ## 3. Instalar os testes prontos
 
@@ -60,33 +66,45 @@ pelos dois moldes de cada regra e exige o mesmo veredito.
 
 ## 4. Num projeto que já viola: a linha de base
 
-Os testes de tamanho de arquivo e de função, nomes, alarmes e testes saltados aceitam uma **linha de base**: o que
-já viola fica congelado e só pode encolher; um arquivo novo nasce limpo.
+Os seis testes, nas duas línguas, aceitam uma **linha de base**: o que já viola fica congelado e só pode encolher;
+um arquivo novo nasce limpo.
 
 1. Rode os testes uma vez com `MORG_CRIAR_LINHA_DE_BASE=1`. Cada base que falta é criada em
-   `tests/linhas-de-base/<regra>.json`, com o excesso de hoje por arquivo (`{"src/a.ts": {"linhasAcima": 12}}`),
-   e o teste falha até ela entrar no git.
+   `tests/linhas-de-base/<regra>.json`, com o excesso de hoje por arquivo (`{"src/a.ts": {"linhasAcima": 12}}`; a
+   dos alarmes conta por tipo, em `{"*": {"eslint-disable": 3}}`), e o teste falha até ela entrar no git. Num
+   projeto com as duas línguas, as bases são as mesmas: corra a variável numa língua, faça `git add`, corra na
+   outra (ela junta as métricas que faltam) e faça `git add` de novo.
 2. Leia a base antes do `git add`: ela é a lista da dívida.
 3. Daí em diante, três testes por regra: **não piora** (nenhum arquivo passa do que a base deixa), **sem folga**
-   (quem corrige desce a base no mesmo commit) e **só encolhe** (a base não ganha entrada nem valor face ao último
-   commit). Uma base que já existe nunca é reescrita pela variável.
-4. As duas línguas usam o mesmo formato, por isso um projeto misto pode partilhar a pasta. Os moldes Python mais
-   antigos têm a base dentro do arquivo: `LONGAS_ANTIGAS` no de funções e `MAXIMO_POR_TIPO` no de alarmes; o de
-   nomes genéricos em Python ainda não tem base.
+   (quem corrige desce a base no mesmo commit) e **só encolhe** (a base não ganha entrada nem valor face à base de
+   comparação). Uma base já commitada nunca é reescrita pela variável.
+4. **No CI e numa PR**, o índice é o próprio commit: a variável `MORG_BASE_DE_COMPARACAO` diz com que commit
+   comparar (a ponta anterior do ramo de destino) e o checkout precisa de `fetch-depth: 0`. O molde do CI do
+   Morg-laws já as tem. Sem isto, um commit feito sem os hooks (no site do GitHub, por exemplo) subiria a base.
 
-**Limite:** uma catraca diz «não piorou», nunca «está bem». Apagar a base num commit e criá-la de novo no seguinte
-passa: só a revisão do histórico apanha isso.
+**Limites conhecidos:**
+- Uma catraca diz «não piorou», nunca «está bem».
+- Apagar a base num commit e criá-la de novo no seguinte passa: só a revisão do histórico o apanha.
+- Mudar de caminho um arquivo que está na base (`git mv`) conta como entrada nova: corrija-o antes, ou faça um
+  commit só da base, revisto.
+- Casos que as duas línguas deixam passar por igual, contra a regra escrita: um arquivo com as linhas separadas só
+  por `\r`; um alarme num `.mts`, `.cts` ou `.cjs` (fora das extensões, que o projeto pode alargar); um
+  `import … as data`; uma condição constante (`skipIf(True, "x")`, `it.skipIf(true)`). Só no Python,
+  `pytestmark = pytest.mark.skip`; só no TypeScript, uma função longa passada a um `describe` no código de produção.
+  E um caso certo que as duas recusam: um `.skip(…)` de outra coisa num arquivo de teste (`leitor.skip(3)`).
 
 ## 5. Fronteira com outras skills
 
 - **testes-e-provas:** provar que um trabalho funciona, o teste que pega o bug, depurar, auditar e o que é uma
-  catraca em geral. Esta skill diz as regras da forma do código e os testes prontos que as impõem.
+  catraca em geral. Esta skill diz as regras da forma do código e os seis testes prontos que as impõem, com a
+  linha de base deles. Escrever uma tela ou uma rota não é forma do código: só se abre esta quando o arquivo, a
+  função, um nome, um alarme ou um teste saltado estão em causa.
 - **escrevendo-regras-de-agente:** onde uma regra vai (texto, skill ou barreira).
 - **git-e-commits:** o comando único no hook do commit e os commits.
 
 ## Fontes
 
-Sem fonte externa: os limites (500 linhas por arquivo, 20 por função nova) e as listas vêm da prática do projeto de
-origem, onde os mesmos testes correm como catracas. A forma de cada teste está nos próprios moldes, que dizem o que
-medem. Quando uma regra passar a apoiar-se numa fonte, ela entra em
-[`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md).
+Os limites (500 linhas por arquivo, 20 por função nova) e as listas vêm da prática do projeto de origem, onde os
+mesmos testes correm como catracas. A forma de saltar um teste no vitest vem da
+[API do vitest](https://vitest.dev/api/test). A forma de cada teste está nos próprios moldes, que dizem o que medem.
+As fontes estão em [`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md#testes-prontos-vitest).
