@@ -29,8 +29,8 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita, sobre o
 ## 4. Skills, camadas e ferramentas
 
 - Tenha poucas skills, em uso e mantidas, e apague as que ficaram encostadas: todas disputam a atenção do modelo. Sempre que der, aponte para um exemplo vivo no próprio código. (pp. 128–129, 412–413) · **texto** · onde aplicar: `escrevendo-regras-de-agente`
-- Não acrescente uma camada intermediária de IA (plugin, MCP, orquestrador) antes de sentir a falta dela. (pp. 210–211) · **texto** · onde aplicar: `escrevendo-regras-de-agente`
+- Não acrescente nenhuma ferramenta que fique entre você e o agente antes de sentir, no trabalho, a falta dela: trabalhe com o agente de sempre, sem intermediários. (pp. 210–211) · **texto** · onde aplicar: ainda nenhuma
 - Separe a configuração pessoal do trabalho que precisa de um resultado limpo: um plugin esquecido mudou notas de uma avaliação em dezenas de pontos, para cima e para baixo. (p. 48) · **texto** · onde aplicar: ainda nenhuma
-- Boa parte da inteligência do agente está no programa à volta do modelo. As suas regras, testes e ferramentas são esse programa. (pp. 39, 320–322) · **texto** · onde aplicar: ainda nenhuma
+- Boa parte do que faz um agente parecer inteligente está no programa à volta do modelo, e quem já tinha processo, testes e regras escritas tirou mais proveito dele. (pp. 39, 320–322) · **texto** · onde aplicar: ainda nenhuma
 - Quando o agente troca de padrão sem motivo, ou puxa o desenho para o formato que viu no treino, pare-o e pergunte porquê. (pp. 70, 416) · **texto** · onde aplicar: ainda nenhuma
 - Prefira a tecnologia mais segura e com o maior ecossistema: quem luta com o compilador agora é o modelo. Os erros repetidos viram regra, teste ou skill, não troca de linguagem; a linguagem não substitui a arquitetura. (pp. 143, 282, 430) · **texto** · onde aplicar: ainda nenhuma
