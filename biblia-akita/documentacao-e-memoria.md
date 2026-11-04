@@ -6,7 +6,7 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A pági
 
 - O modelo é um arquivo fechado: nada da conversa fica nele. O que precisa ser lembrado guarda-se fora, e deixar o agente trabalhando sozinho não o faz aprender o seu domínio. (pp. 19, 319) · **texto** · onde aplicar: `passando-o-trabalho`
 - A cada mensagem, o modelo volta a ler o contexto inteiro. Esse espaço tem tamanho fixo, e enchê-lo custa dinheiro, tempo e precisão: o meio é o que mais se perde. (pp. 19, 29–31) · **texto** · onde aplicar: `passando-o-trabalho`
-- Na compactação, o início da conversa encolhe para quase nada. Em vez de perguntar ao agente porque se decidiu algo, pergunte onde a decisão está escrita. (pp. 31–33) · **texto** · onde aplicar: `passando-o-trabalho`
+- Na compactação, o início da conversa encolhe para quase nada: perguntado sobre o motivo de uma decisão antiga, o agente já não o tem e pode inventar um que soa certo. (pp. 31–33) · **texto** · onde aplicar: `passando-o-trabalho`
 - O agente pode ter lido só uma parte de um arquivo (as leituras vêm em fatias e as saídas grandes são cortadas sem aviso) e responder como se tivesse lido tudo. (pp. 33, 124) · **texto** · onde aplicar: ainda nenhuma
 
 ## 2. Onde guardar
@@ -26,7 +26,7 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A pági
 - Quando um documento estiver errado, marque-o como obsoleto no topo e mantenha-o; o caminho errado documenta-se como errado. Corrija todas as cópias de um mesmo erro. (pp. 5, 151, 414, 416) · **texto** · onde aplicar: ainda nenhuma
 - Diga até onde vai o que provou (o alcance e os limites do teste) e as camadas de incerteza de uma análise feita com IA. Separe fato de opinião, com uma etiqueta em cada um. (pp. 172, 252, 276–277) · **texto** · onde aplicar: `testes-e-provas`
 - Escreva o que faria mudar a sua conclusão, em critérios que alguém de fora consiga medir. (pp. 322–323) · **texto** · onde aplicar: ainda nenhuma
-- Feche cada projeto com um relatório (decisões, medidas, erros) e publique de tempos em tempos um boletim da estabilidade de cada sistema. Seja honesto sobre o que é de fato mantido. (pp. 132–133, 185, 338) · **texto** · onde aplicar: ainda nenhuma
+- Feche cada projeto com um relatório (decisões, medidas, erros) e faça um boletim da estabilidade de cada sistema. Seja honesto sobre o que é de fato mantido. (pp. 132–133, 185, 338) · **texto** · onde aplicar: ainda nenhuma
 - Trate um documento importante como um produto: a especificação num lugar só, um verificador automático (referência para nada, o mesmo número diferente em dois lugares, trecho sem origem, frases proibidas), revisões, versões, registro de mudanças e um canal para relatar erros. (pp. 335, 343–344) · **máquina** (verificador no CI) · onde aplicar: ainda nenhuma
 - Para reorganizar um acervo com agentes: um inventário selado (com um código do conteúdo de cada arquivo), um formulário fixo por documento, um mapa do que substituiu o quê, um piloto cujas lições viram regras escritas, o registro das contradições entre agentes e a origem marcada em cada trecho. (pp. 333–336) · **texto** · onde aplicar: ainda nenhuma
 - Quando dois números seus não batem, descubra porquê e diga o que cada um conta. Quando o resumo e a fonte discordam, vale a fonte. (pp. 336, 344) · **texto** · onde aplicar: `testes-e-provas`
