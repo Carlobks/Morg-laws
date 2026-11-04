@@ -18,6 +18,7 @@ Notas de leitura do livro **_Competente o Suficiente_**, de **Fabio Akita**, sob
 | [arquivo-de-regras.md](arquivo-de-regras.md) | O arquivo que o agente lê em todo pedido: quando, com que forma, o que vai dentro, como cresce, skills e camadas |
 | [documentacao-e-memoria.md](documentacao-e-memoria.md) | O que o agente lembra, onde guardar o que se aprende e como escrever documentos que se mantêm certos |
 | [testes-e-revisao.md](testes-e-revisao.md) | O juiz de fora, os testes que enganam, conferir a entrega, revisão e o processo de testes |
+| [pedidos-e-sessoes.md](pedidos-e-sessoes.md) | Como montar um pedido, conduzir o trabalho e escolher que trabalho dar ao agente |
 
 Os demais conselhos do livro (576 anotados no total) entram aos poucos, por tema.
 
