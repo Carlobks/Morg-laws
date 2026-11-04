@@ -43,7 +43,7 @@ pelos dois moldes de cada regra e exige o mesmo veredito.
   commit. O commit-msg confere-a na máquina e o CI de novo, commit a commit (sem os merges: numa PR, o merge de
   teste não a traz e não é acusado; e uma base apagada num commit e recriada mais alta no seguinte conta contra a
   última conhecida). No fim, a base só pode chegar à de comparação mais as subidas dos commits com a linha:
-  um merge que sobe a base por si é acusado. Nas duas línguas é a mesma regra.
+  um merge que sobe a base além do que os commits com a linha `Alarme-novo:` explicam é acusado. Nas duas línguas é a mesma regra.
   Mudar um alarme de arquivo não sobe nada.
 - **Teste saltado:** diga quando e porquê. No vitest: `it.skipIf(semRede)(…)`, ou, dentro do teste,
   `contexto.skip(semRede, 'precisa da rede')` ou `if (semRede) contexto.skip('precisa da rede')`. **Não** use
@@ -99,7 +99,9 @@ um arquivo novo nasce limpo.
   os dois commits no mesmo push são apanhados. Só passa com o primeiro feito sem os hooks e os dois enviados em
   pushes separados; aí só a revisão do histórico o apanha.
 - Nas regras com marca (os alarmes), o CI aceita na base do fim só a soma das subidas dos commits com a linha: um
-  merge que sobe a base por si (ao resolver um conflito, por exemplo) é acusado, mesmo ao lado de um commit marcado.
+  merge que sobe a base além do que os commits com a linha `Alarme-novo:` explicam (ao resolver um conflito, por
+  exemplo) é acusado, mesmo ao lado de um commit marcado. Uma subida marcada que outro commit desfaz no mesmo push
+  continua a contar no teto, e um merge pode usar essa folga.
   O merge de teste de uma PR, que não sobe nada, passa.
 - Num projeto TypeScript com um `index.ts` por pasta, junte `index` aos nomes impostos dos nomes únicos (nas duas
   línguas), ou os `index.ts` reprovam todos.

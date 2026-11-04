@@ -25,7 +25,9 @@ com as duas línguas, que partilham a pasta). O teste falha até ela entrar no g
 Limites conhecidos: mudar de caminho um arquivo que está na base (`git mv`) conta como entrada nova; corrija-o ou
 faça um commit só da base, revisto. Apagar a base e criá-la de novo: o commit que a apaga com o código ainda a
 violar falha no «não piora», e no CI os dois commits no mesmo push são apanhados; só passa com o primeiro feito sem
-os hooks e os dois enviados em pushes separados, e aí só a revisão do histórico o apanha.
+os hooks e os dois enviados em pushes separados, e aí só a revisão do histórico o apanha. Uma subida marcada que
+outro commit desfaz no mesmo push continua a contar no teto (as descidas não se descontam), e um merge pode usar essa
+folga.
 Instalar: copiar para `tests/` do projeto, ao lado do carregar_por_caminho.py.
 """
 
