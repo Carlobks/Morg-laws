@@ -29,6 +29,8 @@ const DECLARACOES_COM_NOME: Array<(no: ts.Node) => boolean> = [
     ts.isFunctionDeclaration, ts.isClassDeclaration, ts.isInterfaceDeclaration, ts.isTypeAliasDeclaration,
     ts.isEnumDeclaration, ts.isFunctionExpression, ts.isClassExpression, ts.isMethodDeclaration,
     ts.isPropertyDeclaration, ts.isGetAccessorDeclaration, ts.isSetAccessorDeclaration,
+    // Os membros de uma interface ou de um tipo, como os campos anotados de uma classe no Python (`data: str`).
+    ts.isPropertySignature, ts.isMethodSignature,
 ]
 
 /** Os nomes que este nó declara (nenhum, se não for uma declaração). */

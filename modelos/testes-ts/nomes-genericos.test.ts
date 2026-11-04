@@ -5,10 +5,13 @@
 // - arquivos e pastas, de qualquer língua: o nome inteiro ou uma parte separada por ponto (`instalar.Comum.ps1`);
 //   um nome composto que diz o quê (`bar-helper.ts`) não é solto;
 // - identificadores JS/TS, lidos pela árvore: variáveis (também as desestruturadas e as do catch), parâmetros,
-//   funções, classes, métodos, propriedades, interfaces, tipos e enums. `{ data }` declara `data`;
+//   funções, classes, métodos, propriedades, os membros de uma interface ou de um tipo (`{ data: string }`, como os
+//   campos de uma classe no Python), interfaces, tipos e enums. `{ data }` declara `data`;
 //   `{ data: faturasDoMes }` declara `faturasDoMes`; usar um nome (`pedido.data`) não é declará-lo. A caixa não conta.
 // Por arquivo: `nomesGenericos` (quantos identificadores) e `caminhoGenerico` (1 se o caminho tem um nome solto).
-// Linha de base: tests/linhas-de-base/nomes-genericos.json (linha-de-base.ts).
+// Os dois moldes leem o índice do git: um arquivo novo conta depois do `git add`, nas duas línguas.
+// Linha de base: tests/linhas-de-base/nomes-genericos.json (linha-de-base.ts), a mesma do molde Python.
+// Limites conhecidos: `import … as data` não conta (importar não é declarar).
 // Instalar: copiar esta pasta para tests/catracas/ do projeto e ajustar o bloco abaixo.
 import { describe, expect, it } from 'vitest'
 import { arquivosDoIndice, estaFora, lerDoGit, testarCatraca, type ExcessoPorArquivo } from './linha-de-base.js'
@@ -63,6 +66,11 @@ describe('detector de nomes genéricos', () => {
             'class Helper { props = 1; handler() {} }'].join('\n')
         expect(identificadoresGenericos('a.ts', fonte).sort()).toEqual(
             ['Coisa', 'Helper', 'bar', 'dados', 'data', 'foo', 'handler', 'info', 'props', 'tmp'])
+    })
+
+    it('conta os membros de uma interface e de um tipo, como os campos de uma classe no Python', () => {
+        const fonte = 'interface Pedido { info: string; handler(): void }\ntype Linha = { data: number }\n'
+        expect(identificadoresGenericos('a.ts', fonte).sort()).toEqual(['data', 'handler', 'info'])
     })
 
     it('resume por arquivo', () => {

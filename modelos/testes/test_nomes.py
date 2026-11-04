@@ -3,20 +3,23 @@
 Um nome genérico solto (`utils`, `helper`, `data`…) esconde onde está a lógica e dá dezenas de resultados no grep.
 - Arquivos e pastas, de qualquer língua: conta o nome inteiro ou uma parte separada por ponto (`instalar.Comum.ps1`);
   um nome composto que diz o quê (`bar_helper.py`, o ajudante da barra) não é solto.
-- Identificadores do Python, lidos pela árvore (`ast`), e não por expressões regulares: funções, classes,
-  parâmetros e tudo o que nasce numa atribuição, num `for`, num `with … as`, num `except … as` ou numa compreensão
-  (`data, erro = ler()` declara `data`). Usar um nome (`pedido.data`) não é declará-lo. A caixa não conta.
-Os identificadores JS/TS são do molde TypeScript `nomes-genericos.test.ts`, com a mesma lista e a mesma regra dos
-arquivos: as duas línguas dão o mesmo veredito sobre os mesmos casos.
+- Identificadores do Python, lidos pela árvore (`ast`), e não por expressões regulares: funções, classes, métodos,
+  parâmetros, os campos de uma classe (`data: str` num TypedDict) e tudo o que nasce numa atribuição, num `for`, num
+  `with … as`, num `except … as` ou numa compreensão (`data, erro = ler()` declara `data`). Usar um nome
+  (`pedido.data`) não é declará-lo. A caixa não conta.
+Por arquivo: `nomesGenericos` (quantos identificadores) e `caminhoGenerico` (1 se o caminho tem um nome solto). Lê
+do índice do git, como o molde TypeScript nomes-genericos.test.ts, que lê os identificadores JS/TS com a mesma lista
+e julga os mesmos caminhos: as duas línguas dão o mesmo veredito sobre os mesmos casos.
+Linha de base: tests/linhas-de-base/nomes-genericos.json (linha_de_base.py).
+Limites conhecidos: `import … as data` não conta (importar não é declarar).
 Instalar: copiar para `tests/` do projeto e ajustar o bloco abaixo.
 """
 
 import ast
-import subprocess
 import unittest
 from pathlib import PurePosixPath
 
-from carregar_por_caminho import RAIZ
+from linha_de_base import TresVerificacoesDaCatraca, arquivos_do_indice, ler_do_git
 
 # Ajuste ao projeto. A mesma lista do molde TypeScript nomes-genericos.test.ts.
 PROIBIDOS = {"comum", "common", "utils", "util", "helper", "helpers", "data", "misc", "tmp", "temp", "info",
@@ -25,14 +28,9 @@ PROIBIDOS = {"comum", "common", "utils", "util", "helper", "helpers", "data", "m
 FORA_DOS_NOMES = ("vendor/", "node_modules/")
 
 
-def nomes_proibidos(caminhos):
-    """Arquivos ou pastas cujo nome (ou uma parte separada por ponto) é uma palavra genérica solta."""
-    achados = set()
-    for caminho in caminhos:
-        for parte in PurePosixPath(caminho).parts:
-            if PROIBIDOS & {pedaco.lower() for pedaco in parte.split(".")}:
-                achados.add(parte)
-    return sorted(achados)
+def caminho_generico(caminho):
+    """True se um arquivo ou pasta do caminho tem por nome (ou parte separada por ponto) uma palavra genérica solta."""
+    return any(PROIBIDOS & {pedaco.lower() for pedaco in parte.split(".")} for parte in PurePosixPath(caminho).parts)
 
 
 def nomes_do_alvo(alvo):
@@ -69,36 +67,53 @@ def identificadores_genericos(fonte):
             if nome.lower() in PROIBIDOS]
 
 
-def arquivos_com_nome():
-    caminhos = subprocess.run(["git", "ls-files", "--cached", "--others", "--exclude-standard"], cwd=RAIZ,
-                              capture_output=True, text=True, encoding="utf-8", check=True).stdout.splitlines()
-    return [caminho for caminho in caminhos if (RAIZ / caminho).exists()
-            and not any(caminho.startswith(fora) or f"/{fora}" in caminho for fora in FORA_DOS_NOMES)]
+def julga_o_nome(caminho):
+    return not any(caminho.startswith(fora) or f"/{fora}" in caminho for fora in FORA_DOS_NOMES)
 
 
-class NomesPesquisaveis(unittest.TestCase):
+def excesso_dos_nomes_genericos(caminhos, textos):
+    """{caminho: {"nomesGenericos": n, "caminhoGenerico": 1}}: o caminho de todos, os identificadores dos `.py`."""
+    excessos = {}
+    for caminho in caminhos:
+        excesso = {"nomesGenericos": len(identificadores_genericos(textos[caminho])) if caminho in textos else 0,
+                   "caminhoGenerico": int(caminho_generico(caminho))}
+        if any(excesso.values()):
+            excessos[caminho] = {metrica: valor for metrica, valor in excesso.items() if valor}
+    return excessos
+
+
+class DetectorDeNomes(unittest.TestCase):
 
     def test_o_detector_pega_os_soltos_e_deixa_os_compostos(self):
-        self.assertEqual(nomes_proibidos(["a/comum/x.mjs", "tests/instalar.Comum.ps1", "bar_helper.py", "pedido.py"]),
-                         ["comum", "instalar.Comum.ps1"])
+        caminhos = ["a/comum/x.mjs", "tests/instalar.Comum.ps1", "bar_helper.py", "pedido.py"]
+        self.assertEqual([caminho_generico(caminho) for caminho in caminhos], [True, True, False, False])
 
     def test_o_detector_le_as_declaracoes_pela_arvore(self):
         fonte = ("def carregar(info, *dados):\n    data, (erro, *tmp) = ler()\n    for Coisa in []:\n        pass\n"
                  "    with abrir() as helper:\n        usar(pedido.data, utils[0])\n    try:\n        pass\n"
-                 "    except Exception as foo:\n        return [bar for bar in ()]\n")
+                 "    except Exception as foo:\n        return [bar for bar in ()]\n"
+                 "class Pedido(TypedDict):\n    props: str\n")
         self.assertEqual(sorted(identificadores_genericos(fonte)),
-                         ["Coisa", "bar", "dados", "data", "foo", "helper", "info", "tmp"])
+                         ["Coisa", "bar", "dados", "data", "foo", "helper", "info", "props", "tmp"])
 
-    def test_nenhum_arquivo_ou_pasta_com_nome_generico(self):
-        self.assertEqual(nomes_proibidos(arquivos_com_nome()), [],
-                         "dê um nome que diga a função (menos de 5 resultados no grep)")
+    def test_resume_por_arquivo(self):
+        textos = {"src/a.py": "data = 1\n", "src/limpo.py": "faturas = 1\n"}
+        caminhos = ["src/a.py", "lib/utils/certo.py", "docs/helpers.md", "src/limpo.py"]
+        self.assertEqual(excesso_dos_nomes_genericos(caminhos, {**textos, "lib/utils/certo.py": "moeda = 1\n"}),
+                         {"src/a.py": {"nomesGenericos": 1}, "lib/utils/certo.py": {"caminhoGenerico": 1},
+                          "docs/helpers.md": {"caminhoGenerico": 1}})
 
-    def test_nenhum_identificador_generico_solto(self):
-        for caminho in arquivos_com_nome():
-            if caminho.endswith(".py"):
-                with self.subTest(arquivo=caminho):
-                    self.assertEqual(identificadores_genericos((RAIZ / caminho).read_text(encoding="utf-8-sig")), [],
-                                     "dê um nome que diga a função")
+
+class NomesGenericos(TresVerificacoesDaCatraca, unittest.TestCase):
+    REGRA = "nomes-genericos"
+    CONSELHO = "dê um nome que diga o que guarda (menos de 5 resultados no grep)"
+
+    def medir(self):
+        caminhos = [caminho for caminho in arquivos_do_indice() if julga_o_nome(caminho)]
+        return excesso_dos_nomes_genericos(caminhos, ler_do_git([c for c in caminhos if c.endswith(".py")]))
+
+    def julga(self, caminho, metrica):
+        return julga_o_nome(caminho) and (metrica != "nomesGenericos" or caminho.endswith(".py"))
 
 
 if __name__ == "__main__":
