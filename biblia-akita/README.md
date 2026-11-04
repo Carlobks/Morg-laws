@@ -16,6 +16,7 @@ Notas de leitura do livro **_Competente o Suficiente_**, de **Fabio Akita**, sob
 | [seguranca.md](seguranca.md) | Segurança com agentes: acesso, segredos, injeção de instruções, terceiros, auditoria, dados pessoais e golpes |
 | [backups-e-infraestrutura.md](backups-e-infraestrutura.md) | Backup e restauro, operações destrutivas, tarefas automáticas, entregas e continuidade dos fornecedores |
 | [arquivo-de-regras.md](arquivo-de-regras.md) | O arquivo que o agente lê em todo pedido: quando, com que forma, o que vai dentro, como cresce, skills e camadas |
+| [documentacao-e-memoria.md](documentacao-e-memoria.md) | O que o agente lembra, onde guardar o que se aprende e como escrever documentos que se mantêm certos |
 
 Os demais conselhos do livro (576 anotados no total) entram aos poucos, por tema.
 
