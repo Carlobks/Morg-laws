@@ -17,23 +17,23 @@ Os testes prontos de `testes-ts/` são a exceção: TypeScript, com o `vitest` e
 | `git/hooks/pre-commit` | `.githooks/` | Identidade, lista negra e o comando único de testes (defina `COMANDO_DOS_TESTES`) |
 | `git/hooks/commit-msg` | `.githooks/` | Formato da mensagem e lista negra |
 | `git/hooks/pre-push` | `.githooks/` | Mostra o que sai, gitleaks e `npm audit` com linha de base em cada pasta com `package-lock.json` |
-| `git/portoes/*.py` | `scripts/portoes/` | A lógica dos hooks do git: `identidade`, `lista_negra`, `mensagem_commit` (marcas `Sem-teste:`, `Teste-mudado:`, `Sem-changelog:`), `versao_lancada`, `antes_do_push` |
+| `git/portoes/*.py` | `scripts/portoes/` | A lógica dos hooks do git: `identidade`, `lista_negra`, `mensagem_commit` (marcas `Sem-teste:`, `Teste-mudado:`, `Sem-changelog:` e `Alarme-novo:`, a que deixa subir a contagem dos alarmes calados), `versao_lancada`, `antes_do_push` |
 | `pre-push` | `.githooks/pre-push` | Alternativa só em `sh`, sem Python |
 | `changelog/juntar_changelog.py` | `scripts/changelog/` | Junta os fragmentos no `CHANGELOG.md`, calcula a versão SemVer pelas categorias e escreve o `VERSION` |
 | `changelog/changelog.d/README.md` | `changelog.d/` | O formato dos fragmentos (`AAAA-MM-DD-assunto.md`, categoria na 1.ª linha) |
-| `github/workflows/ci.yml` | `.github/workflows/` | O comando único de testes numa máquina limpa e o gitleaks em todo o histórico, com actions por SHA e o binário conferido por sha256 |
+| `github/workflows/ci.yml` | `.github/workflows/` | O comando único de testes numa máquina limpa (com `MORG_BASE_DE_COMPARACAO` e todo o histórico, para o «só encolhe» das linhas de base) e o gitleaks em todo o histórico, com actions por SHA e o binário conferido por sha256 |
 | `github/ISSUE_TEMPLATE/erro.yml` | `.github/ISSUE_TEMPLATE/` | Formulário de erro: resumo, passos, esperado, acontecido, versão e relatório revisto |
 | `testes/test_regras.py` | `tests/` | O arquivo de regras curto, cada regra com motivo e com linha no mapa das barreiras, caminhos citados que existem, índice das skills igual ao instalado |
 | `testes/test_docs_indices.py` | `tests/` | Índice dos docs, ADRs seguidas, pesquisa com data, armadilhas A1…An, planos com "Fora do escopo" e "Prova", handoffs com hashes que existem |
-| `testes/test_alarmes.py` | `tests/` | Alarme calado só com o motivo na mesma linha (também em `/* */`), contagem por tipo que não sobe e desce com quem tira um, `noqa` só de regras que o ruff tem ligadas |
-| `testes/test_nomes.py` | `tests/` | Nenhum arquivo, pasta ou identificador Python (lido pela árvore) com nome genérico solto; a lista é a do molde TypeScript |
+| `testes/test_alarmes.py` | `tests/` | Alarme calado só com o motivo na mesma linha (também em `/* */`), contagem por tipo no projeto inteiro que não sobe (salvo com `Alarme-novo:` no commit) e desce com quem tira um, `noqa` só de regras que o ruff tem ligadas, com linha de base |
+| `testes/test_nomes.py` | `tests/` | Nenhum arquivo, pasta ou identificador Python (lido pela árvore) com nome genérico solto, com linha de base; a lista é a do molde TypeScript |
 | `testes/test_tamanho_dos_arquivos.py` | `tests/` | Arquivos de código até 500 linhas, de todas as línguas (o limite do hook `limite_de_linhas.py`), com linha de base |
 | `testes/test_nomes_unicos.py` | `tests/` | Nomes de topo do Python e nomes de arquivo de código únicos, com linha de base; isenta `main`, `__x__` e a interface comum dos portões e hooks |
 | `testes/test_testes_saltados.py` | `tests/` | Nenhum `skip` sem condição nem sem motivo escrito (unittest e pytest), com linha de base |
-| `testes/linha_de_base.py` | `tests/` | O motor dos três acima: a linha de base em `tests/linhas-de-base/<regra>.json` não piora, não tem folga e só encolhe; `MORG_CRIAR_LINHA_DE_BASE=1` cria a que falta |
+| `testes/linha_de_base.py` | `tests/` | O motor dos seis testes prontos (estes três e os de funções, nomes e alarmes): a linha de base em `tests/linhas-de-base/<regra>.json` não piora, não tem folga e só encolhe (no CI, contra `MORG_BASE_DE_COMPARACAO`); `MORG_CRIAR_LINHA_DE_BASE=1` cria a que falta ou completa a que ainda não está commitada |
 | `testes-ts/*.test.ts` | `tests/catracas/` | Os mesmos seis em TypeScript/vitest (tamanho de arquivo e de função, nomes genéricos e únicos, alarmes e testes saltados), com os mesmos limites e listas e a linha de base no mesmo formato; o código lê-se pela árvore do `typescript` (`ler-codigo-ts.ts`, `linha-de-base.ts`) |
 | `testes/test_dados_pessoais.py` | `tests/` | Sem caminhos de pastas pessoais, e-mails pessoais, termos da lista negra nem os números de documento que o projeto ligar |
-| `testes/test_tamanho_das_funcoes.py` | `tests/` | Funções Python até 20 linhas (decisão do dono), com catraca para as antigas |
+| `testes/test_tamanho_das_funcoes.py` | `tests/` | Funções Python até 20 linhas (decisão do dono), contadas como no TypeScript, com linha de base por arquivo |
 | `testes/test_fins_de_linha.py` | `tests/` | LF no git; CRLF no disco só no que o Windows roda |
 | `testes/test_permissoes.py` | `tests/` | As três colunas, o modo que salta as permissões desligado, os hooks ligados com `onFailure: block` |
 | `testes/test_ci.py` | `tests/` | Actions fixadas por SHA, token só de leitura, nada baixado direto para uma shell |

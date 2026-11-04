@@ -5,6 +5,8 @@ são os do hook limite_de_linhas.py, que recusa a edição na hora; este teste m
 mudaram pela shell. As linhas contam-se como o editor as mostra: a quebra no fim não é uma linha a mais.
 A regra é de texto: julga os arquivos de todas as línguas, como o molde TypeScript tamanho-de-arquivo.test.ts,
 com o mesmo limite e o mesmo veredito. Linha de base: tests/linhas-de-base/tamanho-de-arquivo.json (linha_de_base.py).
+Limites conhecidos: um arquivo com as linhas separadas só por `\\r` (a quebra antiga do Mac) conta como uma linha; o
+hook conta com o splitlines() (que também quebra no `\\r`), e por isso os dois podem divergir nesse caso raro.
 Instalar: copiar para `tests/` do projeto e ajustar o bloco abaixo.
 """
 

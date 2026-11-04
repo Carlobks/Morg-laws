@@ -7,7 +7,9 @@
 // se mede; cada `it` dentro dele mede-se, como um método.
 // Por arquivo: `funcoesAcima` (quantas passam) e `linhasAcima` (quantas linhas passam, somadas). A medida é por
 // arquivo e não por função: uma base por nome de função deixaria escapar quem a renomeasse.
-// Linha de base: tests/linhas-de-base/tamanho-de-funcao.json (linha-de-base.ts).
+// Linha de base: tests/linhas-de-base/tamanho-de-funcao.json (linha-de-base.ts), a mesma do molde Python.
+// Limites conhecidos: uma função passada a uma chamada chamada `describe` ou `suite` também no código de produção
+// não se mede.
 // Instalar: copiar esta pasta para tests/catracas/ do projeto e ajustar o bloco abaixo.
 import ts from 'typescript'
 import { describe, expect, it } from 'vitest'

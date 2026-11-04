@@ -4,7 +4,9 @@
 // extensões são os do hook limite_de_linhas.py e do molde Python test_tamanho_dos_arquivos.py: a regra é de texto,
 // julga os arquivos de todas as línguas e dá o mesmo veredito nas duas. As linhas contam-se como o editor as
 // mostra: a quebra no fim não é uma linha a mais.
-// Linha de base: tests/linhas-de-base/tamanho-de-arquivo.json (linha-de-base.ts).
+// Linha de base: tests/linhas-de-base/tamanho-de-arquivo.json (linha-de-base.ts), a mesma do molde Python.
+// Limites conhecidos: um arquivo com as linhas separadas só por `\r` (a quebra antiga do Mac) conta como uma linha,
+// nas duas línguas; o hook limite_de_linhas.py conta com o splitlines() do Python e pode divergir nesse caso raro.
 // Instalar: copiar esta pasta para tests/catracas/ do projeto e ajustar o bloco abaixo.
 import { describe, expect, it } from 'vitest'
 import { arquivosDoIndice, estaFora, lerDoGit, testarCatraca, type ExcessoPorArquivo } from './linha-de-base.js'
