@@ -29,4 +29,4 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A pági
 - Use o agente no que é linguagem e no trabalho grande e chato: traduzir, renomear, lotes organizados com revisão de estilo. (pp. 66–67, 146–147) · **texto** · onde aplicar: ainda nenhuma
 - Ao reescrever um texto seu, mude a forma e nunca o conteúdo; descreva como a pessoa fala, para manter a voz; e leia uma série inteira de textos gerados para achar os tiques que se repetem. (pp. 54–55, 84, 94) · **texto** · onde aplicar: ainda nenhuma
 - Aproveite que errar ficou barato: descarte sem apego, conte com uma versão para jogar fora e use o trabalho barato para dizer que não. (pp. 107, 289–290, 306) · **texto** · onde aplicar: ainda nenhuma
-- Uma rotina que se repete vira um pedido de uma linha apoiado em skills, sempre com você supervisionando. (p. 413) · **texto** · onde aplicar: `escrevendo-regras-de-agente`
+- Na rotina diária dos seus repositórios, o autor digita um pedido de uma linha e o grosso do trabalho fica nas skills; ele supervisiona e decide. (p. 413) · **texto** · onde aplicar: `escrevendo-regras-de-agente`

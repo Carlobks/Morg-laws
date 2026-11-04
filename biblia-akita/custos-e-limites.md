@@ -7,7 +7,7 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A pági
 - O modelo lê, escreve e cobra por token, e cada ferramenta, MCP e skill instalada gasta tokens antes de você escrever a primeira palavra. (pp. 16, 43–46) · **texto** · onde aplicar: `escrevendo-regras-de-agente`
 - Mantenha estável o começo da conversa, para aproveitar o cache do pedido: o fornecedor reaproveita o início já processado e cobra muito menos pela parte repetida. (p. 46) · **texto** · onde aplicar: ainda nenhuma
 - Na época do livro (maio de 2026), as assinaturas mensais das empresas custavam menos que a cobrança token a token. Um modelo barato pode baixar a qualidade. (p. 137) · **texto** · onde aplicar: ainda nenhuma
-- Não trabalhe em hiperfoco. Deixe o consumo à vista, com um alerta antes do teto, e ponha teto e alarme no saldo pré-pago. (pp. 70–71, 159, 388) · **máquina** (alerta de consumo) · onde aplicar: ainda nenhuma
+- Não trabalhe em hiperfoco. Deixe o consumo à vista, com um alerta antes do teto, e recarregue o crédito pré-pago antes de travar. (pp. 70–71, 159, 388) · **máquina** (alerta de consumo) · onde aplicar: ainda nenhuma
 
 ## 2. Fazer as contas certas
 
@@ -19,5 +19,5 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A pági
 ## 3. Reaproveitar e decidir
 
 - Reaproveite os resultados caros, guardando junto o registro do que os gerou. Nos testes de integração, grave as respostas do modelo para não pagar de novo a cada execução. (pp. 409, 426) · **máquina** (respostas gravadas nos testes) · onde aplicar: ainda nenhuma
-- Entre manter uma cópia própria de um projeto ou acrescentar módulos por fora, decida sabendo que trocar de estratégia ficou barato. (p. 142) · **texto** · onde aplicar: ainda nenhuma
+- Entre manter uma cópia própria de um projeto ou acrescentar módulos por fora, lembre que, no caso contado, trocar de estratégia a meio caminho saiu barato com o agente. (p. 142) · **texto** · onde aplicar: ainda nenhuma
 - Troque de fornecedor de modelo sempre que outro passar à frente, mas guarde consigo a memória, o processo e o que aprendeu. (p. 324) · **texto** · onde aplicar: `passando-o-trabalho`

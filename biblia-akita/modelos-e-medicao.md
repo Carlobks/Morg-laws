@@ -13,10 +13,10 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita, sobre c
 
 ## 2. Escolher
 
-- No topo, os modelos andam juntos: escolha pelo preço, pelo tempo de resposta e pela ferramenta que já usa. O resultado é a soma do modelo, do pedido, do programa à volta, do contexto, das ferramentas, da versão, da execução e da revisão; teste a combinação de modelo e ferramenta. (pp. 45, 155, 159–161, 311–312) · **texto** · onde aplicar: ainda nenhuma
+- No topo, os modelos andam juntos: para programar no dia a dia, escolha pelo preço, pelo tempo de resposta e pela ferramenta que já usa. O resultado é a soma do modelo, do pedido, do programa à volta, do contexto, das ferramentas, da versão, da execução e da revisão; teste a combinação de modelo e ferramenta. (pp. 45, 155, 159–161, 311–312) · **texto** · onde aplicar: ainda nenhuma
 - Faça o seu próprio teste: uma tarefa real que você sabe resolver, repetida mais de uma vez, às cegas, medindo o trabalho humano que ainda faltou. (pp. 91–92, 152, 331) · **texto** · onde aplicar: ainda nenhuma
 - Ajuste o nível de esforço do modelo à tarefa: baixo para traduzir e resumir, alto para procurar falhas de segurança, bugs difíceis e otimizações. (p. 312) · **máquina** (configuração do agente) · onde aplicar: ainda nenhuma
-- Modelos abertos, destilados, misturados ou «treinados em casa»: confira a origem e a licença. A destilação passa o estilo, não o conhecimento, e «aberto», «local» e «de graça» são três coisas diferentes. (pp. 167–170, 177, 179, 195) · **texto** · onde aplicar: ainda nenhuma
+- Modelos abertos, destilados, misturados ou «treinados em casa»: confira a origem e a licença. A destilação passa o estilo, e o conhecimento nem sempre, e «aberto», «local» e «de graça» são três coisas diferentes. (pp. 167–170, 177, 179, 195) · **texto** · onde aplicar: ainda nenhuma
 - Para decisões fechadas (classificar, escolher entre opções), prefira modelos pequenos e especializados, testados contra um gabarito que não muda. Um modelo de chat não é a ferramenta para pôr rótulos. (pp. 181–182, 212, 321) · **texto** · onde aplicar: ainda nenhuma
 - A nota que um modelo dá ao código não mede a qualidade do código. (p. 244) · **texto** · onde aplicar: `codigo-legivel`
 

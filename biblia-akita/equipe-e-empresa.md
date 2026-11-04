@@ -14,11 +14,11 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita, sobre c
 - Ponha quatro papéis à mesa, em ciclos curtos: quem constrói com o agente, o dono do produto, a qualidade e a liderança técnica. O núcleo do negócio, que é o papel do dono do produto, não se terceiriza. (pp. 288–289) · **texto** · onde aplicar: ainda nenhuma
 - Reduza a espera entre decidir e ver o efeito: entregas pequenas e frequentes em vez de acumular. Velocidade e estabilidade andam juntas. (pp. 286–288, 291–292) · **texto** · onde aplicar: `git-e-commits`
 - A máquina propõe; decide quem responde pelo resultado. Assuma a responsabilidade por cada linha que aprova. (pp. 331, 338–339) · **texto** · onde aplicar: ainda nenhuma
-- Quem já tem claro o que procura tira muito da IA. Um produto de confiança sai de quem o saberia fazer sem ela. (p. 344) · **texto** · onde aplicar: ainda nenhuma
+- Quem já tem claro o que procura tira muito da IA. Um produto em que outros possam confiar, o autor só o viu sair de quem já o saberia fazer sem ela, e diz que a conclusão se apoia num caso só. (p. 344) · **texto** · onde aplicar: ainda nenhuma
 
 ## 3. Pessoas
 
 - Continue formando gente. Os mais experientes preparam quem os substitui, para que a empresa não dependa de uma só pessoa. (p. 280) · **texto** · onde aplicar: ainda nenhuma
-- Em cada função, separe o trabalho de lançar dados do trabalho de julgar. Planeje sabendo que as tarefas se automatizam antes dos empregos, e assuma o custo humano da mudança. (pp. 277–278, 301–302, 313–314) · **texto** · onde aplicar: ainda nenhuma
+- Quase todo trabalho junta uma parte de entrada de dados e outra de julgamento, e as tarefas automatizam-se antes de os empregos sumirem (é extrapolação do autor). O custo humano da transição é real: não a venda como indolor. (pp. 277–278, 301–302, 313–314) · **texto** · onde aplicar: ainda nenhuma
 - Dê à equipe semanas só para aprender, sem nada para entregar. (pp. 290, 296–297, 327) · **texto** · onde aplicar: ainda nenhuma
 - O valor que os outros não copiam está nos dados que só você tem, nos contratos, na infraestrutura e no conhecimento acumulado do seu ramo. (pp. 139–140, 294–296) · **texto** · onde aplicar: ainda nenhuma
