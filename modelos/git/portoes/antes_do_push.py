@@ -3,7 +3,8 @@
 Para cada ref enviada (o git dá uma por linha no stdin: <ref local> <sha local> <ref remota> <sha remoto>):
 1. mostra os arquivos de cada commit a enviar, também os apagados depois, para o dono ver o que sai;
 2. roda o gitleaks nesses commits; sem gitleaks o push não sai (falhar fechado);
-3. em cada pasta com package-lock.json (a raiz e as subpastas, fora do node_modules), roda o npm audit e só trava
+3. em cada pasta com um package-lock.json que o git conhece (a raiz e as subpastas, fora do node_modules), roda o
+   npm audit e só trava
    um aviso crítico ou alto que não esteja na linha de base .seguranca/audit-linha-de-base.txt (um ID por linha; a
    lista só encolhe, nunca se acrescenta para passar).
 Uso: no .githooks/pre-push. Sai com 1 se travar e com 0 se o push puder sair.
@@ -90,15 +91,13 @@ def verificar_commits(intervalo, correr, gitleaks):
     return True
 
 
-def pastas_com_lockfile(raiz):
-    """As pastas com um package-lock.json, a raiz e as subpastas (um projeto de exemplo, um monorepo), sem entrar
-    em node_modules nem em .git."""
-    pastas = []
-    for pasta, subpastas, arquivos in os.walk(raiz):
-        subpastas[:] = sorted(nome for nome in subpastas if nome not in ("node_modules", ".git"))
-        if "package-lock.json" in arquivos:
-            pastas.append(Path(pasta))
-    return pastas
+def pastas_com_lockfile(correr, raiz):
+    """As pastas com um package-lock.json que o git conhece, a raiz e as subpastas (um projeto de exemplo, um
+    monorepo), fora de node_modules: um lockfile por rastrear não é o que sai no push."""
+    saida = correr(["git", "ls-files", "-z", "--", "package-lock.json", ":(glob)**/package-lock.json"],
+                   capture_output=True, text=True, encoding="utf-8", check=False, cwd=raiz).stdout
+    caminhos = [caminho for caminho in saida.split("\0") if caminho and "node_modules/" not in caminho]
+    return [(raiz / caminho).parent for caminho in sorted(caminhos)]
 
 
 def auditar_pasta(correr, npm, pasta, base):
@@ -119,7 +118,7 @@ def auditar_pasta(correr, npm, pasta, base):
 
 def verificar_bibliotecas(correr, which, raiz):
     """npm audit de cada lockfile contra a linha de base; devolve True se não houver aviso grave novo."""
-    pastas = pastas_com_lockfile(raiz)
+    pastas = pastas_com_lockfile(correr, raiz)
     if not pastas:
         return True
     npm = (which or shutil.which)("npm") or "npm"

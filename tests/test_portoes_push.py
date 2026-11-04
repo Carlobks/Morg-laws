@@ -80,10 +80,13 @@ class Corrida(unittest.TestCase):
     """main(): o que o hook faz de ponta a ponta, com o git, o gitleaks e o npm simulados."""
 
     @staticmethod
-    def correr_simulado(chamadas, gitleaks_sai, npm_saida):
-        """O subprocess.run falso: guarda cada comando (com a pasta do npm) e responde como o git, o gitleaks e o npm."""
+    def correr_simulado(chamadas, gitleaks_sai, npm_saida, rastreados):
+        """O subprocess.run falso: guarda cada comando (com a pasta do npm) e responde como o git (os lockfiles que
+        ele conhece são `rastreados`), o gitleaks e o npm."""
         def correr(comando, **opcoes):
             chamadas.append(comando + ([f"cwd={Path(opcoes['cwd']).name}"] if "cwd" in opcoes else []))
+            if comando[:2] == ["git", "ls-files"]:
+                return SimpleNamespace(returncode=0, stdout="".join(f"{nome}\0" for nome in rastreados))
             if comando[0] == "git":
                 return SimpleNamespace(returncode=0, stdout="b1 commit\nM\tsrc/a.py\n")
             if comando[0] == "gitleaks":
@@ -91,12 +94,13 @@ class Corrida(unittest.TestCase):
             return SimpleNamespace(returncode=1, stdout=relatorio() if npm_saida is None else npm_saida)
         return correr
 
-    def correr_main(self, gitleaks_sai=0, npm_saida=None, gitleaks="gitleaks", lock=True, locks=()):
+    def correr_main(self, gitleaks_sai=0, npm_saida=None, gitleaks="gitleaks", lock=True, locks=(), no_disco=()):
         chamadas, falso = [], io.TextIOWrapper(io.BytesIO(), encoding="utf-8")
-        correr = self.correr_simulado(chamadas, gitleaks_sai, npm_saida)
+        rastreados = (["package-lock.json"] if lock else []) + list(locks)
+        correr = self.correr_simulado(chamadas, gitleaks_sai, npm_saida, rastreados)
         with tempfile.TemporaryDirectory() as pasta, mock.patch("sys.stderr", falso):
             raiz = Path(pasta)
-            for nome in (["package-lock.json"] if lock else []) + list(locks):
+            for nome in rastreados + list(no_disco):
                 (raiz / nome).parent.mkdir(parents=True, exist_ok=True)
                 (raiz / nome).write_text("{}", encoding="utf-8")
             entrada = io.BytesIO(f"refs/heads/x {B} refs/heads/x {A}\n".encode())
@@ -144,6 +148,15 @@ class Corrida(unittest.TestCase):
         self.assertIn("9 high", erro)
         self.assertIn("exemplo", erro)
         self.assertEqual([comando[-1] for comando in chamadas if comando[0] == "npm"], ["cwd=exemplo"])
+
+    def test_so_os_lockfiles_que_o_git_conhece(self):
+        # Uma pasta temporária esquecida, com um lockfile por rastrear, não é o que sai no push.
+        codigo, _, chamadas = self.correr_main(lock=False, locks=("app/package-lock.json",),
+                                               no_disco=("tmp-velho/package-lock.json",))
+        self.assertEqual(codigo, 0)
+        self.assertEqual([comando[-1] for comando in chamadas if comando[0] == "npm"], ["cwd=app"])
+        self.assertIn(["git", "ls-files", "-z", "--", "package-lock.json", ":(glob)**/package-lock.json"],
+                      [comando[:6] for comando in chamadas])
 
     def test_roda_como_script(self):
         entrada = io.TextIOWrapper(io.BytesIO(b""), encoding="utf-8")
