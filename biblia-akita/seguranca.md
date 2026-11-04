@@ -23,7 +23,7 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A pági
 
 - Trate tudo o que o agente lê (páginas, e-mails, PDFs, projetos baixados, mensagens) como entrada de um estranho: pode trazer ordens escondidas. (pp. 239–240) · **texto** · onde aplicar: ainda nenhuma
 - Reduza o risco da injeção: marque o conteúdo de fora como tal, tire os caracteres invisíveis, limite o tamanho, dê só as ferramentas daquela tarefa e peça aprovação humana antes de apagar ou de mandar dados para fora. As duas últimas protegem mesmo quando o modelo obedece à ordem escondida. (pp. 240–241, 251) · **máquina** (aprovação nas permissões) · onde aplicar: ainda nenhuma
-- Dê ao agente só as mãos que daria a um desconhecido que lhe escreveu uma carta. (p. 251) · **texto** · onde aplicar: ainda nenhuma
+- Conte que, mais cedo ou mais tarde, chegarão ao agente ordens escondidas no que ele lê (mensagens, sites, e-mails): limite-o ao acesso que o trabalho exige e prefira ferramentas que confirmam com você antes de apagar ou enviar. (p. 251) · **texto** · onde aplicar: ainda nenhuma
 
 ## 4. Software de terceiros
 
@@ -37,7 +37,7 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A pági
 - O agente só encontra as falhas que você sabe mandar procurar. Use listas de falhas reais já catalogadas: dados de um cliente vistos por outro, injeção em consultas, biblioteca vulnerável, teste adulterado, soma errada. (pp. 21, 69, 158) · **texto** · onde aplicar: `auditoria-de-seguranca`
 - Faça duas auditorias independentes, a segunda sem ler a primeira, de preferência com agentes de fabricantes diferentes, e corrija a soma das duas listas. Procure também você. Uma auditoria feita por IA e não conferida é um sinal, não a lista certa. (pp. 81, 156, 232, 239) · **texto** · onde aplicar: `orquestrando-sessoes`
 - Procure por conta própria os erros silenciosos: o agente apanha o que quebra, mas deixa passar o que só está errado. (pp. 160–161) · **texto** · onde aplicar: `testes-e-provas`
-- Um sistema muito bom pode ter um ponto cego que só aparece quando alguém o procura de propósito. Inclua testes feitos para enganar o sistema. (p. 219) · **máquina** (testes adversariais) · onde aplicar: ainda nenhuma
+- Um sistema muito bom pode ter um ponto cego que só aparece quando alguém o procura de propósito. (p. 219) · **texto** · onde aplicar: ainda nenhuma
 - Retire as funcionalidades que ninguém usa: cada uma a menos é uma porta a menos. (pp. 241–242) · **texto** · onde aplicar: ainda nenhuma
 - A barreira de entrada caiu para todos: a mesma IA que ajuda você ajuda quem procura brechas no seu sistema. (p. 266) · **texto** · onde aplicar: ainda nenhuma
 
@@ -45,7 +45,7 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A pági
 
 - Cifre no banco os dados pessoais sensíveis e não instale rastreadores. (p. 81) · **máquina** · onde aplicar: ainda nenhuma
 - Para dados que não podem sair de casa, pense num modelo que roda localmente. (p. 91) · **texto** · onde aplicar: ainda nenhuma
-- Recolha só o que precisa e saiba o que é uma impressão digital do aparelho. Desligue a recolha automática dos SDKs de métricas e de erros. (pp. 254–257) · **máquina** (configuração do SDK) · onde aplicar: ainda nenhuma
+- Saiba o que é a impressão digital de um aparelho e quanto um aplicativo pode recolher além do que precisa. Os SDKs de métricas e de erros costumam vir com a recolha ligada por padrão. (pp. 254–257) · **texto** · onde aplicar: ainda nenhuma
 - Imagens de pessoas reais nunca são geradas por IA. Registre a origem, a licença e a autorização de cada foto. (pp. 336, 456–458) · **texto** · onde aplicar: ainda nenhuma
 - Separe o que um código consegue fazer do que ele faz: ter a função que lê um dado não prova quando nem para quem ele o envia. (pp. 258–259) · **texto** · onde aplicar: ainda nenhuma
 

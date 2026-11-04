@@ -24,4 +24,4 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita, sobre c
 
 - O modelo só devolve o que viu no treino: rende mais em tecnologias populares, vê mal o que é fechado e devolve os erros dos fóruns arrumados e confiantes. A inteligência de base nivelou; o ganho vem das ferramentas à volta. (pp. 108, 135–136, 312–315, 348–349) · **texto** · onde aplicar: ainda nenhuma
 - Por dentro, há um gerador do texto mais provável, com sorteio, sem nenhum passo que confira a verdade. Ser educado e ser bajulador saem, nele, do mesmo treino. (pp. 16–18, 352–358) · **texto** · onde aplicar: ainda nenhuma
-- A mesma pergunta pode dar outra resposta: uma tarefa que passou uma vez pode falhar na seguinte. A verificação tem de ser repetível e feita por máquina. (p. 16) · **máquina** (testes) · onde aplicar: `testes-e-provas`
+- Repetir a pergunta pode trazer outra resposta: o modelo calcula as chances do pedaço seguinte e sorteia entre os mais prováveis. (p. 16) · **texto** · onde aplicar: ainda nenhuma

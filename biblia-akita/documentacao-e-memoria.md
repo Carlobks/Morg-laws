@@ -1,6 +1,6 @@
 # Documentação e memória
 
-Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A página é a impressa. A barreira diz como impor o item: **texto** (regra escrita) ou **máquina** (permissão, hook, teste, CI, configuração). «Onde aplicar» diz que skill do Morg-laws já o aplica, ou «ainda nenhuma». O que o livro diz em forma de proibição está no [nao-faca.md](nao-faca.md) e não se repete aqui.
+Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A página é a impressa. A barreira diz como impor o item: **texto** (regra escrita) ou **máquina** (permissão, hook, teste, CI, configuração). «Onde aplicar» diz que skill do Morg-laws já o aplica, ou «ainda nenhuma». O que o livro diz em forma de proibição está no [nao-faca.md](nao-faca.md) e não se repete aqui. A linha do tempo datada dos fatos do ano está no próprio livro (pp. 375–379).
 
 ## 1. O que o agente lembra
 
@@ -25,8 +25,7 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A pági
 - Escreva datas completas («em março de 2026») e nunca «recentemente»; ponha a data ao lado de cada número. (pp. 7, 9) · **texto** · onde aplicar: ainda nenhuma
 - Quando um documento estiver errado, marque-o como obsoleto no topo e mantenha-o; o caminho errado documenta-se como errado. Corrija todas as cópias de um mesmo erro. (pp. 5, 151, 414, 416) · **texto** · onde aplicar: ainda nenhuma
 - Diga até onde vai o que provou (o alcance e os limites do teste) e as camadas de incerteza de uma análise feita com IA. Separe fato de opinião, com uma etiqueta em cada um. (pp. 172, 252, 276–277) · **texto** · onde aplicar: `testes-e-provas`
-- Escreva o que faria mudar a sua conclusão, em critérios que alguém de fora consiga medir. É um bom campo para um registro de decisão. (pp. 322–323) · **texto** · onde aplicar: ainda nenhuma
-- Mantenha uma linha do tempo datada dos incidentes e das decisões, cada entrada ligada ao registro completo. (pp. 375–379) · **texto** · onde aplicar: ainda nenhuma
+- Escreva o que faria mudar a sua conclusão, em critérios que alguém de fora consiga medir. (pp. 322–323) · **texto** · onde aplicar: ainda nenhuma
 - Feche cada projeto com um relatório (decisões, medidas, erros) e publique de tempos em tempos um boletim da estabilidade de cada sistema. Seja honesto sobre o que é de fato mantido. (pp. 132–133, 185, 338) · **texto** · onde aplicar: ainda nenhuma
 - Trate um documento importante como um produto: a especificação num lugar só, um verificador automático (referência para nada, o mesmo número diferente em dois lugares, trecho sem origem, frases proibidas), revisões, versões, registro de mudanças e um canal para relatar erros. (pp. 335, 343–344) · **máquina** (verificador no CI) · onde aplicar: ainda nenhuma
 - Para reorganizar um acervo com agentes: um inventário selado (com um código do conteúdo de cada arquivo), um formulário fixo por documento, um mapa do que substituiu o quê, um piloto cujas lições viram regras escritas, o registro das contradições entre agentes e a origem marcada em cada trecho. (pp. 333–336) · **texto** · onde aplicar: ainda nenhuma

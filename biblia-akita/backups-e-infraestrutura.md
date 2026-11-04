@@ -19,7 +19,7 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A pági
 
 - Ponha uma porta trancada entre planejar e executar: a execução só começa depois de o plano ser aprovado, e nada se apaga da origem. (p. 119) · **máquina** (o script só executa com o plano aprovado) · onde aplicar: ainda nenhuma
 - Peça o trabalho longo em etapas numeradas, que se podem repetir e que gravam o progresso. Toda tarefa automática tem de poder rodar duas vezes sem estragar nada. (pp. 99, 119) · **texto** · onde aplicar: ainda nenhuma
-- Nunca deixe um erro passar calado: registre o detalhe técnico e avise onde se olha todos os dias. Quando algo falhou em silêncio na produção, crie a verificação que impede a repetição. (pp. 77, 83) · **máquina** (alerta) · onde aplicar: ainda nenhuma
+- Nunca deixe um erro passar calado: registre o detalhe técnico e avise onde já se olha todos os dias. Uma falha em silêncio é a que a especificação não previu. (pp. 77, 83) · **máquina** (alerta) · onde aplicar: ainda nenhuma
 - Ponha uma conferência entre cada etapa de uma cadeia automática: dez etapas que acertam 90% cada uma acertam juntas só cerca de 35%. (p. 209) · **máquina** · onde aplicar: ainda nenhuma
 - Decida você o que o sistema faz quando um serviço externo falha, por exemplo cortar as chamadas por um tempo em vez de repetir sem fim. (pp. 94–95) · **texto** · onde aplicar: ainda nenhuma
 - Peça a outro agente, ou a outra pessoa, que execute e confira o procedimento que o primeiro escreveu. Ajuste as travas aos dados reais: uma trava exagerada recusa também o que é legítimo. (pp. 223–224) · **texto** · onde aplicar: `orquestrando-sessoes`
