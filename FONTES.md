@@ -142,8 +142,31 @@ Lidas em 2026-11-04 para os moldes de `modelos/testes-ts/` e a skill `codigo-leg
 
 ## Livros e autores
 
-- **Fabio Akita — Competente o Suficiente** (livro). Citado por capítulo e página.
+- **Fabio Akita — Competente o Suficiente** (livro). Citado pela página impressa.
+  - A pasta `biblia-akita/` resume, com palavras nossas e um arquivo por tema, os conselhos do livro, cada um com a página. Nenhum trecho foi copiado: antes de cada commit, um script local confere que nenhuma sequência de 8 palavras dos resumos é igual ao livro, que nunca entra no repositório.
   - pp. 128–129: skills e ferramentas de terceiros só com leitura completa e uma dor concreta (usado em `escrevendo-regras-de-agente`).
   - p. 165: modelos esconderam uma biblioteca vulnerável numa lista de exceções (base de "sem silenciar alarme").
   - pp. 30–32, 124 e 411: a janela cheia custa dinheiro, tempo e atenção; o resumo da compactação perde o detalhe e o agente volta a propor o que já se descartou; a atenção cai à medida que a janela enche; uma sessão longa se enche de tentativas antigas (usado em `passando-o-trabalho`; o livro não dá nenhuma percentagem para compactar).
-- **Fabio Akita — blog** — https://akitaonrails.com
+- **Fabio Akita — blog** — https://akitaonrails.com — lido em 2026-11-04. Sustenta: o índice dos artigos, por mês, de onde saíram os endereços e as datas de publicação da `biblia-akita/leituras.md`.
+
+## Artigos que o livro recomenda
+
+Lidas em 2026-11-04, para a `biblia-akita/leituras.md`. São as fontes originais que o livro aponta na secção «Fontes» (pp. 433–455). Cada entrada diz o título e o que o artigo sustenta, com palavras nossas.
+
+- **Por que as LLMs não te dão o resultado esperado** (2026-04-15) — https://akitaonrails.com/2026/04/15/como-falar-com-o-claude-code-efetivamente/ — Sustenta: o pedido em partes (objetivo, o que não se quer, como validar, contexto) e a conversa que continua durante o trabalho.
+- **Clean Code pra Agentes de IA** (2026-04-20) — https://akitaonrails.com/2026/04/20/clean-code-para-agentes-de-ia/ — Sustenta: arquivos e funções pequenos, nomes distintos, tipos explícitos, testes que o agente roda sozinho, e as regras no arquivo de instruções.
+- **Como me precaver pros meus agentes não apagarem minhas coisas?** (2026-07-11) — https://akitaonrails.com/2026/07/11/como-me-precaver-pros-meus-agentes-nao-apagarem-minhas-coisas/ — Sustenta: jaula, snapshots automáticos e backup externo com retenção, para que um engano seja recuperável.
+- **Dicas e Toolkit de IA do Akita: ai-jail, ai-memory, ai-usagebar** (2026-05-24) — https://akitaonrails.com/2026/05/24/dicas-e-toolkit-de-ia-do-akita-ai-jail-ai-memory-ai-usagebar/ — Sustenta: poucas ferramentas, testes, CI, refatoração, deploy automático, cercas de segurança e decisões registradas no git.
+- **Desastre no meu NAS! Como quase perdi 90 TB de dados** (2026-10-06) — https://akitaonrails.com/2026/10/06/desastre-no-meu-nas-como-quase-perdi-90-tb-de-dados/ — Sustenta: discos em espelho não substituem o backup; duas paridades com discos grandes; uma cópia fora de casa.
+- **Por que LLMs vão falhar na Sua Empresa?** (2026-06-24) — https://akitaonrails.com/2026/06/24/por-que-llms-vao-falhar-na-sua-empresa/ — Sustenta: ciclos curtos entre decidir, fazer, testar e rever, em vez de somar IA ao processo antigo.
+- **Parem de inventar desculpas e façam mais deploy!** (2026-09-22) — https://akitaonrails.com/2026/09/22/parem-de-inventar-desculpas-e-facam-mais-deploy-a-premissa-mudou/ — Sustenta: entregas mais frequentes, só com testes, CI, voltar atrás, observação e ambiente de testes já montados.
+- **O código fonte do Claude Code vazou. O que achamos dentro.** (2026-03-31) — https://akitaonrails.com/2026/03/31/codigo-fonte-do-claude-code-vazou-o-que-achamos-dentro/ — Sustenta: as verificações de um processo de publicação e os limites de leitura e de resultados que o arquivo de instruções deve ter em conta.
+- **Vibe Code: Do Zero à Produção em 6 DIAS** (2026-02-16) — https://akitaonrails.com/2026/02/16/vibe-code-do-zero-a-producao-em-6-dias-the-m-akita-chronicles/ — Sustenta: plano antes do código, testes, CI e commits pequenos, com a pessoa nos papéis de produto, liderança técnica e qualidade.
+- **Testes de Integração em MonoRepo** (2026-02-20) — https://akitaonrails.com/2026/02/20/testes-de-integracao-em-monorepo-bastidores-do-the-m-akita-chronicles/ — Sustenta: os dublês não apanham a quebra do contrato entre aplicações; testar o caminho inteiro e controlar o custo das chamadas pagas.
+- **Software Nunca Está 'Pronto'** (2026-03-01) — https://akitaonrails.com/2026/03/01/software-nunca-esta-pronto-4-projetos-a-vida-pos-deploy-e-por-que-one-shot-prompt-e-mito/ — Sustenta: a melhoria por voltas depois do deploy, com testes, CI e entregas pequenas.
+- **Como Driveclub e shadPS4 Quase Derrotaram a IA e a Mim: Como Aprender** (2026-04-23) — https://akitaonrails.com/2026/04/23/driveclub-shadps4-e-ia-como-aprender/ — Sustenta: a causa antes do remendo, e aprender um assunto novo por etapas.
+- **LLM Benchmark: Devo usar o que tem nota maior?** (2026-07-19) — https://akitaonrails.com/2026/07/19/llm-benchmark-devo-usar-o-que-tem-nota-maior/ — Sustenta: o ranking lido como grupos e a escolha pelo custo, pela velocidade e pela ferramenta, com um teste próprio.
+- **Novo LLM Benchmark v4: retestando TODOS os principais LLMs (Parte 1)** (2026-09-15) — https://akitaonrails.com/2026/09/15/novo-llm-benchmark-v4-retestando-todos-llms-parte-1/ — Sustenta: cada nota vale só para o método que a gerou; testar no próprio problema.
+- **Ensinando a questionar notícias | Frank Investigator** (2026-03-27) — https://akitaonrails.com/2026/03/27/ensinando-a-questionar-noticias-frank-investigator/ — Sustenta: comparar fontes, procurar a primária e preferir perguntas estruturadas às abertas.
+- **Hot take: Harness, Loop Engineering, Graph Engineering são Bullshit** (2026-08-18) — https://akitaonrails.com/2026/08/18/hot-take-harness-loop-engineering-graph-engineering-sao-bullshit/ — Sustenta: a base da engenharia de software em vez de cursos de moda, e o conhecimento do projeto guardado no projeto.
+- **Você é um idiota se acredita nas propagandas enganosas da OpenAI, Anthropic, NVIDIA** (2026-09-09) — https://akitaonrails.com/2026/09/09/propagandas-enganosas-da-openai-anthropic-nvidia/ — Sustenta: perguntar quem lucra com um anúncio e exigir provas que se possam conferir.

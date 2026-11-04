@@ -32,7 +32,6 @@ LINHA_DE_BASE_INICIAL = frozenset({
     "https://pester.dev/docs/usage/code-coverage",
     "https://github.com/mattpocock/skills",
     "https://cheatsheetseries.owasp.org",
-    "https://akitaonrails.com",
 })
 URL = re.compile(r"https?://[^\s<>()\[\]`\"'*|]+")
 DATA = re.compile(r"\b20\d\d-\d\d-\d\d\b")
