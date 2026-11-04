@@ -1,21 +1,31 @@
-"""Motor das catracas com linha de base (Morg-laws: não piorar). Usado por test_tamanho_dos_arquivos.py,
-test_nomes_unicos.py e test_testes_saltados.py.
+"""Motor das catracas com linha de base (Morg-laws: não piorar). Usado pelos seis testes prontos da forma do código
+(tamanho de arquivo e de função, nomes genéricos e únicos, alarmes e testes saltados).
 
 Cada catraca mede, por arquivo, o EXCESSO sobre a regra (`{"src/a.py": {"linhasAcima": 12}}`; zero não aparece)
 e compara-o com a linha de base em `tests/linhas-de-base/<regra>.json`. O formato é o mesmo dos moldes TypeScript
-(`linha-de-base.mjs`), e as três verificações também, cada uma num teste:
+(`linha-de-base.ts`), e as três verificações também, cada uma num teste:
 - não piora: nenhuma métrica passa da base; um arquivo fora da base nasce limpo;
 - sem folga: a base não deixa mais do que existe hoje (quem corrige desce a base no mesmo commit);
-- só encolhe: a base do índice não tem entrada nova nem valor maior do que a do último commit.
+- só encolhe: a base não tem entrada nova nem valor maior do que a da base de comparação. Na máquina, a de
+  comparação é a do último commit (HEAD). No CI e numa PR, o índice é o próprio commit: MORG_BASE_DE_COMPARACAO diz
+  com que commit comparar (a ponta anterior do ramo de destino), e o checkout precisa do histórico (fetch-depth: 0).
+  Uma regra pode deixar a base subir com uma linha na mensagem do commit (MARCA_PARA_SUBIR; a dos alarmes é
+  `Alarme-novo:`): na máquina quem a confere é o commit-msg (o pre-commit corre antes da mensagem); no CI, este
+  teste procura-a nos commits do intervalo.
 Lê do índice do git (o que vai no commit), nunca do disco: o trabalho a meio de outra sessão na mesma pasta não
 trava o commit desta. Um arquivo novo conta depois do `git add`.
 Projeto que já viola: rode uma vez com MORG_CRIAR_LINHA_DE_BASE=1. A base que falta é criada com os valores de
-hoje, e o teste falha até ela entrar no git. Uma base que já existe nunca é reescrita.
+hoje; uma que existe no índice mas ainda não no último commit ganha as métricas que lhe faltam (o caso de um projeto
+com as duas línguas, que partilham a pasta). O teste falha até ela entrar no git. Uma base já commitada nunca muda.
+Limites conhecidos: mudar de caminho um arquivo que está na base (`git mv`) conta como entrada nova; corrija-o ou
+faça um commit só da base, revisto. Apagar a base num commit e criá-la de novo no seguinte passa: só a revisão do
+histórico o apanha.
 Instalar: copiar para `tests/` do projeto, ao lado do carregar_por_caminho.py.
 """
 
 import json
 import os
+import re
 import subprocess
 
 from carregar_por_caminho import RAIZ
@@ -24,8 +34,8 @@ from carregar_por_caminho import RAIZ
 PASTA_DAS_LINHAS_DE_BASE = "tests/linhas-de-base"
 
 
-def correr_git(argumentos, entrada=b""):
-    return subprocess.run(["git", *argumentos], cwd=RAIZ, input=entrada, capture_output=True, check=True).stdout
+def correr_git(argumentos, entrada=b"", check=True):
+    return subprocess.run(["git", *argumentos], cwd=RAIZ, input=entrada, capture_output=True, check=check).stdout
 
 
 def arquivos_do_indice():
@@ -59,40 +69,70 @@ def ler_linha_de_base(regra, origem=":"):
     return None if texto is None else json.loads(texto).get("valores", {})
 
 
-def acima_de(valores, teto, frase):
+def base_de_comparacao():
+    """O commit com que o «só encolhe» compara: MORG_BASE_DE_COMPARACAO (no CI) ou o último commit."""
+    return os.environ.get("MORG_BASE_DE_COMPARACAO") or "HEAD"
+
+
+def mensagens_desde(commit):
+    """O texto das mensagens dos commits entre `commit` e o HEAD (vazio na máquina, onde `commit` é o HEAD)."""
+    return correr_git(["log", "--format=%B", f"{commit}..HEAD"], check=False).decode("utf-8", errors="replace")
+
+
+def acima_de(valores, teto, frase, detalhe=lambda caminho, metrica: ""):
     """Mensagens de cada métrica de `valores` que passa do mesmo valor em `teto` (o que falta conta como 0)."""
-    return [f"{caminho}: {metrica} {valor} ({frase} {teto.get(caminho, {}).get(metrica, 0)})"
+    return [f"{caminho}: {metrica} {valor} ({frase} {teto.get(caminho, {}).get(metrica, 0)}){detalhe(caminho, metrica)}"
             for caminho, metricas in sorted(valores.items()) for metrica, valor in sorted(metricas.items())
             if valor > teto.get(caminho, {}).get(metrica, 0)]
 
 
-def criar_se_faltar(regra, atuais):
-    """Com MORG_CRIAR_LINHA_DE_BASE=1, grava a base que ainda não existe; devolve a mensagem, ou None."""
+def gravar_base(regra, valores):
     destino = RAIZ / caminho_da_base(regra)
-    if os.environ.get("MORG_CRIAR_LINHA_DE_BASE") != "1" or destino.exists() or ler_linha_de_base(regra) is not None:
-        return None
     destino.parent.mkdir(parents=True, exist_ok=True)
-    valores = {caminho: dict(sorted(metricas.items())) for caminho, metricas in sorted(atuais.items())}
-    destino.write_bytes((json.dumps({"regra": regra, "valores": valores}, indent=2, ensure_ascii=False) + "\n")
+    ordenados = {caminho: dict(sorted(metricas.items())) for caminho, metricas in sorted(valores.items()) if metricas}
+    destino.write_bytes((json.dumps({"regra": regra, "valores": ordenados}, indent=2, ensure_ascii=False) + "\n")
                         .encode("utf-8"))
-    return f"linha de base criada em {caminho_da_base(regra)}: confira-a e faça git add"
+
+
+def criar_ou_completar(regra, atuais):
+    """Com MORG_CRIAR_LINHA_DE_BASE=1, cria a base que falta ou junta-lhe as métricas que lhe faltam, se ela ainda
+    não estiver no último commit; devolve a mensagem, ou None se nada mudou."""
+    destino = RAIZ / caminho_da_base(regra)
+    if os.environ.get("MORG_CRIAR_LINHA_DE_BASE") != "1" or ler_linha_de_base(regra, "HEAD:") is not None:
+        return None
+    existente = json.loads(destino.read_text(encoding="utf-8"))["valores"] if destino.exists() else {}
+    faltam = {caminho: {metrica: valor for metrica, valor in metricas.items() if metrica not in existente.get(caminho, {})}
+              for caminho, metricas in atuais.items()}
+    if destino.exists() and not any(faltam.values()):
+        return None
+    gravar_base(regra, {caminho: {**existente.get(caminho, {}), **faltam.get(caminho, {})}
+                        for caminho in {*existente, *faltam}})
+    return f"linha de base gravada em {caminho_da_base(regra)}: confira-a e faça git add"
 
 
 class TresVerificacoesDaCatraca:
-    """Mistura para um unittest.TestCase: defina REGRA, CONSELHO, `medir()` e `julga(caminho, metrica)`."""
+    """Mistura para um unittest.TestCase: defina REGRA, CONSELHO, `medir()` e `julga(caminho, metrica)`; e, se quiser,
+    MARCA_PARA_SUBIR e `detalhe(caminho, metrica)` (o texto que se junta à mensagem de uma métrica que passa)."""
+
+    maxDiff = None  # a falha mostra todas as mensagens, com o caminho de cada uma
+    MARCA_PARA_SUBIR = None
+
+    def detalhe(self, caminho, metrica):
+        return ""
 
     def conferir(self):
         # Uma medição por classe: os três testes julgam o mesmo estado do índice.
         if not hasattr(type(self), "_conferido"):
             atuais = self.medir()
-            criada = criar_se_faltar(self.REGRA, atuais)
+            criada = criar_ou_completar(self.REGRA, atuais)
             type(self)._conferido = (atuais, ler_linha_de_base(self.REGRA) or {},
-                                     ler_linha_de_base(self.REGRA, "HEAD:"), criada)
+                                     ler_linha_de_base(self.REGRA, f"{base_de_comparacao()}:"), criada)
         return type(self)._conferido
 
     def test_nao_piora(self):
         atuais, base, _, criada = self.conferir()
-        self.assertEqual(([criada] if criada else []) + acima_de(atuais, base, "a base deixa"), [], self.CONSELHO)
+        piores = acima_de(atuais, base, "a base deixa", self.detalhe)
+        self.assertEqual(([criada] if criada else []) + piores, [], self.CONSELHO)
 
     def test_a_linha_de_base_nao_tem_folga(self):
         atuais, base, _, _ = self.conferir()
@@ -101,6 +141,11 @@ class TresVerificacoesDaCatraca:
         self.assertEqual(acima_de(sobras, atuais, "hoje há"), [], "desça a linha de base no mesmo commit")
 
     def test_a_linha_de_base_so_encolhe(self):
-        _, base, do_ultimo_commit, _ = self.conferir()
-        novas = [] if do_ultimo_commit is None else acima_de(base, do_ultimo_commit, "o último commit deixava")
+        _, base, da_comparacao, _ = self.conferir()
+        novas = [] if da_comparacao is None else acima_de(base, da_comparacao, "a base de comparação deixava")
+        if novas and self.MARCA_PARA_SUBIR:
+            if base_de_comparacao() == "HEAD":
+                self.skipTest(f"a subida pede a linha '{self.MARCA_PARA_SUBIR}' na mensagem; o commit-msg confere-a")
+            if re.search(rf"^{re.escape(self.MARCA_PARA_SUBIR)} *\S", mensagens_desde(base_de_comparacao()), re.MULTILINE):
+                novas = []
         self.assertEqual(novas, [], "a linha de base só desce: corrija o código em vez de a subir")
