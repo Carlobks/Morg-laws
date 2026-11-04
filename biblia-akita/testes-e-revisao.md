@@ -14,8 +14,8 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A pági
 - Pergunte quem escreveu a verificação: um substituto falso criado pelo próprio modelo pode aprovar um comando que nem existe. (pp. 165–167) · **texto** · onde aplicar: `testes-e-provas`
 - Os dublês de teste enganam: teste também o sistema inteiro ligado, com serviços e dados que tenham as manias do mundo real (letras de outros alfabetos, nomes de arquivo que colidem, datas escritas à moda local). (pp. 81–82, 93–94, 409) · **máquina** (testes de integração) · onde aplicar: ainda nenhuma
 - Use controles negativos: um programa vazio tem de reprovar, sair «com sucesso» sem acabar não conta, e uma edição vazia não é uma correção. (pp. 423–424) · **máquina** · onde aplicar: `testes-e-provas`
-- Guarde do agente uma parte dos testes de aceitação. Separe os exemplos da prova por unidade inteira, e mantenha a prova final fechada. (pp. 186, 188, 432) · **máquina** · onde aplicar: ainda nenhuma
-- Para as regras críticas, escreva propriedades que valem sempre e verifique-as, incluindo as que atravessam várias operações seguidas: é aí que até os bons modelos tropeçam. (pp. 430–433) · **máquina** (testes de propriedade) · onde aplicar: ainda nenhuma
+- Separe os exemplos de treino dos da prova por projeto inteiro, e não linha a linha, e guarde uma prova final que só a versão final vê. No teste de linguagens do autor, 16 dos 43 cenários ficaram escondidos do agente. (pp. 186, 188, 432) · **máquina** · onde aplicar: ainda nenhuma
+- No teste de linguagens, os modelos erraram na regra de negócio: uma propriedade que tinha de valer de uma operação para a seguinte, coisa que nenhum compilador apanha. (pp. 430–433) · **máquina** (testes de propriedade) · onde aplicar: ainda nenhuma
 - Diga ao modelo a data de hoje e o que ele não sabe. (pp. 97–98) · **texto** · onde aplicar: ainda nenhuma
 - Um modelo pode dizer que os testes passaram sem tê-los rodado. «Parece certo» e «está certo» são degraus diferentes: num caso medido, quase todas as respostas erradas pareciam perfeitas. (pp. 191–193) · **máquina** (o CI roda os testes) · onde aplicar: `testes-e-provas`
 - Uma métrica que vira prêmio acaba contornada, por pessoas ou por modelos. (p. 164) · **texto** · onde aplicar: ainda nenhuma
@@ -23,16 +23,16 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A pági
 ## 3. Conferir a entrega
 
 - Confira qual modelo e qual ferramenta fizeram de fato o trabalho. (pp. 40–41, 165) · **texto** · onde aplicar: ainda nenhuma
-- Teste o objetivo final e não só a etapa. Não marque como terminado antes de usar de verdade; o que só aparece na tela confere-se na tela, e avalia-se o percurso inteiro de quem usa. (pp. 90, 191–192, 304, 424) · **texto** · onde aplicar: `testes-e-provas`
+- Teste o objetivo final e não só a etapa. Não marque como terminado antes de usar de verdade; o que só aparece na tela confere-se na tela. (pp. 90, 191–192, 304, 424) · **texto** · onde aplicar: `testes-e-provas`
 
 ## 4. Revisão
 
 - Use mais de um revisor, com modelos e ferramentas diferentes. Uma segunda revisão às cegas acha o que a primeira deixou escapar. (pp. 49, 156) · **texto** · onde aplicar: `orquestrando-sessoes`
 - Numa contribuição de fora, audite o código. A IA pode fazer a triagem; a decisão é de uma pessoa, e nenhum código fica isento de revisão. (pp. 127, 247–248) · **texto** · onde aplicar: `orquestrando-sessoes`
-- Depois de entrar um lote de mudanças, faça uma segunda auditoria do que se mexeu nesse dia (regressões, código duplicado, código morto) e use-o de verdade. (p. 248) · **texto** · onde aplicar: ainda nenhuma
+- Depois de entrar um lote de contribuições, o autor pede uma segunda auditoria do que se mexeu nesse dia (regressões, código duplicado, código morto) e depois usa o programa de verdade. (p. 248) · **texto** · onde aplicar: ainda nenhuma
 - Audite a sua própria auditoria, e desconfie dos seus testes quando o resultado sai mau. (pp. 48, 416) · **texto** · onde aplicar: `testes-e-provas`
 - Avalie as entregas por faixas, não com uma nota exata: pronta, falta uma ou duas horas, precisa de retrabalho, vai para o lixo. (pp. 152–153) · **texto** · onde aplicar: ainda nenhuma
-- Contra o código feito com pressa pela IA, o único remédio é rever à mão cada pacote de mudanças. A rapidez com que foi escrito não diz nada da qualidade. (pp. 135–136) · **texto** · onde aplicar: ainda nenhuma
+- Contra o código feito com pressa pela IA, o único remédio que o autor conhece é rever à mão cada pacote de mudanças. A rapidez com que foi escrito não diz nada da qualidade. (pp. 135–136) · **texto** · onde aplicar: ainda nenhuma
 
 ## 5. O processo de testes
 
@@ -44,5 +44,5 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A pági
 - Quem usa de verdade é a revisão mais forte, desde que a mudança chegue pequena, atrás de um interruptor e com volta. Um projeto que ninguém usa está morto. (pp. 133–134, 294) · **máquina** (interruptor) · onde aplicar: `nextjs-react`
 - Ao depurar: reproduza em todas as tentativas antes de testar correções, procure pelo histórico o commit que estragou (voltando um commit de cada vez), espalhe medições para conhecer o terreno, liste os suspeitos e o que mudou, e isole uma variável de cada vez antes de concluir. (pp. 67, 108–110, 171–172, 410–411) · **texto** · onde aplicar: `testes-e-provas`
 - O modelo não vê letras, só pedaços de palavras, e por isso falha numa conta simples como o número de ocorrências de uma letra dentro de uma palavra. (p. 349) · **texto** · onde aplicar: ainda nenhuma
-- Para conferir um documento: leitores simulados com perfis reais (que leem, não que editam) e regras para juntar as críticas; rodadas até os problemas deixarem de voltar; outro modelo, de um fabricante diferente, checando cada frase na origem; e retirar o que ainda não foi verificado. (pp. 300, 336–337, 344, 407–408) · **texto** · onde aplicar: ainda nenhuma
+- Para conferir o livro, o autor usou: leitores simulados com perfis reais (que leem, não que editam) e regras para juntar as críticas; rodadas até os problemas deixarem de voltar; outro modelo, de um fabricante diferente, checando cada frase na origem; e guardar à parte o que ainda não estava verificado. (pp. 300, 336–337, 344, 407–408) · **texto** · onde aplicar: ainda nenhuma
 - Os bugs não foram inventados pela IA, e nenhum verificador geral prova que um programa não tem bugs. (pp. 246, 427) · **texto** · onde aplicar: ainda nenhuma
