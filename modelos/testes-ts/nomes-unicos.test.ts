@@ -16,6 +16,7 @@ import { eCodigoJsOuTs, lerArvore, nomesDoTopoTs } from './ler-codigo-ts.js'
 
 // Ajuste ao projeto. Os mesmos do molde Python test_nomes_unicos.py.
 const NOMES_DE_INTERFACE_COMUM = new Set(['main', 'erros', 'motivo_para_bloquear'])
+// Com um `index.ts` por pasta (os barris), junte 'index' aqui e no molde Python, ou os `index.ts` reprovam todos.
 const ARQUIVOS_COM_NOME_IMPOSTO = new Set(['__init__', '__main__', 'conftest'])
 const EXTENSOES_COM_NOME_UNICO = ['.py', '.js', '.mjs', '.cjs', '.jsx', '.ts', '.mts', '.cts', '.tsx']
 const FORA_DOS_NOMES_UNICOS = ['vendor/', 'node_modules/']

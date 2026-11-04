@@ -22,6 +22,8 @@ from linha_de_base import TresVerificacoesDaCatraca, arquivos_do_indice, ler_do_
 # Ajuste ao projeto. Os mesmos do molde TypeScript nomes-unicos.test.ts.
 # A interface comum dos portões (erros) e dos hooks (motivo_para_bloquear) do Morg-laws repete-se de propósito.
 NOMES_DE_INTERFACE = {"main", "erros", "motivo_para_bloquear"}
+# Num projeto TypeScript com um `index.ts` por pasta (os barris), junte "index" aqui e no molde TypeScript, ou os
+# `index.ts` reprovam todos, nas duas línguas.
 ARQUIVOS_COM_NOME_IMPOSTO = {"__init__", "__main__", "conftest"}
 EXTENSOES_COM_NOME_UNICO = (".py", ".js", ".mjs", ".cjs", ".jsx", ".ts", ".mts", ".cts", ".tsx")
 FORA_DOS_NOMES_UNICOS = ("vendor/", "node_modules/")

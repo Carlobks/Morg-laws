@@ -40,11 +40,12 @@ pelos dois moldes de cada regra e exige o mesmo veredito.
 - **Alarme:** corrija o que ele aponta. Se não der, o motivo vai na mesma linha, depois de « — »
   (`// eslint-disable-line no-console — o CLI escreve no terminal`). A contagem por tipo, no projeto inteiro, não
   sobe: um alarme novo justificado sobe a linha de base e leva a linha `Alarme-novo: <motivo>` na mensagem do
-  commit. O commit-msg confere-a na máquina e o CI de novo; nas duas línguas é a mesma regra. Mudar um alarme de
-  arquivo não sobe nada.
+  commit. O commit-msg confere-a na máquina e o CI de novo, commit a commit; nas duas línguas é a mesma regra.
+  Mudar um alarme de arquivo não sobe nada.
 - **Teste saltado:** diga quando e porquê. No vitest: `it.skipIf(semRede)(…)`, ou, dentro do teste,
   `contexto.skip(semRede, 'precisa da rede')` ou `if (semRede) contexto.skip('precisa da rede')`. **Não** use
-  `test.skip(semRede, '…')`: no vitest o 1.º argumento de `test.skip` é o nome do teste, e ele salta sempre
+  `test.skip(semRede, '…')` nem as opções `{ skip: true }` ou `{ only: true }` do teste: no vitest o 1.º argumento
+  de `test.skip` é o nome do teste, e ele salta sempre
   ([API do vitest](https://vitest.dev/api/test)); é a forma do Playwright. No Python:
   `@unittest.skipIf(sys.platform == "win32", "o hook só corre em sh")`, ou o `skipTest` dentro de um `if` ou de um
   `except ImportError`. Um teste que não vai voltar apaga-se.
@@ -62,7 +63,12 @@ pelos dois moldes de cada regra e exige o mesmo veredito.
   com `npx vitest run`.
 - Os testes leem o **índice do git**: um arquivo novo conta depois do `git add`, e o trabalho a meio de outra
   sessão na mesma pasta não trava o commit desta.
-- Ligue-os ao comando único de testes, que o hook do commit e o CI chamam.
+- Ligue-os ao comando único de testes, que o hook do commit e o CI chamam. No CI de um projeto TypeScript, o
+  [molde de CI](https://github.com/Carlobks/Morg-laws/blob/main/modelos/github/workflows/ci.yml) fixa o Node pelo
+  arquivo .nvmrc do projeto, instala o lockfile com `npm ci` e corre o `npm audit`.
+- A linha `Alarme-novo:` na máquina é conferida pelo
+  [`mensagem_commit.py`](https://github.com/Carlobks/Morg-laws/blob/main/modelos/git/portoes/mensagem_commit.py),
+  no hook `commit-msg`. Um projeto que copia só os testes prontos não o tem, e a marca só é conferida no CI.
 
 ## 4. Num projeto que já viola: a linha de base
 
@@ -81,10 +87,16 @@ um arquivo novo nasce limpo.
 4. **No CI e numa PR**, o índice é o próprio commit: a variável `MORG_BASE_DE_COMPARACAO` diz com que commit
    comparar (a ponta anterior do ramo de destino) e o checkout precisa de `fetch-depth: 0`. O molde do CI do
    Morg-laws já as tem. Sem isto, um commit feito sem os hooks (no site do GitHub, por exemplo) subiria a base.
+   Quando a base de comparação não é um commit que o git conheça (o push de um ramo novo, cujo «antes» são 40
+   zeros, um push forçado, um nome errado), o «só encolhe» **salta**, com o motivo escrito: nesse push não compara.
 
 **Limites conhecidos:**
 - Uma catraca diz «não piorou», nunca «está bem».
-- Apagar a base num commit e criá-la de novo no seguinte passa: só a revisão do histórico o apanha.
+- Apagar a base e criá-la de novo: o commit que a apaga com o código ainda a violar falha no «não piora», e no CI
+  os dois commits no mesmo push são apanhados. Só passa com o primeiro feito sem os hooks e os dois enviados em
+  pushes separados; aí só a revisão do histórico o apanha.
+- Num projeto TypeScript com um `index.ts` por pasta, junte `index` aos nomes impostos dos nomes únicos (nas duas
+  línguas), ou os `index.ts` reprovam todos.
 - Mudar de caminho um arquivo que está na base (`git mv`) conta como entrada nova: corrija-o antes, ou faça um
   commit só da base, revisto.
 - Casos que as duas línguas deixam passar por igual, contra a regra escrita: um arquivo com as linhas separadas só
