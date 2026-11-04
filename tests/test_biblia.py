@@ -1,6 +1,8 @@
 """A bíblia (`biblia-akita/`) fica conferida pelo CI, e não só escrita:
 
-1. cada conselho (uma linha `- ` de um arquivo de tema) cita a página impressa do livro, `(p. N)` ou `(pp. N–M)`,
+1. num arquivo de tema só há títulos, o parágrafo do cabeçalho (antes da 1.ª secção `## `) e conselhos: linhas
+   `- `. Cada conselho cita a página impressa do livro, `(p. N)` ou `(pp. N–M, K)`, a começar em 1 e com o
+   parêntese fechado,
    diz a barreira (`**texto**`, `**máquina**` ou as duas, `**texto + máquina**`) e termina com « · onde aplicar: », seguido de uma ou mais skills
    que existem em `skills/` (entre crases, separadas por vírgula) ou de «ainda nenhuma»;
 2. cada arquivo da pasta está na tabela do README da pasta, e cada linha da tabela aponta para um arquivo que existe;
@@ -20,7 +22,12 @@ from leitura_do_repositorio import arquivos_do_git, ler
 PASTA = "biblia-akita"
 SEM_CONSELHOS = ("README.md", "leituras.md")
 LIMITE_DE_LINHAS = 500
-PAGINA = re.compile(r"\(pp?\. \d+")
+# Uma página ou um intervalo, separados por vírgula, a começar em 1, e com o parêntese fechado: (p. 5), (pp. 3–4, 9).
+_PAGINAS = r"[1-9]\d*(?:–[1-9]\d*)?"
+PAGINA = re.compile(r"\(pp?\. " + _PAGINAS + r"(?:, " + _PAGINAS + r")*\)")
+FORA_DO_FORMATO = "linha fora do formato: só títulos, o parágrafo do cabeçalho e conselhos `- `"
+# Outro marcador de lista (`*`, `+`, `1.`) nunca é parágrafo do cabeçalho: seria um conselho que o teste não lê.
+OUTRA_LISTA = re.compile(r"^\s*(?:[*+]|\d+\.)\s")
 BARREIRA = re.compile(r" · \*\*(?:texto|máquina)(?: \+ (?:texto|máquina))?\*\*")
 ONDE_APLICAR = re.compile(r" · onde aplicar: (.+)$")
 NENHUMA = "ainda nenhuma"
@@ -48,11 +55,23 @@ def erros_do_conselho(linha, skills):
     return erros + erros_do_onde_aplicar(onde.group(1).strip(), skills)
 
 
+def erros_da_linha(linha, no_cabecalho, skills):
+    """Num arquivo de tema: vazio e títulos passam, o parágrafo só antes da 1.ª secção, e `- ` é conselho."""
+    if linha.startswith("- "):
+        return erros_do_conselho(linha, skills)
+    if not linha.strip() or linha.startswith("#") or (no_cabecalho and not OUTRA_LISTA.match(linha)):
+        return []
+    return [FORA_DO_FORMATO]
+
+
 def erros_dos_conselhos(nome, texto, skills):
     if nome in SEM_CONSELHOS:
         return []
-    return [f"{PASTA}/{nome}:{numero}: {erro}" for numero, linha in enumerate(texto.splitlines(), 1)
-            if linha.startswith("- ") for erro in erros_do_conselho(linha, skills)]
+    achados, no_cabecalho = [], True
+    for numero, linha in enumerate(texto.splitlines(), 1):
+        no_cabecalho = no_cabecalho and not linha.startswith("## ")
+        achados += [f"{PASTA}/{nome}:{numero}: {erro}" for erro in erros_da_linha(linha, no_cabecalho, skills)]
+    return achados
 
 
 def erros_da_tabela(readme, nomes):
@@ -148,6 +167,21 @@ class CasosDeErro(unittest.TestCase):
     def test_arquivo_longo_falha(self):
         longo = (CONSELHO_CERTO + "\n") * (LIMITE_DE_LINHAS + 1)
         self.assertEqual(self.correr(longo), [f"{PASTA}/tema.md: passa de {LIMITE_DE_LINHAS} linhas"])
+
+    def test_conselho_com_outro_marcador_falha(self):
+        for linha in ("* Algo sem página nem barreira.", "+ Algo.", "1. Algo."):
+            with self.subTest(linha=linha):
+                self.assertEqual(self.correr(linha + "\n"), [f"{PASTA}/tema.md:1: {FORA_DO_FORMATO}"])
+
+    def test_linha_solta_depois_do_cabecalho_falha_e_o_cabecalho_passa(self):
+        tema = "# Tema\n\nParágrafo do cabeçalho.\n\n## 1. Secção\n\n" + CONSELHO_CERTO + "\nTexto solto.\n"
+        self.assertEqual(self.correr(tema), [f"{PASTA}/tema.md:8: {FORA_DO_FORMATO}"])
+
+    def test_pagina_por_fechar_ou_zero_falha(self):
+        for pagina in ("(p. 81", "(p. 0)", "(pp. 3–)", "(pp. 3, 0)"):
+            with self.subTest(pagina=pagina):
+                achado = self.correr(f"- Algo. {pagina} · **texto** · onde aplicar: ainda nenhuma\n")
+                self.assertIn("sem página", achado[0])
 
     def test_leituras_nao_segue_o_formato_dos_conselhos(self):
         readme = README_CERTO + "| [leituras.md](leituras.md) | artigos |\n"
