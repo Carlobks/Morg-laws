@@ -23,7 +23,7 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A pági
 ## 3. Conferir a entrega
 
 - Confira qual modelo e qual ferramenta fizeram de fato o trabalho. (pp. 40–41, 165) · **texto** · onde aplicar: ainda nenhuma
-- Teste o objetivo final e não só a etapa. Não marque como terminado antes de usar de verdade; o que só aparece na tela confere-se na tela. (pp. 90, 191–192, 304, 424) · **texto** · onde aplicar: `testes-e-provas`
+- Teste o objetivo final e não só a etapa. Não marque como terminado antes de usar de verdade; o que só aparece na tela confere-se na tela, e julga-se o conjunto: telas boas uma a uma não garantem que quem usa chega ao fim. (pp. 90, 191–192, 304, 424) · **texto** · onde aplicar: `testes-e-provas`
 
 ## 4. Revisão
 
