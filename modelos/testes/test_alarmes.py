@@ -3,9 +3,15 @@
 Conta os `noqa`, `pragma: no cover`, `node:coverage disable`, `biome-ignore`, `eslint-disable`, `@ts-expect-error`,
 `@ts-ignore` e `SuppressMessage` no código (testes de fora: lá são exemplos), em `//` e em `/* */` (a forma do
 JSX). Cada um tem o motivo na mesma linha, depois de " — ": um comentário na linha de cima não conta, porque pode
-ser um TODO ou outro alarme. A contagem por tipo não pode subir, e quem tira um baixa o número no mesmo commit
-(catraca nos dois sentidos). Um `noqa` só pode citar regras que o ruff tem ligadas, e isso pergunta-se ao
-próprio ruff: uma auditoria real deu duas regras como desligadas, e o ruff liga-as por padrão.
+ser um TODO ou outro alarme. A contagem POR TIPO, no projeto inteiro, não sobe: a linha de base
+`tests/linhas-de-base/alarmes.json` guarda-a em `{"*": {"<tipo>": n}}` (linha_de_base.py), por isso mudar um alarme
+de arquivo não conta. Quem tira um desce a base no mesmo commit. Um alarme novo justificado sobe a base com a linha
+`Alarme-novo: <motivo>` na mensagem do commit: o commit-msg (mensagem_commit.py) e o CI conferem-na. Um `noqa` só
+pode citar regras que o ruff tem ligadas, e isso pergunta-se ao próprio ruff: uma auditoria real deu duas regras
+como desligadas, e o ruff liga-as por padrão. É a mesma regra do molde TypeScript alarmes.test.ts, que julga os
+mesmos arquivos.
+Limites conhecidos: as extensões `.mts`, `.cts` e `.cjs` ficam de fora (acrescente-as no bloco abaixo, nas duas
+línguas); só se vê a diretiva no início de um comentário de linha ou de bloco.
 Instalar: copiar para `tests/` do projeto e ajustar o bloco abaixo.
 """
 
@@ -16,11 +22,12 @@ import sys
 import unittest
 
 from carregar_por_caminho import RAIZ
+from linha_de_base import TresVerificacoesDaCatraca, arquivos_do_indice, ler_do_git
 
-# Ajuste ao projeto. Linha de base: a contagem de hoje por tipo. Só desce.
-MAXIMO_POR_TIPO = {}
+# Ajuste ao projeto. Os mesmos do molde TypeScript alarmes.test.ts.
 EXTENSOES_COM_ALARMES = (".py", ".js", ".mjs", ".jsx", ".ts", ".tsx", ".ps1", ".psm1", ".html")
 FORA_DOS_ALARMES = ("tests/", "vendor/", "node_modules/")
+TODO_O_PROJETO = "*"  # a chave da contagem por tipo na linha de base
 
 # Só a diretiva verdadeira (um comentário que fala dela não conta).
 ALARMES = {
@@ -35,31 +42,26 @@ ALARMES = {
 }
 
 
-def arquivos_de_codigo():
-    saida = subprocess.run(["git", "ls-files"], cwd=RAIZ, capture_output=True, text=True, encoding="utf-8",
-                           check=True).stdout.splitlines()
-    return [caminho for caminho in saida if caminho.endswith(EXTENSOES_COM_ALARMES)
-            and not any(caminho.startswith(fora) or f"/{fora}" in caminho for fora in FORA_DOS_ALARMES)]
+def conta_alarmes(caminho):
+    return (caminho.endswith(EXTENSOES_COM_ALARMES)
+            and not any(caminho.startswith(fora) or f"/{fora}" in caminho for fora in FORA_DOS_ALARMES))
 
 
 def alarmes():
-    """[(tipo, caminho, número da linha, linha)] de todos os alarmes silenciados."""
+    """[(tipo, caminho, número da linha, linha)] de todos os alarmes silenciados do índice."""
     resultado = []
-    for caminho in arquivos_de_codigo():
-        linhas = (RAIZ / caminho).read_text(encoding="utf-8-sig").splitlines()
-        for numero, linha in enumerate(linhas, 1):
-            for tipo, padrao in ALARMES.items():
-                if padrao.search(linha):
-                    resultado.append((tipo, caminho, numero, linha))
+    for caminho, texto in ler_do_git([caminho for caminho in arquivos_do_indice() if conta_alarmes(caminho)]).items():
+        for numero, linha in enumerate(texto.splitlines(), 1):
+            resultado += [(tipo, caminho, numero, linha) for tipo, padrao in ALARMES.items() if padrao.search(linha)]
     return resultado
 
 
-def contagem_por_tipo():
-    """{tipo: quantos} dos alarmes silenciados de hoje."""
+def contagem_por_tipo(achados):
+    """{"*": {tipo: quantos}} dos alarmes achados (vazio se não houver nenhum)."""
     contagem = {}
-    for tipo, *_ in alarmes():
+    for tipo, *_ in achados:
         contagem[tipo] = contagem.get(tipo, 0) + 1
-    return contagem
+    return {TODO_O_PROJETO: contagem} if contagem else {}
 
 
 def regras_ligadas_no_ruff(arquivo):
@@ -77,17 +79,10 @@ class AlarmesComMotivo(unittest.TestCase):
             with self.subTest(alarme=f"{caminho}:{numero} {tipo}"):
                 self.assertIn(" — ", linha, "falta o motivo na mesma linha, depois de —")
 
-    def test_a_contagem_nao_sobe(self):
-        for tipo, quantos in contagem_por_tipo().items():
-            with self.subTest(tipo=tipo):
-                self.assertLessEqual(quantos, MAXIMO_POR_TIPO.get(tipo, 0), "corrija o apontado em vez de silenciar")
-
-    def test_a_linha_de_base_desce_com_a_contagem(self):
-        contagem = contagem_por_tipo()
-        for tipo, maximo in MAXIMO_POR_TIPO.items():
-            with self.subTest(tipo=tipo):
-                self.assertGreaterEqual(contagem.get(tipo, 0), maximo,
-                                        f"saiu um alarme: baixe MAXIMO_POR_TIPO['{tipo}'] para {contagem.get(tipo, 0)}")
+    def test_conta_por_tipo_em_todo_o_projeto(self):
+        achados = [("noqa", "a.py", 1, ""), ("noqa", "b.py", 3, ""), ("eslint-disable", "c.ts", 2, "")]
+        self.assertEqual(contagem_por_tipo(achados), {"*": {"noqa": 2, "eslint-disable": 1}})
+        self.assertEqual(contagem_por_tipo([]), {})
 
     def test_noqa_so_de_regras_ligadas(self):
         noqas = [(caminho, numero, linha) for tipo, caminho, numero, linha in alarmes() if tipo == "noqa"]
@@ -102,6 +97,22 @@ class AlarmesComMotivo(unittest.TestCase):
             for codigo in (codigos.group(1).replace(" ", "").split(",") if codigos else []):
                 with self.subTest(alarme=f"{caminho}:{numero} {codigo}"):
                     self.assertIn(codigo, ligadas, "regra que o ruff não roda: o noqa é ruído")
+
+
+class ContagemDosAlarmes(TresVerificacoesDaCatraca, unittest.TestCase):
+    REGRA = "alarmes"
+    CONSELHO = "corrija o apontado em vez de silenciar; um alarme justificado leva 'Alarme-novo: <motivo>' no commit"
+    MARCA_PARA_SUBIR = "Alarme-novo:"
+
+    def medir(self):
+        type(self)._achados = alarmes()
+        return contagem_por_tipo(self._achados)
+
+    def julga(self, caminho, metrica):
+        return caminho == TODO_O_PROJETO
+
+    def detalhe(self, caminho, metrica):
+        return " — em " + ", ".join(f"{arquivo}:{numero}" for tipo, arquivo, numero, _ in self._achados if tipo == metrica)
 
 
 if __name__ == "__main__":

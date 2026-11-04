@@ -6,6 +6,7 @@ um fragmento em changelog.d/ ou `Sem-changelog: <motivo>`; tirar linhas de um te
 """
 
 import io
+import json
 import runpy
 import tempfile
 import unittest
@@ -148,10 +149,49 @@ class TesteMudado(unittest.TestCase):
         self.assertEqual(mensagem.erros("test(x): y\n", ["tests/a.py"]), [])
 
     def test_le_do_indice_so_os_testes_com_linhas_tiradas(self):
-        saida = "3\t1\ttests/a.py\n2\t0\ttests/b.py\n-\t-\ttests/c.png\n0\t4\tsrc/d.test.ts\n5\t5\tsrc/e.py\n"
+        # Descer uma linha de base é o que a catraca pede: não é um teste afrouxado.
+        saida = ("3\t1\ttests/a.py\n2\t0\ttests/b.py\n-\t-\ttests/c.png\n0\t4\tsrc/d.test.ts\n5\t5\tsrc/e.py\n"
+                 "1\t3\ttests/linhas-de-base/tamanho-de-arquivo.json\n")
         correr = mock.Mock(return_value=SimpleNamespace(stdout=saida))
         self.assertEqual(mensagem.testes_com_linhas_tiradas(correr), ["tests/a.py", "tests/c.png", "src/d.test.ts"])
         self.assertEqual(correr.call_args.args[0], ["git", "diff", "--cached", "--numstat", "--diff-filter=M"])
+
+
+def base_dos_alarmes(**por_tipo):
+    return json.dumps({"regra": "alarmes", "valores": {"*": por_tipo}})
+
+
+class AlarmeNovo(unittest.TestCase):
+    """A contagem dos alarmes por tipo só sobe com a linha `Alarme-novo: <motivo>` na mensagem."""
+
+    def test_a_subida_sem_a_linha_e_recusada(self):
+        erros = mensagem.erros_dos_alarmes("feat: x\n\nCorpo.\n", base_dos_alarmes(noqa=2), base_dos_alarmes(noqa=1))
+        self.assertEqual(len(erros), 1)
+        self.assertIn("Alarme-novo:", erros[0])
+        self.assertIn("noqa", erros[0])
+
+    def test_com_a_linha_e_o_motivo_passa_e_sem_motivo_nao_conta(self):
+        subida = (base_dos_alarmes(noqa=2), base_dos_alarmes(noqa=1))
+        self.assertEqual(mensagem.erros_dos_alarmes("feat: x\n\nCorpo.\n\nAlarme-novo: a lib sem tipos\n", *subida), [])
+        self.assertEqual(len(mensagem.erros_dos_alarmes("feat: x\n\nCorpo.\n\nAlarme-novo:\n", *subida)), 1)
+
+    def test_igual_a_descer_e_a_base_nova_nao_pedem_nada(self):
+        self.assertEqual(mensagem.erros_dos_alarmes("docs: x\n", base_dos_alarmes(noqa=1), base_dos_alarmes(noqa=1)), [])
+        self.assertEqual(mensagem.erros_dos_alarmes("docs: x\n", base_dos_alarmes(), base_dos_alarmes(noqa=3)), [])
+        self.assertEqual(mensagem.erros_dos_alarmes("docs: x\n", base_dos_alarmes(noqa=3), None), [])
+        self.assertEqual(mensagem.erros_dos_alarmes("docs: x\n", None, base_dos_alarmes(noqa=3)), [])
+
+    def test_soma_os_tipos_de_todas_as_entradas(self):
+        no_indice = json.dumps({"valores": {"a.ts": {"eslint-disable": 1}, "b.ts": {"eslint-disable": 1}}})
+        no_head = json.dumps({"valores": {"a.ts": {"eslint-disable": 2}}})
+        self.assertEqual(mensagem.erros_dos_alarmes("docs: x\n", no_indice, no_head), [])
+
+    def test_le_a_base_do_indice_e_do_ultimo_commit(self):
+        correr = mock.Mock(side_effect=[SimpleNamespace(stdout="{}", returncode=0),
+                                        SimpleNamespace(stdout="", returncode=128)])
+        self.assertEqual(mensagem.bases_dos_alarmes(correr), ("{}", None))
+        self.assertEqual([chamada.args[0][-1] for chamada in correr.call_args_list],
+                         [":tests/linhas-de-base/alarmes.json", "HEAD:tests/linhas-de-base/alarmes.json"])
 
 
 class PontoDeEntrada(unittest.TestCase):
@@ -170,7 +210,8 @@ class PontoDeEntrada(unittest.TestCase):
         self.arquivo.write_bytes(texto.encode("utf-8"))
         falso = io.TextIOWrapper(io.BytesIO(), encoding="utf-8")
         with mock.patch.object(mensagem, "arquivos_do_commit", return_value=["a.py"]), mock.patch("sys.stderr", falso), \
-                mock.patch.object(mensagem, "testes_com_linhas_tiradas", return_value=[]):
+                mock.patch.object(mensagem, "testes_com_linhas_tiradas", return_value=[]), \
+                mock.patch.object(mensagem, "bases_dos_alarmes", return_value=(base_dos_alarmes(noqa=1), None)):
             codigo = mensagem.main(["mensagem_commit.py", str(self.arquivo)])
         falso.flush()
         return codigo, falso.buffer.getvalue().decode("utf-8")
@@ -186,7 +227,7 @@ class PontoDeEntrada(unittest.TestCase):
 
     def test_roda_como_script(self):
         self.arquivo.write_bytes(b"docs: x\n")
-        correr = mock.Mock(return_value=SimpleNamespace(stdout=""))
+        correr = mock.Mock(return_value=SimpleNamespace(stdout="", returncode=0))
         with mock.patch("subprocess.run", correr), mock.patch("sys.argv", ["m.py", str(self.arquivo)]), \
                 self.assertRaises(SystemExit) as saida:
             runpy.run_path(str(PASTA_PORTOES / "mensagem_commit.py"), run_name="__main__")

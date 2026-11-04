@@ -5,9 +5,14 @@
 // `node:coverage disable`, `biome-ignore`, `eslint-disable`, `@ts-expect-error`, `@ts-ignore` e `SuppressMessage`
 // do código (a pasta tests/ fica de fora: lá são exemplos), em `//` e em `/* */` (a forma do JSX). Cada um tem o
 // motivo na mesma linha, depois de " — ": um comentário na linha de cima não conta, porque pode ser um TODO.
-// A contagem por tipo não sobe: aqui por arquivo, na linha de base (`{ "src/a.ts": { "eslint-disable": 1 } }`);
-// quem tira um desce a base no mesmo commit. Só o Python confere se o `noqa` é de uma regra que o ruff tem ligada.
-// Linha de base: tests/linhas-de-base/alarmes.json (linha-de-base.ts).
+// A contagem POR TIPO, no projeto inteiro, não sobe: a linha de base guarda-a em `{ "*": { "<tipo>": n } }`, por
+// isso mudar um alarme de arquivo não conta, e a falha diz onde estão os alarmes desse tipo. Quem tira um desce a
+// base no mesmo commit. Um alarme novo justificado sobe a base com a linha `Alarme-novo: <motivo>` na mensagem do
+// commit: o commit-msg (mensagem_commit.py) e o CI conferem-na. Só o Python confere se o `noqa` é de uma regra que
+// o ruff tem ligada.
+// Linha de base: tests/linhas-de-base/alarmes.json (linha-de-base.ts), a mesma do molde Python.
+// Limites conhecidos: as extensões `.mts`, `.cts` e `.cjs` ficam de fora (acrescente-as no bloco abaixo, nas duas
+// línguas); só se vê a diretiva no início de um comentário de linha ou de bloco.
 // Instalar: copiar esta pasta para tests/catracas/ do projeto e ajustar o bloco abaixo.
 import { describe, expect, it } from 'vitest'
 import { arquivosDoIndice, estaFora, lerDoGit, testarCatraca, type ExcessoPorArquivo } from './linha-de-base.js'
@@ -48,12 +53,20 @@ function alarmesDoIndice(): Map<string, AlarmeAchado[]> {
     return new Map([...textos].map(([caminho, texto]) => [caminho, alarmesDoTexto(texto)]))
 }
 
+const TODO_O_PROJETO = '*' // a chave da contagem por tipo na linha de base
+
+/** { "*": { tipo: quantos } } dos alarmes de todos os arquivos (vazio se não houver nenhum). */
 function contagemPorTipo(alarmesPorArquivo: Map<string, AlarmeAchado[]>): ExcessoPorArquivo {
-    const contagem: ExcessoPorArquivo = {}
-    for (const [caminho, alarmes] of alarmesPorArquivo) {
-        for (const { tipo } of alarmes) contagem[caminho] = { ...contagem[caminho], [tipo]: (contagem[caminho]?.[tipo] ?? 0) + 1 }
-    }
-    return contagem
+    const contagem: Record<string, number> = {}
+    for (const { tipo } of [...alarmesPorArquivo.values()].flat()) contagem[tipo] = (contagem[tipo] ?? 0) + 1
+    return Object.keys(contagem).length > 0 ? { [TODO_O_PROJETO]: contagem } : {}
+}
+
+/** Onde estão os alarmes de um tipo: o texto que se junta à mensagem de uma contagem que sobe. */
+function ondeEstao(alarmesPorArquivo: Map<string, AlarmeAchado[]>, tipo: string): string {
+    const lugares = [...alarmesPorArquivo].flatMap(([caminho, alarmes]) => alarmes
+        .filter((alarme) => alarme.tipo === tipo).map(({ linha }) => `${caminho}:${linha}`))
+    return ` — em ${lugares.join(', ')}`
 }
 
 describe('detector de alarmes', () => {
@@ -66,9 +79,12 @@ describe('detector de alarmes', () => {
             .toEqual(['1 eslint-disable', '2 @ts-expect-error', '4 noqa'])
     })
 
-    it('conta por arquivo e por tipo', () => {
-        const alarmes = new Map([['a.ts', [{ tipo: 'eslint-disable', linha: 1, texto: '' }, { tipo: 'eslint-disable', linha: 2, texto: '' }]]])
-        expect(contagemPorTipo(alarmes)).toEqual({ 'a.ts': { 'eslint-disable': 2 } })
+    it('conta por tipo em todo o projeto e diz onde estão', () => {
+        const alarmes = new Map([['a.ts', [{ tipo: 'eslint-disable', linha: 1, texto: '' }, { tipo: 'noqa', linha: 2, texto: '' }]],
+            ['b.ts', [{ tipo: 'eslint-disable', linha: 4, texto: '' }]]])
+        expect(contagemPorTipo(alarmes)).toEqual({ '*': { 'eslint-disable': 2, 'noqa': 1 } })
+        expect(contagemPorTipo(new Map())).toEqual({})
+        expect(ondeEstao(alarmes, 'eslint-disable')).toBe(' — em a.ts:1, b.ts:4')
     })
 })
 
@@ -80,6 +96,9 @@ describe('alarmes com motivo', () => {
     })
 })
 
-testarCatraca('alarmes', 'corrija o apontado em vez de silenciar',
-    () => contagemPorTipo(alarmesDoIndice()),
-    (caminho) => contaAlarmes(caminho))
+let alarmesMedidos = new Map<string, AlarmeAchado[]>()
+
+testarCatraca('alarmes', "corrija o apontado em vez de silenciar; um alarme justificado leva 'Alarme-novo: <motivo>' no commit",
+    () => contagemPorTipo(alarmesMedidos = alarmesDoIndice()),
+    (caminho) => caminho === TODO_O_PROJETO,
+    { marcaParaSubir: 'Alarme-novo:', detalhe: (_, tipo) => ondeEstao(alarmesMedidos, tipo) })

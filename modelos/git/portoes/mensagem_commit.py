@@ -8,11 +8,15 @@
 - um commit que tira ou muda linhas de um teste que já existia leva `Teste-mudado: <motivo>` (acrescentar casos
   não pede nada): um teste afrouxado fica verde e deixa de proteger;
 - uma versão lançada do CHANGELOG.md não muda sem `Changelog-corrigido: <motivo>`, e o VERSION só muda no
-  lançamento (versao_lancada.py).
+  lançamento (versao_lancada.py);
+- a contagem dos alarmes calados por tipo (a linha de base BASE_DOS_ALARMES, dos testes prontos de alarmes) só
+  sobe com a linha `Alarme-novo: <motivo>`; o teste pronto não a vê no pre-commit, que corre antes da mensagem, e o
+  CI confere-a de novo nos commits enviados. As linhas de base não contam como testes mudados: descê-las é o pedido.
 Os títulos que o próprio git escreve (Merge …, Revert "…") passam. As linhas com # são do git e não contam.
 Uso: python -I scripts/portoes/mensagem_commit.py <arquivo da mensagem>   Sai com 1 se recusar.
 """
 
+import json
 import re
 import subprocess
 import sys
@@ -26,6 +30,8 @@ import versao_lancada
 # Ajuste ao projeto: o que conta como teste, e o que chega a quem usa (vazio: o changelog não é exigido).
 TESTE = re.compile(r"(?:^|/)tests?/|\.(?:test|spec)\.[^/]+$|(?:^|/)test_[^/]+\.py$")
 PUBLICADO = ()  # ex.: ("src/", "instalador/")
+PASTA_DAS_BASES_DAS_CATRACAS = "tests/linhas-de-base/"  # a dos testes prontos (linha_de_base.py, linha-de-base.ts)
+BASE_DOS_ALARMES = PASTA_DAS_BASES_DAS_CATRACAS + "alarmes.json"
 
 TIPOS = ("feat", "fix", "docs", "test", "refactor", "chore", "build", "ci", "perf", "style")
 EXIGEM_CORPO = ("feat", "fix", "refactor")
@@ -33,8 +39,9 @@ MAXIMO_DO_TITULO = 72
 TITULO_DO_COMMIT = re.compile(r"^(?P<tipo>[a-z]+)(?:\([a-z0-9-]+\))?: \S")
 TITULOS_DO_GIT = ("Merge ", 'Revert "')
 # Linhas finais de metadados: não contam como corpo.
-RODAPE = re.compile(r"^(?:Co-Authored-By|Signed-off-by|Sem-teste|Sem-changelog|Teste-mudado|Changelog-corrigido):",
-                    re.IGNORECASE)
+RODAPE = re.compile(r"^(?:Co-Authored-By|Signed-off-by|Sem-teste|Sem-changelog|Teste-mudado|Changelog-corrigido|"
+                    r"Alarme-novo):", re.IGNORECASE)
+ALARME_NOVO = re.compile(r"^Alarme-novo: *\S", re.MULTILINE)
 TESTE_MUDADO = re.compile(r"^Teste-mudado: *\S", re.MULTILINE)
 SEM_TESTE = re.compile(r"^Sem-teste: *\S", re.MULTILINE)
 SEM_CHANGELOG = re.compile(r"^Sem-changelog: *\S", re.MULTILINE)
@@ -120,13 +127,46 @@ def testes_com_linhas_tiradas(correr=None):
     saida = (correr or subprocess.run)(["git", "diff", "--cached", "--numstat", "--diff-filter=M"],
                                        capture_output=True, text=True, encoding="utf-8", check=False).stdout
     linhas = [linha.split("\t", 2) for linha in saida.splitlines()]
-    return [caminho for _, tiradas, caminho in linhas if tiradas != "0" and TESTE.search(caminho)]
+    return [caminho for _, tiradas, caminho in linhas
+            if tiradas != "0" and TESTE.search(caminho) and not caminho.startswith(PASTA_DAS_BASES_DAS_CATRACAS)]
+
+
+def total_por_tipo(texto):
+    """{tipo: soma} de uma linha de base dos alarmes, somando todas as entradas."""
+    total = {}
+    for metricas in json.loads(texto).get("valores", {}).values():
+        for tipo, valor in metricas.items():
+            total[tipo] = total.get(tipo, 0) + valor
+    return total
+
+
+def erros_dos_alarmes(texto, no_indice, no_head):
+    """A subida da contagem de um tipo de alarme sem a linha `Alarme-novo:` (uma base nova ou apagada não conta)."""
+    if no_indice is None or no_head is None or ALARME_NOVO.search(texto):
+        return []
+    antes = total_por_tipo(no_head)
+    subiram = sorted(tipo for tipo, valor in total_por_tipo(no_indice).items() if valor > antes.get(tipo, 0))
+    if not subiram:
+        return []
+    return [(f"ERRO: a contagem dos alarmes calados sobe ({', '.join(subiram)}): corrija o apontado, ou diga por quê "
+             "na linha 'Alarme-novo: <motivo>'.")]
+
+
+def bases_dos_alarmes(correr=None):
+    """(texto no índice, texto no último commit) da linha de base dos alarmes; None onde ela não existe."""
+    textos = []
+    for origem in (":", "HEAD:"):
+        resultado = (correr or subprocess.run)(["git", "show", f"{origem}{BASE_DOS_ALARMES}"], capture_output=True,
+                                               text=True, encoding="utf-8", check=False)
+        textos.append(resultado.stdout if resultado.returncode == 0 and resultado.stdout else None)
+    return tuple(textos)
 
 
 def main(argv):
     texto = Path(argv[1]).read_bytes().decode("utf-8", errors="replace")
     arquivos = arquivos_do_commit()
-    motivos = erros(texto, arquivos, testes_com_linhas_tiradas()) + versao_lancada.erros_do_commit(texto, arquivos)
+    motivos = (erros(texto, arquivos, testes_com_linhas_tiradas()) + versao_lancada.erros_do_commit(texto, arquivos)
+               + erros_dos_alarmes(texto, *bases_dos_alarmes()))
     for motivo in motivos:
         lista_negra.escrever_erro(motivo)
     if motivos:
