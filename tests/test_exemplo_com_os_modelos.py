@@ -1,8 +1,9 @@
 """Os testes-modelo (modelos/testes/) rodam num projeto montado só com os modelos, e pegam o que devem pegar.
 
 Verde: o projeto de exemplo, como sai dos modelos, passa. Vermelho: cada estrago típico faz falhar o teste certo.
-Num ensaio real, a primeira corrida deu dois vermelhos verdadeiros: arquivos gravados com CRLF pelo write_text do
-Windows e uma skill instalada fora do índice.
+Os estragos que mexem em arquivos diferentes e caem em testes diferentes juntam-se numa só corrida, e cada um é
+conferido pelo nome do teste que falha e pelo caminho que a falha cita. Num ensaio real, a primeira corrida deu dois
+vermelhos verdadeiros: arquivos gravados com CRLF pelo write_text do Windows e uma skill instalada fora do índice.
 """
 
 import json
@@ -14,97 +15,106 @@ from unittest import mock
 
 from projeto_de_exemplo import apagar, escrever, git, montar, rodar_testes
 
+FUNCAO_COM_COMENTARIOS_NO_FIM = ("def com_notas():\n" + "".join(f"    passo_{i} = {i}\n" for i in range(19))
+                                 + "    # uma nota\n    # outra\n    # e mais uma\n")
+DOIS_METODOS_COM_O_MESMO_NOME = ("class Caixa:\n    def correr(self):\n" + "".join(f"        p{i} = {i}\n" for i in range(26))
+                                 + "\n\nclass Fila:\n    def correr(self):\n        pass\n")
+# Os estragos que se juntam numa corrida: (arquivo, texto, teste que falha, trecho que a falha cita).
+ESTRAGOS = [
+    ("src/pedido.py", "x = 1\r\n", "test_no_disco_crlf_so_no_que_o_windows_roda", "src/pedido.py"),
+    ("src/utils.py", "x = 1\n", "test_nao_piora (test_nomes.", "src/utils.py: caminhoGenerico"),
+    ("src/carregar.py", "data, erro = ler()\n", "test_nao_piora (test_nomes.", "src/carregar.py: nomesGenericos"),
+    ("src/campos.py", "class Pedido(TypedDict):\n    info: str\n", "test_nao_piora (test_nomes.",
+     "src/campos.py: nomesGenericos"),
+    ("src/calado.py", "# TODO ver depois\nimport os  # noqa: F401\n", "test_cada_alarme_tem_motivo", "src/calado.py:2"),
+    ("src/tela.tsx", "const a = <div>{/* @ts-expect-error — tipo da lib */}</div>;\n", "test_nao_piora (test_alarmes.",
+     "src/tela.tsx:1"),
+    ("docs/contato.md", "Fale com ana@correio-ficticio.net\n", "test_sem_emails_pessoais", "docs/contato.md"),
+    ("src/grande.py", "x = 1\n" * 501, "test_nao_piora (test_tamanho_dos_arquivos.", "src/grande.py: linhasAcima 1"),
+    ("src/caixa.py", "def total_do_pedido(itens):\n    return 0\n", "test_nao_piora (test_nomes_unicos.",
+     "src/caixa.py: nomesDeTopoRepetidos"),
+    ("tests/test_pedido.py", ("import unittest\n\n\nclass Pedido(unittest.TestCase):\n    @unittest.skip('lento')\n"
+                              "    def test_soma(self):\n        pass\n"),
+     "test_nao_piora (test_testes_saltados.", "tests/test_pedido.py"),
+    ("src/notas.py", FUNCAO_COM_COMENTARIOS_NO_FIM, "test_nao_piora (test_tamanho_das_funcoes.",
+     "src/notas.py: funcoesAcima 1"),
+    ("src/filas.py", DOIS_METODOS_COM_O_MESMO_NOME, "test_nao_piora (test_tamanho_das_funcoes.",
+     "src/filas.py: funcoesAcima 1"),
+]
+SEM_TESTES_NO_COMMIT = {**os.environ, "MORG_A_TESTAR": "1"}
+
 
 class ProjetoDeExemplo(unittest.TestCase):
 
     def setUp(self):
+        # A variável do CI do próprio Morg-laws aponta para um commit deste repositório, não do exemplo.
+        self.enterContext(mock.patch.dict(os.environ))
+        os.environ.pop("MORG_BASE_DE_COMPARACAO", None)
         self.pasta = montar()
         self.addCleanup(apagar, self.pasta)
 
-    def assertFalhaEm(self, teste):
+    def assertFalhaEm(self, teste, padrao="test*.py"):
         git(self.pasta, "add", "--", ".")
-        codigo, saida = rodar_testes(self.pasta)
+        codigo, saida = rodar_testes(self.pasta, padrao)
         self.assertNotEqual(codigo, 0, saida[-2000:])
         self.assertIn(f"FAIL: {teste}", saida)
+        return saida
+
+    def assertPassa(self, padrao="test*.py"):
+        git(self.pasta, "add", "--", ".")
+        codigo, saida = rodar_testes(self.pasta, padrao)
+        self.assertEqual(codigo, 0, saida[-3000:])
+
+    def commitar(self, mensagem="chore: base", deve_passar=True):
+        git(self.pasta, "add", "--", ".")
+        resultado = git(self.pasta, "commit", "-q", "-F", "-", input=mensagem, env=SEM_TESTES_NO_COMMIT, check=False)
+        if deve_passar:
+            self.assertEqual(resultado.returncode, 0, resultado.stderr)
+        return resultado
+
+    def commit_sem_hooks(self, mensagem):
+        """Um commit que não passa pelos hooks, como o feito no site do GitHub: o git só os corre no `commit`."""
+        git(self.pasta, "add", "--", ".")
+        arvore = git(self.pasta, "write-tree").stdout.strip()
+        novo = git(self.pasta, "commit-tree", arvore, "-p", "HEAD", "-m", mensagem).stdout.strip()
+        git(self.pasta, "update-ref", "HEAD", novo)
 
     def test_como_sai_dos_modelos_passa(self):
         codigo, saida = rodar_testes(self.pasta)
         self.assertEqual(codigo, 0, saida[-3000:])
         self.assertIn("OK", saida)
 
+    def test_cada_estrago_cai_no_seu_teste(self):
+        for caminho, texto, _, _ in ESTRAGOS:
+            (self.pasta / caminho).parent.mkdir(parents=True, exist_ok=True)
+            (self.pasta / caminho).write_bytes(texto.encode("utf-8"))
+        saida = self.assertFalhaEm("test_no_disco_crlf_so_no_que_o_windows_roda")
+        for caminho, _, teste, trecho in ESTRAGOS:
+            with self.subTest(estrago=caminho):
+                self.assertIn(f"FAIL: {teste}", saida)
+                self.assertIn(trecho, saida)
+
     def test_regra_sem_linha_no_mapa(self):
         mapa = self.pasta / "docs" / "regras-e-barreiras.md"
         texto = mapa.read_text(encoding="utf-8")
         escrever(mapa, "".join(linha for linha in texto.splitlines(True) if not linha.startswith("| NÃO PIORAR")))
-        self.assertFalhaEm("test_cada_regra_esta_no_mapa_e_o_mapa_nao_tem_regras_a_mais")
+        self.assertFalhaEm("test_cada_regra_esta_no_mapa_e_o_mapa_nao_tem_regras_a_mais", "test_regras.py")
 
-    def estragar_o_claude_md(self, texto):
-        escrever(self.pasta / "CLAUDE.md", texto)
-
-    def test_claude_md_sem_importar_o_agents_md(self):
-        self.estragar_o_claude_md("## Só no Claude Code\n\nNada.\n")
-        self.assertFalhaEm("test_o_claude_md_importa_o_arquivo_de_regras")
-
-    def test_claude_md_com_caminho_que_nao_existe(self):
-        self.estragar_o_claude_md("@AGENTS.md\n\nVer `docs/nao-existe.md`.\n")
-        self.assertFalhaEm("test_caminhos_citados_existem")
-
-    def test_claude_md_que_passa_o_limite_somado(self):
-        # Sozinhos, os dois ficam abaixo de 100 linhas; o Claude Code carrega-os juntos.
-        self.estragar_o_claude_md("@AGENTS.md\n" + "- nota\n" * 60)
-        self.assertFalhaEm("test_tamanho")
-
-    def test_arquivo_em_crlf(self):
-        (self.pasta / "src" / "pedido.py").write_bytes(b"x = 1\r\n")
-        self.assertFalhaEm("test_no_disco_crlf_so_no_que_o_windows_roda")
-
-    def test_nome_generico(self):
-        escrever(self.pasta / "src" / "utils.py", "x = 1\n")
-        self.assertFalhaEm("test_nenhum_arquivo_ou_pasta_com_nome_generico")
-
-    def test_alarme_sem_motivo(self):
-        escrever(self.pasta / "src" / "calado.py", "import os  # noqa: F401\n")
-        self.assertFalhaEm("test_cada_alarme_tem_motivo")
-
-    def test_alarme_com_comentario_qualquer_em_cima(self):
-        # A regra do alarme: o motivo vai na mesma linha; um TODO ou outro alarme em cima não é motivo.
-        escrever(self.pasta / "src" / "calado.py", "# TODO ver depois\nimport os  # noqa: F401\n")
-        self.assertFalhaEm("test_cada_alarme_tem_motivo")
-
-    def test_alarme_em_comentario_de_bloco_conta(self):
-        # No JSX o @ts-expect-error vai em /* */; tem de entrar na contagem como o de //.
-        escrever(self.pasta / "src" / "tela.tsx", "const a = <div>{/* @ts-expect-error — tipo da lib */}</div>;\n")
-        self.assertFalhaEm("test_a_contagem_nao_sobe")
-
-    def test_linha_de_base_dos_alarmes_que_nao_desceu(self):
-        # Quem tira um alarme baixa o máximo no mesmo commit; senão a folga deixa o próximo entrar calado.
-        teste = self.pasta / "tests" / "test_alarmes.py"
-        escrever(teste, teste.read_text(encoding="utf-8").replace("MAXIMO_POR_TIPO = {}", 'MAXIMO_POR_TIPO = {"noqa": 1}'))
-        self.assertFalhaEm("test_a_linha_de_base_desce_com_a_contagem")
-
-    def test_email_pessoal(self):
-        escrever(self.pasta / "docs" / "contato.md", "Fale com ana@correio-ficticio.net\n")
-        self.assertFalhaEm("test_sem_emails_pessoais")
+    def test_o_claude_md_estragado(self):
+        for texto, teste in (("## Só no Claude Code\n\nNada.\n", "test_o_claude_md_importa_o_arquivo_de_regras"),
+                             ("@AGENTS.md\n\nVer `docs/nao-existe.md`.\n", "test_caminhos_citados_existem"),
+                             # Sozinhos, os dois ficam abaixo de 100 linhas; o Claude Code carrega-os juntos.
+                             ("@AGENTS.md\n" + "- nota\n" * 60, "test_tamanho")):
+            with self.subTest(teste=teste):
+                escrever(self.pasta / "CLAUDE.md", texto)
+                self.assertFalhaEm(teste, "test_regras.py")
 
     def test_numero_de_documento_com_o_padrao_ligado(self):
         teste = self.pasta / "tests" / "test_dados_pessoais.py"
         escrever(teste, teste.read_text(encoding="utf-8").replace(
             "DOCUMENTOS = {}", r'DOCUMENTOS = {"CPF": r"\b\d{3}\.\d{3}\.\d{3}-\d{2}\b"}'))
         escrever(self.pasta / "docs" / "cliente.md", "CPF do cliente: 000.000.000-00\n")
-        self.assertFalhaEm("test_sem_numeros_de_documentos")
-
-    def test_action_sem_sha(self):
-        ci = self.pasta / ".github" / "workflows" / "ci.yml"
-        texto = ci.read_text(encoding="utf-8")
-        escrever(ci, texto.replace("actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1",
-                                   "actions/checkout@v7", 1))
-        self.assertFalhaEm("test_cada_action_fixada_por_sha_com_a_versao")
-
-    def test_download_sem_sha256(self):
-        ci = self.pasta / ".github" / "workflows" / "ci.yml"
-        linhas = ci.read_text(encoding="utf-8").splitlines(True)
-        escrever(ci, "".join(linha for linha in linhas if "sha256sum -c" not in linha))
-        self.assertFalhaEm("test_nada_baixado_direto_para_uma_shell")
+        self.assertFalhaEm("test_sem_numeros_de_documentos", "test_dados_pessoais.py")
 
     def estragar_o_ci(self, antes, depois):
         ci = self.pasta / ".github" / "workflows" / "ci.yml"
@@ -112,26 +122,31 @@ class ProjetoDeExemplo(unittest.TestCase):
         self.assertIn(antes, texto)
         escrever(ci, texto.replace(antes, depois, 1))
 
-    def test_permissao_de_escrita_num_job(self):
-        # O bloco do topo continua só de leitura; o job ganha escrita por baixo dele.
-        self.estragar_o_ci("    timeout-minutes: 10\n", "    timeout-minutes: 10\n    permissions:\n      contents: write\n")
-        self.assertFalhaEm("test_o_token_so_le_e_o_checkout_nao_guarda_a_credencial")
-
-    def test_permissao_write_all(self):
-        self.estragar_o_ci("  segredos:\n", "  segredos:\n    permissions: write-all\n")
-        self.assertFalhaEm("test_o_token_so_le_e_o_checkout_nao_guarda_a_credencial")
-
-    def test_download_dentro_de_sh_c(self):
-        self.estragar_o_ci("          tar -xzf", '          sh -c "$(curl -sSfL https://exemplo.com/x)"\n          tar -xzf')
-        self.assertFalhaEm("test_nada_baixado_direto_para_uma_shell")
-
-    def test_download_com_redirecionamento_ou_output_sem_sha256(self):
-        for baixar in ("curl -sSfL https://exemplo.com/f.tar.gz > f.tar.gz",
-                       "curl -sSfL --output f.tar.gz https://exemplo.com/f.tar.gz"):
-            with self.subTest(baixar=baixar):
-                self.estragar_o_ci("          tar -xzf", f"          {baixar}\n          tar -xzf")
-                self.assertFalhaEm("test_nada_baixado_direto_para_uma_shell")
-                self.estragar_o_ci(f"          {baixar}\n", "")
+    def test_o_ci_estragado(self):
+        casos = [
+            ("actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1", "actions/checkout@v7",
+             "test_cada_action_fixada_por_sha_com_a_versao"),
+            ("sha256sum -c", None, "test_nada_baixado_direto_para_uma_shell"),  # None: tira a linha inteira
+            # O bloco do topo continua só de leitura; o job ganha escrita por baixo dele.
+            ("    timeout-minutes: 10\n", "    timeout-minutes: 10\n    permissions:\n      contents: write\n",
+             "test_o_token_so_le_e_o_checkout_nao_guarda_a_credencial"),
+            ("  segredos:\n", "  segredos:\n    permissions: write-all\n",
+             "test_o_token_so_le_e_o_checkout_nao_guarda_a_credencial"),
+            ("          tar -xzf", '          sh -c "$(curl -sSfL https://exemplo.com/x)"\n          tar -xzf',
+             "test_nada_baixado_direto_para_uma_shell"),
+            ("          tar -xzf", "          curl -sSfL https://exemplo.com/f.tar.gz > f.tar.gz\n          tar -xzf",
+             "test_nada_baixado_direto_para_uma_shell"),
+            ("          tar -xzf", "          curl -sSfL --output f.tar.gz https://exemplo.com/f.tar.gz\n          tar -xzf",
+             "test_nada_baixado_direto_para_uma_shell"),
+        ]
+        original = (self.pasta / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
+        for antes, depois, teste in casos:
+            with self.subTest(estrago=depois or antes):
+                escrever(self.pasta / ".github" / "workflows" / "ci.yml", original)
+                if depois is None:
+                    antes, depois = next(linha for linha in original.splitlines(True) if antes in linha), ""
+                self.estragar_o_ci(antes, depois)
+                self.assertFalhaEm(teste, "test_ci.py")
 
     def test_juntar_changelog_em_rascunho_mostra_a_secao(self):
         escrever(self.pasta / "CHANGELOG.md", "# Changelog\n")
@@ -143,25 +158,6 @@ class ProjetoDeExemplo(unittest.TestCase):
         self.assertIn(b"### Adicionado\n\n- Tudo novo.", resultado.stdout.replace(b"\r\n", b"\n"))
         self.assertFalse((self.pasta / "VERSION").exists(), "o rascunho não grava")
 
-    def test_identificador_generico_desempacotado(self):
-        # Lido pela árvore: o regex antigo só via `def data` e `class data`, não `data, erro = ler()`.
-        escrever(self.pasta / "src" / "carregar.py", "data, erro = ler()\n")
-        self.assertFalhaEm("test_nenhum_identificador_generico_solto")
-
-    def test_arquivo_acima_de_500_linhas(self):
-        escrever(self.pasta / "src" / "grande.py", "x = 1\n" * 501)
-        self.assertFalhaEm("test_nao_piora (test_tamanho_dos_arquivos")
-
-    def test_nome_de_topo_repetido(self):
-        escrever(self.pasta / "src" / "caixa.py", "def total_do_pedido(itens):\n    return 0\n")
-        self.assertFalhaEm("test_nao_piora (test_nomes_unicos")
-
-    def test_teste_saltado_sem_condicao(self):
-        escrever(self.pasta / "tests" / "test_pedido.py",
-                 "import unittest\n\n\nclass Pedido(unittest.TestCase):\n    @unittest.skip('lento')\n"
-                 "    def test_soma(self):\n        pass\n")
-        self.assertFalhaEm("test_nao_piora (test_testes_saltados")
-
     def gravar_base(self, regra, valores):
         escrever(self.pasta / "tests" / "linhas-de-base" / f"{regra}.json",
                  json.dumps({"regra": regra, "valores": valores}, indent=2) + "\n")
@@ -169,35 +165,80 @@ class ProjetoDeExemplo(unittest.TestCase):
     def test_a_base_deixa_passar_o_que_ja_violava_mas_sem_folga(self):
         escrever(self.pasta / "src" / "grande.py", "x = 1\n" * 501)
         self.gravar_base("tamanho-de-arquivo", {"src/grande.py": {"linhasAcima": 1}})
-        git(self.pasta, "add", "--", ".")
-        codigo, saida = rodar_testes(self.pasta)
-        self.assertEqual(codigo, 0, saida[-3000:])
+        self.assertPassa("test_tamanho_dos_arquivos.py")
         self.gravar_base("tamanho-de-arquivo", {"src/grande.py": {"linhasAcima": 4}})
-        self.assertFalhaEm("test_a_linha_de_base_nao_tem_folga (test_tamanho_dos_arquivos")
+        self.assertFalhaEm("test_a_linha_de_base_nao_tem_folga (test_tamanho_dos_arquivos", "test_tamanho_dos_arquivos.py")
+
+    def test_linha_de_base_dos_alarmes_que_nao_desceu(self):
+        # Quem tira um alarme desce a base no mesmo commit; senão a folga deixa o próximo entrar calado.
+        self.gravar_base("alarmes", {"*": {"eslint-disable": 1}})
+        self.assertFalhaEm("test_a_linha_de_base_nao_tem_folga (test_alarmes", "test_alarmes.py")
 
     def test_entrada_nova_na_base_ja_commitada(self):
         self.gravar_base("tamanho-de-arquivo", {})
-        git(self.pasta, "add", "--", ".")
-        git(self.pasta, "commit", "-q", "-m", "chore: base vazia", env={**os.environ, "MORG_A_TESTAR": "1"})
+        self.commitar()
         escrever(self.pasta / "src" / "grande.py", "x = 1\n" * 501)
         self.gravar_base("tamanho-de-arquivo", {"src/grande.py": {"linhasAcima": 1}})
-        self.assertFalhaEm("test_a_linha_de_base_so_encolhe (test_tamanho_dos_arquivos")
+        self.assertFalhaEm("test_a_linha_de_base_so_encolhe (test_tamanho_dos_arquivos", "test_tamanho_dos_arquivos.py")
+
+    def test_no_ci_a_entrada_nova_ja_commitada_tambem_e_recusada(self):
+        # No CI o índice é o último commit: compara-se com a ponta anterior do ramo (MORG_BASE_DE_COMPARACAO).
+        self.gravar_base("tamanho-de-arquivo", {})
+        self.commitar()
+        anterior = git(self.pasta, "rev-parse", "HEAD").stdout.strip()
+        escrever(self.pasta / "src" / "grande.py", "x = 1\n" * 501)
+        self.gravar_base("tamanho-de-arquivo", {"src/grande.py": {"linhasAcima": 1}})
+        self.commitar("feat: entrada nova\n\nSem passar pela revisão.\n")
+        with mock.patch.dict(os.environ, {"MORG_BASE_DE_COMPARACAO": anterior}):
+            self.assertFalhaEm("test_a_linha_de_base_so_encolhe (test_tamanho_dos_arquivos", "test_tamanho_dos_arquivos.py")
+
+    def test_o_alarme_que_muda_de_arquivo_passa(self):
+        alarme = "// eslint-disable-next-line no-console — o CLI escreve no terminal\n"
+        escrever(self.pasta / "src" / "a.ts", alarme)
+        self.gravar_base("alarmes", {"*": {"eslint-disable": 1}})
+        self.commitar()
+        git(self.pasta, "rm", "-q", "--", "src/a.ts")
+        escrever(self.pasta / "src" / "b.ts", alarme)
+        self.assertPassa("test_alarmes.py")
+
+    def test_alarme_novo_so_com_a_linha_alarme_novo(self):
+        self.gravar_base("alarmes", {})
+        self.commitar()
+        anterior = git(self.pasta, "rev-parse", "HEAD").stdout.strip()
+        escrever(self.pasta / "src" / "a.ts", "// eslint-disable-next-line no-console — o CLI escreve no terminal\n")
+        self.gravar_base("alarmes", {"*": {"eslint-disable": 1}})
+        self.assertPassa("test_alarmes.py")  # no índice, a subida fica para o commit-msg
+        recusado = self.commitar("feat: alarme\n\nUm alarme novo.\n", deve_passar=False)
+        self.assertNotEqual(recusado.returncode, 0)
+        self.assertIn("Alarme-novo:", recusado.stderr)
+        self.assertEqual(self.commitar("feat: alarme\n\nUm alarme novo.\n\nAlarme-novo: o exemplo importa sem usar\n")
+                         .returncode, 0)
+        with mock.patch.dict(os.environ, {"MORG_BASE_DE_COMPARACAO": anterior}):
+            self.assertPassa("test_alarmes.py")  # no CI, a linha está num commit do intervalo
+
+    def test_no_ci_o_alarme_novo_sem_a_linha_e_recusado(self):
+        self.gravar_base("alarmes", {})
+        self.commitar()
+        anterior = git(self.pasta, "rev-parse", "HEAD").stdout.strip()
+        escrever(self.pasta / "src" / "a.ts", "// eslint-disable-next-line no-console — o CLI escreve no terminal\n")
+        self.gravar_base("alarmes", {"*": {"eslint-disable": 1}})
+        self.commit_sem_hooks("feat: alarme sem a linha")
+        with mock.patch.dict(os.environ, {"MORG_BASE_DE_COMPARACAO": anterior}):
+            self.assertFalhaEm("test_a_linha_de_base_so_encolhe (test_alarmes", "test_alarmes.py")
 
     def test_criar_a_base_num_projeto_que_ja_viola(self):
         escrever(self.pasta / "src" / "grande.py", "x = 1\n" * 501)
         with mock.patch.dict(os.environ, {"MORG_CRIAR_LINHA_DE_BASE": "1"}):
-            self.assertFalhaEm("test_nao_piora (test_tamanho_dos_arquivos")
+            self.assertFalhaEm("test_nao_piora (test_tamanho_dos_arquivos", "test_tamanho_dos_arquivos.py")
         base = json.loads((self.pasta / "tests" / "linhas-de-base" / "tamanho-de-arquivo.json").read_text("utf-8"))
         self.assertEqual(base, {"regra": "tamanho-de-arquivo", "valores": {"src/grande.py": {"linhasAcima": 1}}})
-        git(self.pasta, "add", "--", ".")
-        codigo, saida = rodar_testes(self.pasta)
-        self.assertEqual(codigo, 0, saida[-3000:])
+        self.assertPassa()
 
     def test_permissao_perigosa_no_allow(self):
         settings = self.pasta / ".claude" / "settings.json"
         texto = settings.read_text(encoding="utf-8").replace('"Bash(git status*)"', '"Bash(git push *)"')
         escrever(settings, texto)
-        self.assertFalhaEm("test_allow_so_tem_leituras_e_testes")
+        self.assertFalhaEm("test_allow_so_tem_leituras_e_testes", "test_permissoes.py")
 
 
 if __name__ == "__main__":
