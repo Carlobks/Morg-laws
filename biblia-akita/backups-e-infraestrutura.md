@@ -4,7 +4,7 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A pági
 
 ## 1. Backup e restauro
 
-- Tenha snapshots automáticos do disco, no mínimo a cada hora, com um prazo de retenção definido, e aprenda a recuperar um antes de precisar. Antes de uma sessão arriscada, tire um à mão. No Windows, as cópias de sombra são fracas para isto. (pp. 223, 232–234, 382–383) · **máquina** (tarefa agendada) · onde aplicar: ainda nenhuma
+- Tenha snapshots automáticos do disco, a cada hora, pelo menos durante o dia, com um prazo de retenção definido, e aprenda a recuperar um antes de precisar. Antes de uma sessão arriscada, tire um à mão. No Windows, as cópias de sombra são fracas para isto. (pp. 223, 232–234, 382–383) · **máquina** (tarefa agendada) · onde aplicar: ainda nenhuma
 - O backup externo precisa de quatro coisas: rodar sozinho, guardar várias versões com uma regra de retenção (por exemplo, 7 diárias, 4 semanais, 6 mensais e 1 anual), estar cifrado e ser testado abrindo arquivos recuperados. E fica onde o agente que mexe no original não chega. (pp. 234, 384) · **máquina** · onde aplicar: ainda nenhuma
 - Guarde pelo menos uma cópia noutro lugar físico. Discos com paridade (RAID) salvam de um disco com defeito, não da perda do aparelho, e a reconstrução pode levar um segundo disco. (pp. 224–225, 234) · **texto** · onde aplicar: ainda nenhuma
 - Confira o backup contra uma lista feita a partir da origem, nunca contra o relatório da própria ferramenta de cópia: ela pode pular pastas sem permissão ou arquivos que não reconhece e mesmo assim dizer que deu tudo certo. (pp. 225–226) · **máquina** · onde aplicar: ainda nenhuma
@@ -21,9 +21,9 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A pági
 - Nunca deixe um erro passar calado: registre o detalhe técnico e avise onde já se olha todos os dias. Muitas vezes a verificação que faltava só nasce depois da falha que ninguém tinha previsto. (pp. 77, 83) · **máquina** (alerta) · onde aplicar: ainda nenhuma
 - Ponha uma conferência entre cada etapa de uma cadeia automática: dez etapas que acertam 90% cada uma acertam juntas só cerca de 35%. (p. 209) · **máquina** · onde aplicar: ainda nenhuma
 - Decida você o que o sistema faz quando um serviço externo falha, por exemplo cortar as chamadas por um tempo em vez de repetir sem fim. (pp. 94–95) · **texto** · onde aplicar: ainda nenhuma
-- Peça a outro agente, ou a outra pessoa, que execute e confira o procedimento que o primeiro escreveu. Ajuste as travas aos dados reais: uma trava exagerada recusa também o que é legítimo. (pp. 223–224) · **texto** · onde aplicar: `orquestrando-sessoes`
+- Peça a outro agente que execute e confira o procedimento que o primeiro escreveu. Ajuste as travas aos dados reais: uma trava exagerada recusa também o que é legítimo. (pp. 223–224) · **texto** · onde aplicar: `orquestrando-sessoes`
 - Confira o estado na origem (contar os arquivos, contar os processos), e não pela ferramenta, que pode estar enganada. (pp. 226–227) · **texto** · onde aplicar: `testes-e-provas`, `sql-postgres`
-- Garanta que os alertas de saúde dos discos e servidores chegam antes do desastre; comprar na urgência sai mais caro. (p. 225) · **máquina** (alerta) · onde aplicar: ainda nenhuma
+- Um alerta que só chega com o desastre já não ajuda: no caso contado, o disco falhava havia mais de um mês, e os avisos vieram todos no fim. Comprar na urgência sai mais caro. (p. 225) · **máquina** (alerta) · onde aplicar: ainda nenhuma
 
 ## 3. Entregar sem medo
 
@@ -34,8 +34,8 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A pági
 
 ## 4. Fornecedores e continuidade
 
-- Prepare-se para o dia em que o fornecedor de IA desligar o modelo para todos, e tenha um plano para quando ele recusar um pedido pela política de conteúdo. (pp. 147–148, 200) · **texto** · onde aplicar: ainda nenhuma
+- O fornecedor pode desligar um modelo para todos os clientes de uma vez, e o filtro de conteúdo pode recusar um pedido sem perigo nenhum; no caso contado, a saída foi um modelo aberto rodando em casa. (pp. 147–148, 200) · **texto** · onde aplicar: ainda nenhuma
 - Não ponha tudo numa aposta só: quando uma bolha estoura, as empresas que viviam dela desaparecem e a tecnologia fica. (pp. 24, 365–368) · **texto** · onde aplicar: ainda nenhuma
-- Trate os dados da empresa como o patrimônio que o código deixou de ser. (pp. 139–140) · **texto** · onde aplicar: ainda nenhuma
-- Pague por um serviço quando ele poupa horas de operação. Compare o tempo, o trabalho de manter e o custo por unidade. (p. 180) · **texto** · onde aplicar: ainda nenhuma
+- O código deixou de ser o fosso que protege a empresa; o que ainda pesa são dados exclusivos, e até essa vantagem se perde depressa. (pp. 139–140) · **texto** · onde aplicar: ainda nenhuma
+- No caso contado, o serviço pago saía mais de trinta vezes mais caro por episódio e valeu, porque poupava horas de operação; a comparação foi de tempo, de trabalho de manter e de custo por unidade. (p. 180) · **texto** · onde aplicar: ainda nenhuma
 - Só compre hardware para IA local se a máquina já existir ou se os dados não puderem sair. A conta é a memória (o que cabe) vezes a largura de banda (a velocidade), somando os pesos do modelo e a memória da conversa. (pp. 175–176, 183, 417–420) · **texto** · onde aplicar: ainda nenhuma
