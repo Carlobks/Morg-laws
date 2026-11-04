@@ -21,6 +21,7 @@ Notas de leitura do livro **_Competente o Suficiente_**, de **Fabio Akita**, sob
 | [pedidos-e-sessoes.md](pedidos-e-sessoes.md) | Como montar um pedido, conduzir o trabalho e escolher que trabalho dar ao agente |
 | [aprender-com-agentes.md](aprender-com-agentes.md) | Como estudar com IA, o que não perde valor e o que esperar de verdade dos agentes |
 | [equipe-e-empresa.md](equipe-e-empresa.md) | O cuidado à medida do risco, quem decide, como a equipe se organiza e as pessoas |
+| [modelos-e-medicao.md](modelos-e-medicao.md) | Como ler promessas, tabelas e anúncios, como escolher um modelo e o que há dentro dele |
 
 Os demais conselhos do livro (576 anotados no total) entram aos poucos, por tema.
 
