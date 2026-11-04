@@ -6,7 +6,9 @@
 // - `it.skip`, `test.skip` e `describe.skip`, com qualquer argumento: no vitest o 1.º argumento é o NOME do teste,
 //   e `test.skip(semRede, 'motivo')` regista um teste saltado chamado `false` (é a assinatura do Playwright, não a
 //   do vitest);
-// - `contexto.skip()` sem condição nem `if`/`catch` à volta, ou sem a nota escrita (um texto que não está vazio).
+// - `contexto.skip()` sem condição nem `if`/`catch` à volta, ou sem a nota escrita (um texto que não está vazio);
+// - as opções do teste: `it('a', { skip: true }, …)` e `{ only: true }` (também `it['only']`); um
+//   `{ skip: condição }` não leva nota e recusa-se como o `contexto.skip(condição)` sem ela.
 // A forma certa diz quando e porquê: `it.skipIf(semRede)(…)`, `contexto.skip(semRede, 'precisa da rede')`, ou
 // `if (semRede) contexto.skip('precisa da rede')` (também num `catch`). É a regra do molde Python
 // test_testes_saltados.py (`@unittest.skip`, `skipIf(condição, motivo)`, `skipTest` num `if` ou num `except`).
@@ -38,12 +40,29 @@ function eMotivoEscrito(no: ts.Node | undefined): boolean {
 
 const eTextoLiteral = (no: ts.Node) => ts.isStringLiteralLike(no) || ts.isTemplateExpression(no)
 
-/** Os nomes da cadeia chamada: `it.skip.each` → ['it', 'skip', 'each']; null se não for uma cadeia de nomes. */
+/** Os nomes da cadeia chamada: `it.skip.each` → ['it', 'skip', 'each'], também `it['only']`; null se não for uma
+ *  cadeia de nomes. */
 function nomesDaCadeia(expressao: ts.Expression): string[] | null {
     if (ts.isIdentifier(expressao)) return [expressao.text]
-    if (!ts.isPropertyAccessExpression(expressao)) return null
+    const porIndice = ts.isElementAccessExpression(expressao) && ts.isStringLiteralLike(expressao.argumentExpression)
+    if (!ts.isPropertyAccessExpression(expressao) && !porIndice) return null
     const antes = nomesDaCadeia(expressao.expression)
-    return antes && [...antes, expressao.name.text]
+    const nome = ts.isPropertyAccessExpression(expressao) ? expressao.name.text
+        : ((expressao as ts.ElementAccessExpression).argumentExpression as ts.StringLiteralLike).text
+    return antes && [...antes, nome]
+}
+
+/** `it('a', { skip: true }, …)`, `test('a', { only: true }, …)`: as opções do teste (o 2.º argumento no vitest). */
+function erroDasOpcoes(chamada: ts.CallExpression): string | null {
+    const propriedades = chamada.arguments.filter(ts.isObjectLiteralExpression).flatMap((opcoes) => [...opcoes.properties])
+    for (const propriedade of propriedades.filter(ts.isPropertyAssignment)) {
+        const nome = ts.isIdentifier(propriedade.name) || ts.isStringLiteral(propriedade.name) ? propriedade.name.text : ''
+        const desligada = propriedade.initializer.kind === ts.SyntaxKind.FalseKeyword
+        if (nome === 'only' && !desligada) return '{ only } esconde todos os outros testes'
+        // Uma condição nas opções não leva nota: no vitest, diga-a com it.skipIf(condição) ou contexto.skip.
+        if (nome === 'skip' && !desligada) return propriedade.initializer.kind === ts.SyntaxKind.TrueKeyword ? SALTA_SEMPRE : SEM_MOTIVO_ESCRITO
+    }
+    return null
 }
 
 function dentroDeUmIfOuCatch(no: ts.Node): boolean {
@@ -68,6 +87,7 @@ function erroDaChamada(chamada: ts.CallExpression): string | null {
     if (daApiDeTestes && cadeia.includes('only')) return '.only esconde todos os outros testes'
     // No vitest o 1.º argumento de test.skip é o NOME do teste: `test.skip(condição, …)` salta sempre.
     if (daApiDeTestes && cadeia.includes('skip')) return SALTA_SEMPRE
+    if (daApiDeTestes) return erroDasOpcoes(chamada)
     return cadeia.length > 1 && cadeia[cadeia.length - 1] === 'skip' ? erroDoSkipDoContexto(chamada) : null
 }
 
@@ -116,6 +136,13 @@ describe('detector de saltos', () => {
         const fonte = ["it.skip.each([1])('a', () => {})", "describe.skip.each([1])('b', () => {})",
             "test.only.each([1])('c', () => {})", "test.concurrent.only('d', () => {})"].join('\n')
         expect(linhasProibidas(fonte)).toEqual([1, 2, 3, 4])
+    })
+
+    it('lê também as opções do teste: { skip }, { only } e o acesso por índice', () => {
+        const fonte = ["it('a', { skip: true }, () => {})", "test('b', { only: true }, () => {})",
+            "describe('c', { skip: true }, () => {})", "it('d', { skip: semRede }, () => {})", "it['only']('e', () => {})",
+            "it('f', { timeout: 10 }, () => {})", "it('g', { skip: false }, () => {})"].join('\n')
+        expect(linhasProibidas(fonte)).toEqual([1, 2, 3, 4, 5])
     })
 
     it('deixa o que tem condição e motivo', () => {
