@@ -18,7 +18,7 @@ from carregar_por_caminho import RAIZ
 
 # Ajuste ao projeto.
 SO_SESSOES = False  # True se o projeto escolheu só sessões novas, sem sub-agentes (skill orquestrando-sessoes)
-NUNCA ={"Read(**/.env)", "Read(**/.envrc)", "Read(**/.env.*)", "Read(**/*.pem)", "Read(**/*.key)", "Read(~/.ssh/**)",
+NUNCA = {"Read(**/.env)", "Read(**/.envrc)", "Read(**/.env.*)", "Read(**/*.pem)", "Read(**/*.key)", "Read(~/.ssh/**)",
          "Read(~/.claude/.credentials.json)", "Read(~/.config/morg-laws/**)"}
 PERGUNTA = {"Bash(git push)", "Bash(git push *)", "Bash(gh pr create*)", "Bash(gh pr merge*)",
             "Bash(npm install *)", "Bash(npx *)", "Bash(pip install *)",
