@@ -25,7 +25,7 @@ description: Guia como provar que um trabalho de agente funciona — o teste que
 - Reproduza antes de mexer. Veja **o que mudou** (`git log`, `git diff`) desde que funcionava.
 - **Uma hipótese de cada vez**, com uma medição que a confirma ou derruba. Três mudanças juntas não dizem qual resolveu.
 - Antes de culpar outro processo, outra sessão ou o ambiente, confirme **onde** ele está a correr.
-- Bug encontrado e não corrigido vai para o registro do projeto, organizado por área. Não fica só na conversa.
+- Bug encontrado e não corrigido vai para o registro do projeto, organizado por área. Não fica só na conversa. Sem um rastreador, é um arquivo por bug numa pasta por área, fechado pelo commit que o corrige (skill `git-e-commits` §6).
 
 ## 4. Auditar: contar, não amostrar
 
@@ -75,4 +75,4 @@ description: Guia como provar que um trabalho de agente funciona — o teste que
 
 ## Fontes
 
-Sem fonte externa: estas regras vêm da prática do projeto de origem, e os números citados foram medidos lá. Quando uma regra passar a apoiar-se numa fonte, ela entra em [`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md).
+Sem fonte externa: estas regras vêm da prática do projeto de origem, e os números citados foram medidos lá. A exceção é o arquivo por bug (§3), que se apoia nas fontes da skill `git-e-commits` (o towncrier e o texto do GitLab sobre o changelog que colidia). Quando uma regra passar a apoiar-se numa fonte, ela entra em [`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md).
