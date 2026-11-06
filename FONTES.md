@@ -54,7 +54,8 @@ Lidas em 2026-11-02 para a skill `passando-o-trabalho`; o que se leu de cada uma
 Lidas em 2026-10-31 no projeto de origem, onde sustentaram a decisão escrita (ADR) do changelog por fragmentos e da versão SemVer.
 
 - **Keep a Changelog 1.1.0** — https://keepachangelog.com/en/1.1.0/ — Sustenta: as seis categorias e a ordem (Added, Changed, Deprecated, Removed, Fixed, Security, aqui em português) e um changelog escrito para pessoas, com a versão e a data.
-- **towncrier** (tutorial) — https://towncrier.readthedocs.io/en/stable/tutorial.html — Sustenta: um arquivo por mudança, juntado e apagado na hora do lançamento. Só a ideia: o modelo `juntar_changelog.py` não usa o towncrier (biblioteca padrão apenas).
+- **towncrier** (tutorial) — https://towncrier.readthedocs.io/en/stable/tutorial.html — Sustenta: um arquivo por mudança, juntado e apagado na hora do lançamento. Só a ideia: o modelo `juntar_changelog.py` não usa o towncrier (biblioteca padrão apenas). Relido em 2026-11-06: o nome do fragmento junta o número da issue e o tipo, e a compilação apaga os fragmentos com `git rm` (a ideia do arquivo por bug em `skills/git-e-commits/` §6).
+- **GitLab — How we solved GitLab's CHANGELOG conflict crisis** (2018) — https://about.gitlab.com/blog/2018/07/03/solving-gitlabs-changelog-conflict-crisis/ — lido em 2026-11-06. Sustenta: com um `CHANGELOG` único, os pedidos de merge abertos ao mesmo tempo colidiam no mesmo lugar; a solução foi um arquivo por mudança numa pasta, compilado por um script no lançamento. Texto de um fornecedor, sem números (usado em `skills/git-e-commits/` §6).
 - **Semantic Versioning 2.0.0** — https://semver.org/lang/pt-BR/ — Sustenta: MAIOR.MENOR.CORREÇÃO; o MAIOR sobe com uma mudança incompatível; no 0.y.z tudo pode mudar; os metadados de compilação (`+…`) não contam na comparação.
 - **CalVer** — https://calver.org/ — Sustenta a alternativa descartada: a versão pela data não diz a quem usa se uma atualização quebra algo.
 
