@@ -14,6 +14,8 @@ Cada número da skill `desenhando-telas`, com a fonte e a data em que foi lido. 
 | Alvo de toque (Apple, iOS e iPadOS) | 44 × 44 pt padrão; 28 × 28 pt mínimo | Apple HIG, Accessibility — https://developer.apple.com/design/human-interface-guidelines/accessibility | 2026-10-30 |
 | Abas fixas | no máximo 4 ("a partir de cinco, o contentor fica apertado") | Material Design 3, Tabs — https://m3.material.io/components/tabs/guidelines | 2026-10-30 |
 | Abas na barra da Apple | sem número fixo: menos abas navegam melhor; as que não cabem vão para uma aba "Mais"; uma lista que a pessoa personaliza começa com 5 ou menos | Apple HIG, Tab bars — https://developer.apple.com/design/human-interface-guidelines/tab-bars | 2026-10-30 |
+| Rótulo e valor | por cima do valor num contentor estreito (≈ 200 px); lado a lado num médio (≈ 400 px), com o rótulo em ≈ 40 % da largura | Innovaccer, Key Value Pair — https://design.innovaccer.com/components/keyValuePair/usage/ | 2026-11-06 |
+| Opções exclusivas que pedem botões de opção | mais de 2 (macOS); botões de opção em grupos de 2 a 5 | Apple HIG, Toggles — https://developer.apple.com/design/human-interface-guidelines/toggles | 2026-11-06 |
 | Ação primária | exatamente 1 | Prática comum dos sistemas de design; sem número de uma fonte única | — |
 
 ## Por confirmar (não usar como regra)
@@ -36,4 +38,7 @@ Uma versão anterior destas regras dizia "≤ 6 abas, segundo a Apple". A págin
 - **Lei da conservação da complexidade**: Larry Tesler. A complexidade não some, só muda de quem a carrega.
 - **Heurística 8, "design estético e minimalista"**: Nielsen Norman Group — https://www.nngroup.com/articles/ten-usability-heuristics/
 - **Abas bem usadas**: Nielsen Norman Group — https://www.nngroup.com/articles/tabs-used-right/
+- **Região comum** (a caixa agrupa com mais força do que o espaço; tente primeiro só com espaço, e caixas a mais são ruído): Nielsen Norman Group — https://www.nngroup.com/articles/common-region/ (lido em 2026-11-06)
+- **Proximidade** (o rótulo junto do campo; o espaço dentro de um grupo menor do que entre grupos; o afastado lê-se como não relacionado): Nielsen Norman Group — https://www.nngroup.com/articles/gestalt-proximity/ (lido em 2026-11-06)
+- **Interruptores** (gravam na hora; o que espera por um botão usa botões de opção ou uma caixa de seleção; não se misturam os dois): Nielsen Norman Group — https://www.nngroup.com/articles/toggle-switch-guidelines/ (lido em 2026-11-06)
 - **Padrões de ERP** (página de trabalho, navegação, plantas de página): Microsoft Dynamics 365 (https://learn.microsoft.com/en-us/dynamics365/fin-ops-core/dev-itpro/user-interface/workspace-form-pattern) e SAP Fiori (https://www.sap.com/design-system/fiori-design-web/v1-136/page-types/floorplans/when-to-use-which-floorplan). *Citados pela pesquisa anterior; não relidos agora.*

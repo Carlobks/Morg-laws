@@ -86,6 +86,7 @@ Fontes finas podem precisar de mais. Nunca esbata o texto "para parecer minimali
 - O arredondamento cresce com o tamanho: controles < cartões < modais.
 - **Proximidade:** o espaço entre seções é pelo menos o **dobro** do maior espaço dentro delas.
 - Separe primeiro por espaço; a linha vem depois.
+- Numa coluna estreita (cerca de 200 px), **o rótulo vai por cima do valor**: rótulo e valor em pontas opostas da linha leem-se como palavras soltas. Lado a lado, só num contentor mais largo (cerca de 400 px). Todos os blocos da coluna levam o mesmo tratamento: se um vai numa caixa, vão todos.
 
 ## 6. Cor e daltonismo
 
@@ -147,6 +148,7 @@ O que aparece no hover fica visível em ecrãs sem hover (`@media (hover: none)`
 - **Reutilize antes de criar.** Uma variante nova de botão ou de cartão é uma inconsistência nova.
 - **Editar fica no cabeçalho do bloco que edita.** Um campo novo editável entra no formulário que já existe. Não duplique um dado só para o tornar editável.
 - Modais: usam um portal, prendem o foco, fecham com Escape e avisam antes de descartar alterações.
+- **Um interruptor grava na hora.** Se a escolha só vale depois de "Salvar", use botões de opção ou uma caixa de seleção, e não um interruptor. Na mesma tela, não se misturam controles que gravam na hora com outros que esperam por um botão. Mais de duas opções exclusivas pedem botões de opção.
 - Sem emoji em títulos e na interface. Gráficos seguem as mesmas regras de cor (estado × identidade).
 
 ## 11. Checklist antes de entregar
