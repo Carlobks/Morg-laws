@@ -1,6 +1,7 @@
 """Permissões do agente em três colunas (Morg-laws; skill auditoria-de-seguranca, seção 8).
 
-- **deny** (nunca): ler segredos (`.env`, `.envrc`, chaves, credenciais, a lista negra fora do repositório);
+- **deny** (nunca): ler segredos (`.env`, `.envrc`, chaves, credenciais, a lista negra fora do repositório) e, se o
+  projeto escolheu só sessões, a ferramenta `Agent`;
 - **ask** (pergunta antes): push, PR, instalar pacotes ou programas, mexer nas próprias regras de segurança;
 - **allow** (sem perguntar): só leitura e o comando de testes.
 As regras vivem em `.claude/settings.json` (vai no repositório, vale para quem o clonar). As de cada máquina ficam
@@ -16,7 +17,8 @@ import unittest
 from carregar_por_caminho import RAIZ
 
 # Ajuste ao projeto.
-NUNCA = {"Read(**/.env)", "Read(**/.envrc)", "Read(**/.env.*)", "Read(**/*.pem)", "Read(**/*.key)", "Read(~/.ssh/**)",
+SO_SESSOES = False  # True se o projeto escolheu só sessões novas, sem sub-agentes (skill orquestrando-sessoes)
+NUNCA ={"Read(**/.env)", "Read(**/.envrc)", "Read(**/.env.*)", "Read(**/*.pem)", "Read(**/*.key)", "Read(~/.ssh/**)",
          "Read(~/.claude/.credentials.json)", "Read(~/.config/morg-laws/**)"}
 PERGUNTA = {"Bash(git push)", "Bash(git push *)", "Bash(gh pr create*)", "Bash(gh pr merge*)",
             "Bash(npm install *)", "Bash(npx *)", "Bash(pip install *)",
@@ -42,6 +44,10 @@ class TresColunas(unittest.TestCase):
 
     def test_nunca_le_segredos(self):
         self.assertEqual(NUNCA - set(permissoes("settings.json").get("deny", [])), set())
+
+    def test_sub_agentes_conforme_a_escolha(self):
+        # Com só sessões, a ferramenta sai do contexto; sem a escolha escrita, o deny dela não aparece sozinho.
+        self.assertEqual("Agent" in permissoes("settings.json").get("deny", []), SO_SESSOES)
 
     def test_pergunta_antes_do_que_nao_tem_volta(self):
         self.assertEqual(PERGUNTA - set(permissoes("settings.json").get("ask", [])), set())

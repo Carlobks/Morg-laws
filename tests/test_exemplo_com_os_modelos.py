@@ -324,6 +324,26 @@ class ProjetoDeExemplo(unittest.TestCase):
         escrever(settings, texto)
         self.assertFalhaEm("test_allow_so_tem_leituras_e_testes", "test_permissoes.py")
 
+    def escolher_so_sessoes(self, teste="True", deny_agent=False):
+        """Põe `SO_SESSOES = <teste>` na cópia do test_permissoes.py e, se pedido, `"Agent"` no deny da cópia do settings."""
+        permissoes = self.pasta / "tests" / "test_permissoes.py"
+        escrever(permissoes, permissoes.read_text(encoding="utf-8").replace("SO_SESSOES = False", f"SO_SESSOES = {teste}"))
+        if deny_agent:
+            settings = self.pasta / ".claude" / "settings.json"
+            escrever(settings, settings.read_text(encoding="utf-8").replace('"deny": [', '"deny": [\n      "Agent",', 1))
+
+    def test_so_sessoes_sem_o_deny_da_ferramenta_agent(self):
+        self.escolher_so_sessoes("True")
+        self.assertFalhaEm("test_sub_agentes_conforme_a_escolha", "test_permissoes.py")
+
+    def test_so_sessoes_com_o_deny_da_ferramenta_agent(self):
+        self.escolher_so_sessoes("True", deny_agent=True)
+        self.assertPassa("test_permissoes.py")
+
+    def test_deny_da_ferramenta_agent_sem_a_escolha_escrita(self):
+        self.escolher_so_sessoes("False", deny_agent=True)
+        self.assertFalhaEm("test_sub_agentes_conforme_a_escolha", "test_permissoes.py")
+
 
 if __name__ == "__main__":
     unittest.main()

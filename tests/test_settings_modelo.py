@@ -33,5 +33,11 @@ class LigacaoNoSettings(unittest.TestCase):
         self.assertEqual(SETTINGS["permissions"]["disableBypassPermissionsMode"], "disable")
 
 
+    def test_o_molde_vem_sem_o_deny_dos_sub_agentes(self):
+        # Mensagem rápida do que o projeto de exemplo já prova (test_exemplo_com_os_modelos.py): com SO_SESSOES = False,
+        # o test_permissoes.py copiado falharia se o molde trouxesse "Agent" no deny.
+        self.assertNotIn("Agent", SETTINGS["permissions"]["deny"])
+
+
 if __name__ == "__main__":
     unittest.main()

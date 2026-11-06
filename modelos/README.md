@@ -9,7 +9,7 @@ Os testes prontos de `testes-ts/` são a exceção: TypeScript, com o `vitest` e
 
 | Arquivo | Vai para | O que faz |
 |---|---|---|
-| `claude/settings.json` | `.claude/settings.json` | Permissões em três colunas (deny, ask, allow), `disableBypassPermissionsMode` e os hooks abaixo ligados com `onFailure: block` |
+| `claude/settings.json` | `.claude/settings.json` | Permissões em três colunas (deny, ask, allow), `disableBypassPermissionsMode` e os hooks abaixo ligados com `onFailure: block`; sem o `deny` da ferramenta `Agent`, que é opção (passo 8) |
 | `claude/hooks/guarda_do_git.py` | `.claude/hooks/` | Recusa `--no-verify`, mudar o `core.hooksPath`, `git add -A`, `commit -a`, commit sem caminhos, `-m` com várias linhas e `git stash` |
 | `claude/hooks/bloquear_segredos.py` | `.claude/hooks/` | Recusa ler segredos pela shell (o `deny` só cobre a ferramenta Read) e `curl … \| sh` |
 | `claude/hooks/perguntar_antes.py` | `.claude/hooks/` | Pergunta antes de push, de tudo o que escreve no GitHub (PR, issue, comentário, versão, `gh api` de escrita), instalações e mudanças às regras do agente, também no modo automático (onde as regras `ask` não perguntam) |
@@ -65,3 +65,6 @@ Os testes prontos de `testes-ts/` são a exceção: TypeScript, com o `vitest` e
    Os hooks do agente travam se falharem (`"onFailure": "block"`), o que exige o Claude Code v2.1.295 ou mais
    novo; numa versão antiga o campo é ignorado e um hook que não arranca deixa passar.
 7. Prove cada barreira com uma sonda antes de confiar nela (skill `auditoria-de-seguranca`, seção 8).
+8. **Só sessões, sem sub-agentes** (opção; skill `orquestrando-sessoes`, seção 1): acrescente `"Agent"` ao
+   `deny` do `.claude/settings.json` e ponha `SO_SESSOES = True` no `test_permissoes.py`. O nome da ferramenta
+   sozinho tira-a do contexto do agente; `Agent(Explore)` nega um sub-agente só. O molde vem sem esta linha.
