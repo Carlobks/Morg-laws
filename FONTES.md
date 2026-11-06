@@ -7,6 +7,7 @@ Fonte secundária leva a marca *(secundária)* até ser conferida na original.
 
 - **Claude Code — memória, CLAUDE.md, AGENTS.md e imports** — https://code.claude.com/docs/en/memory — lido em 2026-10-29.
   Sustenta: CLAUDE.md com menos de 200 linhas; imports não economizam contexto; com CLAUDE.md e AGENTS.md juntos, o Claude lê só o CLAUDE.md.
+  Relido em 2026-11-06 (a seção do tamanho e a do `CLAUDE.md` de subpasta que perde o fim). Sustenta também: o limite dos arquivos que carregam sob demanda (`CLAUDE.md` de subpasta, regras com `paths`) conta-se em caracteres, depende da janela de contexto e vale desde o Claude Code v2.1.309; do arquivo que passa dele, o Claude recebe só o começo; a página manda contar com `wc -m` (usado em `skills/escrevendo-regras-de-agente/` §4).
 - **Claude Code — skills** — https://code.claude.com/docs/en/skills — lido em 2026-10-29.
   Sustenta: só a descrição da skill carrega no início; o corpo carrega quando é usada.
 - **Claude Code — marketplace de plugins** — https://code.claude.com/docs/en/plugin-marketplaces — lido em 2026-10-29.

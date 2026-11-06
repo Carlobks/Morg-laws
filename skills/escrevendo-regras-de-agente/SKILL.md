@@ -40,6 +40,7 @@ Uma instrução que o agente lê em todo turno custa contexto em todo turno. Esc
 ## 4. Limites de tamanho
 
 - O arquivo lido sempre deve ser **curto**. A documentação do Claude Code recomenda menos de 200 linhas. Num projeto real, um limite de **100 linhas e 160 caracteres por linha**, imposto por um teste, tirou o arquivo de 328 KB para menos de 10 KB.
+- **Meça os caracteres, e não só as linhas:** 140 linhas de 200 caracteres pesam como 400 linhas de 70. O teto por linha não trava o total; ponha um teto também para o total de caracteres. A documentação do Claude Code dá em caracteres o limite dos arquivos que carregam sob demanda (o `CLAUDE.md` de uma subpasta, as regras com `paths`): do que passa dele, o agente recebe só o começo. Mede-se com `wc -m`.
 - Importar outro arquivo (`@caminho`) organiza, mas **não economiza contexto**: o importado carrega junto.
 - Estudos sobre arquivos de contexto mostram que arquivos longos podem **baixar** a taxa de acerto e subir o custo. Curto e concreto rende mais.
 - Quando o arquivo cresce, a correção é **tirar** coisas: o que vale para uma pasta vai para a regra da pasta; o que é procedimento vai para uma skill.
