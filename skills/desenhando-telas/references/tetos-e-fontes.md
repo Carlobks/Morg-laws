@@ -15,7 +15,7 @@ Cada número da skill `desenhando-telas`, com a fonte e a data em que foi lido. 
 | Abas fixas | no máximo 4 ("a partir de cinco, o contentor fica apertado") | Material Design 3, Tabs — https://m3.material.io/components/tabs/guidelines | 2026-10-30 |
 | Abas na barra da Apple | sem número fixo: menos abas navegam melhor; as que não cabem vão para uma aba "Mais"; uma lista que a pessoa personaliza começa com 5 ou menos | Apple HIG, Tab bars — https://developer.apple.com/design/human-interface-guidelines/tab-bars | 2026-10-30 |
 | Rótulo e valor | por cima do valor num contentor estreito (≈ 200 px); lado a lado num médio (≈ 400 px), com o rótulo em ≈ 40 % da largura | Innovaccer, Key Value Pair — https://design.innovaccer.com/components/keyValuePair/usage/ | 2026-11-06 |
-| Opções exclusivas que pedem botões de opção | mais de 2 (macOS); botões de opção em grupos de 2 a 5 | Apple HIG, Toggles — https://developer.apple.com/design/human-interface-guidelines/toggles | 2026-11-06 |
+| Opções exclusivas que pedem botões de opção | mais de 2 (macOS); botões de opção em grupos de 2 a 5; mais de ≈ 5: menu suspenso | Apple HIG, Toggles — https://developer.apple.com/design/human-interface-guidelines/toggles | 2026-11-06 |
 | Ação primária | exatamente 1 | Prática comum dos sistemas de design; sem número de uma fonte única | — |
 
 ## Por confirmar (não usar como regra)
