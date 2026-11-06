@@ -35,6 +35,7 @@ Lidas em 2026-11-02 para a skill `passando-o-trabalho`; o que se leu de cada uma
 - **Claude Code — configuração do modelo** — https://code.claude.com/docs/en/model-config — Sustenta: sem configurar, a automática dispara no limite do modelo (com exceções por modelo); a janela de compactação vai de 100 mil a 1 milhão de tokens.
 - **Claude Code — referência das configurações** — https://code.claude.com/docs/en/settings-reference — Sustenta: a compactação por inatividade (conversa longa parada há cerca de uma hora) e as chaves `idleCompaction` e `autoCompactEnabled`.
 - **Claude Code — custos** — https://code.claude.com/docs/en/costs — Sustenta: a seção «Compact instructions» no CLAUDE.md; compactar um contexto grande é ele próprio um pedido grande.
+  Relido em 2026-11-06 (as seções «Reduce token usage» e «Why usage climbs in a long session»), para `pesquisas/2026-11-05-linha-de-base-do-uso.md`. Sustenta também: o custo cresce com o tamanho do contexto; a primeira mensagem depois de uma pausa maior que a vida da cache reprocessa o contexto inteiro; uma mensagem de outra sessão, entregue a uma sessão parada, vira um turno novo que manda o contexto inteiro; o gasto alto costuma vir de sessões longas nunca limpas e do Opus deixado como padrão.
 - **Codex — comandos** — https://developers.openai.com/codex/cli/slash-commands — o endereço redireciona para `learn.chatgpt.com`. Sustenta: o `/compact` pede confirmação e troca os turnos antigos por um resumo; a página não documenta argumentos; o `/recap` resume sem liberar contexto.
 - **Codex — referência da configuração** — https://developers.openai.com/codex/config-reference — o endereço redireciona para `learn.chatgpt.com`. Sustenta: `compact_prompt` troca o prompt da compactação; `model_auto_compact_token_limit` e `model_post_turn_compact_threshold_percent` decidem quando compacta sozinho, sem valor recomendado.
 
@@ -154,6 +155,14 @@ referem; nesse dia, a publicada no npm era a 6.44.1 (de 2026-10-31).
 - **knip — configuração** — https://knip.dev/reference/configuration — Sustenta: por omissão, os exports sem uso das entradas não se acusam (`includeEntryExports` liga-o, salvo nas entradas dos plugins, como as rotas do Next.js); o `ignoreExportsUsedInFile` cala os exports usados só no próprio arquivo. A página não fala de `export default`.
 - **knip — tratar os achados** — https://knip.dev/guides/handling-issues — Sustenta: o caminho calculado de um `import()` não se resolve e o montado com *template string* pode ser ignorado, o que dá falsos positivos (corrige-se declarando a entrada); esconder um achado não é resolvê-lo.
 - **knip — problemas conhecidos** — https://knip.dev/reference/known-issues — Sustenta: uma configuração que não carrega para o knip com erro; a variável de ambiente que falta é uma das causas, e a página sugere carregar o `.env` para o knip.
+
+## Uso e custo de agentes
+
+Lidas em 2026-11-06 para `pesquisas/2026-11-05-linha-de-base-do-uso.md`. A página dos custos do Claude Code está na seção «Compactação da conversa», com o que sustenta aqui.
+
+- **Claude Code — boas práticas** — https://code.claude.com/docs/en/best-practices — Sustenta: cada pedido manda a conversa inteira, então uma sessão que juntou várias tarefas relê todas em cada turno; o `/clear` entre tarefas sem relação não custa nada; numa assinatura a cache dura cerca de uma hora, e uma sessão nova sai mais barata quando o histórico não faz falta; o Sonnet custa menos no trabalho de rotina e o Haiku serve para sub-agentes de tarefas simples; cada sub-agente faz os próprios pedidos, que contam no mesmo uso.
+- **Anthropic — Building effective agents** (2024-12-19) — https://www.anthropic.com/engineering/building-effective-agents — Sustenta: começar pela solução mais simples e só acrescentar passos ou agentes quando isso melhora o resultado de forma medida, porque um sistema com agentes troca latência e custo por desempenho.
+- **Anthropic — How we built our multi-agent research system** (2025-06-13) — https://www.anthropic.com/engineering/multi-agent-research-system — Sustenta: um agente gasta cerca de 4 vezes os tokens de uma conversa, e um sistema com vários agentes cerca de 15 vezes; só compensa quando a tarefa vale esse custo, e a maior parte das tarefas de código, que pedem contexto partilhado, não é um bom caso hoje.
 
 ## Inspirações (nada copiado)
 
