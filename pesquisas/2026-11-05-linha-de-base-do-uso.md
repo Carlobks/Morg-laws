@@ -14,8 +14,8 @@ conta.
 ## Fontes
 
 - **Medição privada do autor, não publicada.** Os registros exportados do **Token Use**, a ferramenta de medição
-  usada, em três janelas (7 dias, 30 dias e desde o primeiro registro), e as três análises feitas sobre eles, cada
-  número conferido contra os registros chamada a chamada. Os registros e as análises ficam privados.
+  usada, em três janelas (7 dias, 30 dias e desde o primeiro registro), e as três análises feitas sobre eles; os números principais foram recontados à parte contra os
+  registros. Os registros e as análises ficam privados.
 - **O histórico do git do projeto**, contado em 2026-11-06.
 - **Claude Code — boas práticas** — https://code.claude.com/docs/en/best-practices — Entrada no `FONTES.md`.
 - **Claude Code — custos** — https://code.claude.com/docs/en/costs — Entrada no `FONTES.md`.
@@ -33,7 +33,7 @@ que se discute abaixo é só a leitura que ela faz deles para um jeito de trabal
 **O projeto.** Um sistema interno em produção, de uma pequena empresa de serviços, feito por uma pessoa só com
 agentes de código. Quase todo o uso medido é dele: 98% do custo.
 
-**A régua dos dólares.** O plano é uma assinatura **Max**, semanal, de valor fixo. Os dólares abaixo são o preço de
+**A régua dos dólares.** O plano é uma assinatura **Max**, de valor fixo, com um limite de uso que zera toda semana. Os dólares abaixo são o preço de
 tabela que a ferramenta põe em cada chamada: **não são fatura**, servem de régua para comparar o que cada coisa gastou
 do limite. Como o preço do modelo principal caiu no fim de setembro (reler o contexto ficou 2,5 vezes mais barato),
 as comparações entre épocas usam também **preços constantes**: todas as chamadas recalculadas com o preço de hoje.
@@ -43,10 +43,10 @@ as comparações entre épocas usam também **preços constantes**: todas as cha
 | Medida | Valor |
 |---|---|
 | Período dos registros | 2026-07-06 a 2026-11-05, 123 dias de calendário |
-| Dias com uso | 52, nenhum no fim de semana, sempre em dois blocos fixos (manhã e tarde) |
+| Dias com uso | 52, nenhum no fim de semana, com o uso concentrado em dois blocos (manhã e tarde) |
 | Sessões | 88 |
 | Chamadas ao modelo | 23 926 (23 497 do Claude Code; 429 de outra ferramenta) |
-| Horas com chamadas rodando | ~165 a 188 h (**estimativa**: a soma dos intervalos entre chamadas seguidas abaixo de 15 ou de 30 minutos) |
+| Horas com chamadas rodando | ~166 a 188 h (**estimativa**: numa só linha do tempo, com todas as sessões juntas, a soma dos intervalos entre chamadas seguidas abaixo de 15 ou de 30 minutos) |
 | Turnos de mais de 5 minutos | 772 (média de 823 s) |
 
 ### O gasto
@@ -85,14 +85,16 @@ fim da semana** e ter de parar.
 - **Concentração:** as 3 maiores sessões fazem **66%** do custo, e as sessões abertas 3 dias ou mais, **80%**. As duas
   maiores ficaram abertas 35 e 40 dias, com contexto médio perto de 500 mil e máximo perto de 1 milhão.
 - **Modelo:** a família Opus fez 91,7% do custo. O Sonnet teve de 31% a 51% das chamadas em algumas semanas de julho e
-  agosto, custava cerca de metade por chamada e deixou de ser usado em setembro, sem regra que o dissesse.
+  agosto, custava cerca de metade por chamada e deixou de ser usado em setembro, sem regra que o dissesse: com menos tempo para
+  acompanhar o agente, o modelo maior parecia mais seguro.
 
 ### O que é antigo e o que é novo
 
 - **Antigo, e melhorando:** o contexto grande (488 → 309 mil) e as sessões de semanas (a mais longa de outubro durou
   23 dias, não 40).
-- **Antigo, e já resolvido:** os sub-agentes. A ferramenta que os lança foi chamada 28, 25, 3, 5 e 0 vezes de julho a
-  novembro, depois de uma regra escrita que os proíbe.
+- **Antigo, e caindo:** os sub-agentes. A ferramenta que os lança foi chamada 28, 25, 3, 5 e 0 vezes de julho a
+  novembro (novembro com só 4 dias). A queda começa antes da regra escrita que os proíbe, que tem cerca de um mês, e
+  continua depois dela.
 - **Novo, desde meados de outubro:** muitas sessões em paralelo, uma sessão que orquestra as outras e acorda a cada
   aviso, as regravações depois de pausas, carregar skills em quase todo turno (de 5% para 17% do custo) e 2,6 vezes mais
   chamadas por dia. Coincide com **mais trabalho de suporte desde meados de outubro**, com interrupções no meio do dia.
@@ -109,13 +111,14 @@ Contados no git em 2026-11-06, pela data do autor.
   | 223 | 725 | 472 | 791 | 195 |
 
 - Antes de julho não há commit com co-autoria de agente registrada.
-- Nas duas lacunas dos registros de uso de agosto e de setembro há 533 commits, quase todos com agente: o trabalho
-  foi feito em outra máquina. **Os registros de uso medem uma máquina; os commits medem o projeto todo.** Por isso, um
+- Nas lacunas dos registros de uso de 15/08 a 01/09 e de 18 a 23/09 há 533 commits, quase todos com agente: o
+  trabalho foi feito em outra máquina. A de 26/09 a 07/10 não tem commits. **Os registros de uso medem uma máquina; os commits medem o projeto todo.** Por isso, um
   custo dividido por commits sai errado nesses meses.
 
 ### O que a ferramenta apontou e o que se confirmou
 
-Conferido chamada a chamada:
+Conferido contra os registros; os vereditos dos falsos alarmes se baseiam no padrão e em exemplos, sem ler o código nem
+os pedidos de cada caso:
 
 | Achado | Veredito | Por quê, numa linha |
 |---|---|---|
@@ -130,7 +133,7 @@ Conferido chamada a chamada:
 | Vibe Coding | Falso alarme | Eram sessões filhas que começam de um plano já aprovado |
 | Copy-Paste Blindness | Falso alarme | Sessões pequenas, uma delas seguida de auditoria |
 | Lazy Prompting | Falso alarme | Respostas curtas a perguntas com opções: aí, curto é o certo |
-| Low Constraint | Falso alarme | O detector não lê português; cerca de 25% dos pedidos longos têm restrições |
+| Low Constraint | Falso alarme | O detector não lê português; cerca de 25% dos pedidos longos têm restrições (**estimativa**, contada em 30 dias) |
 | Frustration Signals | Falso alarme | Maiúsculas de siglas e de prudência |
 | Single-Project Tunnel Vision | Ignorar | Trabalhar num projeto principal não é defeito |
 
@@ -146,7 +149,13 @@ A ferramenta conta bem; os juízos supõem quem trabalha sozinho, em inglês e s
   coincidem no tempo; os dados não os separam.
 - **O histórico incompleto.** Parte foi em outra máquina e, antes de julho, em outra ferramenta. Os números de antes
   de outubro ficam abaixo do real: a coluna «antes» serve só como indicação.
-- **Os sub-agentes e as compactações.** Os registros não os separam bem; só há a contagem das chamadas à ferramenta.
+- **Os sub-agentes e as compactações.** Os registros não os separam bem: dos sub-agentes só há a contagem das
+  chamadas à ferramenta, e das compactações só um piso (12 achadas no período todo).
+- **Os vereditos dos achados da ferramenta.** Não se leu o código aceito nem os pedidos das sessões filhas: os
+  vereditos se baseiam no padrão e em exemplos dos registros.
+- **O fuso dos horários.** Os carimbos dos registros foram lidos como UTC, por suposição. Disso dependem os dois blocos
+  de uso e o corte das semanas do plano.
+- **A semana dos 91%** ainda não tinha acabado quando se mediu: os $512 não são o valor final.
 - **As horas.** São uma estimativa do tempo com chamadas rodando, não do tempo da pessoa no computador, e dependem do
   limiar (15 ou 30 minutos).
 - **Os preços constantes** assumem o mesmo uso com o preço de hoje; o preço de cada modelo foi deduzido dos próprios
@@ -165,8 +174,8 @@ A ferramenta conta bem; os juízos supõem quem trabalha sozinho, em inglês e s
 | O modelo mais caro em tudo | 99% das chamadas em Opus nos 7 dias | Só texto, em `biblia-akita/` (escolher pelo preço), sem aplicação |
 | Muito volume por dia | 345 → 902 chamadas e 1,3 → 11,8 sessões por dia | Por fazer |
 
-Dos comportamentos verdadeiros ou em parte, **nenhum** é hoje recusado por uma máquina (hook, teste ou CI): metade
-está só em texto e metade não tem proteção nenhuma. As fontes públicas dizem o mesmo por outras palavras: cada pedido
+Dos cinco problemas, **nenhum** é hoje recusado por uma máquina (hook, teste ou CI): dois estão só em texto e três
+não têm proteção nenhuma. As fontes públicas dizem o mesmo por outras palavras: cada pedido
 manda a conversa inteira, a primeira mensagem depois de a cache expirar reprocessa tudo, e uma sessão nova sai mais
 barata quando o histórico não faz falta (boas práticas e custos do Claude Code); vários agentes gastam muito mais
 tokens do que um só, e só compensam quando a tarefa vale esse custo (os dois artigos da Anthropic).
@@ -174,7 +183,7 @@ tokens do que um só, e só compensam quando a tarefa vale esse custo (os dois a
 **Como se compara depois.**
 
 1. **A mesma ferramenta e as mesmas janelas** (7 e 30 dias), quatro semanas depois de as regras entrarem no projeto,
-   com as mesmas contas e a mesma estimativa das horas.
+   com as mesmas contas e a mesma estimativa das horas (numa só linha do tempo, com todas as sessões juntas).
 2. **A preços constantes**: senão, uma mudança de preço parece efeito das regras.
 3. **Por dia de uso e por semana do plano**, não por mês. A medida principal é **em que dia da semana o limite chega a
    100%** e o **% do limite por dia útil** (alvo: 18% ou menos). O objetivo não é gastar menos: é o limite durar a
