@@ -77,7 +77,7 @@ Antes de dizer "feito":
 2. **Rodar os portões** do projeto (tipos, lint, testes relacionados).
 3. **Commitar por caminho**, em commits atômicos.
 4. **Fragmento** do changelog, se a mudança se vê de fora.
-5. **Registrar os bugs encontrados e não corrigidos**, no lugar que o projeto usa para isso, organizados por área. Sem um rastreador que o agente possa escrever, é **um arquivo por bug**, numa pasta por área (a pasta é a área): um arquivo único colide entre sessões, como o changelog (§5). O commit que o corrige leva uma marca que aponta para o arquivo e o fecha no mesmo commit. O índice dos abertos gera-se por script e não se commita. O bug é um item aberto, que muitas sessões criam e fecham; uma lição que fica depois da correção vai para as armadilhas (molde `modelos/documentos/armadilhas.md`).
+5. **Registrar os bugs encontrados e não corrigidos**, no lugar que o projeto usa para isso, organizados por área. Sem um rastreador que o agente possa escrever, é **um arquivo por bug**, numa pasta por área (a pasta é a área): um arquivo único colide entre sessões, como o changelog (§5). O commit que o corrige leva uma marca que aponta para o arquivo e o fecha no mesmo commit. O índice dos abertos gera-se por script e não se commita. O bug é um item aberto, que muitas sessões criam e fecham; uma lição que fica depois da correção vai para as armadilhas (molde [`modelos/documentos/armadilhas.md`](https://github.com/Carlobks/Morg-laws/blob/main/modelos/documentos/armadilhas.md)).
 6. **Dizer o que ficou por fazer e o que não se verificou.** Pedir o push só com os portões verdes.
 
 ## 7. Quando algo dá errado
