@@ -1,6 +1,6 @@
 # Código morto: como achá-lo sempre do mesmo jeito, e o que a ferramenta não vê
 
-Data: 2026-11-03 (as medições). A documentação do knip foi lida em 2026-11-06.
+Data: 2026-11-03 e 2026-11-04 (as medições). A documentação do knip foi lida em 2026-11-06.
 
 ## Pergunta
 
@@ -32,7 +32,7 @@ As medições foram feitas num projeto Next.js real (App Router, vitest e testes
 - Instalar o pacote numa pasta isolada e procurar no código dele chamadas de rede e telemetria (`fetch`, `http`,
   `https`). No 5.88.1 não havia nenhuma.
 - Fixar a versão exata (`npm i -D -E`), com a impressão digital no lockfile.
-- Rodar o `npm audit` antes e depois, e conferir se algum aviso novo cai num pacote da ferramenta.
+- Rodar o `npm audit` depois (e antes, para comparar), e conferir se algum aviso cai num pacote da ferramenta.
 - Ler o diff do lockfile: a instalação também mudou de lado dependências opcionais que já existiam (subiram de
   versão sem ninguém pedir).
 
@@ -59,15 +59,15 @@ grupo ganhou uma linha na configuração:
 `--production` deixa os testes de fora e apanha-o. A página do modo de produção diz o mesmo: como os testes importam
 o código de produção, um arquivo pode parecer usado sem o ser.
 
-**Os pontos cegos.** Quatro coisas que o knip 5.88.1 não mostrou, e o que a documentação lida em 2026-11-06 diz de
-cada uma:
+**Os pontos cegos.** Três coisas que o knip 5.88.1 não mostrou, e uma por verificar, com o que a documentação lida
+em 2026-11-06 diz de cada uma:
 
 | O que não se viu | Visto no | O que a documentação diz |
 |---|---|---|
 | Um `export default` que ficou sem chamador | 5.88.1, ao apagar código de verdade | Nada: as páginas da configuração e dos achados não falam de `export default`. Não se sabe se é um limite geral ou do caso. |
 | Um ramo morto dentro de um arquivo vivo (um `if` que já não se toma) | 5.88.1 | Nada sobre ramos: a página inicial fala de arquivos, exports e dependências. Tira-se à mão, lendo o código. |
-| Uma rota HTTP (`route.ts`) que ninguém chama | 5.88.1 | O plugin do Next.js põe `app/**/route` entre as entradas, e por omissão os exports das entradas não se acusam (`includeEntryExports`). Uma rota sem chamador acha-se pelo endereço dela, com `git grep`. |
-| Um import montado a partir de texto (o caminho numa variável) | não procurado no projeto | A página dos achados diz que o caminho calculado de um `import()` não se resolve e que o montado com *template string* pode ser ignorado. O efeito é o contrário de um ponto cego: um arquivo vivo acusado de morto. Declara-se como entrada. |
+| Uma rota HTTP (`route.ts`) que ninguém chama | 5.88.1 | O plugin do Next.js põe `app/**/route` entre as entradas, e por omissão os exports das entradas não se acusam, nem com o `includeEntryExports` ligado, porque é uma entrada do plugin. Uma rota sem chamador acha-se pelo endereço dela, com `git grep`. |
+| Um import montado a partir de texto (o caminho numa variável) | não procurado (knip 5.88.1) | A página dos achados diz que o caminho calculado de um `import()` não se resolve e que o montado com *template string* pode ser ignorado. O efeito é o contrário de um ponto cego: um arquivo vivo acusado de morto. Declara-se como entrada. |
 
 **A simulação numa cópia.** Para saber o que morre em cadeia ao apagar um ramo antigo, sem tocar no projeto:
 
@@ -91,7 +91,7 @@ tamanho da cadeia só se sabe simulando.
 
 ## O que não se verificou
 
-- **A versão 6 do knip** (a 6.44.1 era a publicada em 2026-11-06) não foi rodada. Os quatro pontos cegos foram vistos
+- **A versão 6 do knip** (a 6.44.1 era a publicada em 2026-11-06) não foi rodada. Os três pontos cegos foram vistos
   no 5.88.1; a coluna da documentação é da leitura de 2026-11-06, que não diz a versão.
 - O porquê do `export default` calado: a documentação lida não fala dele, e não se fez um caso mínimo para o provar.
 - Os imports montados a partir de texto não foram procurados no projeto medido.
@@ -114,4 +114,4 @@ tamanho da cadeia só se sabe simulando.
 7. **Travar o que já está limpo:** a saída da ferramenta vira uma linha de base que só encolhe, como as outras
    catracas (skill `codigo-legivel` §4).
 
-Estes factos são de uma versão de uma ferramenta: antes de os usar numa versão nova, rode-a de novo num caso pequeno.
+Estes fatos são de uma versão de uma ferramenta: antes de os usar numa versão nova, rode-a de novo num caso pequeno.
