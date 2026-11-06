@@ -176,7 +176,7 @@ Lidas em 2026-11-06 para `pesquisas/2026-11-05-linha-de-base-do-uso.md`. A pági
   - A pasta `biblia-akita/` resume, com palavras nossas e um arquivo por tema, os conselhos do livro, cada um com a página. Nenhum trecho foi copiado: antes de cada commit, um script local confere que nenhuma sequência de 8 palavras dos resumos é igual ao livro, que nunca entra no repositório.
   - pp. 128–129: skills e ferramentas de terceiros só com leitura completa e uma dor concreta (usado em `escrevendo-regras-de-agente`).
   - p. 165: modelos esconderam uma biblioteca vulnerável numa lista de exceções (base de "sem silenciar alarme").
-  - pp. 30–32, 124 e 411: a janela cheia custa dinheiro, tempo e atenção; o resumo da compactação perde o detalhe e o agente volta a propor o que já se descartou; a atenção cai à medida que a janela enche; uma sessão longa se enche de tentativas antigas (usado em `passando-o-trabalho`; o livro não dá nenhuma percentagem para compactar).
+  - pp. 30–32, 124 e 411: a janela cheia custa dinheiro, tempo e atenção; o resumo da compactação perde o detalhe e o agente volta a propor o que já se descartou; a atenção cai à medida que a janela enche; uma sessão longa se enche de tentativas antigas (usado em `passando-o-trabalho`; o livro não dá nenhum limiar para compactar).
 - **Fabio Akita — blog** — https://akitaonrails.com — lido em 2026-11-04. Sustenta: o índice dos artigos, por mês, de onde saíram os endereços e as datas de publicação da `biblia-akita/leituras.md`.
 
 ## Artigos que o livro recomenda

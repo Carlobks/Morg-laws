@@ -1,6 +1,6 @@
 ---
 name: passando-o-trabalho
-description: Guarda o trabalho em curso num handoff por assunto (.context/HANDOFF-<assunto>.md) antes de compactar a conversa ou de parar, commita só esse arquivo, entrega o /compact pronto para o Claude Code ou para o Codex e conduz a retomada depois. O handoff leva o estado conferido no git, as decisões, o que já falhou e não se repete, e os próximos passos. Usar quando a conversa está longa e vai ser compactada, quando a dúvida é compactar ou abrir uma sessão nova porque a conversa cresceu, quando o trabalho para e continua em outra sessão ou em outro dia, ou ao retomar depois de compactar («lê o handoff»). Não usar para dividir trabalho entre sessões nem pedir uma auditoria independente (é a orquestrando-sessoes), nem para commits, mensagens ou push do dia a dia (é a git-e-commits), nem para resumir documentos ou escrever changelog.
+description: Guarda o trabalho em curso num handoff por assunto (.context/HANDOFF-<assunto>.md) antes de compactar a conversa ou de parar, commita só esse arquivo, entrega o /compact pronto para o Claude Code ou para o Codex e conduz a retomada depois. O handoff leva o estado conferido no git, as decisões, o que já falhou e não se repete, e os próximos passos. Usar quando a conversa está longa e vai ser compactada, quando a dúvida é compactar ou abrir uma sessão nova porque a conversa cresceu, quando o trabalho para (uma pausa de mais de uma hora, o fim do dia) e continua em outra sessão, ou ao retomar depois de compactar («lê o handoff»). Não usar para dividir trabalho entre sessões nem pedir uma auditoria independente (é a orquestrando-sessoes), nem para commits, mensagens ou push do dia a dia (é a git-e-commits), nem para resumir documentos ou escrever changelog.
 ---
 
 # Passando o trabalho
@@ -17,6 +17,7 @@ O essencial, se esta skill chegar cortada depois de uma compactação:
 3. Commitar **só** esse arquivo, pelo caminho, com os hooks do projeto. Pasta ignorada: ver a seção 3.
 4. Entregar o comando de compactação e a mensagem de retomada.
 5. Ao retomar: ler o handoff inteiro, comparar com o `git status -s`, reler o «Descartado», seguir o passo 1.
+6. Pausa de mais de uma hora ou fim do dia: handoff antes de parar; ao voltar, uma sessão nova que o lê.
 
 ## 1. Conferir o estado, em silêncio
 
@@ -72,7 +73,8 @@ Regras do conteúdo:
 
 ## 3. Commitar o handoff, sozinho
 
-O handoff vai para o git **a cada compactação**, antes do `/compact`, **e no fecho de cada fase**. Assim, quem
+O handoff vai para o git **a cada compactação**, antes do `/compact`, **no fecho de cada fase**,
+antes de uma pausa de mais de uma hora e no fim do dia. Assim, quem
 retoma em outra máquina ou em outra sessão o encontra, e o histórico mostra como o estado mudou.
 
 ```
@@ -99,12 +101,25 @@ git commit -F <arquivo-da-mensagem> -- .context/HANDOFF-<assunto>.md
 trabalho, compacte com o handoff. Para um trabalho sem relação com este, grave o handoff e abra uma sessão nova: ela
 não precisa do histórico desta. Dividir o trabalho em várias sessões é da skill `orquestrando-sessoes`.
 
-**Quando:** a prática do autor do Morg-laws é compactar à mão por volta de **50% da janela**, com instruções, em vez
-de esperar pela automática no limite. **O número é dele**, escolhido para uso próprio: nem o livro abaixo nem a
-documentação oficial recomendam uma percentagem. O porquê de compactar cedo vem do livro *Competente o Suficiente*: a janela
-cheia custa dinheiro, porque é relida a cada mensagem, custa tempo e torna mais difícil achar o que importa (p. 31); a
-atenção cai à medida que ela enche (p. 124); e uma sessão longa fica cheia de tentativas antigas (p. 411). No Claude
-Code, o `/context` mostra o que ocupa a janela.
+**Uma sessão por assunto, fechada no fim do dia.** No fim do dia, grave e commite o handoff e feche a sessão; no dia
+seguinte, uma sessão nova o lê. Uma sessão aberta durante dias junta assuntos, e cada pedido relê todos eles.
+
+**Pausa de mais de uma hora:** grave e commite o handoff antes de parar. Ao voltar, abra uma sessão nova que o lê,
+em vez de escrever na antiga. Numa assinatura, a cache do pedido dura cerca de uma hora; depois dela, a primeira
+mensagem reprocessa a conversa inteira, e uma sessão nova com o handoff sai mais barata. A compactação por
+inatividade do Claude Code não resolve isto: só age a partir de 200 mil tokens, e o resumo dela é o automático, sem
+o handoff.
+
+**Quando:** compacte à mão por volta de **150 mil tokens**, com instruções, em vez de esperar pela automática.
+**O número é uma escolha do autor do Morg-laws, feita depois de medir o próprio uso**, em que reler a conversa era
+64% do custo
+([linha de base do uso](https://github.com/Carlobks/Morg-laws/blob/main/pesquisas/2026-11-05-linha-de-base-do-uso.md)):
+nem o livro abaixo nem a documentação oficial dão um limiar. O limiar conta-se em tokens, e não em percentagem da
+janela: numa janela de 1 milhão, metade são 500 mil, e cada mensagem relê tudo isso; e a automática, no Claude Code,
+só dispara perto do limite do modelo. O porquê de compactar cedo vem do livro *Competente o Suficiente*: a janela
+cheia custa dinheiro, porque é relida a cada mensagem, custa tempo e torna mais difícil achar o que importa (p. 31);
+a atenção cai à medida que ela enche (p. 124); e uma sessão longa fica cheia de tentativas antigas (p. 411). No
+Claude Code, o `/context` mostra o que ocupa a janela.
 
 **A língua:** o comando de compactação e a mensagem de retomada escrevem-se na língua do usuário, a mesma em que ele
 escreve na conversa. Os blocos abaixo estão em português do Brasil só como modelo do conteúdo.
@@ -159,5 +174,7 @@ Ver [`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md#comp
 [`pesquisas/2026-11-02-compactacao-claude-code-e-codex.md`](https://github.com/Carlobks/Morg-laws/blob/main/pesquisas/2026-11-02-compactacao-claude-code-e-codex.md): a
 documentação do Claude Code (o `/compact`, a compactação automática e por inatividade, o que volta depois) e a do
 Codex (o `/compact` e as skills); a especificação Agent Skills; o livro *Competente o Suficiente*, de Fabio Akita
-(pp. 30–32, 124 e 411). O formato do handoff, o commit a cada compactação e os 50% são prática do autor do
-Morg-laws.
+(pp. 30–32, 124 e 411). O formato do handoff, o commit a cada compactação, os ~150 mil tokens, a pausa
+de uma hora e a sessão por assunto fechada no fim do dia são prática do autor do Morg-laws; os problemas que as
+motivaram estão medidos na
+[linha de base do uso](https://github.com/Carlobks/Morg-laws/blob/main/pesquisas/2026-11-05-linha-de-base-do-uso.md).
