@@ -77,7 +77,7 @@ Antes de dizer "feito":
 2. **Rodar os portões** do projeto (tipos, lint, testes relacionados).
 3. **Commitar por caminho**, em commits atômicos.
 4. **Fragmento** do changelog, se a mudança se vê de fora.
-5. **Registrar os bugs encontrados e não corrigidos**, no lugar que o projeto usa para isso, organizados por área. Sem um rastreador que o agente possa escrever, é **um arquivo por bug**, numa pasta por área (a pasta é a área): um arquivo único colide entre sessões, como o changelog (§5). O commit que o corrige leva uma marca que aponta para o arquivo e o fecha no mesmo commit. O índice dos abertos gera-se por script e não se commita. O bug é um item aberto, que muitas sessões criam e fecham; uma lição que fica depois da correção vai para as armadilhas.
+5. **Registrar os bugs encontrados e não corrigidos**, no lugar que o projeto usa para isso, organizados por área. Sem um rastreador que o agente possa escrever, é **um arquivo por bug**, numa pasta por área (a pasta é a área): um arquivo único colide entre sessões, como o changelog (§5). O commit que o corrige leva uma marca que aponta para o arquivo e o fecha no mesmo commit. O índice dos abertos gera-se por script e não se commita. O bug é um item aberto, que muitas sessões criam e fecham; uma lição que fica depois da correção vai para as armadilhas (molde `modelos/documentos/armadilhas.md`).
 6. **Dizer o que ficou por fazer e o que não se verificou.** Pedir o push só com os portões verdes.
 
 ## 7. Quando algo dá errado
@@ -91,4 +91,4 @@ Antes de dizer "feito":
 
 ## Fontes
 
-As regras vêm da prática dos projetos de origem. Os números (109 arquivos, 86 de 199) foram medidos lá. A parte do `index.lock` apoia-se no código do git (`lockfile.c`). O changelog e a versão apoiam-se no Keep a Changelog, no towncrier e no SemVer. Um arquivo por bug (§6, passo 5) apoia-se no towncrier e no texto do GitLab sobre o changelog que colidia. Todas estão em [`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md).
+As regras vêm da prática dos projetos de origem. Os números (109 arquivos, 86 de 199) foram medidos lá. A parte do `index.lock` apoia-se no código do git (`lockfile.c`). O changelog e a versão apoiam-se no Keep a Changelog, no towncrier e no SemVer. Um arquivo por bug (§6, passo 5) apoia-se no towncrier e no texto do GitLab sobre o changelog que colidia; a marca no commit e o índice gerado vêm da prática dos projetos de origem. Todas estão em [`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md).
