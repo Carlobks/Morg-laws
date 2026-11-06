@@ -134,6 +134,20 @@ Lidas em 2026-11-04 para os moldes de `modelos/testes-ts/` e a skill `codigo-leg
 - **Vitest — Test API** — https://vitest.dev/api/test — Sustenta: o 1.º argumento de `test.skip` é o nome do teste (`test.skip('skipped test', …)`), por isso `test.skip(condição, 'motivo')` salta sempre; `test.skipIf(condição)` salta quando a condição é verdadeira e `test.runIf` é o contrário; `test.each` e `test.only`; no contexto do teste, `context.skip(condição, mensagem)`, com os dois argumentos opcionais.
 - **Node.js — lista das versões** — https://nodejs.org/dist/index.json — Sustenta: a 24 mais nova com pelo menos duas semanas (a 24.22.1, de 2026-10-20, uma versão de segurança), fixada em `tests/exemplo-ts/.nvmrc`.
 
+## Código morto
+
+Lidas em 2026-11-06 para `pesquisas/2026-11-03-codigo-morto.md`. As páginas não dizem a versão do knip a que se
+referem; nesse dia, a publicada no npm era a 6.44.1 (de 2026-10-31).
+
+- **knip — página inicial** — https://knip.dev — Sustenta: o knip acha dependências, exports e arquivos sem uso; a página não fala de ramos dentro de um arquivo.
+- **knip — modo de produção** — https://knip.dev/features/production-mode — Sustenta: como os testes importam o código de produção, um arquivo pode parecer usado sem o ser; o `--production` deixa de fora os testes e as *stories* e conta só as entradas marcadas com `!` e as de produção dos plugins.
+- **knip — plugins** — https://knip.dev/explanations/plugins — Sustenta: os arquivos de configuração em JavaScript ou TypeScript são carregados dinamicamente (executados) para ler o que exportam, e também se analisam como entradas.
+- **knip — arquivos de entrada** — https://knip.dev/explanations/entry-files — Sustenta: as entradas por omissão (`index`, `main`, `cli`), as que os plugins e o `package.json` acrescentam, e que um `entry` próprio substitui as de omissão em vez de se somar.
+- **knip — plugin do Next.js** — https://knip.dev/reference/plugins/next — Sustenta: `app/**/route` (e `page`, `layout`, o `middleware`, o `proxy` e o `instrumentation`) são entradas por omissão; o plugin carrega o `next.config`.
+- **knip — configuração** — https://knip.dev/reference/configuration — Sustenta: por omissão, os exports sem uso das entradas não se acusam (`includeEntryExports` liga-o); o `ignoreExportsUsedInFile` cala os exports usados só no próprio arquivo. A página não fala de `export default`.
+- **knip — tratar os achados** — https://knip.dev/guides/handling-issues — Sustenta: o caminho calculado de um `import()` não se resolve e o montado com *template string* pode ser ignorado, o que dá falsos positivos (corrige-se declarando a entrada); esconder um achado não é resolvê-lo.
+- **knip — problemas conhecidos** — https://knip.dev/reference/known-issues — Sustenta: uma configuração que não carrega para o knip com erro; a variável de ambiente que falta é uma das causas, e a página sugere carregar o `.env` para o knip.
+
 ## Inspirações (nada copiado)
 
 - **Matt Pocock — skill "grill-me"** (licença MIT) — https://github.com/mattpocock/skills — consultado em 2026-10-29.
