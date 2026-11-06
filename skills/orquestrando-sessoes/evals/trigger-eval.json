@@ -5,6 +5,8 @@
   {"query": "devo usar sub-agentes para esta migração grande?", "should_trigger": true},
   {"query": "o git diz que existe um index.lock, outra sessão está a commitar?", "should_trigger": true},
   {"query": "outra sessão diz que encontrou 12 problemas, posso confiar?", "should_trigger": true},
+  {"query": "abre a fase seguinte e escolhe o modelo da filha", "should_trigger": true},
+  {"query": "a sessão que orquestra já vive há três dias, como a mantenho barata?", "should_trigger": true},
   {"query": "faz o commit só dos meus arquivos", "should_trigger": false},
   {"query": "escreve a regra sobre sub-agentes no CLAUDE.md", "should_trigger": false},
   {"query": "abre o arquivo de sessão do usuário no Supabase", "should_trigger": false},

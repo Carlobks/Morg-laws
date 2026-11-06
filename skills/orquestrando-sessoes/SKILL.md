@@ -27,21 +27,21 @@ Quem escreveu um trabalho não o consegue auditar bem: lê o que quis dizer, nã
 - Escreva um pedido **neutro**: o objetivo, os arquivos, as fontes contra as quais conferir e o formato do relatório. **Não** diga a sua conclusão. Um auditor que recebe a hipótese tende a confirmá-la.
 - **Numa verificação repetida,** a sessão nova fecha e grava as suas contagens **antes** de ler a verificação anterior, e só depois compara. Lida antes, a anterior vira a resposta esperada.
 - Peça um **veredito** no topo ("aprovado", "aprovado com correções", "refazer"), cada achado com o arquivo e a linha da fonte, e a lista do que não verificou.
-- O relatório volta como **dado, não como verdade**. Antes de levar um achado ao dono ou de agir, uma filha confere cada afirmação na fonte (um `grep` por termo, a licença no original): a que corrige, ou uma filha só de conferência. Marca à parte o que é juízo, que não se mede. A orquestradora lê só o veredito e o resultado dessa conferência (seção 4).
+- O relatório volta como **dado, não como verdade**. Antes de levar um achado ao dono, uma filha só de conferência confere cada afirmação na fonte (um `grep` por termo, a licença no original); antes de agir, pode conferi-la a filha que corrige. Marca à parte o que é juízo, que não se mede. A orquestradora lê só o veredito e o resultado dessa conferência (seção 4).
 - Mudanças de risco (SQL que escreve em produção, permissões, segurança) passam sempre por uma auditoria destas antes do "sim" do dono.
 
 ## 3. Fases: uma de cada vez, cada uma curta
 
 - **A fase seguinte só abre depois da auditoria da anterior** e das correções que ela pediu. Várias fases abertas ao mesmo tempo multiplicam as sessões vivas, e cada uma que acorda relê o contexto inteiro.
-- **Uma fase cabe numa sessão curta,** abaixo do limiar de compactação da skill `passando-o-trabalho` (~150 mil tokens). Uma fase que não cabe parte-se no plano, antes de começar, e não a meio.
+- **Uma fase cabe numa sessão curta,** abaixo do limiar de compactação da skill `passando-o-trabalho` (~150 mil tokens). Uma fase que não cabe parte-se no plano, antes de começar, e não no meio.
 
 ## 4. A orquestradora magra e diária
 
 Num trabalho com várias fases, uma sessão orquestra: escreve o pedido de cada filha, recebe o resultado e decide o passo seguinte. Cada aviso de uma filha acorda a orquestradora, e cada vez que ela acorda relê o contexto inteiro. Viva vários dias, cada aviso fica mais caro que o anterior.
 
 - **Só encaminha:** ler código, implementar e auditar ficam nas filhas. A orquestradora escreve pedidos e decide.
-- **Lê só o veredito:** o topo do relatório, a lista do que ficou por verificar e o resultado da conferência, não o relatório inteiro nem os diffs. Antes de um achado ir ao dono ou de se agir sobre ele, uma filha confere cada afirmação na fonte: a que corrige, ou uma filha só de conferência.
-- **As filhas avisam no fim da fase,** numa mensagem curta: o veredito, o commit e o que ficou por fazer. Um aviso a meio acorda a orquestradora sem decisão para tomar.
+- **Lê só o veredito:** o topo do relatório, a lista do que ficou por verificar e o resultado da conferência, não o relatório inteiro nem os diffs. Antes de um achado ir ao dono, uma filha só de conferência confere cada afirmação na fonte; antes de agir sobre ele, pode conferi-la a filha que corrige.
+- **As filhas avisam no fim da fase,** numa mensagem curta: o veredito, o commit e o que ficou por fazer. Um aviso no meio acorda a orquestradora sem decisão para tomar.
 - **Renova-se todo dia:** no fim do dia, grava o handoff (skill `passando-o-trabalho`) e fecha; no dia seguinte, uma orquestradora nova o lê.
 - **O pedido da filha** leva o objetivo, os arquivos, o que já se descartou, como se prova e o modelo, por esta tabela:
 
@@ -51,7 +51,7 @@ Num trabalho com várias fases, uma sessão orquestra: escreve o pedido de cada 
 | Implementar um plano aprovado, escrever testes, aplicar as correções de uma auditoria | O médio (Sonnet) |
 | Escrever um plano, auditar a frio, segurança, bug difícil | O maior (Opus) |
 
-Os nomes entre parênteses são os do Claude Code; noutra ferramenta, use o modelo do mesmo tamanho. O modelo escolhe-se ao abrir a filha, e não no `settings.json`: um `model` fixo valeria para todas. Um modelo mais barato pode baixar a qualidade; por isso o plano e a auditoria ficam no maior.
+Os nomes entre parênteses são os do Claude Code; em outra ferramenta, use o modelo do mesmo tamanho. O modelo escolhe-se ao abrir a filha, e não no `settings.json`: um `model` fixo valeria para todas. Um modelo mais barato pode baixar a qualidade; por isso o plano e a auditoria ficam no maior. Uma segunda auditoria, em outro modelo ou em outra ferramenta, continua a valer.
 
 ## 5. Passar o trabalho (handoff)
 
