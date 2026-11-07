@@ -17,6 +17,7 @@ As funções recebem a raiz e a lista de arquivos, para os casos de erro serem p
 import json
 import re
 import tempfile
+import tomllib
 import unittest
 from pathlib import Path
 from urllib.parse import urlsplit
@@ -48,6 +49,22 @@ NUMERO_DE_DECISAO = re.compile(r"\bD\d+\b")
 TEXTO_ESCRITO_POR_PESSOAS = (".md", ".py", ".sh", ".yml")
 
 
+LYCHEE_TOML = RAIZ / "lychee.toml"
+# O que o lychee 0.24.2 isenta sozinho, antes de olhar para os `exclude` do lychee.toml (lychee-lib/src/filter/mod.rs
+# na tag lychee-v0.24.2): os domínios de exemplo (com um nível de subdomínio) e os fins reservados, o twitter.com e os
+# falsos positivos. Os example.com, .org e .net ficam de fora: são isentos dos dois lados. Um link para um destes num
+# .md seria saltado em silêncio pelo lychee, e o teste local não o deixa passar.
+ISENTOS_SO_PELO_LYCHEE = {
+    "dominios": ("example.edu",),
+    "fins": (".test", ".example", ".invalid", ".localhost", "twitter.com"),
+    "padroes": tuple(re.compile(padrao) for padrao in (
+        r"^https?://schemas\.openxmlformats\.org", r"^https?://schemas\.microsoft\.com",
+        r"^https?://schemas\.zune\.net", r"^https?://www\.w3\.org/1999/xhtml", r"^https?://www\.w3\.org/1999/xlink",
+        r"^https?://www\.w3\.org/2000/svg", r"^https?://www\.w3\.org/2001/XMLSchema-instance",
+        r"^https?://ogp\.me/ns#", r"^https?://(.*)/xmlrpc\.php$")),
+}
+
+
 def normalizar(url):
     """O endereço sem a pontuação colada, sem a âncora e sem a barra final."""
     return url.rstrip(".,;:!?»").split("#")[0].rstrip("/")
@@ -73,6 +90,25 @@ def links_sem_fonte(raiz, arquivos):
         for url in sorted(links(ler(raiz / nome)) - fontes):
             if not isento(url):
                 erros.append(f"{nome}: {url} — link novo → entrada no FONTES.md com a data e o que sustenta")
+    return erros
+
+
+def isento_so_pelo_lychee(url):
+    """O lychee salta este endereço sem o conferir, por conta própria (e não pelos `exclude` do lychee.toml)."""
+    dominio = urlsplit(url).hostname or ""
+    return (any(dominio == d or dominio.endswith("." + d) for d in ISENTOS_SO_PELO_LYCHEE["dominios"])
+            or dominio.endswith(ISENTOS_SO_PELO_LYCHEE["fins"])
+            or any(padrao.search(url) for padrao in ISENTOS_SO_PELO_LYCHEE["padroes"]))
+
+
+def links_que_o_lychee_saltaria(raiz, arquivos):
+    """Mensagens para cada link de um .md para um endereço que o lychee isenta sozinho."""
+    erros = []
+    for nome in sorted(a for a in arquivos if a.endswith(".md")):
+        for url in sorted({u.rstrip(".,;:!?»") for u in URL.findall(ler(raiz / nome))}):
+            if isento_so_pelo_lychee(url):
+                erros.append(f"{nome}: {url} — o lychee salta este endereço sem o conferir; troque-o por um que abra "
+                             "ou tire o link")
     return erros
 
 
@@ -203,6 +239,49 @@ class FontesEPesquisasDoMorgLaws(unittest.TestCase):
         self.assertEqual(numeros_de_decisoes(RAIZ, arquivos_do_git(RAIZ)), [])
 
 
+CASOS_DE_ISENCAO = (
+    # Os de test_links_isentos_passam, test_a10 e test_n6.
+    "https://github.com/Carlobks/Morg-laws/tree/main/x", "https://example.com/r.git", "https://www.example.org",
+    "https://example.net/", "https://github.com/Carlobks/Morg-laws", "https://example.com:8080/x",
+    "https://raw.githubusercontent.com/Carlobks/Morg-laws/main/x", "https://github.com/Carlobks/Morg-laws-copia",
+    "https://raw.githubusercontent.com/Carlobks/Morg-laws-copia/main/x",
+    "https://raw.githubusercontent.com/outra/Morg-laws/main/x", "https://example.com.test/x",
+    "https://github.com/Carlobks/Morg-laws.copia/main/x", "https://github.com/Carlobks/Morg-laws.copia",
+    "https://raw.githubusercontent.com/Carlobks/Morg-laws.copia", "https://github.com/Carlobks/Morg-laws.git",
+    "https://github.com/Carlobks/Morg-laws.git/info/refs", "https://github.com/Carlobks/Morg-laws.github",
+    # As maiúsculas: o lychee põe o domínio em minúsculas mas não o caminho (só o primeiro prova o lado do lychee).
+    "https://github.com/carlobks/MORG-LAWS/x", "https://WWW.EXAMPLE.ORG",
+    # A âncora e a pergunta: o Python normaliza antes de isentar, o lychee olha para o endereço como vem.
+    "https://github.com/Carlobks/Morg-laws#readme", "https://example.com#x", "https://example.com?q=1",
+    "https://github.com/Carlobks/Morg-laws?tab=readme", "https://outro.test/x",
+)
+
+
+def casos_que_divergem(casos, excludes):
+    """Os casos em que o Python (depois de normalizar) e o lychee (padrões sobre o endereço bruto) discordam."""
+    return [caso for caso in casos if isento(normalizar(caso)) != any(re.search(p, caso) for p in excludes)]
+
+
+class IsencoesDoPythonEDoLychee(unittest.TestCase):
+    """As isenções do teste local e as do lychee.toml são as mesmas, pelos dois caminhos."""
+
+    maxDiff = None
+
+    def setUp(self):
+        self.excludes = tomllib.loads(ler(LYCHEE_TOML))["exclude"]
+
+    def test_o_lychee_toml_e_o_python_isentam_os_mesmos_enderecos(self):
+        self.assertEqual(casos_que_divergem(CASOS_DE_ISENCAO, self.excludes), [])
+
+    def test_sem_o_cardinal_no_padrao_do_proprio_repositorio_o_caso_da_ancora_diverge(self):
+        sem_cardinal = [padrao.replace("(/|#|", "(/|") for padrao in self.excludes]
+        self.assertEqual(casos_que_divergem(CASOS_DE_ISENCAO, sem_cardinal), ["https://github.com/Carlobks/Morg-laws#readme"])
+
+    def test_sem_o_ignorar_maiusculas_o_caso_do_caminho_em_maiusculas_diverge(self):
+        sem_i = [padrao.replace("(?i)", "") for padrao in self.excludes]
+        self.assertIn("https://github.com/carlobks/MORG-LAWS/x", casos_que_divergem(CASOS_DE_ISENCAO, sem_i))
+
+
 PESQUISA_CERTA = "# P\n\n## Pergunta\n\n## Fontes\n\n## O que se mediu\n\n## O que não se verificou\n\n## Conclusão\n"
 
 
@@ -279,6 +358,27 @@ class ReprovaQuandoDeve(PastaTemporaria):
         self.assertEqual(erros_das_pesquisas(self.raiz / "pesquisas"), [])
         self.assertEqual(erros_das_pesquisas(self.raiz / "nao-existe"), [])
         self.assertEqual(carregar_linha_de_base(self.raiz / "nao-existe.json"), set())
+
+
+class DominiosQueSoOLycheeIsenta(PastaTemporaria):
+    """Um link para um destes domínios, num .md, não passa: o lychee salta-o sem o conferir."""
+
+    def test_nenhum_md_do_git_aponta_para_eles(self):
+        self.assertEqual(links_que_o_lychee_saltaria(RAIZ, arquivos_do_git(RAIZ, "*.md")), [])
+
+    def test_o_que_o_lychee_isenta_sozinho_e_recusado(self):
+        self.escrever("a.md", "https://x.example.edu/ e https://twitter.com/x e https://a.test/b e "
+                              "https://mobile.twitter.com/y e https://w.localhost/z e https://schemas.microsoft.com/q "
+                              "e https://s.test/xmlrpc.php\n")
+        erros = links_que_o_lychee_saltaria(self.raiz, ["a.md"])
+        self.assertEqual(len(erros), 7)
+        self.assertEqual(erros[0], "a.md: https://a.test/b — o lychee salta este endereço sem o conferir; troque-o "
+                                   "por um que abra ou tire o link")
+
+    def test_o_que_os_dois_lados_isentam_e_o_que_abre_nao_entram_na_recusa(self):
+        self.escrever("b.md", "https://example.com/a https://example.org https://x.example.net/ "
+                              "https://github.com/Carlobks/Morg-laws https://fonte.exemplo/a https://nottwitter.org\n")
+        self.assertEqual(links_que_o_lychee_saltaria(self.raiz, ["b.md"]), [])
 
 
 class RegressoesDaAuditoria(PastaTemporaria):
