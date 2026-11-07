@@ -1,7 +1,6 @@
 {
   "explicacao": "Entradas do FONTES.md que já não tinham data ou «Sustenta» quando o teste tests/test_fontes_e_pesquisas.py entrou (2026-11-02). A lista só encolhe: quem corrige uma entrada tira-a daqui no mesmo commit, e o teste falha se ela ficar.",
   "entradas": [
-    "https://code.claude.com/docs/en/plugin-marketplaces",
     "https://agentskills.io",
     "https://pester.dev/docs/usage/code-coverage",
     "https://github.com/mattpocock/skills",

@@ -10,7 +10,8 @@ Fonte secundária leva a marca *(secundária)* até ser conferida na original.
   Relido em 2026-11-06 (a seção do tamanho e a do `CLAUDE.md` de subpasta que perde o fim). Sustenta também: o limite dos arquivos que carregam sob demanda (`CLAUDE.md` de subpasta, regras com `paths`) conta-se em caracteres, depende da janela de contexto e vale desde o Claude Code v2.1.309; do arquivo que passa dele, o Claude recebe só o começo; a página manda contar com `wc -m` (usado em `skills/escrevendo-regras-de-agente/` §4).
 - **Claude Code — skills** — https://code.claude.com/docs/en/skills — lido em 2026-10-29.
   Sustenta: só a descrição da skill carrega no início; o corpo carrega quando é usada.
-- **Claude Code — marketplace de plugins** — https://code.claude.com/docs/en/plugin-marketplaces — lido em 2026-10-29.
+- **Claude Code — marketplace de plugins** — https://code.claude.com/docs/en/plugin-marketplaces — lido em 2026-10-29 e relido em 2026-11-07 (a página «Create a marketplace»).
+  Sustenta: um marketplace é um repositório com `.claude-plugin/marketplace.json`; quem o usa regista-o com `claude plugin marketplace add <owner>/<repo>` e instala com `claude plugin install <plugin>@<marketplace>`.
 - **Agent Skills (padrão aberto)** — https://agentskills.io — citado pela documentação do Claude Code, 2026-10-29.
 - **Vercel — skills CLI** — https://vercel.com/docs/agent-resources/skills — 2026-10-29 *(secundária: lido via busca)*.
 - **AAIF — Measuring AGENTS.md: what five runs show** — https://aaif.io/blog/measuring-agents-md-what-five-runs-show-that-one-doesn-t — lido em 2026-10-29.
@@ -202,3 +203,14 @@ Lidas em 2026-11-04, para a `biblia-akita/leituras.md`. São as fontes originais
 - **Ensinando a questionar notícias | Frank Investigator** (2026-03-27) — https://akitaonrails.com/2026/03/27/ensinando-a-questionar-noticias-frank-investigator/ — Sustenta: comparar fontes, procurar a primária e preferir perguntas estruturadas às abertas.
 - **Hot take: Harness, Loop Engineering, Graph Engineering são Bullshit** (2026-08-18) — https://akitaonrails.com/2026/08/18/hot-take-harness-loop-engineering-graph-engineering-sao-bullshit/ — Sustenta: a base da engenharia de software em vez de cursos de moda, e o conhecimento do projeto guardado no projeto.
 - **Você é um idiota se acredita nas propagandas enganosas da OpenAI, Anthropic, NVIDIA** (2026-09-09) — https://akitaonrails.com/2026/09/09/propagandas-enganosas-da-openai-anthropic-nvidia/ — Sustenta: perguntar quem lucra com um anúncio e exigir provas que se possam conferir.
+
+## CI e links vivos
+
+Lidas em 2026-11-07 para o workflow `links` (`.github/workflows/links.yml`) e o `lychee.toml`, com o `gh api` na tag indicada ou, nas páginas do GitHub e do Claude Code, com o `WebFetch`.
+
+- **lychee — README (v0.24.2)** — https://github.com/lycheeverse/lychee — Sustenta: as opções `--cache`, `--max-cache-age` (omissão 1d), `--max-retries` (3), `--retry-wait-time` (1), `--max-concurrency` (128), `--host-concurrency` (10), `--host-request-interval` (50ms), `--timeout` (20), `--accept` (omissão `100..=103,200..=299`; a lista dada substitui-a) e `--exclude`; as saídas 0, 1, 2 e 3; o `GITHUB_TOKEN` contra a cota do github.com.
+- **lychee — `lychee.example.toml` (v0.24.2)** — https://github.com/lycheeverse/lychee/blob/lychee-v0.24.2/lychee.example.toml — Sustenta: os nomes das chaves do arquivo de configuração (`exclude`, `scheme`, `accept`, `cache`, `max_cache_age`, `cache_exclude_status`, `max_retries`, `retry_wait_time`, `timeout`, `max_concurrency`, `host_concurrency`, `host_request_interval`, `no_progress`).
+- **lychee — `filter/mod.rs` (v0.24.2)** — https://github.com/lycheeverse/lychee/blob/lychee-v0.24.2/lychee-lib/src/filter/mod.rs — Sustenta: os domínios de exemplo (`example.com`, `.org`, `.net` e `.edu`), os fins `.test`, `.example`, `.invalid` e `.localhost`, o `twitter.com` e os falsos positivos que o lychee isenta antes dos `exclude`.
+- **lychee-action — README e `action.yml` (v2.9.0)** — https://github.com/lycheeverse/lychee-action — Sustenta: a receita da cache com `restore` e `save` separados; o `action.yml` baixa o binário com `curl -sfLO` sem conferir o sha256, que é o motivo de se usar o binário oficial.
+- **GitHub Docs — eventos que disparam workflows** — https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows — Sustenta: os agendados correm no último commit da `main`, podem atrasar no começo de cada hora e desligam-se num repositório público ao fim de 60 dias sem atividade; o aviso a quem mexeu por último no `cron`; o `GITHUB_TOKEN` só lê nas PRs vindas de forks.
+- **GitHub Docs — cache de dependências** — https://docs.github.com/en/actions/reference/workflows-and-actions/dependency-caching — Sustenta: uma cache não se reescreve; o `restore-keys`; uma PR lê a cache da base e a que cria fica só para ela; a remoção ao fim de 7 dias sem uso; o limite de 10 GB.

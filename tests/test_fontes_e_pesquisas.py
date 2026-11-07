@@ -28,7 +28,6 @@ from leitura_do_repositorio import arquivos_do_git, ler
 LINHA_DE_BASE = RAIZ / "tests" / "linhas-de-base" / "fontes.json"
 # As entradas que já falhavam quando o teste entrou. Só encolhe: quem corrige uma tira-a daqui e do JSON.
 LINHA_DE_BASE_INICIAL = frozenset({
-    "https://code.claude.com/docs/en/plugin-marketplaces",
     "https://agentskills.io",
     "https://pester.dev/docs/usage/code-coverage",
     "https://github.com/mattpocock/skills",
