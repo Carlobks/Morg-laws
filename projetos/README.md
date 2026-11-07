@@ -34,7 +34,7 @@ Vale em toda a pasta. O que o projeto de origem tem e o que o catálogo escreve 
 | domínios, e-mails, IDs de serviços, UUIDs | nada; se for preciso, `example.com` ou `<id>` |
 | hashes de commit, números de migração, de chamado e de decisão | nada |
 | valores em dinheiro | nada; só a ordem de grandeza de volume técnico (GB, horas, arquivos) |
-| caminhos e nomes de arquivos | o papel («a constante das empresas», «o arquivo de regras») |
+| caminhos e nomes de arquivos | o papel («a constante das empresas», «o arquivo de regras»); a exceção são os nomes genéricos de pasta que aparecem dentro de um comando de `o-que-se-mediu.md`, porque o comando só prova se for reproduzível |
 | contagens do repositório, de regras, de bugs (só o total por área) e de catracas | entram, exatas, com o mês e o comando que as deu, menos as que falam de defeitos abertos |
 
 ## O que barra cada commit
@@ -50,6 +50,7 @@ Vale em toda a pasta. O que o projeto de origem tem e o que o catálogo escreve 
 - Um nome de pessoa nunca entra na lista de palavras: troca-se pelo papel.
 - O teste só varre `projetos/`: o resto do repositório só tem a lista negra e o gitleaks.
 - Os commits feitos pelo site do GitHub não passam pelos hooks; o CI os apanha depois, mas já públicos.
+- Um link para outro arquivo do catálogo ou do repositório usa caminho relativo (`./`, `../` ou um `.md` sem `://`); qualquer endereço de internet continua sendo domínio.
 - O código e os nomes de arquivo escrevem-se entre crases: fora delas, todo nome com ponto é tratado como domínio, e dentro delas só é domínio o que acaba num país (duas letras) ou num final comum, e um nome de arquivo com `.md`, `.py` ou `.sh` e um ponto só passa, mesmo que também seja um domínio.
 - Um termo da lista negra com uma classe como `[[:alpha:]]` ou com sintaxe só do `grep` (`\<`, `\>`) é acusado como «não compila» e tem de ser reescrito.
 - Os casos que o teste não apanha, e que a leitura de cada subfase cobre: dinheiro por extenso sem algarismo ou abreviado em minúsculas, identificador de serviço com prefixo, com maiúsculas misturadas ou com mais de 20 caracteres, hash curto só de dígitos e número de cartão em grupos de quatro.

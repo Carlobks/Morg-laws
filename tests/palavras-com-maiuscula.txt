@@ -28,6 +28,7 @@ documentos
 duas
 empresas
 enquanto
+entram
 este
 fatura
 ficam
@@ -48,6 +49,7 @@ não
 número
 o
 os
+painel
 para
 pedido
 plano
@@ -60,6 +62,7 @@ regras
 serve
 são
 tarefas
+texto
 tipos
 todas
 todos
