@@ -1,6 +1,6 @@
 ---
 name: testes-e-provas
-description: Guia como provar que um trabalho de agente funciona — o teste que pega o bug antes da correção, como depurar com uma hipótese de cada vez, como auditar contando em vez de amostrar, o que um teste deve afirmar e o que só uma pessoa consegue provar (arrastar e largar, aparência). Usar ao corrigir um bug, ao escrever ou rever testes, quando um teste ou o CI falha, ao medir quantos casos um problema tem, ou antes de dizer que algo está pronto. Não usar para os comandos de commit (é a git-e-commits), para revisão de segurança (é a auditoria-de-seguranca) nem para as regras da forma do código e os testes prontos que as impõem (é a codigo-legivel).
+description: Guia como provar que um trabalho de agente funciona — o teste que pega o bug antes da correção, como depurar com uma hipótese de cada vez, como auditar contando em vez de amostrar, o que um teste deve afirmar e o que só uma pessoa consegue provar (arrastar e soltar, aparência). Usar ao corrigir um bug, ao escrever ou rever testes, quando um teste ou o CI falha, ao medir quantos casos um problema tem, ou antes de dizer que algo está pronto. Não usar para os comandos de commit (é a git-e-commits), para revisão de segurança (é a auditoria-de-seguranca) nem para as regras da forma do código e os testes prontos que as impõem (é a codigo-legivel).
 ---
 
 # Testes e provas
@@ -53,7 +53,7 @@ description: Guia como provar que um trabalho de agente funciona — o teste que
 
 ## 7. O que só uma pessoa prova
 
-- **Arrastar e largar:** um evento sintético (`dispatchEvent(new DragEvent(...))`) não reproduz o navegador real. Peça a uma pessoa.
+- **Arrastar e soltar:** um evento sintético (`dispatchEvent(new DragEvent(...))`) não reproduz o navegador real. Peça a uma pessoa.
 - **Aparência:** compilador, lint e testes passam, e a tela pode estar errada. Tire a captura e leia-a. O eixo visual fecha com uma pessoa.
 - **CSS:** meça o que o navegador **recebeu** (`document.styleSheets` ou o valor resolvido), não o arquivo, que pode estar à frente do que foi servido.
 - **Alvo de toque:** meça a caixa do elemento (pelo menos 44×44 px), não o deduza do padding.
