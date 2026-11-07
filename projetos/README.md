@@ -6,8 +6,7 @@ Aqui ficam projetos reais, anonimizados, de onde saíram as regras do Morg-laws:
 
 | Projeto | O que é |
 |---|---|
-
-Ainda não há projeto publicado: o primeiro, um sistema web de gestão para duas empresas de serviços, chega com os próximos commits.
+| [erp-de-servicos](erp-de-servicos/) | um sistema web de gestão para duas empresas de serviços |
 
 ## O formato
 

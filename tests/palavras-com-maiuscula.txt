@@ -7,29 +7,52 @@
 a
 aqui
 ainda
+auditoria
 cada
+camada
 catálogo
+como
+daí
+desde
+do
+este
+módulos
 no
 o
 os
+para
+plano
+portões
 projeto
 projetos
+provar
 quem
+regras
 serve
+tipos
+uma
 um
 vale
 
 ## nomes
 # Nomes aceitos em qualquer posição, cada um com a categoria depois da barra vertical: tecnologia, papel ou projeto.
 CI | tecnologia
+ERP | tecnologia
 GB | tecnologia
 GitHub | tecnologia
+IA | tecnologia
 IBAN | tecnologia
 IDs | tecnologia
+Next.js | tecnologia
+PDFs | tecnologia
+Postgres | tecnologia
+React | tecnologia
 README | tecnologia
+RLS | tecnologia
 UUID | tecnologia
 UUIDs | tecnologia
 Empresa A | papel
 Empresa B | papel
 Financeiro | papel
+RH | papel
 Morg-laws | projeto
