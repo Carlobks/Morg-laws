@@ -12,29 +12,40 @@ ao
 aqui
 as
 auditoria
+área
 cada
 camada
 catálogo
+catraca
 clientes
+comando
 como
 daí
 definições
 desde
 do
 documentos
+duas
 empresas
 enquanto
 este
 fatura
+ficam
 férias
 funcionários
+hoje
 horas
+incidente
+infraestrutura
+interface
 inventário
 lista
+mês
 módulo
 módulos
 no
 não
+número
 o
 os
 para
@@ -47,8 +58,12 @@ provar
 quem
 regras
 serve
+são
 tarefas
 tipos
+todas
+todos
+total
 uma
 um
 vale
@@ -57,12 +72,14 @@ vira
 ## nomes
 # Nomes aceitos em qualquer posição, cada um com a categoria depois da barra vertical: tecnologia, papel ou projeto.
 CI | tecnologia
+CLAUDE | tecnologia
 ERP | tecnologia
 GB | tecnologia
 GitHub | tecnologia
 IA | tecnologia
 IBAN | tecnologia
 IDs | tecnologia
+KB | tecnologia
 Next.js | tecnologia
 PDF | tecnologia
 PDFs | tecnologia
@@ -70,6 +87,7 @@ Postgres | tecnologia
 React | tecnologia
 README | tecnologia
 RLS | tecnologia
+S | tecnologia
 UUID | tecnologia
 UUIDs | tecnologia
 Empresa A | papel
