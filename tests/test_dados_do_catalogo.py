@@ -76,7 +76,29 @@ class TiposDeDado(unittest.TestCase):
         self.assertEqual(catalogo.dados_no_texto("em fulano.es", ACEITAS, frozenset({"fulano.es"})), [])
 
 
+class LinksRelativos(unittest.TestCase):
+
+    def test_o_alvo_relativo_de_um_link_passa(self):
+        for texto in ("veja [a skill](../../skills/git-e-commits/SKILL.md)", "veja [fluxos](./modulos-e-fluxos.md)",
+                      "veja [fluxos](modulos-e-fluxos.md)", "veja [a pasta](../../skills/git-e-commits/)"):
+            with self.subTest(texto=texto):
+                self.assertEqual(catalogo.dados_no_texto(texto, (frozenset(), frozenset({"SKILL"}))), [])
+
+    def test_um_dominio_continua_recusado_dentro_e_fora_de_um_link(self):
+        for texto in ("veja [x](https://" + FULANO + ".com)", "veja [x](" + FULANO + ".com)", "veja " + FULANO + ".com",
+                      "veja [x](../" + FULANO + ".com)", "veja [x](https://" + FULANO + ".md)",
+                      "veja [x](" + FULANO + ".es)"):
+            with self.subTest(texto=texto):
+                self.assertIn("domínio", tipos_de(texto))
+
+
 class NomesProprios(unittest.TestCase):
+
+    def test_so_o_hifen_seguido_de_uma_letra_dentro_de_crases_isenta(self):
+        self.assertEqual(tipos_de("rode `git log -S`"), set())
+        for texto in ("a letra S sozinha", "o S. Fulano", "`git log S`", "um -S fora de crases", "`git log -Sx`"):
+            with self.subTest(texto=texto):
+                self.assertEqual(tipos_de(texto) & {"nome próprio"}, {"nome próprio"})
 
     def test_maiuscula_acentuada_e_acusada(self):
         for nome in ("Ângela", "Élio", "Ílton"):

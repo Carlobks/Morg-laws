@@ -42,6 +42,7 @@ DINHEIRO_DOLAR = re.compile(r"\bd[óo]lar(?:es)?\b", re.IGNORECASE)
 DINHEIRO_POR_EXTENSO = re.compile(r"\d[\d .,]*\s?(?:mil\s)?(?:euros?|reais|d[óo]lares)\b", re.IGNORECASE)
 DINHEIRO_CIFRAO = re.compile(r"\$\s?\d")
 CRASES = re.compile(r"`[^`]*`")
+ALVO_DE_LINK = re.compile(r"\]\(([^)\s]*)\)")  # o alvo de um link: [texto](alvo)
 PALAVRA = re.compile(r"(?<![^\W_])[^\W\d_][^\W_]*")  # letras e dígitos: o sublinhado separa, como a barra e o hífen
 CLASSE_POSIX = re.compile(r"\[:[a-z]+:\]")
 SO_DO_GREP = re.compile(r"(?<!\\)(?:\\\\)*\\[<>`']")  # \< \> \` \': o Python os compila, mas casa outra coisa
@@ -78,10 +79,17 @@ def _e_dominio(m, em_codigo, aceitos):
     return not em_codigo or len(rotulos[-1]) == 2 or rotulos[-1] in FINAIS_DE_DOMINIO
 
 
+def _e_alvo_relativo(alvo):
+    """Caminho relativo: começa por ./ ou ../, ou é um .md; nunca com :// (esse é endereço de internet)."""
+    return "://" not in alvo and (alvo.startswith(("./", "../")) or alvo.endswith(".md"))
+
+
 def _dominios(linha, aceitos):
-    em_crases = [(m.start(), m.end()) for m in CRASES.finditer(linha)]
+    """Um alvo de link relativo é lido como código (só é domínio se acabar como um); qualquer outro, como texto."""
+    em_codigo = [(m.start(), m.end()) for m in CRASES.finditer(linha)]
+    em_codigo += [m.span(1) for m in ALVO_DE_LINK.finditer(linha) if _e_alvo_relativo(m.group(1))]
     return [m.group(0) for m in DOMINIO.finditer(linha)
-            if _e_dominio(m, any(inicio <= m.start() < fim for inicio, fim in em_crases), aceitos)]
+            if _e_dominio(m, any(inicio <= m.start() < fim for inicio, fim in em_codigo), aceitos)]
 
 
 def _dinheiro(linha, _):
@@ -126,6 +134,12 @@ def _abre_frase(antes):
     return resto == "" or resto[-1] in ".!?:|" or bool(re.fullmatch(r"[\s#>\-+*\d.)]*", resto))
 
 
+def _e_opcao_de_comando(linha, palavra, inicio):
+    """O `-` seguido de uma letra só, dentro de crases (`-S`): opção de comando, não nome."""
+    em_crases = any(m.start() < inicio < m.end() for m in CRASES.finditer(linha))
+    return len(palavra) == 1 and em_crases and linha[inicio - 1:inicio] == "-"
+
+
 def nomes_no_texto(texto, palavras_aceitas):
     """[(linha, 'nome próprio', palavra)]: maiúscula (Unicode) que não é palavra comum de início de frase nem nome aceito."""
     comuns, nomes = palavras_aceitas
@@ -134,7 +148,8 @@ def nomes_no_texto(texto, palavras_aceitas):
         limpa = _sem_nomes_aceitos(linha, nomes)  # as crases não isentam nada: cada pedaço de um caminho é conferido
         for m in PALAVRA.finditer(limpa):
             palavra = m.group(0)
-            if palavra[0].isupper() and not (palavra.lower() in comuns and _abre_frase(limpa[:m.start()])):
+            if palavra[0].isupper() and not (palavra.lower() in comuns and _abre_frase(limpa[:m.start()])) \
+                    and not _e_opcao_de_comando(linha, palavra, m.start()):
                 achados.append((numero, "nome próprio", palavra))
     return achados
 

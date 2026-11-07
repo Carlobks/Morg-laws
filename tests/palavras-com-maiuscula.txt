@@ -71,6 +71,7 @@ vira
 
 ## nomes
 # Nomes aceitos em qualquer posição, cada um com a categoria depois da barra vertical: tecnologia, papel ou projeto.
+AGENTS | tecnologia
 CI | tecnologia
 CLAUDE | tecnologia
 ERP | tecnologia
@@ -87,7 +88,7 @@ Postgres | tecnologia
 React | tecnologia
 README | tecnologia
 RLS | tecnologia
-S | tecnologia
+SKILL | tecnologia
 UUID | tecnologia
 UUIDs | tecnologia
 Empresa A | papel
