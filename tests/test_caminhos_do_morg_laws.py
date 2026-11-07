@@ -10,7 +10,9 @@ sem link aponta, no projeto, para um arquivo que não existe. Por isso o CI conf
    (`tests/`, `scripts/`, `skills/`, `CLAUDE.md`, `settings.json`…) falam do projeto do leitor e não contam;
 2. cada link para o próprio repositório (com `http` ou `https`, com qualquer caixa), nas skills e nos moldes do
    AGENTS.md e do CLAUDE.md, aponta para a `main`, para um arquivo que o git conhece e, quando tem âncora, para um
-   título que existe nesse arquivo.
+   título que existe nesse arquivo;
+3. cada link Markdown relativo dos `.md` de fora de `skills/` (o `README.md`, `aprendizados/`, `modelos/`…) chega a
+   algum arquivo ou pasta (sem rede; a âncora não se confere). Fora das skills, sair da pasta é normal.
 As funções recebem a raiz e a lista de arquivos, para os casos de erro serem provados numa pasta temporária.
 """
 
@@ -92,6 +94,16 @@ def links_relativos_quebrados(raiz, nome, texto, pasta_da_skill):
     return erros
 
 
+def relativos_sem_destino(raiz, arquivos):
+    """Mensagens para cada link Markdown relativo, num .md de fora de skills/, que não chega a nada (sem a âncora)."""
+    erros = []
+    for nome in sorted(a for a in arquivos if a.endswith(".md") and not a.startswith("skills/")):
+        for alvo in sorted(set(LINK_RELATIVO.findall(ler(raiz / nome)))):
+            if not ((raiz / nome).parent / alvo.split("#")[0]).exists():
+                erros.append(f"{nome}: ({alvo}) — link relativo para o que não existe")
+    return erros
+
+
 def caminhos_sem_link(raiz, arquivos):
     """Mensagens para cada caminho do Morg-laws citado sem link completo numa skill."""
     indice = indice_do_repositorio(arquivos)
@@ -149,6 +161,10 @@ class CaminhosDoMorgLaws(unittest.TestCase):
 
     def test_os_links_para_o_repositorio_chegam_ao_destino(self):
         self.assertEqual(links_quebrados(RAIZ, arquivos_do_git(RAIZ)), [])
+
+
+    def test_os_links_relativos_de_fora_das_skills_chegam_a_algo(self):
+        self.assertEqual(relativos_sem_destino(RAIZ, arquivos_do_git(RAIZ)), [])
 
 
 class NumaPastaTemporaria(unittest.TestCase):
@@ -246,6 +262,13 @@ class NumaPastaTemporaria(unittest.TestCase):
                  "[y](http://github.com/Carlobks/Morg-laws/blob/main/NAO2.md)\n")
         self.assertEqual([erro.split(" — ")[1] for erro in self.erros_dos_links(texto)],
                          ["o arquivo não existe no git", "o arquivo não existe no git"])
+
+    def test_relativo_fora_das_skills_que_nao_chega_a_nada(self):
+        self.escrever("aprendizados/a.md", "[x](nao-existe.md) [y](../FONTES.md#fontes) [z](../modelos/documentos) "
+                                           "[w](https://example.com/q) [v](#aqui)\n")
+        self.escrever("skills/x/SKILL.md", "[s](nao-existe-na-skill.md)\n")  # as skills têm a regra delas
+        self.assertEqual(relativos_sem_destino(self.raiz, self.arquivos()),
+                         ["aprendizados/a.md: (nao-existe.md) — link relativo para o que não existe"])
 
     def test_links_certos_com_ancora_e_pasta_passam(self):
         texto = (f"[a]({ENDERECO}/blob/main/FONTES.md#banco-de-dados-postgresql-supabase) "
