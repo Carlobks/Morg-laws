@@ -16,11 +16,11 @@ No Claude Code, o CLAUDE.md do projeto tem só a linha `@AGENTS.md` e o que vale
 - **DECISÃO É DO DONO:** decisão a meio vai ao dono, explicada, com a opção recomendada marcada. · *Não se decide sozinho o que é dele.*
 - **COMMIT SEM PEDIDO, PUSH COM O SIM:** commitar não precisa de pedido; push e PR precisam, a cada vez. Commit atômico, por caminho; nunca `git add -A` ou `.`.
   · *O push publica no momento em que sai.*
-- **OS HOOKS SÃO A REDE:** nunca saltar (`--no-verify`) nem desligar. Hook recusou: corrige-se a causa. · *Saltado, deixa passar o erro.*
+- **OS HOOKS SÃO A REDE:** nunca pular (`--no-verify`) nem desligar. Hook recusou: se corrige a causa. · *Pulado, deixa passar o erro.*
 - **NÃO PIORAR:** o que já viola não pode piorar; arquivo novo nasce limpo. · *Senão a dívida só cresce.*
-- **SEM SILENCIAR ALARME SEM MOTIVO:** corrige-se o apontado. Um `eslint-disable`, `@ts-expect-error` ou `noqa` novo só com o motivo na mesma linha,
+- **SEM SILENCIAR ALARME SEM MOTIVO:** se corrige o apontado. Um `eslint-disable`, `@ts-expect-error` ou `noqa` novo só com o motivo na mesma linha,
   e a contagem por tipo não sobe. · *Um alarme calado sem motivo esconde o seguinte.*
-- **BUG TRAZ TESTE:** bug corrigido traz o teste que o pega, visto a falhar antes da correção. · *Um teste que nunca falhou não prova nada.*
+- **BUG TRAZ TESTE:** bug corrigido traz o teste que o pega, visto falhando antes da correção. · *Um teste que nunca falhou não prova nada.*
 - **PROVAR MEDINDO:** comando e saída, tela, consulta; nunca "pronto". Dizer também o que não se verificou. · *Parecer certo não é prova.*
 - **NOMES ÚNICOS E PESQUISÁVEIS:** nada de `data`, `utils`, `Props` genéricos: `grep` antes de criar. · *Um nome genérico esconde onde está a lógica.*
 - **TEXTO VIRA BARREIRA:** texto é conselho; o que tem de ser cumprido vira hook, teste ou CI. · *Regra só escrita não se cumpre.*
