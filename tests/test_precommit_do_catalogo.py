@@ -137,6 +137,11 @@ class LeituraDoIntervaloEDaArvore(RepositorioTemporario):
         self.git("commit", "-q", "-m", "docs(x): c", "--no-verify")  # o passo do hook já tem os testes acima
         return self.git("rev-parse", "HEAD").stdout.strip()
 
+    def mudar_a_lista(self, texto):
+        self.preparar(texto, catalogo.PALAVRAS)
+        self.git("commit", "-q", "-m", "docs(x): lista", "--no-verify")
+        return self.git("rev-parse", "HEAD").stdout.strip()
+
     def textos(self, ambiente):
         return [c.texto for c in catalogo.conteudos_a_verificar(self.pasta, ambiente)]
 
@@ -172,6 +177,23 @@ class LeituraDoIntervaloEDaArvore(RepositorioTemporario):
                 self.assertEqual(len(achados), 1)
                 self.assertIn("só arquivos .md", achados[0])
                 self.assertNotIn("documento", achados[0])
+
+    def test_cada_commit_do_intervalo_e_julgado_com_a_lista_de_palavras_da_ponta(self):
+        base = self.git("rev-parse", "HEAD").stdout.strip()
+        self.commitar("Uma linha que fala do Fulano.\n")  # a lista deste commit ainda não tem o nome
+        self.commitar("Uma linha limpa.\n")
+        self.commitar("Uma linha limpa, da Empresa A.\n", "projetos/erp-de-servicos/outra.md")
+        self.mudar_a_lista(PALAVRAS + "Fulano | papel\n")  # a ponta aceita o nome
+        achados = catalogo.problemas(catalogo.conteudos_a_verificar(self.pasta, {"MORG_BASE_DE_COMPARACAO": base}), [])
+        self.assertEqual(achados, [])
+
+    def test_palavra_que_saiu_da_lista_na_ponta_nao_isenta_o_commit_antigo(self):
+        base = self.mudar_a_lista(PALAVRAS + "Fulano | papel\n")
+        self.commitar("Uma linha que fala do Fulano.\n")
+        self.mudar_a_lista(PALAVRAS)  # a ponta já não aceita o nome
+        achados = catalogo.problemas(catalogo.conteudos_a_verificar(self.pasta, {"MORG_BASE_DE_COMPARACAO": base}), [])
+        self.assertTrue(achados)  # o arquivo sujo está na árvore de cada commit a partir do segundo
+        self.assertTrue(all("nome próprio" in achado for achado in achados), achados)
 
     def test_a_arvore_le_o_disco_com_os_arquivos_novos(self):
         escrever(self.pasta / "projetos" / "nova.md", f"número {NUMERO}\n")  # nem preparado

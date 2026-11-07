@@ -250,8 +250,10 @@ def _commits_do_intervalo(raiz, base):
     return saida.split()
 
 
-def _de_um_commit(raiz, commit):
-    palavras = _git(raiz, "show", f"{commit}:{PALAVRAS}")[1]
+def _de_um_commit(raiz, commit, palavras_da_ponta):
+    """Os arquivos do commit, julgados com a lista de palavras da ponta (a que vale hoje): a lista que o commit tinha
+    pode ser mais velha que a barreira. Sem lista na ponta, vale a do próprio commit."""
+    palavras = palavras_da_ponta or _git(raiz, "show", f"{commit}:{PALAVRAS}")[1]
     nomes = _nomes_da_saida(_git(raiz, "ls-tree", "-r", "-z", "--name-only", commit, "--", PASTA, PALAVRAS)[1])
     return [Conteudo(f"{n} (commit {commit[:7]})", _git(raiz, "show", f"{commit}:{n}")[1], palavras, n == PALAVRAS, n)
             for n in nomes]
@@ -272,8 +274,9 @@ def conteudos_a_verificar(raiz, ambiente=os.environ):
     if ambiente.get("MORG_LER_DO_INDICE") == "1":
         return _do_indice(raiz)
     if ambiente.get("MORG_BASE_DE_COMPARACAO"):
+        da_ponta = _git(raiz, "show", f"HEAD:{PALAVRAS}")[1]  # vazia se a ponta não tem a lista
         return [c for commit in _commits_do_intervalo(raiz, ambiente["MORG_BASE_DE_COMPARACAO"])
-                for c in _de_um_commit(raiz, commit)]
+                for c in _de_um_commit(raiz, commit, da_ponta)]
     return _da_arvore(raiz)
 
 
