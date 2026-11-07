@@ -15,6 +15,7 @@ o que deu errado, a regra que nasceu disso e a fonte que a sustenta.
 | `modelos/` | Arquivos prontos para copiar, que transformam as regras em barreiras de máquina: hooks do Claude Code e `settings.json` em três colunas, hooks e portões do git, testes das regras, testes prontos da forma do código em Python e em TypeScript (vitest), changelog por fragmentos, CI e moldes de documento (AGENTS.md, CLAUDE.md, mapa das barreiras, plano, handoff, ADR). Índice em [modelos/README.md](modelos/README.md). |
 | `tests/` e `scripts/testar.sh` | Os testes dos modelos: cobertura de linhas e ramos a 100 %, um projeto de exemplo em Python e outro em TypeScript (`tests/exemplo-ts/`, com o `package-lock.json` fixado) montados só com eles, e a prova de que as duas línguas dão o mesmo veredito. |
 | `pesquisas/` | As pesquisas feitas para o repositório, uma por arquivo, com o índice em [pesquisas/README.md](pesquisas/README.md). |
+| `projetos/` | O catálogo de projetos reais, anonimizados: de onde vem cada regra, com o incidente que a fez nascer. A regra de anonimato e o que barra cada commit estão em [projetos/README.md](projetos/README.md). |
 | `FONTES.md` | Todas as fontes usadas, com a data em que foram lidas. |
 
 O repositório está em construção: as pastas aparecem conforme as fases avançam.
@@ -43,7 +44,7 @@ Ative os hooks depois de clonar:
 git config core.hooksPath .githooks
 ```
 
-O `pre-commit` recusa commits com e-mail que não seja o noreply do GitHub, com um nome de autor da lista negra e com AGENTS.md acima de 60 linhas.
+O `pre-commit` recusa commits com e-mail que não seja o noreply do GitHub, com um nome de autor da lista negra, com AGENTS.md acima de 60 linhas e com dado pessoal ou identificador em `projetos/` (o teste lê o que está preparado).
 Ele também procura nomes e dados sensíveis numa lista que fica **fora** do repositório
 (`git config morg.listaNegra <arquivo>`); sem essa lista, só avisa. No GitHub, o `gitleaks` procura segredos em todo push.
 
