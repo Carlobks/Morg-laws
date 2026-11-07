@@ -153,6 +153,11 @@ class ListaNegra(unittest.TestCase):
         mensagens = catalogo.problemas([], termos)
         self.assertEqual([m.split(" não compila")[0] for m in mensagens], ["lista negra: o termo n.º 2", "lista negra: o termo n.º 3"])
 
+    def test_sintaxe_so_do_grep_compila_no_python_mas_e_acusada(self):
+        so_do_grep = ["\\<" + self.TERMO + "\\>", self.TERMO + "\\'", "\\`" + self.TERMO]
+        feitos = [self.TERMO, "\\\\<" + self.TERMO, "\\b" + self.TERMO + "\\b"]  # barra literal e \b valem nos dois
+        self.assertEqual(catalogo.termos_que_nao_compilam(so_do_grep + feitos), [1, 2, 3])
+
     def test_os_termos_vem_do_arquivo_da_configuracao_do_git(self):
         configuracao = {"GIT_CONFIG_COUNT": "1", "GIT_CONFIG_KEY_0": "morg.lista" + "Negra",
                         "GIT_CONFIG_VALUE_0": str(self.lista(self.TERMO, "  outro "))}

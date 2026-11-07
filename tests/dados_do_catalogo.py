@@ -44,6 +44,7 @@ DINHEIRO_CIFRAO = re.compile(r"\$\s?\d")
 CRASES = re.compile(r"`[^`]*`")
 PALAVRA = re.compile(r"(?<![^\W_])[^\W\d_][^\W_]*")  # letras e dígitos: o sublinhado separa, como a barra e o hífen
 CLASSE_POSIX = re.compile(r"\[:[a-z]+:\]")
+SO_DO_GREP = re.compile(r"(?<!\\)(?:\\\\)*\\[<>`']")  # \< \> \` \': o Python os compila, mas casa outra coisa
 
 
 def _achados_de(padrao, linha):
@@ -175,7 +176,7 @@ def ler_palavras(texto):
 
 def compilar_termo(termo):
     """O termo da lista negra como expressão do Python, ou None se o hook (grep -E) o entende e o Python não."""
-    if CLASSE_POSIX.search(termo):
+    if CLASSE_POSIX.search(termo) or SO_DO_GREP.search(termo):
         return None
     try:
         return re.compile(termo, re.IGNORECASE)
