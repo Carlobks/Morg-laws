@@ -1,6 +1,6 @@
 #!/bin/sh
 # Comando único de testes do Morg-laws: unittest com cobertura de linhas e ramos a 100 % dos modelos em Python
-# (hooks do agente, portões do git e changelog), os testes-modelo nos projetos de exemplo Python e TypeScript, as
+# (hooks do agente, portões do git e changelog) e da barreira de projetos/ (tests/dados_do_catalogo.py), os testes-modelo nos projetos de exemplo Python e TypeScript, as
 # duas línguas com o mesmo veredito e o ruff.
 # Python: MORG_PY, ou py (Windows), ou python3. Sem -I aqui: o coverage e o ruff vivem nos pacotes do usuário;
 # os testes rodam cada modelo com -I.
@@ -22,7 +22,7 @@ if [ ! -f "$exemplo/node_modules/.package-lock.json" ] || [ "$exemplo/package-lo
 fi
 
 echo "== Python (unittest + coverage)"
-"$py" -m coverage run --branch --source=modelos/claude/hooks,modelos/git/portoes,modelos/changelog -m unittest discover -s tests || {
+"$py" -m coverage run --branch --include='modelos/claude/hooks/*,modelos/git/portoes/*,modelos/changelog/*,tests/dados_do_catalogo.py' -m unittest discover -s tests || {
   echo "FALHOU: testes." >&2; exit 1; }
 "$py" -m coverage report --show-missing --fail-under=100 || { echo "FALHOU: cobertura abaixo de 100 %." >&2; exit 1; }
 

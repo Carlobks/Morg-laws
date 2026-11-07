@@ -153,6 +153,10 @@ class ListaNegra(unittest.TestCase):
         mensagens = catalogo.problemas([], termos)
         self.assertEqual([m.split(" não compila")[0] for m in mensagens], ["lista negra: o termo n.º 2", "lista negra: o termo n.º 3"])
 
+    def test_termo_que_nao_compila_nao_esconde_o_que_compila_ao_lado(self):
+        achados = catalogo.termos_no_texto("ab12", ["*" + "abc", "b[0-9]+"])
+        self.assertEqual(achados, [(1, "lista negra", "termo n.º 2")])
+
     def test_sintaxe_so_do_grep_compila_no_python_mas_e_acusada(self):
         so_do_grep = ["\\<" + self.TERMO + "\\>", self.TERMO + "\\'", "\\`" + self.TERMO]
         feitos = [self.TERMO, "\\\\<" + self.TERMO, "\\b" + self.TERMO + "\\b"]  # barra literal e \b valem nos dois
