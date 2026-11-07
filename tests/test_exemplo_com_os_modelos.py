@@ -57,6 +57,11 @@ ESTRAGOS_DO_CI = [
      "test_nada_baixado_direto_para_uma_shell"),
     ("          tar -xzf", "          curl -sSfL --output f.tar.gz https://exemplo.com/f.tar.gz\n          tar -xzf",
      "test_nada_baixado_direto_para_uma_shell"),
+    # A conferência do sha256 que só avisa: o `-e` da shell do GitHub não para o passo com isto.
+    ("sha256sum -c -", "sha256sum -c - || true", "test_nada_baixado_direto_para_uma_shell"),
+    ("    timeout-minutes: 10\n", "    timeout-minutes: 10\n    continue-on-error: true\n",
+     "test_a_conferencia_do_sha256_nao_e_desligada"),
+    ("          tar -xzf", "          set +e\n          tar -xzf", "test_a_conferencia_do_sha256_nao_e_desligada"),
 ]
 
 

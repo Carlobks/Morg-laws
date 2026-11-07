@@ -1,6 +1,7 @@
 """O CI do próprio Morg-laws segue as regras que ensina: roda o modelo modelos/testes/test_ci.py contra os workflows
 deste repositório, e confere o que só este CI precisa (o comando único e o AGENTS.md curto)."""
 
+import re
 import sys
 import tomllib
 import types
@@ -52,10 +53,26 @@ class LinksVivos(unittest.TestCase):
         gatilhos = self.texto.split("\non:\n")[1].split("\npermissions:")[0]
         for gatilho in ("  push:", "  pull_request:", "  schedule:"):
             self.assertIn(gatilho, gatilhos)
+        # Só os .md, o lychee.toml e o próprio workflow disparam o push e a pull request.
+        self.assertEqual(gatilhos.count('paths: ["**.md", "lychee.toml", ".github/workflows/links.yml"]'), 2)
+        self.assertRegex(gatilhos, r'(?m)^\s*- cron: "')
+
+    def test_o_push_so_de_branch_e_nao_corre_com_a_tag(self):
+        push = self.texto.split("\n  push:\n")[1].split("\n  pull_request:")[0]
+        self.assertIn('branches: ["main"]', push)
 
     def test_o_lychee_vem_com_o_sha256_conferido_e_sem_a_action_de_terceiros(self):
-        self.assertRegex(self.texto, r"[0-9a-f]{64}\s+lychee\.tar\.gz[\"]?\s*\|\s*sha256sum -c")
+        # A linha acaba em `| sha256sum -c -`: com um `|| true` depois, o passo seguiria com o binário sem conferir.
+        self.assertRegex(self.texto, re.compile(
+            r"[0-9a-f]{64}\s+lychee\.tar\.gz[\"]?\s*\|\s*sha256sum -c -[ \t]*$", re.MULTILINE))
         self.assertNotIn("lycheeverse/lychee-action", self.texto, "a action baixa o binário sem conferir o sha256")
+        for desliga in modelo.DESLIGA_A_CONFERENCIA:
+            self.assertNotRegex(self.texto, desliga)
+
+    def test_o_lychee_corre_com_o_config_dele(self):
+        # O lychee 0.24.2 acharia o lychee.toml sozinho na pasta de trabalho; o --config fecha a porta a outro
+        # arquivo e a uma mudança de pasta, e o `exclude` isento é parte do que o teste local confere.
+        self.assertRegex(self.texto, r"(?m)lychee-x86_64-unknown-linux-gnu/lychee --config lychee\.toml\s*$")
 
     def test_a_chave_da_cache_muda_a_cada_corrida_nos_dois_passos_e_o_restore_procura_pelo_prefixo(self):
         self.assertEqual(self.texto.count(self.CHAVE), 2)
@@ -70,6 +87,10 @@ class LinksVivos(unittest.TestCase):
         self.assertGreater(self.config["max_retries"], 0)
         self.assertIs(self.config["cache"], True)
         self.assertNotIn("file", self.config["scheme"])
+        self.assertEqual(self.config["host_request_interval"], "1s")
+        self.assertEqual(self.config["max_concurrency"], 8)
+        self.assertEqual(self.config["timeout"], 20)
+        self.assertEqual(self.config["max_cache_age"], "1d")
 
     def test_o_403_e_o_429_contam_como_o_site_existe(self):
         self.assertEqual(self.config["accept"], ["100..=103", "200..=299", "403", "429"])

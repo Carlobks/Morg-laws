@@ -6,7 +6,9 @@ Cada regra tem o motivo ao lado:
   `write` ou `write-all`, nem dentro de um job, fora de ESCRITA_PERMITIDA (cada exceção com o motivo);
 - nada de `pull_request_target`, que roda código de um fork com os segredos do repositório;
 - nada é baixado direto para uma shell (`curl … | sh`, `sh -c "$(curl …)"`, `bash <(curl …)`, os mesmos casos do
-  hook bloquear_segredos.py); um arquivo baixado (`-o`, `--output` ou `>`) tem o sha256 conferido.
+  hook bloquear_segredos.py); um arquivo baixado (`-o`, `--output` ou `>`) tem o sha256 conferido, e a linha da
+  conferência acaba em `| sha256sum -c -`;
+- nada de `continue-on-error` nem de `set +e`: com eles o passo segue mesmo que o sha256 não confira.
 Instalar: copiar para `tests/` do projeto e ajustar o bloco abaixo.
 """
 
@@ -28,6 +30,8 @@ PARA_SHELL = (
     re.compile(rf"\b{_SHELL_NO_CI}\s+-c\s+[\"']?\$\(\s*{_DOWNLOAD_NO_CI}"),
     re.compile(rf"(?:\b{_SHELL_NO_CI}|\bsource)\s+<\(\s*{_DOWNLOAD_NO_CI}"),
 )
+DESLIGA_A_CONFERENCIA = (re.compile(r"^\s*continue-on-error:\s*(?!false\b)\S", re.MULTILINE),
+                         re.compile(r"^\s*set\s+\+e\b", re.MULTILINE))
 BAIXADO = re.compile(rf"{_DOWNLOAD_NO_CI}[^\n]*?(?:\s-[oO]\s*|\s--output[\s=]|\s>\s*)([^\s\"']+)")
 
 
@@ -67,8 +71,17 @@ class Workflows(unittest.TestCase):
                 for padrao in PARA_SHELL:
                     self.assertNotRegex(conteudo, padrao)
                 for baixado in BAIXADO.findall(conteudo):
-                    self.assertRegex(conteudo, rf"[0-9a-f]{{64}}\s+{re.escape(baixado)}[\"']?\s*\|\s*sha256sum -c",
-                                     f"{baixado} baixado sem o sha256 conferido")
+                    # A linha acaba em `| sha256sum -c -`: um `|| true` depois dela deixa o passo seguir sem a conferência.
+                    self.assertRegex(conteudo, re.compile(
+                        rf"[0-9a-f]{{64}}\s+{re.escape(baixado)}[\"']?\s*\|\s*sha256sum -c -[ \t]*$", re.MULTILINE),
+                        f"{baixado} baixado sem o sha256 conferido, ou com a conferência no meio de outro comando")
+
+    def test_a_conferencia_do_sha256_nao_e_desligada(self):
+        for workflow in WORKFLOWS:
+            conteudo = texto_do_workflow(workflow)
+            with self.subTest(workflow=workflow.name):
+                for desliga in DESLIGA_A_CONFERENCIA:
+                    self.assertNotRegex(conteudo, desliga, "com isto o passo segue mesmo que o sha256 não confira")
 
 
 if __name__ == "__main__":

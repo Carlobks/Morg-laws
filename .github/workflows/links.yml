@@ -7,6 +7,7 @@ name: links
 
 on:
   push:
+    branches: ["main"]   # sem isto o push de tag também corre, e o filtro de paths não vale para tags
     paths: ["**.md", "lychee.toml", ".github/workflows/links.yml"]
   pull_request:
     paths: ["**.md", "lychee.toml", ".github/workflows/links.yml"]
