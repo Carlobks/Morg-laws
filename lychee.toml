@@ -1,0 +1,16 @@
+# Os links isentos são os mesmos do tests/test_fontes_e_pesquisas.py, e o teste confere que são iguais.
+exclude = [
+  '(?i)^https?://(github\.com|raw\.githubusercontent\.com)/Carlobks/Morg-laws(/|#|\.git(/|$)|$)',
+  '(?i)^https?://([^/]*\.)?example\.(com|org|net)([:/?#]|$)',
+]
+scheme = ["https", "http"]        # só os externos; os relativos ficam no teste local
+accept = ["100..=103", "200..=299", "403", "429"]   # a lista substitui a omissão: os 1xx e 2xx escrevem-se à mão
+cache = true
+max_cache_age = "1d"
+max_retries = 3
+retry_wait_time = 5
+timeout = 20
+max_concurrency = 8
+host_concurrency = 1
+host_request_interval = "1s"
+no_progress = true

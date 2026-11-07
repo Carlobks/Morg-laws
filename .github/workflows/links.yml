@@ -1,0 +1,46 @@
+name: links
+
+# Confere que os links externos dos .md ainda abrem. O registo no FONTES.md, o formato das entradas, os links do
+# próprio repositório e os links relativos ficam no teste local (tests/test_fontes_e_pesquisas.py e
+# tests/test_caminhos_do_morg_laws.py), sem rede. Regras do modelos/testes/test_ci.py: SHA com a versão, token só de
+# leitura, binário com o sha256 conferido.
+
+on:
+  push:
+    paths: ["**.md", "lychee.toml", ".github/workflows/links.yml"]
+  pull_request:
+    paths: ["**.md", "lychee.toml", ".github/workflows/links.yml"]
+  schedule:
+    - cron: "17 6 * * 1"   # segunda, 06:17 UTC: fora da hora cheia, quando o GitHub atrasa os agendados
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  links-vivos:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: lychee 0.24.2 com o sha256 conferido
+        run: |
+          curl -sSfL -o lychee.tar.gz https://github.com/lycheeverse/lychee/releases/download/lychee-v0.24.2/lychee-x86_64-unknown-linux-gnu.tar.gz
+          echo "1f4e0ef7f6554a6ed33dd7ac144fb2e1bbed98598e7af973042fc5cd43951c9a  lychee.tar.gz" | sha256sum -c -
+          tar -xzf lychee.tar.gz lychee-x86_64-unknown-linux-gnu/lychee
+      - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .lycheecache
+          key: lychee-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: lychee-
+      - name: Links externos dos .md do git
+        env:
+          GITHUB_TOKEN: ${{ github.token }}   # só para a cota da API nos links do github.com; o token só lê
+        run: git ls-files -z '*.md' | xargs -0 ./lychee-x86_64-unknown-linux-gnu/lychee --config lychee.toml
+      - uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        if: always()
+        with:
+          path: .lycheecache
+          key: lychee-${{ github.run_id }}-${{ github.run_attempt }}

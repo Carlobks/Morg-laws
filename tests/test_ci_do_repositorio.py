@@ -2,6 +2,7 @@
 deste repositório, e confere o que só este CI precisa (o comando único e o AGENTS.md curto)."""
 
 import sys
+import tomllib
 import types
 import unittest
 
@@ -20,7 +21,7 @@ class WorkflowsDoMorgLaws(modelo.Workflows):
     """As regras do modelo (SHA, token só de leitura, nada baixado sem sha256), aplicadas aqui."""
 
     def test_ha_workflows(self):
-        self.assertEqual([workflow.name for workflow in modelo.WORKFLOWS], ["seguranca.yml"])
+        self.assertEqual([workflow.name for workflow in modelo.WORKFLOWS], ["links.yml", "seguranca.yml"])
 
     def test_roda_o_comando_unico_e_confere_o_agents_md(self):
         texto = modelo.texto_do_workflow(WORKFLOW_DE_SEGURANCA)
@@ -35,6 +36,43 @@ class WorkflowsDoMorgLaws(modelo.Workflows):
             with self.subTest(workflow=nome):
                 self.assertEqual(erros_do_so_encolhe(texto), [])
         self.assertIn("npm audit --audit-level=high", modelo.texto_do_workflow(WORKFLOW_DE_SEGURANCA))
+
+
+class LinksVivos(unittest.TestCase):
+    """O workflow dos links externos (links.yml) e o lychee.toml dele: o que não pode mudar sem o teste avisar."""
+
+    LINKS = RAIZ / ".github" / "workflows" / "links.yml"
+    CHAVE = "key: lychee-${{ github.run_id }}-${{ github.run_attempt }}"
+
+    def setUp(self):
+        self.texto = modelo.texto_do_workflow(self.LINKS)
+        self.config = tomllib.loads((RAIZ / "lychee.toml").read_text("utf-8"))
+
+    def test_corre_no_push_na_pull_request_e_no_agendamento(self):
+        gatilhos = self.texto.split("\non:\n")[1].split("\npermissions:")[0]
+        for gatilho in ("  push:", "  pull_request:", "  schedule:"):
+            self.assertIn(gatilho, gatilhos)
+
+    def test_o_lychee_vem_com_o_sha256_conferido_e_sem_a_action_de_terceiros(self):
+        self.assertRegex(self.texto, r"[0-9a-f]{64}\s+lychee\.tar\.gz[\"]?\s*\|\s*sha256sum -c")
+        self.assertNotIn("lycheeverse/lychee-action", self.texto, "a action baixa o binário sem conferir o sha256")
+
+    def test_a_chave_da_cache_muda_a_cada_corrida_nos_dois_passos_e_o_restore_procura_pelo_prefixo(self):
+        self.assertEqual(self.texto.count(self.CHAVE), 2)
+        self.assertEqual(self.texto.count("restore-keys: lychee-\n"), 1)
+
+    def test_a_cache_grava_tambem_quando_o_job_falha(self):
+        gravacao = self.texto.split("actions/cache/save@")[1]
+        self.assertIn("if: always()", gravacao.split("with:")[0])
+
+    def test_o_lychee_toml_pede_pouco_a_cada_site_e_so_links_externos(self):
+        self.assertEqual(self.config["host_concurrency"], 1)
+        self.assertGreater(self.config["max_retries"], 0)
+        self.assertIs(self.config["cache"], True)
+        self.assertNotIn("file", self.config["scheme"])
+
+    def test_o_403_e_o_429_contam_como_o_site_existe(self):
+        self.assertEqual(self.config["accept"], ["100..=103", "200..=299", "403", "429"])
 
 
 class MoldeDeCiServeTypeScript(unittest.TestCase):

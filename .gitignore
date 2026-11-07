@@ -3,3 +3,5 @@ __pycache__/
 .coverage
 # O npm ci do projeto de exemplo TypeScript (tests/exemplo-ts/).
 node_modules/
+# A cache do lychee, no CI e na prova local.
+.lycheecache
