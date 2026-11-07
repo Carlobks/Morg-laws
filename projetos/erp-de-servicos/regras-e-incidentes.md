@@ -96,20 +96,20 @@ Das 34, 29 têm o tema publicado (uma só em parte) e 5 não estão publicadas.
 
 ## Os textos pesquisados
 
-Cada mês acima é o do primeiro commit que traz o texto da segunda coluna. O comando é `git log -S"<texto>" --date=short --format=%ad -- <arquivo> | tail -1 | cut -c1-7`. O «arquivo de regras» é o mesmo `CLAUDE.md` de `o-que-se-mediu.md`; o «arquivo integral» guarda o texto inteiro de cada regra e só existe desde setembro de 2026. Os textos estão como o projeto os escreveu. O que se conferiu foi a linha que o commit acrescenta, e o número em si não foi recontado.
+Cada mês acima é o do primeiro commit que traz o texto da segunda coluna. O comando é `git log -S"<texto>" --date=short --format=%ad -- <arquivo> | tail -1 | cut -c1-7`. Na tabela, na coluna do arquivo, «de regras» é o mesmo `CLAUDE.md` de `o-que-se-mediu.md`, e «integral» é o `<arquivo integral>`, o arquivo com o texto inteiro de cada regra, que só existe desde setembro de 2026. Os textos estão como o projeto os escreveu. O que se conferiu foi a linha que o commit acrescenta, e o número em si não foi recontado.
 
 | Regra | Texto pesquisado | Arquivo | Mês |
 |---|---|---|---|
-| 1 | `109 ficheiros por commitar` | de regras | julho de 2026 |
+| 1 | `havia 109` | de regras | julho de 2026 |
 | 2 | `89 dos últimos 200` | integral | outubro de 2026 |
 | 3 | `677 funções` | integral | outubro de 2026 |
 | 4 | ``Props` 140`` | integral | outubro de 2026 |
 | 5 | `86 de 199` | de regras | outubro de 2026 |
-| 6 | `15 âmbitos livres` | integral | outubro de 2026 |
-| 7 | `432 URLs por registar` | integral | outubro de 2026 |
+| 6 | ``fix` de 30 dias`` | integral | outubro de 2026 |
+| 7 | `432 URLs` | integral | outubro de 2026 |
 | 8 | `29 auditorias e estudos` | integral | outubro de 2026 |
 | 9 | `levou **27 commits**` | de regras | setembro de 2026 |
-| 9 | `estagiei um fragmento e commitei no mesmo comando` | integral | outubro de 2026 |
+| 9 | `~25 s de hook` | integral | outubro de 2026 |
 | 10 | `não se lançam sub-agentes` | de regras | setembro de 2026 |
 | 11 | `27 commits de outra conversa` | de regras | julho de 2026 |
 | 12 | `nas primeiras 3 tarefas` | integral | outubro de 2026 |
@@ -118,7 +118,7 @@ Cada mês acima é o do primeiro commit que traz o texto da segunda coluna. O co
 | 15 | `a sugestão saltou` | integral | outubro de 2026 |
 | 16 | `durante ~1 mês` | de regras | julho de 2026 |
 | 17 | `um bloco esquecido` | integral | outubro de 2026 |
-| 18 | `apanhou uma importação circular` | integral | outubro de 2026 |
+| 18 | `uma importação circular` | integral | outubro de 2026 |
 | 19 | `mais de 40 sessões` | integral | novembro de 2026 |
 | 20 | `6,37 GB` e `1h40` | de regras | agosto de 2026 |
 | 21 | `58 onde havia 2` | de regras | agosto de 2026 |
