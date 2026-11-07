@@ -1,6 +1,6 @@
 name: links
 
-# Confere que os links externos dos .md ainda abrem. O registo no FONTES.md, o formato das entradas, os links do
+# Confere que os links externos dos .md ainda abrem. O registro no FONTES.md, o formato das entradas, os links do
 # próprio repositório e os links relativos ficam no teste local (tests/test_fontes_e_pesquisas.py e
 # tests/test_caminhos_do_morg_laws.py), sem rede. Regras do modelos/testes/test_ci.py: SHA com a versão, token só de
 # leitura, binário com o sha256 conferido.

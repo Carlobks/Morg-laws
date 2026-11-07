@@ -47,7 +47,7 @@ git config core.hooksPath .githooks
 O `pre-commit` recusa commits com e-mail que não seja o noreply do GitHub, com um nome de autor da lista negra, com AGENTS.md acima de 60 linhas e com dado pessoal ou identificador em `projetos/` (o teste lê o que está preparado).
 Ele também procura nomes e dados sensíveis numa lista que fica **fora** do repositório
 (`git config morg.listaNegra <arquivo>`); sem essa lista, só avisa. No GitHub, o `gitleaks` procura segredos em todo push.
-O workflow `links` confere os links externos dos `.md` uma vez por semana e em cada mudança de `.md`: um vermelho dele quer dizer que um site não respondeu, e não que um teste partiu. Os links relativos e as fontes são conferidos pela suíte local, sem rede.
+O workflow `links` confere os links externos dos `.md` uma vez por semana e em cada mudança de `.md`: um vermelho dele quer dizer que um site não respondeu, e não que um teste quebrou. Os links relativos e as fontes são conferidos pela suíte local, sem rede.
 
 Mudou um modelo? Rode os testes antes de commitar (o CI roda os mesmos em todo push). Precisam do Python, do Node da
 versão em `tests/exemplo-ts/.nvmrc` e do npm; o script roda o `npm ci` do exemplo quando o lockfile muda:

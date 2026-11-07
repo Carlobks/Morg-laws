@@ -4,7 +4,7 @@ exclude = [
   '(?i)^https?://([^/]*\.)?example\.(com|org|net)([:/?#]|$)',
 ]
 scheme = ["https", "http"]        # só os externos; os relativos ficam no teste local
-accept = ["100..=103", "200..=299", "403", "429"]   # a lista substitui a omissão: os 1xx e 2xx escrevem-se à mão
+accept = ["100..=103", "200..=299", "403", "429"]   # a lista substitui o padrão: os 1xx e 2xx escrevem-se à mão
 cache = true
 max_cache_age = "1d"
 max_retries = 3

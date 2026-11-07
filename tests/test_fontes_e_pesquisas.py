@@ -52,7 +52,7 @@ LYCHEE_TOML = RAIZ / "lychee.toml"
 # O que o lychee 0.24.2 isenta sozinho, antes de olhar para os `exclude` do lychee.toml (lychee-lib/src/filter/mod.rs
 # na tag lychee-v0.24.2): os domínios de exemplo (com um nível de subdomínio) e os fins reservados, o twitter.com e os
 # falsos positivos. Os example.com, .org e .net ficam de fora: são isentos dos dois lados. Um link para um destes num
-# .md seria saltado em silêncio pelo lychee, e o teste local não o deixa passar.
+# .md seria pulado em silêncio pelo lychee, e o teste local não o deixa passar.
 ISENTOS_SO_PELO_LYCHEE = {
     "dominios": ("example.edu",),
     "fins": (".test", ".example", ".invalid", ".localhost", "twitter.com"),
@@ -93,7 +93,7 @@ def links_sem_fonte(raiz, arquivos):
 
 
 def isento_so_pelo_lychee(url):
-    """O lychee salta este endereço sem o conferir, por conta própria (e não pelos `exclude` do lychee.toml)."""
+    """O lychee pula este endereço sem o conferir, por conta própria (e não pelos `exclude` do lychee.toml)."""
     partes = urlsplit(url)
     dominio = partes.hostname or ""
     # Os padrões olham para o endereço como o lychee o vê: o esquema e o domínio em minúsculas, o resto como veio.
@@ -103,13 +103,13 @@ def isento_so_pelo_lychee(url):
             or any(padrao.search(como_o_lychee) for padrao in ISENTOS_SO_PELO_LYCHEE["padroes"]))
 
 
-def links_que_o_lychee_saltaria(raiz, arquivos):
+def links_que_o_lychee_pularia(raiz, arquivos):
     """Mensagens para cada link de um .md para um endereço que o lychee isenta sozinho."""
     erros = []
     for nome in sorted(a for a in arquivos if a.endswith(".md")):
         for url in sorted({u.rstrip(".,;:!?»") for u in URL.findall(ler(raiz / nome))}):
             if isento_so_pelo_lychee(url):
-                erros.append(f"{nome}: {url} — o lychee salta este endereço sem o conferir; troque-o por um que abra "
+                erros.append(f"{nome}: {url} — o lychee pula este endereço sem o conferir; troque-o por um que abra "
                              "ou tire o link")
     return erros
 
@@ -278,9 +278,9 @@ class IsencoesDoPythonEDoLychee(unittest.TestCase):
     def test_o_lychee_toml_e_o_python_isentam_os_mesmos_enderecos(self):
         self.assertEqual(casos_que_divergem(CASOS_DE_ISENCAO, self.excludes), [])
 
-    def test_sem_o_cardinal_no_padrao_do_proprio_repositorio_o_caso_da_ancora_diverge(self):
-        sem_cardinal = [padrao.replace("(/|#|", "(/|") for padrao in self.excludes]
-        self.assertEqual(casos_que_divergem(CASOS_DE_ISENCAO, sem_cardinal), ["https://github.com/Carlobks/Morg-laws#readme"])
+    def test_sem_a_ancora_no_padrao_do_proprio_repositorio_o_caso_da_ancora_diverge(self):
+        sem_ancora = [padrao.replace("(/|#|", "(/|") for padrao in self.excludes]
+        self.assertEqual(casos_que_divergem(CASOS_DE_ISENCAO, sem_ancora), ["https://github.com/Carlobks/Morg-laws#readme"])
 
     def test_sem_o_ignorar_maiusculas_o_caso_do_caminho_em_maiusculas_diverge(self):
         sem_i = [padrao.replace("(?i)", "") for padrao in self.excludes]
@@ -366,18 +366,18 @@ class ReprovaQuandoDeve(PastaTemporaria):
 
 
 class DominiosQueSoOLycheeIsenta(PastaTemporaria):
-    """Um link para um destes domínios, num .md, não passa: o lychee salta-o sem o conferir."""
+    """Um link para um destes domínios, num .md, não passa: o lychee pula-o sem o conferir."""
 
     def test_nenhum_md_do_git_aponta_para_eles(self):
-        self.assertEqual(links_que_o_lychee_saltaria(RAIZ, arquivos_do_git(RAIZ, "*.md")), [])
+        self.assertEqual(links_que_o_lychee_pularia(RAIZ, arquivos_do_git(RAIZ, "*.md")), [])
 
     def test_o_que_o_lychee_isenta_sozinho_e_recusado(self):
         self.escrever("a.md", "https://x.example.edu/ e https://twitter.com/x e https://a.test/b e "
                               "https://mobile.twitter.com/y e https://w.localhost/z e https://schemas.microsoft.com/q "
                               "e https://s.test/xmlrpc.php\n")
-        erros = links_que_o_lychee_saltaria(self.raiz, ["a.md"])
+        erros = links_que_o_lychee_pularia(self.raiz, ["a.md"])
         self.assertEqual(len(erros), 7)
-        self.assertEqual(erros[0], "a.md: https://a.test/b — o lychee salta este endereço sem o conferir; troque-o "
+        self.assertEqual(erros[0], "a.md: https://a.test/b — o lychee pula este endereço sem o conferir; troque-o "
                                    "por um que abra ou tire o link")
 
     def test_o_lychee_pos_o_esquema_e_o_dominio_em_minusculas_antes_dos_padroes(self):
@@ -389,7 +389,7 @@ class DominiosQueSoOLycheeIsenta(PastaTemporaria):
     def test_o_esquema_em_maiusculas_tambem_e_um_link(self):
         self.escrever("a.md", "HTTPS://schemas.microsoft.com/x e Http://nova.exemplo/b\n")
         self.assertEqual(links(ler(self.raiz / "a.md")), {"HTTPS://schemas.microsoft.com/x", "Http://nova.exemplo/b"})
-        self.assertEqual(len(links_que_o_lychee_saltaria(self.raiz, ["a.md"])), 1)
+        self.assertEqual(len(links_que_o_lychee_pularia(self.raiz, ["a.md"])), 1)
         fim = " — link novo → entrada no FONTES.md com a data e o que sustenta"
         self.assertEqual(links_sem_fonte(self.raiz, ["a.md"]),
                          ["a.md: HTTPS://schemas.microsoft.com/x" + fim, "a.md: Http://nova.exemplo/b" + fim])
@@ -397,7 +397,7 @@ class DominiosQueSoOLycheeIsenta(PastaTemporaria):
     def test_o_que_os_dois_lados_isentam_e_o_que_abre_nao_entram_na_recusa(self):
         self.escrever("b.md", "https://example.com/a https://example.org https://x.example.net/ "
                               "https://github.com/Carlobks/Morg-laws https://fonte.exemplo/a https://nottwitter.org\n")
-        self.assertEqual(links_que_o_lychee_saltaria(self.raiz, ["b.md"]), [])
+        self.assertEqual(links_que_o_lychee_pularia(self.raiz, ["b.md"]), [])
 
 
 class RegressoesDaAuditoria(PastaTemporaria):
