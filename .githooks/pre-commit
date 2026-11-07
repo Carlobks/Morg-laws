@@ -21,6 +21,17 @@ git config user.name | sh "$dir/verificar-lista-negra.sh" "nome do autor (user.n
   git diff --cached -U0 --diff-filter=ACMR | grep '^+' | grep -v '^+++'
 } | sh "$dir/verificar-lista-negra.sh" "arquivos preparados" || exit 1
 
+# 2b. Em todos os commits: nada que identifique pessoas ou empresas entra em projetos/ (o catálogo publicado).
+# O teste lê o que está preparado (git add), não o disco. Sem Python o commit não passa (falha fechada).
+py=${MORG_PY:-$(command -v py || command -v python3)}
+if [ -z "$py" ] || ! "$py" -c '' 2>/dev/null; then
+  echo "ERRO: sem Python não há como conferir projetos/ (defina MORG_PY ou ponha py/python3 no PATH)." >&2
+  exit 1
+fi
+MORG_LER_DO_INDICE=1 "$py" -X utf8 -m unittest discover -s tests -p test_projetos_sem_dados.py || {
+  echo "ERRO: dado pessoal ou identificador em projetos/ (o teste acima diz onde). Troque pelo papel e tente de novo." >&2
+  exit 1; }
+
 # 3. AGENTS.md é lido inteiro em todo turno: no máximo 60 linhas.
 if [ -f AGENTS.md ]; then
   linhas=$(wc -l < AGENTS.md)
