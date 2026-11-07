@@ -1,0 +1,34 @@
+# Palavras com maiúscula aceitas em `projetos/` (o catálogo publicado). Este arquivo é público: cada linha aparece no diff.
+# Um nome de pessoa nunca entra aqui: troca-se pelo papel («o dono», «a equipe do Financeiro»).
+# O teste `test_projetos_sem_dados.py` acusa toda palavra com maiúscula (Unicode) que não esteja numa das duas partes.
+
+## comuns
+# Palavras comuns, aceitas só no início de frase, de célula de tabela ou de item de lista (uma por linha).
+a
+aqui
+ainda
+cada
+catálogo
+no
+o
+os
+projeto
+projetos
+quem
+serve
+um
+vale
+
+## nomes
+# Nomes aceitos em qualquer posição, cada um com a categoria depois da barra vertical: tecnologia, papel ou projeto.
+CI | tecnologia
+GB | tecnologia
+GitHub | tecnologia
+IBAN | tecnologia
+IDs | tecnologia
+UUID | tecnologia
+UUIDs | tecnologia
+Empresa A | papel
+Empresa B | papel
+Financeiro | papel
+Morg-laws | projeto
