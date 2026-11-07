@@ -12,6 +12,9 @@ sys.modules["carregar_por_caminho"] = types.SimpleNamespace(RAIZ=RAIZ)
 modelo = carregar(PASTA_TESTES_MODELO / "test_ci.py", "test_ci_modelo")
 del sys.modules["carregar_por_caminho"]
 
+# O modelo ordena os workflows por nome: com mais de um, o primeiro deixa de ser o da segurança.
+WORKFLOW_DE_SEGURANCA = RAIZ / ".github" / "workflows" / "seguranca.yml"
+
 
 class WorkflowsDoMorgLaws(modelo.Workflows):
     """As regras do modelo (SHA, token só de leitura, nada baixado sem sha256), aplicadas aqui."""
@@ -20,18 +23,18 @@ class WorkflowsDoMorgLaws(modelo.Workflows):
         self.assertEqual([workflow.name for workflow in modelo.WORKFLOWS], ["seguranca.yml"])
 
     def test_roda_o_comando_unico_e_confere_o_agents_md(self):
-        texto = modelo.texto_do_workflow(modelo.WORKFLOWS[0])
+        texto = modelo.texto_do_workflow(WORKFLOW_DE_SEGURANCA)
         self.assertIn("run: sh scripts/testar.sh", texto)
         self.assertIn("git config core.hooksPath .githooks", texto)
         self.assertIn('test "$linhas" -le 60', texto)
         self.assertNotIn("gitleaks/gitleaks-action", texto, "o gitleaks é o binário conferido, sem action de terceiros")
 
     def test_o_so_encolhe_compara_com_o_ramo_de_destino_e_o_lockfile_e_auditado(self):
-        for nome, texto in (("seguranca.yml", modelo.texto_do_workflow(modelo.WORKFLOWS[0])),
+        for nome, texto in (("seguranca.yml", modelo.texto_do_workflow(WORKFLOW_DE_SEGURANCA)),
                             ("molde ci.yml", (RAIZ / "modelos" / "github" / "workflows" / "ci.yml").read_text("utf-8"))):
             with self.subTest(workflow=nome):
                 self.assertEqual(erros_do_so_encolhe(texto), [])
-        self.assertIn("npm audit --audit-level=high", modelo.texto_do_workflow(modelo.WORKFLOWS[0]))
+        self.assertIn("npm audit --audit-level=high", modelo.texto_do_workflow(WORKFLOW_DE_SEGURANCA))
 
 
 class MoldeDeCiServeTypeScript(unittest.TestCase):
