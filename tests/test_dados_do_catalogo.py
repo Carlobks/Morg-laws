@@ -24,7 +24,10 @@ CASA = (
     ("hash", "1781" + "BBB"), ("hash", "dead" + "beef1"),
     ("ID de serviço", "abcdefghij" + "klmnopqrst"),
     ("domínio", FULANO + ".es"), ("domínio", FULANO + ".site"), ("domínio", "www." + FULANO + ".es"),
-    ("domínio", "o github" + ".com/x"),
+    ("domínio", "o github" + ".com/x"), ("domínio", FULANO + ".com.py"), ("domínio", FULANO + ".sh"),
+    ("domínio", FULANO + ".md"), ("domínio", FULANO + ".co.sh"), ("domínio", "`" + FULANO + ".co.sh`"),
+    ("domínio", "`" + FULANO + ".es`"), ("domínio", "`" + FULANO + ".com`"), ("domínio", "`" + FULANO + ".br`"),
+    ("domínio", "o site `" + FULANO + ".pt` no ar"),
     ("dinheiro", "10 " + "€"), ("dinheiro", "30 " + "USD"), ("dinheiro", "um dólar"), ("dinheiro", "1,5 mil euros"),
     ("dinheiro", "R" + "$ 5"), ("dinheiro", "US" + "$ 5"), ("dinheiro", "custa $" + "5"),
     ("caminho", "/home/" + FULANO + "/x"), ("caminho", "C:\\Users\\" + FULANO + "\\x"),
@@ -34,8 +37,10 @@ NAO_CASA = (
     "2771 commits", "2.771 commits", "`README.md` e `sonda_expressoes.py`", "a pilha é Next.js", "`echo $1` roda",
     "a cor #ff5733aa", "/home/ana/x", "ana@example.com", "o domínio example.com", "Cada item. Uma coisa.",
     "- Depois disso", "| Uma | Empresa A |", "`git config user.name`", "versão 1.2.3 e v18", "e.g. isto",
+    "`os.environ`", "`.env.local`", "rode `git config core." + "hooksPath .githooks`", "`supabase.auth.getUser()`",
+    "`deploy.sh` e `testar.md`", "`tests/exemplo-ts/package.json`",
 )
-SO_DOS_TIPOS = (("domínio", "README.md e sonda_expressoes.py"), ("dinheiro", "a EUROPA"))  # o nome em maiúsculas é outro tipo
+SO_DOS_TIPOS = (("domínio", "relatorio.json e tsconfig.json"), ("dinheiro", "a EUROPA"))  # o nome em maiúsculas é outro tipo
 
 
 def tipos_de(texto):

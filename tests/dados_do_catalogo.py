@@ -23,6 +23,9 @@ SECOES = ("comuns", "nomes")
 CATEGORIAS = ("tecnologia", "papel", "projeto")
 EXTENSOES_DE_ARQUIVO = frozenset({"md", "py", "ts", "tsx", "js", "mjs", "cjs", "json", "txt", "sh", "yml", "yaml",
                                   "html", "css", "sql", "toml", "lock", "csv", "png", "svg", "pdf"})
+EXTENSOES_QUE_SAO_PAIS = frozenset({"md", "py", "sh"})  # Moldávia, Paraguai, Santa Helena: `fulano.sh` pode ser domínio
+FINAIS_DE_DOMINIO = frozenset({"com", "net", "org", "info", "biz", "edu", "gov", "mil", "int", "io", "dev", "app", "site",
+                               "online", "xyz", "tech", "store", "shop", "cloud", "pro"})  # além dos de duas letras (países)
 PALAVRAS_LONGAS_ACEITAS = frozenset()  # palavras de 20 letras que o catálogo usa (nenhuma até agora)
 DOMINIOS_ACEITOS = frozenset({"user.name", "user.email"})  # chaves da configuração do git, que parecem domínios
 Conteudo = namedtuple("Conteudo", "origem texto palavras e_lista")
@@ -59,14 +62,25 @@ def _servicos(linha, _):
     return [achado for achado in _achados_de(SERVICO, linha) if achado not in PALAVRAS_LONGAS_ACEITAS]
 
 
+def _e_arquivo(rotulos, em_codigo):
+    """Nome de arquivo: a extensão é conhecida; as que também são país (md, py, sh) só em crases e com um ponto só."""
+    if rotulos[-1] not in EXTENSOES_DE_ARQUIVO:
+        return False
+    return rotulos[-1] not in EXTENSOES_QUE_SAO_PAIS or (em_codigo and len(rotulos) == 2)
+
+
+def _e_dominio(m, em_codigo, aceitos):
+    """Fora das crases, todo nome com ponto é domínio. Dentro delas é código, e só é domínio se acabar como um."""
+    rotulos = m.group(0).lower().split(".")
+    if m.group(0).lower() in aceitos or rotulos[-2] == "example" or _e_arquivo(rotulos, em_codigo):
+        return False
+    return not em_codigo or len(rotulos[-1]) == 2 or rotulos[-1] in FINAIS_DE_DOMINIO
+
+
 def _dominios(linha, aceitos):
-    achados = []
-    for m in DOMINIO.finditer(linha):
-        dominio = m.group(0).lower()
-        if m.group(1).lower() in EXTENSOES_DE_ARQUIVO or dominio in aceitos or dominio.split(".")[-2] == "example":
-            continue
-        achados.append(m.group(0))
-    return achados
+    em_crases = [(m.start(), m.end()) for m in CRASES.finditer(linha)]
+    return [m.group(0) for m in DOMINIO.finditer(linha)
+            if _e_dominio(m, any(inicio <= m.start() < fim for inicio, fim in em_crases), aceitos)]
 
 
 def _dinheiro(linha, _):
