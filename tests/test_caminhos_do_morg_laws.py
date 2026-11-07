@@ -16,10 +16,11 @@ sem link aponta, no projeto, para um arquivo que não existe. Por isso o CI conf
 As funções recebem a raiz e a lista de arquivos, para os casos de erro serem provados numa pasta temporária.
 """
 
+import posixpath
 import re
 import tempfile
 import unittest
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 from carregar_modelos import RAIZ
 from leitura_do_repositorio import arquivos_do_git, ler
@@ -34,7 +35,10 @@ PROJETO_DA_PROVA = "prova/projeto-teste/"
 _PROPRIO = r"https?://github\.com/Carlobks/Morg-laws"
 LINK_PROPRIO = re.compile(r"\[[^\]]*\]\(" + _PROPRIO + r"[^)\s]*\)", re.IGNORECASE)
 ENDERECO_PROPRIO = re.compile(_PROPRIO + r"/(blob|tree)/([^/\s)]+)/([^)\s#>`]+)(?:#([^)\s>`]+))?", re.IGNORECASE)
-LINK_RELATIVO = re.compile(r"\]\((?![a-z][a-z0-9+.-]*:|#)([^)\s]+)\)", re.IGNORECASE)
+# Com o título opcional (`[x](alvo "título")`) e o alvo entre ângulos (`[x](<alvo>)`). A definição por referência
+# (`[r]: alvo`, com `[x][r]` no texto) não casa: não tem `](`, e hoje nenhum .md usa essa forma (limite conhecido).
+LINK_RELATIVO = re.compile(r"""\]\(<?(?![a-z][a-z0-9+.-]*:|#)([^)\s>]+)>?(?:\s+(?:"[^"]*"|'[^']*'))?\s*\)""",
+                           re.IGNORECASE)
 URL = re.compile(r"https?://\S+")
 ENTRE_CRASES = re.compile(r"`([^`\s]+)`")
 SOLTO = re.compile(r"(?<![\w./`-])((?:[\w.-]+/)+[\w.-]*|[\w.-]+\.(?:md|py|sh|mjs))(?![\w/`])")
@@ -95,11 +99,16 @@ def links_relativos_quebrados(raiz, nome, texto, pasta_da_skill):
 
 
 def relativos_sem_destino(raiz, arquivos):
-    """Mensagens para cada link Markdown relativo, num .md de fora de skills/, que não chega a nada (sem a âncora)."""
+    """Mensagens para cada link Markdown relativo, num .md de fora de skills/, que não chega a nada (sem a âncora).
+
+    O alvo confere-se contra os arquivos do git e as pastas que eles formam, e não contra o disco: o checkout do CI
+    só tem o que o git tem. Fora do que se confere: a âncora e a definição por referência (`[r]: alvo`)."""
+    conhecidos = set(arquivos) | {pasta.as_posix() for a in arquivos for pasta in PurePosixPath(a).parents}
     erros = []
     for nome in sorted(a for a in arquivos if a.endswith(".md") and not a.startswith("skills/")):
         for alvo in sorted(set(LINK_RELATIVO.findall(ler(raiz / nome)))):
-            if not ((raiz / nome).parent / alvo.split("#")[0]).exists():
+            destino = posixpath.normpath(posixpath.join(posixpath.dirname(nome), alvo.split("#")[0]))
+            if destino not in conhecidos:
                 erros.append(f"{nome}: ({alvo}) — link relativo para o que não existe")
     return erros
 
@@ -269,6 +278,27 @@ class NumaPastaTemporaria(unittest.TestCase):
         self.escrever("skills/x/SKILL.md", "[s](nao-existe-na-skill.md)\n")  # as skills têm a regra delas
         self.assertEqual(relativos_sem_destino(self.raiz, self.arquivos()),
                          ["aprendizados/a.md: (nao-existe.md) — link relativo para o que não existe"])
+
+    def test_relativo_com_titulo_ou_entre_angulos_tambem_se_confere(self):
+        self.escrever("aprendizados/a.md", '[a](nao-existe.md "título") [b](<nao-existe-2.md>) '
+                                           "[c](<nao-existe-3.md> 't') [d](../FONTES.md \"título\") [e](<../FONTES.md>) "
+                                           "[f](<../modelos/documentos>)\n")
+        self.assertEqual(relativos_sem_destino(self.raiz, self.arquivos()),
+                         [f"aprendizados/a.md: ({alvo}) — link relativo para o que não existe"
+                          for alvo in ("nao-existe-2.md", "nao-existe-3.md", "nao-existe.md")])
+
+    def test_relativo_confere_com_os_arquivos_do_git_e_nao_com_o_disco(self):
+        self.escrever("aprendizados/a.md", "[x](../so-no-disco.md) [y](../FONTES.md) [z](../modelos/documentos)\n")
+        self.escrever("so-no-disco.md", "# S\n")
+        no_git = [nome for nome in self.arquivos() if nome != "so-no-disco.md"]
+        self.assertEqual(relativos_sem_destino(self.raiz, no_git),
+                         ["aprendizados/a.md: (../so-no-disco.md) — link relativo para o que não existe"])
+        self.assertEqual(relativos_sem_destino(self.raiz, self.arquivos()), [])
+
+    def test_relativo_que_sai_da_raiz_nao_chega_a_nada(self):
+        self.escrever("aprendizados/a.md", "[x](../../fora.md)\n")
+        self.assertEqual(relativos_sem_destino(self.raiz, self.arquivos()),
+                         ["aprendizados/a.md: (../../fora.md) — link relativo para o que não existe"])
 
     def test_links_certos_com_ancora_e_pasta_passam(self):
         texto = (f"[a]({ENDERECO}/blob/main/FONTES.md#banco-de-dados-postgresql-supabase) "
