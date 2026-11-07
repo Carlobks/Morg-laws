@@ -5,27 +5,49 @@
 ## comuns
 # Palavras comuns, aceitas só no início de frase, de célula de tabela ou de item de lista (uma por linha).
 a
+ação
 acessos
+ações
 admissão
 ainda
 ao
+apagar
 aqui
+arquivo
 as
 auditoria
 área
+bibliotecas
+bug
 cada
 camada
 catálogo
 catraca
+changelog
+checklist
+chegou
 clientes
 comando
+commit
+commitar
+commits
 como
+componente
+consultas
+criar
 daí
+das
 definições
+depois
+derivar
 desde
+desses
 do
 documentos
+dos
 duas
+edição
+em
 empresas
 enquanto
 entram
@@ -33,48 +55,93 @@ este
 fatura
 ficam
 férias
+ficou
+fontes
+formatação
+função
 funcionários
+heredoc
 hoje
 horas
+ícones
 incidente
 infraestrutura
 interface
 inventário
+lançar
+ler
+lição
 lista
+mais
+medido
 mês
+migração
 módulo
 módulos
+na
+nada
 no
 não
+nomes
+num
+numa
 número
 o
+onde
+operações
 os
 painel
 para
 pedido
+permissão
+permissões
+pesquisa
 plano
+portão
 portões
+proibição
 projeto
 projetos
+protocolo
 provar
+quando
+que
 quem
+recarregar
+registro
+regra
 regras
+rodar
+sem
 serve
 são
+só
+subir
+sugestão
+tarefa
 tarefas
 texto
 tipos
+toda
 todas
+todo
 todos
 total
+trabalha
 uma
 um
 vale
+variáveis
+ver
+versionamento
 vira
+zero
 
 ## nomes
 # Nomes aceitos em qualquer posição, cada um com a categoria depois da barra vertical: tecnologia, papel ou projeto.
 AGENTS | tecnologia
+Bash | tecnologia
+BEGIN | tecnologia
 CI | tecnologia
 CLAUDE | tecnologia
 ERP | tecnologia
@@ -84,14 +151,23 @@ IA | tecnologia
 IBAN | tecnologia
 IDs | tecnologia
 KB | tecnologia
+Markdown | tecnologia
 Next.js | tecnologia
 PDF | tecnologia
 PDFs | tecnologia
 Postgres | tecnologia
+PowerShell | tecnologia
+PR | tecnologia
+Props | tecnologia
 React | tecnologia
 README | tecnologia
 RLS | tecnologia
+ROLLBACK | tecnologia
 SKILL | tecnologia
+SQL | tecnologia
+Turbopack | tecnologia
+TypeScript | tecnologia
+URLs | tecnologia
 UUID | tecnologia
 UUIDs | tecnologia
 Empresa A | papel
