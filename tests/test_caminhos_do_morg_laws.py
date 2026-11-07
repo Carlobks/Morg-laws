@@ -24,7 +24,7 @@ from leitura_do_repositorio import arquivos_do_git, ler
 
 ENDERECO = "https://github.com/Carlobks/Morg-laws"
 MOLDES_COPIADOS = ("modelos/documentos/AGENTS.md", "modelos/documentos/CLAUDE.md")
-PASTAS_SO_DO_MORG_LAWS = ("modelos", "pesquisas", "aprendizados", "biblia-akita", "prova")
+PASTAS_SO_DO_MORG_LAWS = ("modelos", "pesquisas", "aprendizados", "biblia-akita", "prova", "projetos")
 NOMES_QUE_TODO_PROJETO_TEM = frozenset({"AGENTS.md", "CLAUDE.md", "README.md", "LICENSE", ".gitignore",
                                         ".gitattributes", "settings.json", "pre-commit", "commit-msg", "pre-push"})
 # Um projeto de exemplo dentro do repositório: os nomes dos arquivos dele (package.json…) são os de qualquer projeto.
@@ -192,6 +192,14 @@ class NumaPastaTemporaria(unittest.TestCase):
                           "skills/x/SKILL.md: `test_docs_indices.py`"])
         self.assertIn(f"({ENDERECO}/tree/main/modelos)", erros[0])
         self.assertIn(f"({ENDERECO}/blob/main/modelos/testes/test_docs_indices.py)", erros[2])
+
+    def test_catalogo_de_projetos_citado_sem_link(self):
+        self.escrever("projetos/README.md", "# Projetos\n")
+        self.escrever("projetos/erp-de-servicos/README.md", "# Projeto\n")
+        erros = self.erros_da_skill("O catálogo está em `projetos/` e o primeiro em `projetos/erp-de-servicos/README.md`.\n")
+        self.assertEqual([erro.split(" — ")[0] for erro in erros],
+                         ["skills/x/SKILL.md: `projetos/`", "skills/x/SKILL.md: `projetos/erp-de-servicos/README.md`"])
+        self.assertIn(f"({ENDERECO}/tree/main/projetos)", erros[0])
 
     def test_link_relativo_que_sai_da_pasta_da_skill(self):
         # O caso mais provável de voltar: no GitHub o link relativo funciona; depois do `npx skills add`, não.
