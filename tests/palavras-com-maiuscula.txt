@@ -10,23 +10,34 @@ acessos
 ações
 admissão
 ainda
+ajuda
+alguns
+antes
 ao
 apagar
 aqui
+arquitetura
 arquivo
 as
 auditoria
 área
+autenticação
+avisa
+banco
 bibliotecas
 bug
 cada
 camada
+campo
 catálogo
+categoria
 catraca
 changelog
 checklist
 chegou
 clientes
+coluna
+colunas
 comando
 commit
 commitar
@@ -34,16 +45,21 @@ commits
 como
 componente
 consultas
+controle
 criar
 daí
 das
+defesa
 definições
+dentro
 depois
 derivar
 desde
+design
 desses
 do
 documentos
+dois
 dos
 duas
 edição
@@ -51,38 +67,62 @@ em
 empresas
 enquanto
 entram
+era
+escada
+estado
 este
+evento
+exclusão
+faixas
 fatura
 ficam
 férias
 ficou
+folga
+fonte
 fontes
 formatação
 função
+funcionário
 funcionários
+funções
+guarda
 heredoc
+higiene
+histórico
 hoje
 horas
 ícones
 incidente
 infraestrutura
 interface
+interruptor
 inventário
 lançar
 ler
 lição
+linha
 lista
 mais
+maquete
+marcar
 medido
 mês
 migração
+modais
+modal
 módulo
 módulos
+moeda
+movimento
 na
 nada
+nenhum
+nenhuma
 no
 não
 nomes
+nos
 num
 numa
 número
@@ -90,6 +130,7 @@ o
 onde
 operações
 os
+padrões
 painel
 para
 pedido
@@ -97,30 +138,45 @@ permissão
 permissões
 pesquisa
 plano
+políticas
+pôr
+porta
 portão
 portões
 proibição
 projeto
 projetos
+propriedades
 protocolo
 provar
 quando
+quatro
 que
 quem
 recarregar
 registro
 regra
 regras
+reposição
 rodar
+se
+seleções
 sem
 serve
 são
+sete
 só
 subir
 sugestão
+superfícies
+tabela
+tamanho
 tarefa
 tarefas
+telas
 texto
+timeout
+tipografia
 tipos
 toda
 todas
@@ -128,10 +184,13 @@ todo
 todos
 total
 trabalha
+três
+tudo
 uma
 um
 vale
 variáveis
+vários
 ver
 versionamento
 vira
@@ -140,22 +199,27 @@ zero
 ## nomes
 # Nomes aceitos em qualquer posição, cada um com a categoria depois da barra vertical: tecnologia, papel ou projeto.
 AGENTS | tecnologia
+API | tecnologia
 Bash | tecnologia
 BEGIN | tecnologia
 CI | tecnologia
 CLAUDE | tecnologia
+CSS | tecnologia
+DEFINER | tecnologia
 ERP | tecnologia
 GB | tecnologia
 GitHub | tecnologia
 IA | tecnologia
 IBAN | tecnologia
 IDs | tecnologia
+INVOKER | tecnologia
 KB | tecnologia
 Markdown | tecnologia
 Next.js | tecnologia
 PDF | tecnologia
 PDFs | tecnologia
 Postgres | tecnologia
+PostgREST | tecnologia
 PowerShell | tecnologia
 PR | tecnologia
 Props | tecnologia
@@ -167,6 +231,7 @@ SKILL | tecnologia
 SQL | tecnologia
 Turbopack | tecnologia
 TypeScript | tecnologia
+UI | tecnologia
 URLs | tecnologia
 UUID | tecnologia
 UUIDs | tecnologia
