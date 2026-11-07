@@ -28,7 +28,7 @@ FINAIS_DE_DOMINIO = frozenset({"com", "net", "org", "info", "biz", "edu", "gov",
                                "online", "xyz", "tech", "store", "shop", "cloud", "pro"})  # além dos de duas letras (países)
 PALAVRAS_LONGAS_ACEITAS = frozenset()  # palavras de 20 letras que o catálogo usa (nenhuma até agora)
 DOMINIOS_ACEITOS = frozenset({"user.name", "user.email"})  # chaves da configuração do git, que parecem domínios
-Conteudo = namedtuple("Conteudo", "origem texto palavras e_lista")
+Conteudo = namedtuple("Conteudo", "origem texto palavras e_lista caminho")
 
 SEPARADOR = "[ .\u00a0\u202f\u2009-]?"  # espaço, ponto, espaço sem quebra, espaço fino estreito, espaço fino, hífen
 DOCUMENTO = re.compile(r"(?<![\d.,])(?:\d{3}" + SEPARADOR + r"\d{3}" + SEPARADOR + r"\d{3}|\d{11})(?!\d|[.,]\d)")
@@ -213,7 +213,7 @@ def _git(raiz, *argumentos):
 
 
 def _nomes_da_saida(saida):
-    return [caminho for caminho in saida.split("\0") if caminho and not caminho.lower().endswith(molde.EXTENSOES_BINARIAS)]
+    return [caminho for caminho in saida.split("\0") if caminho]
 
 
 def _do_indice(raiz):
@@ -222,7 +222,8 @@ def _do_indice(raiz):
     if PALAVRAS in mudados:  # a lista mudou: o catálogo todo é relido com ela
         mudados += [c for c in _nomes_da_saida(_git(raiz, "ls-files", "-z", "--", PASTA)[1]) if c not in mudados]
     palavras = _git(raiz, "show", ":" + PALAVRAS)[1]
-    return [Conteudo(f"{c} (preparado)", _git(raiz, "show", ":" + c)[1], palavras, c == PALAVRAS) for c in mudados]
+    return [Conteudo(f"{c} (preparado)", _git(raiz, "show", ":" + c)[1], palavras, c == PALAVRAS, c)
+            for c in mudados]
 
 
 def _commits_do_intervalo(raiz, base):
@@ -237,7 +238,7 @@ def _commits_do_intervalo(raiz, base):
 def _de_um_commit(raiz, commit):
     palavras = _git(raiz, "show", f"{commit}:{PALAVRAS}")[1]
     nomes = _nomes_da_saida(_git(raiz, "ls-tree", "-r", "-z", "--name-only", commit, "--", PASTA, PALAVRAS)[1])
-    return [Conteudo(f"{n} (commit {commit[:7]})", _git(raiz, "show", f"{commit}:{n}")[1], palavras, n == PALAVRAS)
+    return [Conteudo(f"{n} (commit {commit[:7]})", _git(raiz, "show", f"{commit}:{n}")[1], palavras, n == PALAVRAS, n)
             for n in nomes]
 
 
@@ -246,7 +247,7 @@ def _da_arvore(raiz):
     saida = _git(raiz, "ls-files", "-z", "--cached", "--others", "--exclude-standard", "--", PASTA, PALAVRAS)[1]
     arquivos = [c for c in _nomes_da_saida(saida) if (raiz / c).is_file()]
     palavras = (raiz / PALAVRAS).read_text(encoding="utf-8-sig") if (raiz / PALAVRAS).is_file() else ""
-    return [Conteudo(c, (raiz / c).read_text(encoding="utf-8-sig", errors="replace"), palavras, c == PALAVRAS)
+    return [Conteudo(c, (raiz / c).read_text(encoding="utf-8-sig", errors="replace"), palavras, c == PALAVRAS, c)
             for c in arquivos]
 
 
@@ -266,6 +267,9 @@ def problemas(conteudos, termos, ambiente=os.environ):
     mensagens = [f"lista negra: o termo n.º {n} não compila em Python (classe POSIX ou sintaxe só do grep -E); reescreva-o"
                  for n in termos_que_nao_compilam(termos)]
     for c in conteudos:
+        if not (c.e_lista or c.caminho.lower().endswith(".md")):  # um pdf ou png não se lê: não entra
+            mensagens.append(f"{c.origem}: só arquivos .md entram em {PASTA}/")
+            continue
         comuns, nomes, erros = ler_palavras(c.palavras)
         mensagens += [f"{PALAVRAS}: {erro}" for erro in erros]
         achados = dados_fora_nomes(c.texto) if c.e_lista else dados_no_texto(c.texto, (comuns, nomes))

@@ -82,6 +82,13 @@ class PreCommitDoCatalogo(RepositorioTemporario):
         resultado = self.tentar_commitar()
         self.assertEqual(resultado.returncode, 0, resultado.stdout + resultado.stderr)
 
+    def test_arquivo_que_nao_e_md_em_projetos_e_recusado_mesmo_com_texto_limpo(self):
+        antes = self.commits()
+        for nome in ("sonda.pdf", "sonda.png", "sonda.txt"):
+            with self.subTest(nome=nome):
+                self.preparar(f"número {NUMERO}\n", f"projetos/erp-de-servicos/{nome}")
+                self.assertRecusado(self.tentar_commitar(), "só arquivos .md", antes)
+
     def test_o_teste_le_o_indice_e_nao_o_disco(self):
         antes = self.commits()
         self.preparar(f"número {NUMERO}\n")
@@ -149,6 +156,16 @@ class LeituraDoIntervaloEDaArvore(RepositorioTemporario):
         self.commitar("Outra linha limpa.\n", "projetos/erp-de-servicos/outra.md")
         achados = catalogo.problemas(catalogo.conteudos_a_verificar(self.pasta, {"MORG_BASE_DE_COMPARACAO": base}), [])
         self.assertEqual(achados, [])
+
+    def test_arquivo_que_nao_e_md_e_acusado_no_intervalo_e_na_arvore_sem_ler_o_conteudo(self):
+        base = self.git("rev-parse", "HEAD").stdout.strip()
+        self.commitar(f"número {NUMERO}\n", "projetos/erp-de-servicos/sonda.pdf")
+        for ambiente in ({"MORG_BASE_DE_COMPARACAO": base}, {}):
+            with self.subTest(ambiente=ambiente):
+                achados = catalogo.problemas(catalogo.conteudos_a_verificar(self.pasta, ambiente), [])
+                self.assertEqual(len(achados), 1)
+                self.assertIn("só arquivos .md", achados[0])
+                self.assertNotIn("documento", achados[0])
 
     def test_a_arvore_le_o_disco_com_os_arquivos_novos(self):
         escrever(self.pasta / "projetos" / "nova.md", f"número {NUMERO}\n")  # nem preparado
