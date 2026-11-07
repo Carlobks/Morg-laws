@@ -5,22 +5,40 @@
 ## comuns
 # Palavras comuns, aceitas só no início de frase, de célula de tabela ou de item de lista (uma por linha).
 a
-aqui
+acessos
+admissão
 ainda
+ao
+aqui
+as
 auditoria
 cada
 camada
 catálogo
+clientes
 como
 daí
+definições
 desde
 do
+documentos
+empresas
+enquanto
 este
+fatura
+férias
+funcionários
+horas
+inventário
+lista
+módulo
 módulos
 no
+não
 o
 os
 para
+pedido
 plano
 portões
 projeto
@@ -29,10 +47,12 @@ provar
 quem
 regras
 serve
+tarefas
 tipos
 uma
 um
 vale
+vira
 
 ## nomes
 # Nomes aceitos em qualquer posição, cada um com a categoria depois da barra vertical: tecnologia, papel ou projeto.
@@ -44,6 +64,7 @@ IA | tecnologia
 IBAN | tecnologia
 IDs | tecnologia
 Next.js | tecnologia
+PDF | tecnologia
 PDFs | tecnologia
 Postgres | tecnologia
 React | tecnologia
