@@ -36,12 +36,12 @@ Vale em toda a pasta. O que o projeto de origem tem e o que o catálogo escreve 
 | hashes de commit, números de migração, de chamado e de decisão | nada |
 | valores em dinheiro | nada; só a ordem de grandeza de volume técnico (GB, horas, arquivos) |
 | caminhos e nomes de arquivos | o papel («a constante das empresas», «o arquivo de regras») |
-| contagens do repositório, de regras e de catracas | entram, exatas, com o mês e o comando que as deu |
+| contagens do repositório, de regras, de bugs (só o total por área) e de catracas | entram, exatas, com o mês e o comando que as deu, menos as que falam de defeitos abertos |
 
 ## O que barra cada commit
 
 - A lista negra local (os nomes que não podem vazar), no `pre-commit` e no `commit-msg`, em todo o repositório.
-- O teste `tests/test_projetos_sem_dados.py`, no `pre-commit` de todos os commits: lê o que está preparado (e não o disco) em `projetos/` e na lista de palavras, e recusa caminhos de pasta pessoal, e-mails, documentos, IBAN, UUID, hashes, IDs de serviço, domínios, dinheiro e qualquer palavra com maiúscula que não esteja em `tests/palavras-com-maiuscula.txt`.
+- O teste `tests/test_projetos_sem_dados.py`, no `pre-commit` de todos os commits: lê o que está preparado (e não o disco) em `projetos/` e na lista de palavras, e recusa caminhos de pasta pessoal, e-mails, documentos, IBAN, UUID, hashes, IDs de serviço, domínios, dinheiro e qualquer palavra com maiúscula, também dentro de crases, que não esteja em `tests/palavras-com-maiuscula.txt`; só arquivos `.md` entram na pasta, e qualquer outro tipo é recusado sem ser lido.
 - O CI roda o mesmo teste sobre cada commit do intervalo do push que mexe em `projetos/` (e não só sobre o último), e o gitleaks sobre a história inteira.
 
 ## Os limites
@@ -51,3 +51,6 @@ Vale em toda a pasta. O que o projeto de origem tem e o que o catálogo escreve 
 - Um nome de pessoa nunca entra na lista de palavras: troca-se pelo papel.
 - O teste só varre `projetos/`: o resto do repositório só tem a lista negra e o gitleaks.
 - Os commits feitos pelo site do GitHub não passam pelos hooks; o CI os apanha depois, mas já públicos.
+- O código e os nomes de arquivo escrevem-se entre crases: fora delas, todo nome com ponto é tratado como domínio, e dentro delas só é domínio o que acaba num país (duas letras) ou num final comum, e um nome de arquivo com `.md`, `.py` ou `.sh` e um ponto só passa, mesmo que também seja um domínio.
+- Um termo da lista negra com uma classe como `[[:alpha:]]` ou com sintaxe só do `grep` (`\<`, `\>`) é acusado como «não compila» e tem de ser reescrito.
+- Os casos que o teste não apanha, e que a leitura de cada subfase cobre: dinheiro por extenso sem algarismo ou abreviado em minúsculas, identificador de serviço com prefixo, com maiúsculas misturadas ou com mais de 20 caracteres, hash curto só de dígitos e número de cartão em grupos de quatro.
