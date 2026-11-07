@@ -33,7 +33,7 @@ LINHA_DE_BASE_INICIAL = frozenset({
     "https://github.com/mattpocock/skills",
     "https://cheatsheetseries.owasp.org",
 })
-URL = re.compile(r"https?://[^\s<>()\[\]`\"'*|]+")
+URL = re.compile(r"https?://[^\s<>()\[\]`\"'*|]+", re.IGNORECASE)
 DATA = re.compile(r"\b20\d\d-\d\d-\d\d\b")
 DATA_NA_ULTIMA_COLUNA = re.compile(r"\|\s*20\d\d-\d\d-\d\d\s*\|\s*$")
 MARCADOR_DE_LISTA = re.compile(r"(?:[-*+]|\d+\.) ")
@@ -94,10 +94,13 @@ def links_sem_fonte(raiz, arquivos):
 
 def isento_so_pelo_lychee(url):
     """O lychee salta este endereço sem o conferir, por conta própria (e não pelos `exclude` do lychee.toml)."""
-    dominio = urlsplit(url).hostname or ""
+    partes = urlsplit(url)
+    dominio = partes.hostname or ""
+    # Os padrões olham para o endereço como o lychee o vê: o esquema e o domínio em minúsculas, o resto como veio.
+    como_o_lychee = partes._replace(scheme=partes.scheme.lower(), netloc=partes.netloc.lower()).geturl()
     return (any(dominio == d or dominio.endswith("." + d) for d in ISENTOS_SO_PELO_LYCHEE["dominios"])
             or dominio.endswith(ISENTOS_SO_PELO_LYCHEE["fins"])
-            or any(padrao.search(url) for padrao in ISENTOS_SO_PELO_LYCHEE["padroes"]))
+            or any(padrao.search(como_o_lychee) for padrao in ISENTOS_SO_PELO_LYCHEE["padroes"]))
 
 
 def links_que_o_lychee_saltaria(raiz, arquivos):
@@ -248,6 +251,9 @@ CASOS_DE_ISENCAO = (
     "https://github.com/Carlobks/Morg-laws.copia/main/x", "https://github.com/Carlobks/Morg-laws.copia",
     "https://raw.githubusercontent.com/Carlobks/Morg-laws.copia", "https://github.com/Carlobks/Morg-laws.git",
     "https://github.com/Carlobks/Morg-laws.git/info/refs", "https://github.com/Carlobks/Morg-laws.github",
+    # Os três do test_n6 que faltavam: o caminho sem `tree`, o raw de um nome com sufixo e o raw sem caminho.
+    "https://github.com/Carlobks/Morg-laws/main/x", "https://raw.githubusercontent.com/Carlobks/Morg-laws.copia/main/x",
+    "https://raw.githubusercontent.com/Carlobks/Morg-laws",
     # As maiúsculas: o lychee põe o domínio em minúsculas mas não o caminho (só o primeiro prova o lado do lychee).
     "https://github.com/carlobks/MORG-LAWS/x", "https://WWW.EXAMPLE.ORG",
     # A âncora e a pergunta: o Python normaliza antes de isentar, o lychee olha para o endereço como vem.
@@ -373,6 +379,20 @@ class DominiosQueSoOLycheeIsenta(PastaTemporaria):
         self.assertEqual(len(erros), 7)
         self.assertEqual(erros[0], "a.md: https://a.test/b — o lychee salta este endereço sem o conferir; troque-o "
                                    "por um que abra ou tire o link")
+
+    def test_o_lychee_pos_o_esquema_e_o_dominio_em_minusculas_antes_dos_padroes(self):
+        self.assertTrue(isento_so_pelo_lychee("https://SCHEMAS.microsoft.com/x"))
+        self.assertTrue(isento_so_pelo_lychee("HTTPS://Schemas.Microsoft.com/x"))
+        self.assertTrue(isento_so_pelo_lychee("https://WWW.W3.ORG/2000/svg"))
+        self.assertFalse(isento_so_pelo_lychee("https://www.w3.org/2000/SVG"))  # o caminho o lychee não muda
+
+    def test_o_esquema_em_maiusculas_tambem_e_um_link(self):
+        self.escrever("a.md", "HTTPS://schemas.microsoft.com/x e Http://nova.exemplo/b\n")
+        self.assertEqual(links(ler(self.raiz / "a.md")), {"HTTPS://schemas.microsoft.com/x", "Http://nova.exemplo/b"})
+        self.assertEqual(len(links_que_o_lychee_saltaria(self.raiz, ["a.md"])), 1)
+        fim = " — link novo → entrada no FONTES.md com a data e o que sustenta"
+        self.assertEqual(links_sem_fonte(self.raiz, ["a.md"]),
+                         ["a.md: HTTPS://schemas.microsoft.com/x" + fim, "a.md: Http://nova.exemplo/b" + fim])
 
     def test_o_que_os_dois_lados_isentam_e_o_que_abre_nao_entram_na_recusa(self):
         self.escrever("b.md", "https://example.com/a https://example.org https://x.example.net/ "
