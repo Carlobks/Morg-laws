@@ -39,8 +39,7 @@ DINHEIRO_DOLAR = re.compile(r"\bd[óo]lar(?:es)?\b", re.IGNORECASE)
 DINHEIRO_POR_EXTENSO = re.compile(r"\d[\d .,]*\s?(?:mil\s)?(?:euros?|reais|d[óo]lares)\b", re.IGNORECASE)
 DINHEIRO_CIFRAO = re.compile(r"\$\s?\d")
 CRASES = re.compile(r"`[^`]*`")
-PALAVRA = re.compile(r"(?<!\w)[^\W\d_]\w*")
-CARA_DE_CAMINHO = re.compile(r"[/._=-]")
+PALAVRA = re.compile(r"(?<![^\W_])[^\W\d_][^\W_]*")  # letras e dígitos: o sublinhado separa, como a barra e o hífen
 CLASSE_POSIX = re.compile(r"\[:[a-z]+:\]")
 
 
@@ -106,14 +105,6 @@ def _sem_nomes_aceitos(linha, nomes):
     return padrao.sub(lambda m: "x" * len(m.group(0)), linha) if padrao else linha
 
 
-def _sem_codigo(linha):
-    """Dentro de crases só se isenta o token com cara de caminho ou comando (`/`, `.`, `_`, `-` ou `=`)."""
-    partes = linha.split("`")
-    for i in range(1, len(partes), 2):
-        partes[i] = " ".join("x" * len(t) if CARA_DE_CAMINHO.search(t) else t for t in partes[i].split(" "))
-    return "`".join(partes)
-
-
 def _abre_frase(antes):
     """True se o que vem antes é o começo da linha, de uma frase, de uma célula de tabela ou de um item de lista."""
     resto = re.sub(r"[\s*_`\"“«(]+$", "", antes)
@@ -125,7 +116,7 @@ def nomes_no_texto(texto, palavras_aceitas):
     comuns, nomes = palavras_aceitas
     achados = []
     for numero, linha in enumerate(texto.splitlines(), 1):
-        limpa = _sem_codigo(_sem_nomes_aceitos(linha, nomes))
+        limpa = _sem_nomes_aceitos(linha, nomes)  # as crases não isentam nada: cada pedaço de um caminho é conferido
         for m in PALAVRA.finditer(limpa):
             palavra = m.group(0)
             if palavra[0].isupper() and not (palavra.lower() in comuns and _abre_frase(limpa[:m.start()])):

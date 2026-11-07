@@ -26,6 +26,7 @@ GB | tecnologia
 GitHub | tecnologia
 IBAN | tecnologia
 IDs | tecnologia
+README | tecnologia
 UUID | tecnologia
 UUIDs | tecnologia
 Empresa A | papel

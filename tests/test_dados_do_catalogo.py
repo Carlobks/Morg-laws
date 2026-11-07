@@ -10,7 +10,7 @@ from unittest import mock
 
 import dados_do_catalogo as catalogo
 
-ACEITAS = (frozenset({"cada", "uma", "depois"}), frozenset({"Next.js", "Empresa A", "CI"}))
+ACEITAS = (frozenset({"cada", "uma", "depois"}), frozenset({"Next.js", "Empresa A", "CI", "README"}))
 FINO = "\u2009"  # espaço fino
 NUMERO = "123" + "456" + "789"  # passa a validação de um número fiscal (dígito de controlo 9): conhecido como falso
 IBAN = "PT50" + " 0000" * 5 + " 0"
@@ -91,6 +91,20 @@ class NomesProprios(unittest.TestCase):
         self.assertEqual(tipos_de("usa `Fulano` sempre"), {"nome próprio"})
         self.assertEqual(tipos_de('rode `git config user.name "Fulano"`'), {"nome próprio"})
         self.assertEqual(tipos_de("rode `git config user.name`"), set())
+
+    def test_dentro_de_crases_o_token_com_cara_de_caminho_tambem_e_conferido(self):
+        for texto in ("`git commit --author=" + "Fulano`", "`Ana" + "-Paula`", "`~/Projetos/" + "Fulano_ERP/`",
+                      "`/srv/" + "Fulano/x`", "`sonda_" + "Fulano`"):
+            with self.subTest(texto=texto):
+                self.assertEqual(tipos_de(texto), {"nome próprio"})
+
+    def test_crase_solta_nao_isenta_o_resto_da_linha(self):
+        self.assertEqual(tipos_de("um ` solto e depois Fulano" + "_ERP/x"), {"nome próprio"})
+
+    def test_pedaco_so_de_minusculas_extensao_e_nome_aceito_passam_dentro_de_crases(self):
+        for texto in ("`sonda_expressoes.py`", "`git commit --amend`", "`Next.js/app`", "`README.md`"):
+            with self.subTest(texto=texto):
+                self.assertEqual(tipos_de(texto), set())
 
     def test_sigla_e_acusada_e_o_nome_depois_de_hifen_tambem(self):
         self.assertEqual(tipos_de("o RLS e o pré-Fulano"), {"nome próprio"})
