@@ -39,17 +39,17 @@ O arquivo de regras do projeto tem 21 regras com título em maiúsculas e a pala
 
 ## As proibições
 
-O arquivo de regras do projeto tem uma seção de proibições, com sete linhas. Ficou de fora desta tabela a seção das empresas, que é dado do produto. Os incidentes de cada proibição estão nas regras acima.
+O arquivo de regras do projeto tem uma seção de proibições, com sete linhas. Ficou de fora desta tabela a seção das empresas, que é dado do produto. Quando a proibição repete uma regra, o incidente está nela.
 
 | Proibição | A barreira | No Morg-laws |
 |---|---|---|
 | `push` ou PR sem o sim do dono; saltar ou desligar os hooks; citar numa mensagem de commit a opção que os salta | Permissão que pede confirmação para cada forma de `git push`; permissão que recusa `--no-verify`, `git commit -n`, mexer na configuração do caminho dos hooks e escrever dentro da pasta interna do git | [`AGENTS.md`](../../AGENTS.md) (commit sem pedido, push com o sim; os hooks são a rede) |
 | `git add -A` ou `git add .`; preparar um arquivo antes da hora; commitar trabalho de outra sessão; criar branches ou worktrees | Só texto: a lista de permissões liberadas do projeto está vazia | [`AGENTS.md`](../../AGENTS.md) (só o próprio trabalho) e [`orquestrando-sessoes`](../../skills/orquestrando-sessoes/SKILL.md) |
 | Lançar sub-agentes; escrever no banco sem a skill de migração e sem o sim do dono (só uma classe de tarefas internas tem licença permanente) | Para o banco: a ferramenta de aplicar migração pede confirmação e um hook vigia as chamadas de SQL. Para sub-agentes: só texto | [`AGENTS.md`](../../AGENTS.md) (sem escrita no banco), [`sql-postgres`](../../skills/sql-postgres/SKILL.md) e [`orquestrando-sessoes`](../../skills/orquestrando-sessoes/SKILL.md) |
-| Apagar uma pessoa do cadastro; filtrar por coluna de exclusão lógica em duas tabelas que não a têm; dados reais em testes ou exemplos | Só texto | [`AGENTS.md`](../../AGENTS.md) (sem dados reais); as outras duas são do produto |
-| `any`; uma lista de ícones banidos; re-exports ou constantes de valor num arquivo `'use server'` | Os ícones: um hook de interface. `any`: texto, e a catraca das exceções ao alarme conta as novas. `'use server'`: só o build acusa, o `tsc` não | [`nextjs-react`](../../skills/nextjs-react/SKILL.md) (arquivo `'use server'`) e [`codigo-legivel`](../../skills/codigo-legivel/SKILL.md); os ícones são do produto |
+| Apagar uma pessoa do cadastro; filtrar por coluna de exclusão lógica em duas tabelas que não a têm; dados reais em testes ou exemplos | Só texto. Incidente não registrado | [`AGENTS.md`](../../AGENTS.md) (sem dados reais); as outras duas são do produto |
+| `any`; uma lista de ícones banidos; re-exports ou constantes de valor num arquivo `'use server'` | Os ícones: um hook de interface que avisa depois de escrever. `any`: o eslint recusa-o no código do sistema (os testes ficam de fora), no `pre-commit`; a catraca das exceções ao alarme conta quem o cala. `'use server'`: só o build acusa, o `tsc` não. Incidente não registrado | [`nextjs-react`](../../skills/nextjs-react/SKILL.md) (arquivo `'use server'`) e [`codigo-legivel`](../../skills/codigo-legivel/SKILL.md); os ícones são do produto |
 | Subir para a versão maior por iniciativa própria; reintroduzir uma tela retirada por decisão do dono; martelar a produção com ciclos ou retentativas | Só texto | [`sql-postgres`](../../skills/sql-postgres/SKILL.md) (não martelar); o resto é do produto |
-| Ler os arquivos de ambiente ou a pasta dos backups do banco; rodar um download que se executa direto no shell; mudar as próprias permissões | Permissões que recusam a leitura dessas pastas, os comandos de download com execução e a edição do arquivo de permissões (36 entradas de recusa no total) | [`AGENTS.md`](../../AGENTS.md) (sem segredos) |
+| Ler os arquivos de ambiente ou a pasta dos backups do banco; rodar um download que se executa direto no shell; mudar as próprias permissões | Permissões que recusam a leitura dessas pastas, os comandos de download com execução e a edição do arquivo de permissões (36 entradas de recusa no total). Incidente não registrado | [`AGENTS.md`](../../AGENTS.md) (sem segredos) |
 
 ## O mapa das lições
 
