@@ -115,6 +115,12 @@ class PreCommitDoCatalogo(RepositorioTemporario):
         antes = self.commits()
         self.assertRecusado(self.tentar_commitar(ambiente_limpo(PATH=str(ferramentas))), "sem Python", antes)
 
+    def test_sem_o_teste_no_disco_o_commit_nao_passa(self):
+        (self.pasta / "tests" / "test_projetos_sem_dados.py").unlink()  # só do disco: o índice ainda o tem
+        self.preparar("Uma linha limpa.\n")
+        antes = self.commits()
+        self.assertRecusado(self.tentar_commitar(), "falta tests/test_projetos_sem_dados.py", antes)
+
     def test_termo_da_lista_negra_que_o_python_nao_compila_e_acusado(self):
         lista = self.pasta / "lista.txt"
         escrever(lista, "*" + "abc\n")

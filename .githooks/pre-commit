@@ -28,6 +28,10 @@ if [ -z "$py" ] || ! "$py" -c '' 2>/dev/null; then
   echo "ERRO: sem Python não há como conferir projetos/ (defina MORG_PY ou ponha py/python3 no PATH)." >&2
   exit 1
 fi
+if [ ! -f tests/test_projetos_sem_dados.py ]; then  # sem o arquivo o unittest acha 0 testes e, em alguns Python, sai com 0
+  echo "ERRO: falta tests/test_projetos_sem_dados.py: sem ele não há como conferir projetos/." >&2
+  exit 1
+fi
 MORG_LER_DO_INDICE=1 "$py" -X utf8 -m unittest discover -s tests -p test_projetos_sem_dados.py || {
   echo "ERRO: dado pessoal ou identificador em projetos/ (o teste acima diz onde). Troque pelo papel e tente de novo." >&2
   exit 1; }
