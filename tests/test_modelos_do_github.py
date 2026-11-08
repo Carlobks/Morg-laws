@@ -183,8 +183,13 @@ def erros_de_nomes(formularios):
     return ["Cada `name` deve ser único entre os formulários"] if len(set(nomes)) != len(nomes) else []
 
 
+def formularios_da_pasta(pasta):
+    """Todo `*.yml` e `*.yaml` da pasta menos o `config.yml`: o número na frente só ordena."""
+    return sorted(c for c in pasta.iterdir() if c.suffix in (".yml", ".yaml") and c.name != "config.yml")
+
+
 def formularios_do_repositorio():
-    return sorted(PASTA_DOS_FORMULARIOS.glob("[0-9]-*.yml"))
+    return formularios_da_pasta(PASTA_DOS_FORMULARIOS)
 
 
 class EsquemaDosFormularios(unittest.TestCase):
@@ -200,6 +205,14 @@ class EsquemaDosFormularios(unittest.TestCase):
 
     def test_o_name_e_unico_entre_os_formularios(self):
         self.assertEqual(erros_de_nomes({c.name: ler(c) for c in formularios_do_repositorio()}), [])
+
+    def test_a_lista_traz_todo_yml_e_yaml_da_pasta_menos_o_config(self):
+        with tempfile.TemporaryDirectory() as pasta:
+            raiz = Path(pasta)
+            for nome in ("1-a.yml", "outro.yml", "01-x.yml", "5-q.yaml", "config.yml", "sugestao.md"):
+                (raiz / nome).write_text("name: X\nbody: []\n", encoding="utf-8")
+            achados = [c.name for c in formularios_da_pasta(raiz)]
+        self.assertEqual(achados, ["01-x.yml", "1-a.yml", "5-q.yaml", "outro.yml"])
 
 
 BASE = """name: F
@@ -376,6 +389,14 @@ def erros_de_lingua(nome, texto):
     return erros
 
 
+def erros_da_pasta_dos_formularios(pasta):
+    """Os formulários da pasta são os esperados, e nenhum modelo em Markdown (só o formulário obriga a prova)."""
+    esperados = sorted([*CAMPO_DA_PROVA, FORMULARIO_DE_CONTATO])
+    achados = [c.name for c in formularios_da_pasta(pasta)]
+    erros = [f"formulários da pasta: {achados}, e o esperado é {esperados}"] if achados != esperados else []
+    return erros + [f"{c.name}: um modelo em Markdown não obriga a prova; use um formulário" for c in pasta.glob("*.md")]
+
+
 def arquivos_novos_do_github():
     pasta = RAIZ / ".github"
     return sorted(c for c in pasta.rglob("*") if c.is_file() and "workflows" not in c.parts)
@@ -385,7 +406,7 @@ class ConteudoDosFormulariosDoRepositorio(unittest.TestCase):
     maxDiff = None
 
     def test_os_quatro_formularios_existem_e_cumprem_o_conteudo(self):
-        self.assertEqual(sorted(c.name for c in formularios_do_repositorio()), sorted([*CAMPO_DA_PROVA, FORMULARIO_DE_CONTATO]))
+        self.assertEqual(erros_da_pasta_dos_formularios(PASTA_DOS_FORMULARIOS), [])
         for caminho in formularios_do_repositorio():
             with self.subTest(arquivo=caminho.name):
                 self.assertEqual(erros_do_conteudo_do_repositorio(caminho.name, yaml.safe_load(ler(caminho))), [])
@@ -517,9 +538,16 @@ def erros_dos_enderecos(raiz, arquivos, com_blob):
     return erros
 
 
+def arquivos_com_blob(raiz):
+    """Os arquivos novos cujos `…/blob/main/…` se conferem: o modelo de PR, a política, os READMEs e os `.yml`."""
+    pasta = raiz / ".github" / "ISSUE_TEMPLATE"
+    yml = [*formularios_da_pasta(pasta), pasta / "config.yml"]
+    return [".github/pull_request_template.md", ".github/SECURITY.md", "README.md", "biblia-akita/README.md",
+            *(c.relative_to(raiz).as_posix() for c in yml)]
+
+
 def erros_dos_enderecos_do_repositorio():
-    com_blob = [c.relative_to(RAIZ).as_posix() for c in (MODELO_DE_PR, POLITICA_DE_SEGURANCA)]
-    return erros_dos_enderecos(RAIZ, arquivos_do_git(RAIZ), com_blob + ["README.md", "biblia-akita/README.md"])
+    return erros_dos_enderecos(RAIZ, arquivos_do_git(RAIZ), arquivos_com_blob(RAIZ))
 
 
 class ModeloDePrEPoliticaDoRepositorio(unittest.TestCase):
@@ -547,6 +575,28 @@ class CasosDeErroDoModeloEDaPolitica(unittest.TestCase):
         self.reprova(erros_do_modelo_de_pr(texto + "[x](../README.md)\n"), "(../README.md) é um link relativo")
         self.reprova(erros_do_modelo_de_pr(texto.replace("## Prova", "## Teste")), "falta a seção «## Prova»")
         self.reprova(erros_do_modelo_de_pr(texto.replace("Este repositório é público", "Aviso")), "falta o aviso")
+
+    def test_a_pasta_reprova_o_formulario_fora_da_lista_e_o_modelo_em_markdown(self):
+        with tempfile.TemporaryDirectory() as pasta:
+            raiz = Path(pasta)
+            for nome in (*CAMPO_DA_PROVA, FORMULARIO_DE_CONTATO, "config.yml"):
+                (raiz / nome).write_text("x: 1\n", encoding="utf-8")
+            self.assertEqual(erros_da_pasta_dos_formularios(raiz), [])
+            for extra in ("outro.yml", "01-x.yml", "5-quebrado.yaml", "sugestao.md"):
+                with self.subTest(extra=extra):
+                    (raiz / extra).write_text("x: 1\n", encoding="utf-8")
+                    self.assertTrue(erros_da_pasta_dos_formularios(raiz), extra)
+                    (raiz / extra).unlink()
+
+    def test_o_link_blob_quebrado_num_yml_reprova_e_o_do_repositorio_passa(self):
+        endereco = "https://github.com/Carlobks/Morg-laws/blob/main/NAO-EXISTE.md"
+        with tempfile.TemporaryDirectory() as pasta:
+            raiz = Path(pasta)
+            (raiz / ".github" / "ISSUE_TEMPLATE").mkdir(parents=True)
+            config = raiz / ".github" / "ISSUE_TEMPLATE" / "config.yml"
+            config.write_text(f"url: {endereco}\n", encoding="utf-8")
+            erros = erros_dos_enderecos(raiz, [".github/ISSUE_TEMPLATE/config.yml"], arquivos_com_blob(raiz))
+        self.reprova(erros, "config.yml: …/NAO-EXISTE.md — o arquivo não existe no git")
 
     def test_a_politica_reprova_sem_o_link_com_o_apontador_trocado_e_com_outra_politica(self):
         texto = ler(POLITICA_DE_SEGURANCA)
