@@ -82,39 +82,65 @@ def ler_yaml(texto):
     return dados, erros
 
 
+def vazio(valor):
+    return isinstance(valor, str) and not valor.strip()
+
+
 def erros_de_topo(dados):
     erros = [f"Required top level key `{chave}` is missing" for chave in ("name", "description", "body")
              if chave not in dados]
     if dados and next(iter(dados)) != "name":
         erros.append("`name` deve ser a primeira chave")
+    erros += [f"topo: `{chave}` está vazio" for chave in ("name", "description", "title") if vazio(dados.get(chave))]
+    nome = dados.get("name")
+    if isinstance(nome, str) and nome.strip() and len(nome.strip()) <= 3:
+        erros.append("topo: o `name` deve ter mais de 3 caracteres, ou o GitHub não mostra o formulário")
     return erros + erros_de_chaves("topo", dados, CHAVES_DE_TOPO, "key")
 
 
 def erros_das_caixas(onde, opcoes):
     erros = []
     for numero, opcao in enumerate(opcoes):
-        erros += erros_de_chaves(f"{onde}.options[{numero}]", opcao, {"label": str, "required": bool}, "key")
+        local = f"{onde}.options[{numero}]"
+        erros += erros_de_chaves(local, opcao, {"label": str, "required": bool}, "key")
+        if isinstance(opcao, dict) and "label" not in opcao:
+            erros.append(f"{local}: required attribute key `label` is missing")
+        erros += [f"{local}: `label` está vazio"] if isinstance(opcao, dict) and vazio(opcao.get("label")) else []
     rotulos = [o["label"] for o in opcoes if isinstance(o, dict) and isinstance(o.get("label"), str)]
     if len(set(rotulos)) != len(rotulos):
         erros.append(f"{onde}: Checkboxes must have unique labels")
     return erros
 
 
-def erros_das_opcoes(onde, tipo, opcoes):
+def erros_da_lista(onde, atributos, opcoes):
+    """O `dropdown`: opções de texto (antes da conta de repetidos), sem vazias, `default` dentro e sem `n/a`."""
+    erros = []
+    if any(isinstance(opcao, bool) for opcao in opcoes):
+        erros.append(f"{onde}: `options` must not include booleans. Please wrap values such as 'yes', and 'true' in quotes")
+    textos = [opcao for opcao in opcoes if isinstance(opcao, str)]
+    if len(textos) != len(opcoes) and not any(isinstance(opcao, bool) for opcao in opcoes):
+        erros.append(f"{onde}: `options` must be strings")
+    if any(str(opcao).strip().lower() == "none" for opcao in opcoes):
+        erros.append(f"{onde}: `options` must not include the reserved word, none")
+    if any(vazio(opcao) for opcao in textos):
+        erros.append(f"{onde}: `options` não pode ter opção vazia")
+    if len(textos) == len(opcoes) and len(set(textos)) != len(textos):
+        erros.append(f"{onde}: `options` must be unique")
+    padrao = atributos.get("default")
+    if tipo_certo(padrao, int) and not 0 <= padrao < len(opcoes):
+        erros.append(f"{onde}: `default` fora das opções")
+    if "default" in atributos and any(str(opcao).strip().lower() == "n/a" for opcao in opcoes):
+        erros.append(f"{onde}: com `default` não pode haver a opção n/a")
+    return erros
+
+
+def erros_das_opcoes(onde, tipo, atributos):
+    opcoes = atributos.get("options")
     if tipo not in ("dropdown", "checkboxes"):
         return []
     if not isinstance(opcoes, list) or not opcoes:
         return [f"{onde}: `options` must be a non-empty list"]
-    if tipo == "checkboxes":
-        return erros_das_caixas(onde, opcoes)
-    erros = []
-    if any(isinstance(opcao, bool) for opcao in opcoes):
-        erros.append(f"{onde}: `options` must not include booleans. Please wrap values such as 'yes', and 'true' in quotes")
-    if any(str(opcao).strip().lower() == "none" for opcao in opcoes):
-        erros.append(f"{onde}: `options` must not include the reserved word, none")
-    if len({repr(opcao) for opcao in opcoes}) != len(opcoes):
-        erros.append(f"{onde}: `options` must be unique")
-    return erros
+    return erros_das_caixas(onde, opcoes) if tipo == "checkboxes" else erros_da_lista(onde, atributos, opcoes)
 
 
 def erros_do_conteudo(onde, tipo, bloco):
@@ -123,9 +149,11 @@ def erros_do_conteudo(onde, tipo, bloco):
     erros = [f"{onde}: required attribute key `{obrigatorio}` is missing"] if obrigatorio not in atributos else []
     if "id" in bloco and (tipo == "markdown" or not ID_VALIDO.fullmatch(str(bloco["id"]))):
         erros.append(f"{onde}: `id` can only contain numbers, letters, -, _ (e não vale no markdown)")
-    erros += [f"{onde}: `{chave}` está vazio" for chave, valor in atributos.items()
-              if isinstance(valor, str) and not valor.strip()]
-    return erros + erros_das_opcoes(onde, tipo, atributos.get("options"))
+    erros += [f"{onde}: `{chave}` está vazio" for chave, valor in atributos.items() if vazio(valor)]
+    minimo = bloco["validations"].get("min_length") if isinstance(bloco.get("validations"), dict) else None
+    if tipo_certo(minimo, int) and minimo < 0:
+        erros.append(f"{onde}: `min_length` deve ser um inteiro não negativo")
+    return erros + erros_das_opcoes(onde, tipo, atributos)
 
 
 def erros_do_bloco(numero, bloco):
@@ -148,9 +176,11 @@ def erros_de_repetidos(blocos):
     ids = [str(bloco["id"]) for bloco in blocos if "id" in bloco]
     atributos = [bloco["attributes"] for bloco in blocos if isinstance(bloco.get("attributes"), dict)]
     rotulos = [a["label"] for a in atributos if isinstance(a.get("label"), str)]
+    caixas = [o["label"] for a in atributos if isinstance(a.get("options"), list) for o in a["options"]
+              if isinstance(o, dict) and isinstance(o.get("label"), str)]
     parecidos = {NAO_ALFANUMERICO.sub("", rotulo.lower()) for rotulo in rotulos}
     erros = ["Body must have unique ids"] if len(set(ids)) != len(ids) else []
-    if len(set(rotulos)) != len(rotulos):
+    if len(set(rotulos + caixas)) != len(rotulos + caixas):
         erros.append("Body must have unique labels")
     elif len(parecidos) != len(rotulos):
         erros.append("Labels are too similar")
@@ -215,7 +245,7 @@ class EsquemaDosFormularios(unittest.TestCase):
         self.assertEqual(achados, ["01-x.yml", "1-a.yml", "5-q.yaml", "outro.yml"])
 
 
-BASE = """name: F
+BASE = """name: Form
 description: D
 title: "[F] "
 labels: ["bug"]
@@ -258,6 +288,20 @@ CASOS_DE_ERRO = (
     ("opções repetidas", lambda t: t + LISTA.format("[A, A]"), "`options` must be unique"),
     ("tipo inválido", lambda t: t.replace("type: input", "type: select"), "`select` is not a valid input type"),
     ("min_length como texto", lambda t: t.replace("required: true", 'min_length: "3"'), "`min_length` tem o tipo errado"),
+    ("name vazio", lambda t: t.replace("name: Form", 'name: ""'), "`name` está vazio"),
+    ("name só com espaços", lambda t: t.replace("name: Form", 'name: "  "'), "`name` está vazio"),
+    ("name de 3 letras", lambda t: t.replace("name: Form", "name: Abc"), "mais de 3 caracteres"),
+    ("description em branco", lambda t: t.replace("description: D", 'description: " "'), "`description` está vazio"),
+    ("title vazio", lambda t: t.replace('title: "[F] "', 'title: ""'), "`title` está vazio"),
+    ("caixa sem label", lambda t: t + CAIXAS.format("        - required: true\n"), "required attribute key `label`"),
+    ("caixa com label vazio", lambda t: t + CAIXAS.format('        - label: ""\n'), "`label` está vazio"),
+    ("caixa com o label de um campo", lambda t: t + CAIXAS.format("        - label: Um\n"), "unique labels"),
+    ("opção de lista que é número", lambda t: t + LISTA.format("[A, 2]"), "`options` must be strings"),
+    ("opção de lista vazia", lambda t: t + LISTA.format('[A, ""]'), "`options` não pode ter opção vazia"),
+    ("default fora das opções", lambda t: t + LISTA.format("[A, B]\n      default: 9"), "`default` fora das opções"),
+    ("default negativo", lambda t: t + LISTA.format("[A, B]\n      default: -1"), "`default` fora das opções"),
+    ("n/a com default", lambda t: t + LISTA.format("[A, n/a]\n      default: 0"), "não pode haver a opção n/a"),
+    ("min_length < 0", lambda t: t.replace("required: true", "min_length: -1"), "`min_length` deve ser um inteiro"),
 )
 
 
@@ -280,7 +324,7 @@ class CasosDeErroDoEsquema(unittest.TestCase):
     def test_o_topo_que_nao_e_um_mapa_e_o_name_repetido_reprovam(self):
         self.assertEqual(erros_do_formulario("- a\n"), ["O topo do arquivo deve ser um mapa"])
         self.assertEqual(erros_de_nomes({"a": BASE, "b": BASE}), ["Cada `name` deve ser único entre os formulários"])
-        self.assertEqual(erros_de_nomes({"a": BASE, "b": BASE.replace("name: F", "name: G")}), [])
+        self.assertEqual(erros_de_nomes({"a": BASE, "b": BASE.replace("name: Form", "name: Outra")}), [])
 
     def test_o_corpo_e_o_bloco_com_a_forma_errada_reprovam(self):
         self.assertEqual(erros_do_corpo("texto"), ["`body` deve ser uma lista"])
