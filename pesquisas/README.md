@@ -19,3 +19,4 @@ está no `FONTES.md`.
 | [Código morto](2026-11-03-codigo-morto.md) | Como achar sempre do mesmo jeito o código que ficou para trás, e o que a ferramenta (knip) não vê? | 2026-11-03 |
 | [Linha de base do uso](2026-11-05-linha-de-base-do-uso.md) | Quanto custava e como se comportava o trabalho com agentes num projeto real antes das regras, e o que se vai comparar depois? | 2026-11-05 |
 | [Modelos de issue e de PR](2026-11-08-modelos-de-issue-e-de-pr.md) | Que modelos de issue e de PR o GitHub aceita, como se pede a prova sem deixá-la fugir e como se manda a segurança para um canal privado num repositório público? | 2026-11-08 |
+| [Chamar skills e registrar decisões](2026-11-08-chamar-skills-e-registrar-decisoes.md) | Como se chama uma skill pelo nome no Claude Code e no Codex, o que limita o nome e a descrição, onde vão os moldes de uma skill e o que deve levar uma decisão de arquitetura escrita? | 2026-11-08 |
