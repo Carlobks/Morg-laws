@@ -421,7 +421,7 @@ PALAVRAS_DE_PORTUGAL = re.compile(
 PREFIXOS_DE_PORTUGAL = re.compile(r"\bpartilh\w*", re.IGNORECASE)
 CONSTRUCOES_DE_PORTUGAL = re.compile(
     r"\b(?:continua|continuam|está|estão|fica|ficam|anda|andam)\s+a\s+(?:ver|fazer|falhar|correr|esperar)\b"
-    r"|\w+-(?:lo|la|los|las|se)-(?:ei|ás|á|emos|ão|ia|ias|íamos|iam)\b", re.IGNORECASE)
+    r"|\w+-(?:lo|la|los|las|se|lhe|lhes|me|te|nos|vos)-(?:ei|ás|á|emos|ão|ia|ias|íamos|iam)\b", re.IGNORECASE)
 
 
 def erros_de_lingua(nome, texto):
@@ -527,6 +527,10 @@ class CasosDeErroDoConteudo(unittest.TestCase):
             self.assertEqual(len(sem_fonte_dos_yml(raiz, ["a.yml"])), 1)
 
     def test_a_lingua_de_portugal_reprova_e_os_falsos_positivos_passam(self):
+        for texto in ("dir-lhe-ei", "dar-me-á", "far-nos-ia", "dir-vos-ia", "dir-lhes-ão", "dir-te-ei"):
+            with self.subTest(mesoclise=texto):
+                self.assertEqual(len(erros_de_lingua("a.md", texto)), 1)
+        self.assertEqual(erros_de_lingua("a.md", "bem-te-vi e bem-me-quer"), [])
         for texto in ("O registo", "Vamos partilhar", "continua a ver", "espalhá-lo-ia", "um artefacto", "o ficheiro",
                       "o contacto", "a equipa", "o facto", "se salta", "o utilizador", "no ecrã"):
             with self.subTest(texto=texto):
