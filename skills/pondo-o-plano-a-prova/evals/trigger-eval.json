@@ -4,9 +4,13 @@
   {"query": "faz-me as perguntas que faltam para eu decidir a arquitetura", "should_trigger": true},
   {"query": "migra o sistema inteiro para outro banco de dados", "should_trigger": true},
   {"query": "põe à prova esta ideia de app para os motoristas", "should_trigger": true},
+  {"query": "quero mudar a tela de cadastro: hoje pede o CPF duas vezes", "should_trigger": true},
+  {"query": "antes de mexer no relatório, me ajuda a dizer como vou saber que ficou certo", "should_trigger": true},
   {"query": "corrige o erro de digitação no botão salvar", "should_trigger": false},
   {"query": "quantos usuários se cadastraram este mês?", "should_trigger": false},
   {"query": "abre uma sessão nova para auditar este plano", "should_trigger": false},
   {"query": "escreve o plano visual em HTML desta mudança", "should_trigger": false},
-  {"query": "faz o commit", "should_trigger": false}
+  {"query": "faz o commit", "should_trigger": false},
+  {"query": "começa este projeto do zero comigo", "should_trigger": false},
+  {"query": "muda a cor do cabeçalho para azul", "should_trigger": false}
 ]
