@@ -58,12 +58,12 @@ Oráculo
 
 O agente pode propor um rascunho a partir das respostas; o oráculo só vale depois de o dono confirmá-lo, e fica no resumo final e junto ao plano.
 
-**Julga o resultado, não o mecanismo.** Uma linha que nomeia uma função, uma tabela, um código de erro ou uma biblioteca reescreve-se em termos do que a pessoa vê ou do estado que fica. No banco de provas do [Morg-laws](https://github.com/Carlobks/Morg-laws/blob/main/prova/README.md), um oráculo que exigia um código de erro específico reprovou três soluções corretas, e oráculos que não conferiam tudo o que o pedido dizia aprovaram soluções erradas (uma tabela sem as colunas pedidas; uma que apagava os pedidos de outra pessoa). Por isso se julga o resultado e se cobre também o que não se mexe.
+**Julga o resultado, não o mecanismo.** Uma linha que nomeia uma função, uma tabela, um código de erro ou uma biblioteca reescreve-se em termos do que a pessoa vê ou do estado que fica. No banco de provas do [Morg-laws](https://github.com/Carlobks/Morg-laws/blob/main/prova/README.md), um oráculo que exigia um código de erro específico reprovou soluções corretas, e oráculos que não conferiam tudo o que o pedido dizia aprovaram soluções erradas (uma tabela sem as colunas pedidas; uma que apagava os pedidos de outra pessoa). Por isso se julga o resultado e se cobre também o que não se mexe.
 
 **Como o agente o usa:**
 
 1. Antes de mexer, transforma cada linha numa conferência: um teste automático quando dá, senão um comando com a saída esperada, senão um passo para uma pessoa ver na tela.
-2. Corre-as **antes**, no estado atual, e anota o resultado de cada uma. As duas espécies têm regras opostas:
+2. Roda cada uma **antes**, no estado atual, e anota o resultado de cada uma. As duas espécies têm regras opostas:
    - a linha do «depois» **tem de falhar antes** («hoje: falha, aparece X»); se já passa, não prova nada sobre a mudança, e a dúvida vai ao dono;
    - a linha «Continua igual» **tem de passar antes e depois**; se já falha antes, o ponto de partida não é o que o dono descreveu, e a dúvida vai ao dono.
 3. Depois da mudança, corre todas e relata **linha a linha**: passou, falhou, ou não se pôde conferir (e por quê). Nunca «pronto» sem esta lista.

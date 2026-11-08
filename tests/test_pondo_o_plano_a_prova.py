@@ -27,6 +27,9 @@ FRASES_DO_ORACULO = (
     "- Continua igual: <o que não se mexe>",
     "Pelo menos uma por oráculo",
     "só vale depois de o dono",
+    "reprovou soluções corretas",
+    "aprovaram soluções erradas",
+    "Roda cada uma **antes**",
 )
 DISPENSA = "sem perguntas nem oráculo"
 PARADA = "o dono tiver confirmado o oráculo"
@@ -99,6 +102,13 @@ class PondoOPlanoAProva(unittest.TestCase):
 
     def test_parar_sem_o_oraculo_confirmado_reprova(self):
         self.assertErro(self.texto.replace(PARADA, "o resumo estiver escrito"), "«Quando parar» não exige o oráculo")
+
+    def test_numero_de_casos_do_banco_de_provas_reprova(self):
+        self.assertErro(self.texto.replace("reprovou soluções corretas", "reprovou três soluções corretas"),
+                        "reprovou soluções corretas")
+
+    def test_sem_o_roda_cada_uma_reprova(self):
+        self.assertErro(self.texto.replace("Roda cada uma **antes**", "Corre-as **antes**"), "Roda cada uma **antes**")
 
     def test_sem_a_secao_da_mudanca_reprova(self):
         self.assertErro(self.texto.replace("Quando o pedido é uma mudança", "Outra coisa"), "falta a seção «Quando")
