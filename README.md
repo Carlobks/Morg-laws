@@ -49,6 +49,8 @@ Ele também procura nomes e dados sensíveis numa lista que fica **fora** do rep
 (`git config morg.listaNegra <arquivo>`); sem essa lista, só avisa. No GitHub, o `gitleaks` procura segredos em todo push.
 O workflow `links` confere os links externos dos `.md` uma vez por semana e em cada mudança de `.md`: um vermelho dele quer dizer que um site não respondeu, e não que um teste quebrou. Os links relativos e as fontes são conferidos pela suíte local, sem rede.
 
+Achou um problema numa regra, tem uma sugestão ou uma correção de fonte? Entre pelos formulários do [New issue](https://github.com/Carlobks/Morg-laws/issues/new/choose): cada um pede a prova. Problema de segurança não vai numa issue, que é pública: use o aviso privado, como diz a [política de segurança](https://github.com/Carlobks/Morg-laws/blob/main/.github/SECURITY.md). Numa PR, siga a lista do modelo que aparece no corpo dela.
+
 Mudou um modelo? Rode os testes antes de commitar (o CI roda os mesmos em todo push). Precisam do Python, do Node da
 versão em `tests/exemplo-ts/.nvmrc` e do npm; o script roda o `npm ci` do exemplo quando o lockfile muda:
 

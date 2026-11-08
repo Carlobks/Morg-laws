@@ -22,7 +22,7 @@ Os testes prontos de `testes-ts/` são a exceção: TypeScript, com o `vitest` e
 | `changelog/juntar_changelog.py` | `scripts/changelog/` | Junta os fragmentos no `CHANGELOG.md`, calcula a versão SemVer pelas categorias e escreve o `VERSION` |
 | `changelog/changelog.d/README.md` | `changelog.d/` | O formato dos fragmentos (`AAAA-MM-DD-assunto.md`, categoria na 1.ª linha) |
 | `github/workflows/ci.yml` | `.github/workflows/` | O comando único de testes numa máquina limpa (com `MORG_BASE_DE_COMPARACAO` e todo o histórico, para o «só encolhe» das linhas de base) e o gitleaks em todo o histórico, com actions por SHA e o binário conferido por sha256 |
-| `github/ISSUE_TEMPLATE/erro.yml` | `.github/ISSUE_TEMPLATE/` | Formulário de erro: resumo, passos, esperado, acontecido, versão e relatório revisto |
+| `github/ISSUE_TEMPLATE/erro.yml` | `.github/ISSUE_TEMPLATE/` | Formulário de erro: resumo, passos, esperado, acontecido, versão e relatório revisto. O validador de esquema dos formulários do Morg-laws (`tests/test_esquema_dos_formularios.py`) também confere a forma dele |
 | `testes/test_regras.py` | `tests/` | O arquivo de regras curto, cada regra com motivo e com linha no mapa das barreiras, caminhos citados que existem, índice das skills igual ao instalado |
 | `testes/test_docs_indices.py` | `tests/` | Índice dos docs, ADRs seguidas, pesquisa com data, armadilhas A1…An, planos com "Fora do escopo" e "Prova", handoffs com hashes que existem |
 | `testes/test_alarmes.py` | `tests/` | Alarme calado só com o motivo na mesma linha (também em `/* */`), contagem por tipo no projeto inteiro que não sobe (salvo com `Alarme-novo:` no commit) e desce com quem tira um, `noqa` só de regras que o ruff tem ligadas, com linha de base |
