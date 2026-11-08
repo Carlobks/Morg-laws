@@ -116,7 +116,8 @@ def erros_da_lista(onde, atributos, opcoes):
     """O `dropdown`: opções de texto (antes da conta de repetidos), sem vazias, `default` dentro e sem `n/a`."""
     erros = []
     if any(isinstance(opcao, bool) for opcao in opcoes):
-        erros.append(f"{onde}: `options` must not include booleans. Please wrap values such as 'yes', and 'true' in quotes")
+        erros.append(f"{onde}: `options` must not include booleans. "
+                     "Please wrap values such as 'yes', and 'true' in quotes")
     textos = [opcao for opcao in opcoes if isinstance(opcao, str)]
     if len(textos) != len(opcoes) and not any(isinstance(opcao, bool) for opcao in opcoes):
         erros.append(f"{onde}: `options` must be strings")
@@ -277,7 +278,8 @@ CASOS_DE_ERRO = (
     ("label faltando", lambda t: t.replace("label: Um", "placeholder: Um"), "required attribute key `label`"),
     ("dois id iguais", lambda t: t + CAMPO_B.format("Dois").replace("id: b", "id: a"), "unique ids"),
     ("id com espaço", lambda t: t.replace("id: a", "id: a b"), "`id` can only contain"),
-    ("render num input", lambda t: t.replace("label: Um\n", "label: Um\n      render: shell\n"), "`render` is not a permitted"),
+    ("render num input", lambda t: t.replace("label: Um\n", "label: Um\n      render: shell\n"),
+     "`render` is not a permitted"),
     ("required como texto", lambda t: t.replace("required: true", 'required: "sim"'), "`required` tem o tipo errado"),
     ("labels iguais", lambda t: t + CAMPO_B.format("Um"), "unique labels"),
     ("labels parecidos", lambda t: t + CAMPO_B.format("um!"), "Labels are too similar"),
@@ -287,7 +289,8 @@ CASOS_DE_ERRO = (
     ("Yes e No sem aspas", lambda t: t + LISTA.format("[Yes, No]"), "must not include booleans"),
     ("opções repetidas", lambda t: t + LISTA.format("[A, A]"), "`options` must be unique"),
     ("tipo inválido", lambda t: t.replace("type: input", "type: select"), "`select` is not a valid input type"),
-    ("min_length como texto", lambda t: t.replace("required: true", 'min_length: "3"'), "`min_length` tem o tipo errado"),
+    ("min_length como texto", lambda t: t.replace("required: true", 'min_length: "3"'),
+     "`min_length` tem o tipo errado"),
     ("name vazio", lambda t: t.replace("name: Form", 'name: ""'), "`name` está vazio"),
     ("name só com espaços", lambda t: t.replace("name: Form", 'name: "  "'), "`name` está vazio"),
     ("name de 3 letras", lambda t: t.replace("name: Form", "name: Abc"), "mais de 3 caracteres"),
@@ -333,11 +336,13 @@ class CasosDeErroDoEsquema(unittest.TestCase):
         self.assertIn("body[0].attributes: deve ser um mapa", erros_do_bloco(0, {"type": "input", "attributes": "x"}))
 
 
+# as etiquetas, medidas em 2026-11-07
 ETIQUETAS_QUE_EXISTEM = frozenset({"accessibility", "bug", "documentation", "duplicate", "enhancement",
-                                   "good first issue", "help wanted", "invalid", "question", "wontfix"})  # medidas em 2026-11-07
+                                   "good first issue", "help wanted", "invalid", "question", "wontfix"})
 AVISO_DE_PUBLICO = ("Este repositório é público", "nomes de projetos, empresas ou pessoas")
 LINK_DO_AVISO_PRIVADO = "https://github.com/Carlobks/Morg-laws/security/advisories/new"
-CAMPO_DA_PROVA = {"1-problema-numa-regra.yml": "prova", "2-sugestao.yml": "prova", "3-correcao-de-fonte.yml": "fonte_diz"}
+CAMPO_DA_PROVA = {"1-problema-numa-regra.yml": "prova", "2-sugestao.yml": "prova",
+                  "3-correcao-de-fonte.yml": "fonte_diz"}
 FORMULARIO_DE_CONTATO = "4-pedir-contato-de-seguranca.yml"
 CONFIG_DOS_FORMULARIOS = PASTA_DOS_FORMULARIOS / "config.yml"
 
@@ -417,7 +422,8 @@ def sem_fonte_dos_yml(raiz, arquivos):
 
 
 PALAVRAS_DE_PORTUGAL = re.compile(
-    r"\b(?:ficheiro|registo|ecrã|utilizador|equipa|telemóvel|facto|artefacto|contacto|omissão|salta)s?\b", re.IGNORECASE)
+    r"\b(?:ficheiro|registo|ecrã|utilizador|equipa|telemóvel|facto|artefacto|contacto|omissão|salta)s?\b",
+    re.IGNORECASE)
 PREFIXOS_DE_PORTUGAL = re.compile(r"\bpartilh\w*", re.IGNORECASE)
 CONSTRUCOES_DE_PORTUGAL = re.compile(
     r"\b(?:continua|continuam|está|estão|fica|ficam|anda|andam)\s+a\s+(?:ver|fazer|falhar|correr|esperar)\b"
@@ -438,7 +444,8 @@ def erros_da_pasta_dos_formularios(pasta):
     esperados = sorted([*CAMPO_DA_PROVA, FORMULARIO_DE_CONTATO])
     achados = [c.name for c in formularios_da_pasta(pasta)]
     erros = [f"formulários da pasta: {achados}, e o esperado é {esperados}"] if achados != esperados else []
-    return erros + [f"{c.name}: um modelo em Markdown não obriga a prova; use um formulário" for c in pasta.glob("*.md")]
+    return erros + [f"{c.name}: um modelo em Markdown não obriga a prova; use um formulário"
+                    for c in pasta.glob("*.md")]
 
 
 def arquivos_novos_do_github():
@@ -493,7 +500,8 @@ CASOS_DO_CONTEUDO = (
 CASOS_DO_CONFIG = (
     ("blank_issues_enabled: false", "blank_issues_enabled: true", "`blank_issues_enabled` deve ser false"),
     ("url: " + LINK_DO_AVISO_PRIVADO, "url: https://github.com/Carlobks/Morg-laws/security/policy", "falta o link"),
-    ("url: https://github.com/Carlobks/Morg-laws/security/policy", "url: http://exemplo.test", "deve começar por https://"),
+    ("url: https://github.com/Carlobks/Morg-laws/security/policy", "url: http://exemplo.test",
+     "deve começar por https://"),
     ("contact_links:", "contato:", "`contato` is not a permitted key"),
     ("    about: O que conta", "    sobre: O que conta", "falta `about`"),
 )
@@ -505,7 +513,8 @@ class CasosDeErroDoConteudo(unittest.TestCase):
     def test_cada_mutacao_do_conteudo_reprova_com_a_mensagem_dela(self):
         for nome, mudar, fragmento in CASOS_DO_CONTEUDO:
             with self.subTest(caso=fragmento):
-                dados = yaml.safe_load(ler(PASTA_DOS_FORMULARIOS / (nome if nome != "novo.yml" else FORMULARIO_DE_CONTATO)))
+                arquivo = nome if nome != "novo.yml" else FORMULARIO_DE_CONTATO
+                dados = yaml.safe_load(ler(PASTA_DOS_FORMULARIOS / arquivo))
                 mudar(dados)
                 erros = erros_do_conteudo_do_repositorio(nome, dados)
                 self.assertTrue(any(fragmento in erro for erro in erros), f"{fragmento!r} não está em {erros}")
@@ -543,7 +552,8 @@ class CasosDeErroDoConteudo(unittest.TestCase):
 MODELO_DE_PR = RAIZ / ".github" / "pull_request_template.md"
 POLITICA_DE_SEGURANCA = RAIZ / ".github" / "SECURITY.md"
 OUTRAS_POLITICAS = (RAIZ / "SECURITY.md", RAIZ / "docs" / "SECURITY.md")
-ENDERECO_DO_FORMULARIO = re.compile(r"https://github\.com/Carlobks/Morg-laws/issues/new\?(?:[^\s)>#]*&)?template=([\w.-]+)")
+ENDERECO_DO_FORMULARIO = re.compile(
+    r"https://github\.com/Carlobks/Morg-laws/issues/new\?(?:[^\s)>#]*&)?template=([\w.-]+)")
 ITENS_DO_MODELO_DE_PR = ("scripts/testar.sh", "FONTES.md", "pesquisas/", "português do Brasil")
 SECOES_DO_MODELO_DE_PR = ("## Prova", "## O que não se verificou")
 
@@ -554,7 +564,8 @@ def erros_do_modelo_de_pr(texto):
              if frase not in texto]
     erros += [f"pull_request_template.md: falta a seção «{secao}»" for secao in SECOES_DO_MODELO_DE_PR
               if secao not in texto]
-    erros += [f"pull_request_template.md: a lista não cita {item}" for item in ITENS_DO_MODELO_DE_PR if item not in texto]
+    erros += [f"pull_request_template.md: a lista não cita {item}" for item in ITENS_DO_MODELO_DE_PR
+              if item not in texto]
     erros += [f"pull_request_template.md: ({alvo}) é um link relativo; use o link completo do repositório"
               for alvo in sorted(set(LINK_RELATIVO.findall(texto)))]
     return erros
@@ -578,9 +589,10 @@ def erros_dos_enderecos(raiz, arquivos, com_blob):
     erros, conhecidos = [], set(arquivos)
     for nome in sorted(a for a in arquivos if a.endswith((".md", ".yml"))):
         texto = ler(raiz / nome)
-        erros += [f"{nome}: template={t} não é um formulário de .github/ISSUE_TEMPLATE" for t in ENDERECO_DO_FORMULARIO.findall(texto)
-                  if f".github/ISSUE_TEMPLATE/{t}" not in conhecidos]
-        for ref, caminho, ancora in sorted({m[1:] for m in ENDERECO_PROPRIO.findall(texto)}) if nome in com_blob else []:
+        erros += [f"{nome}: template={t} não é um formulário de .github/ISSUE_TEMPLATE"
+                  for t in ENDERECO_DO_FORMULARIO.findall(texto) if f".github/ISSUE_TEMPLATE/{t}" not in conhecidos]
+        destinos = sorted({m[1:] for m in ENDERECO_PROPRIO.findall(texto)}) if nome in com_blob else []
+        for ref, caminho, ancora in destinos:
             erro = erro_do_link(raiz, conhecidos, ref, caminho, ancora)
             erros += [f"{nome}: …/{caminho} — {erro}"] if erro else []
     return erros
@@ -648,7 +660,8 @@ class CasosDeErroDoModeloEDaPolitica(unittest.TestCase):
 
     def test_a_politica_reprova_sem_o_link_com_o_apontador_trocado_e_com_outra_politica(self):
         texto = ler(POLITICA_DE_SEGURANCA)
-        self.reprova(erros_da_politica(texto.replace(LINK_DO_AVISO_PRIVADO, "https://x.test"), []), "falta o link https")
+        sem_o_link = texto.replace(LINK_DO_AVISO_PRIVADO, "https://x.test")
+        self.reprova(erros_da_politica(sem_o_link, []), "falta o link https")
         trocado = texto.replace("template=" + FORMULARIO_DE_CONTATO, "template=1-problema-numa-regra.yml")
         self.reprova(erros_da_politica(trocado, []), "falta o link do formulário")
         self.reprova(erros_da_politica(texto.replace("dado pessoal", "dado"), []), "falta a menção do dado pessoal")
@@ -659,8 +672,9 @@ class CasosDeErroDoModeloEDaPolitica(unittest.TestCase):
         endereco = "https://github.com/Carlobks/Morg-laws"
         with tempfile.TemporaryDirectory() as pasta:
             raiz = Path(pasta)
-            (raiz / "a.md").write_text(f"{endereco}/issues/new?template=3-correcao-de-fonte.yml e {endereco}/blob/main/"
-                                       ".github/SEGURANCA.md e [ok]({endereco}/issues/new?labels=x&template=b.yml)\n", encoding="utf-8")
+            (raiz / "a.md").write_text(
+                f"{endereco}/issues/new?template=3-correcao-de-fonte.yml e {endereco}/blob/main/"
+                ".github/SEGURANCA.md e [ok]({endereco}/issues/new?labels=x&template=b.yml)\n", encoding="utf-8")
             (raiz / ".github" / "ISSUE_TEMPLATE").mkdir(parents=True)
             (raiz / ".github" / "ISSUE_TEMPLATE" / "b.yml").write_text("x: 1\n", encoding="utf-8")
             erros = erros_dos_enderecos(raiz, ["a.md", ".github/ISSUE_TEMPLATE/b.yml"], ["a.md"])
