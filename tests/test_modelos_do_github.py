@@ -127,9 +127,13 @@ def erros_da_lista(onde, atributos, opcoes):
         erros.append(f"{onde}: `options` não pode ter opção vazia")
     if len(textos) == len(opcoes) and len(set(textos)) != len(textos):
         erros.append(f"{onde}: `options` must be unique")
+    return erros + erros_do_default(onde, atributos, opcoes)
+
+
+def erros_do_default(onde, atributos, opcoes):
+    """O `default` é um índice dentro das opções, e com ele a opção «n/a» não vale."""
     padrao = atributos.get("default")
-    if tipo_certo(padrao, int) and not 0 <= padrao < len(opcoes):
-        erros.append(f"{onde}: `default` fora das opções")
+    erros = [f"{onde}: `default` fora das opções"] if tipo_certo(padrao, int) and not 0 <= padrao < len(opcoes) else []
     if "default" in atributos and any(str(opcao).strip().lower() == "n/a" for opcao in opcoes):
         erros.append(f"{onde}: com `default` não pode haver a opção n/a")
     return erros
