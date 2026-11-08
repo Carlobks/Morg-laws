@@ -4,7 +4,8 @@
 # duas línguas com o mesmo veredito e o ruff.
 # Python: MORG_PY, ou py (Windows), ou python3. Sem -I aqui: o coverage e o ruff vivem nos pacotes do usuário;
 # os testes rodam cada modelo com -I.
-# Precisa de: coverage e ruff (pip install coverage ruff pyyaml), e do Node (a versão de tests/exemplo-ts/.nvmrc) com o npm.
+# Precisa de: coverage, ruff e pyyaml (pip install coverage ruff pyyaml),
+# e do Node (a versão de tests/exemplo-ts/.nvmrc) com o npm.
 # Rodar da raiz: sh scripts/testar.sh
 raiz=$(cd "$(dirname "$0")/.." && pwd) || exit 1
 cd "$raiz" || exit 1
