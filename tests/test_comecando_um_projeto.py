@@ -5,14 +5,14 @@ precisa, conferido sem rede e sobre o texto:
   dono e Perguntas em aberto;
 - não leva palavras nem construções do português de Portugal.
 E a skill `comecando-um-projeto`:
-- tem as seções do plano, na ordem, e cita os sete destinos do que escreve no projeto;
+- tem as seções do plano, na ordem, e os sete destinos do que escreve no projeto na tabela da seção 4;
 - cada cópia de `assets/` é igual, byte a byte, ao seu molde; nenhum arquivo de `assets/` fica fora do mapa; nenhum
   arquivo de `skills/` se chama `AGENTS.md`, `CLAUDE.md` nem `CLAUDE.local.md` (a ferramenta o carregaria como regra);
 - o `SKILL.md` e o `evals/` não levam palavras nem construções do português de Portugal (as cópias de `assets/` ficam
   de fora: são iguais aos moldes).
 E a mensagem inicial, a seção «Primeira mensagem num projeto» do README:
 - tem os dois blocos iguais aos da seção 6 da skill, com o mesmo corpo depois do prefixo (`/` no Claude Code, `$` no
-  Codex) e o nome da skill no prefixo;
+  Codex), o rótulo certo antes de cada um e o nome da skill no prefixo;
 - fica depois do bloco do `npx skills add` e antes de «Para quem contribui»;
 - não leva palavras nem construções do português de Portugal.
 As funções recebem o texto ou a raiz, para os casos de erro serem provados sem tocar no repositório.
@@ -40,6 +40,9 @@ COPIAS_DOS_MOLDES = {f"assets/molde-{nome}.md": f"modelos/documentos/{nome}.md"
 NOMES_QUE_AS_FERRAMENTAS_CARREGAM = ("AGENTS.md", "CLAUDE.md", "CLAUDE.local.md")
 SECAO_DO_README = "### Primeira mensagem num projeto"
 SECAO_DA_SKILL = "## 6. Mensagem inicial"
+SECAO_DOS_DESTINOS = "## 4. O que se escreve"
+ROTULO_E_PREFIXO = re.compile(r"^(No Claude Code|No Codex):\n\n```text\n(.)", re.MULTILINE)
+ROTULOS_ESPERADOS = [("No Claude Code", "/"), ("No Codex", "$")]
 INSTALACAO = "npx skills add"
 PROXIMA_SECAO_DO_README = "## Para quem contribui"
 BLOCO_DE_TEXTO = re.compile(r"```text\n(.*?)\n```", re.DOTALL)
@@ -68,7 +71,9 @@ def erros_da_skill(texto):
     ordem = [titulo for titulo in achadas if titulo in SECOES_DA_SKILL]
     if not erros and ordem != list(SECOES_DA_SKILL):
         erros.append(f"as seções estão fora da ordem: {ordem}")
-    return erros + [f"falta citar o destino `{destino}`" for destino in DESTINOS_DA_SKILL if destino not in texto]
+    tabela = secao_de(texto, SECAO_DOS_DESTINOS)
+    return erros + [f"falta o destino `{destino}` na tabela da seção 4" for destino in DESTINOS_DA_SKILL
+                    if not re.search(rf"^\| `{re.escape(destino)}", tabela, re.MULTILINE)]
 
 
 def erros_das_copias(raiz):
@@ -114,12 +119,21 @@ def erros_dos_prefixos(blocos, nome):
     return erros or ([] if corpos[0] == corpos[1] else ["o corpo difere entre o Claude Code e o Codex"])
 
 
+def erros_dos_rotulos(secao, onde):
+    """O rótulo «No Claude Code:» vem antes do bloco que começa por `/`, e «No Codex:» antes do que começa por `$`."""
+    achados = ROTULO_E_PREFIXO.findall(secao)
+    return [] if achados == ROTULOS_ESPERADOS else [f"os rótulos {onde} não casam com os prefixos: {achados}"]
+
+
 def erros_da_mensagem(readme, skill):
-    """Os blocos do README iguais aos da skill, na ordem certa e com o nome da skill no prefixo."""
-    no_readme = BLOCO_DE_TEXTO.findall(secao_de(readme, SECAO_DO_README))
-    na_skill = BLOCO_DE_TEXTO.findall(secao_de(skill, SECAO_DA_SKILL))
+    """Os blocos do README iguais aos da skill, na ordem certa, com o rótulo e o nome da skill no prefixo."""
+    secao_do_readme = secao_de(readme, SECAO_DO_README)
+    secao_da_skill = secao_de(skill, SECAO_DA_SKILL)
+    no_readme = BLOCO_DE_TEXTO.findall(secao_do_readme)
+    na_skill = BLOCO_DE_TEXTO.findall(secao_da_skill)
     nome = re.search(r"^name: (.+)$", skill, re.MULTILINE).group(1)
     erros = [] if no_readme == na_skill else ["os blocos do README diferem dos da seção 6 da skill"]
+    erros += erros_dos_rotulos(secao_do_readme, "no README") + erros_dos_rotulos(secao_da_skill, "na skill")
     return erros + erros_da_ordem_no_readme(readme) + erros_dos_prefixos(no_readme, nome)
 
 
@@ -186,7 +200,11 @@ class SkillComecandoUmProjeto(unittest.TestCase):
 
     def test_sem_um_destino_reprova(self):
         erros = erros_da_skill(self.texto.replace("docs/decisoes/", "docs/outra/"))
-        self.assertIn("falta citar o destino `docs/decisoes/`", erros)
+        self.assertIn("falta o destino `docs/decisoes/` na tabela da seção 4", erros)
+
+    def test_sem_a_linha_do_agents_na_tabela_reprova(self):
+        sem_a_linha = "\n".join(linha for linha in self.texto.splitlines() if not linha.startswith("| `AGENTS.md`"))
+        self.assertEqual(["falta o destino `AGENTS.md` na tabela da seção 4"], erros_da_skill(sem_a_linha))
 
     def test_as_copias_sao_iguais_aos_moldes(self):
         self.assertEqual([], erros_das_copias(RAIZ))
@@ -254,6 +272,17 @@ class MensagemInicial(unittest.TestCase):
     def test_o_nome_errado_no_prefixo_do_codex_reprova(self):
         errado = self.readme.replace("$comecando-um-projeto", "$comecando-o-projeto")
         self.assertErro(errado, "não começa por $comecando-um-projeto")
+
+    def troca_os_rotulos(self, texto):
+        return (texto.replace("No Claude Code:", "@@").replace("No Codex:", "No Claude Code:")
+                .replace("@@", "No Codex:"))
+
+    def test_os_rotulos_trocados_no_readme_reprovam(self):
+        self.assertErro(self.troca_os_rotulos(self.readme), "os rótulos no README")
+
+    def test_os_rotulos_trocados_na_skill_reprovam(self):
+        erros = erros_da_mensagem(self.readme, self.troca_os_rotulos(self.skill))
+        self.assertTrue(any("os rótulos na skill" in erro for erro in erros), erros)
 
     def test_a_mensagem_esta_em_portugues_do_brasil(self):
         self.assertEqual([], erros_de_lingua_da_mensagem(self.readme))
