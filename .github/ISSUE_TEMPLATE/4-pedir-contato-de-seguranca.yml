@@ -1,0 +1,17 @@
+name: Pedir um contato de segurança
+description: Só para pedir um canal privado quando o aviso privado não abrir. Não escreva nenhum detalhe.
+title: "[Contato de segurança] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Este repositório é público:** tudo o que escrever aqui fica visível para qualquer pessoa, e não sai mais. Não ponha **nomes de projetos, empresas ou pessoas**, e-mails, chaves nem caminhos da sua máquina. Troque-os pelo papel («o dono», «Empresa A», «projeto X»).
+
+        **Não escreva nenhum detalhe do problema**, nem no título: nem o arquivo, nem o que encontrou, nem como se repete. Esta issue fica pública na hora. O dono responde aqui quando houver um canal privado.
+  - type: checkboxes
+    id: sem_detalhes
+    attributes:
+      label: Confirmação
+      options:
+        - label: Não escrevi nenhum detalhe do problema nesta issue, nem no título.
+          required: true

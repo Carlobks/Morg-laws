@@ -1,0 +1,50 @@
+name: Correção de fonte
+description: Um resumo, uma citação ou um link que não bate com a fonte.
+title: "[Fonte] "
+labels: ["documentation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Este repositório é público:** tudo o que escrever aqui fica visível para qualquer pessoa, e não sai mais. Não ponha **nomes de projetos, empresas ou pessoas**, e-mails, chaves nem caminhos da sua máquina. Troque-os pelo papel («o dono», «Empresa A», «projeto X»).
+
+        Não copie trechos longos da fonte: uma frase curta entre aspas basta.
+  - type: input
+    id: arquivo
+    attributes:
+      label: Arquivo e linha que citam a fonte
+      description: Por exemplo, FONTES.md, biblia-akita/… ou uma skill.
+    validations:
+      required: true
+  - type: input
+    id: fonte
+    attributes:
+      label: A fonte
+      description: O link, ou o livro e a página.
+    validations:
+      required: true
+  - type: textarea
+    id: texto_diz
+    attributes:
+      label: O que o nosso texto diz
+    validations:
+      required: true
+  - type: textarea
+    id: fonte_diz
+    attributes:
+      label: O que a fonte diz
+      description: Com as suas palavras. É a prova deste formulário, a fonte contra o texto.
+    validations:
+      required: true
+  - type: input
+    id: data
+    attributes:
+      label: Quando leu a fonte
+      description: No formato AAAA-MM-DD.
+  - type: checkboxes
+    id: revisado
+    attributes:
+      label: Revisão do texto
+      options:
+        - label: "Revisei o texto: não tem nomes de pessoas, empresas ou projetos, e-mails, chaves nem caminhos da minha máquina."
+          required: true

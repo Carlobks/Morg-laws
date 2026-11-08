@@ -1,0 +1,44 @@
+name: Sugestão
+description: Uma regra, skill ou modelo que falta, ou que faria melhor de outro jeito.
+title: "[Sugestão] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Este repositório é público:** tudo o que escrever aqui fica visível para qualquer pessoa, e não sai mais. Não ponha **nomes de projetos, empresas ou pessoas**, e-mails, chaves nem caminhos da sua máquina. Troque-os pelo papel («o dono», «Empresa A», «projeto X»).
+
+        As regras saíram de um projeto real e ninguém as mediu: o caso que você viveu é a prova que conta.
+  - type: textarea
+    id: caso
+    attributes:
+      label: O caso real
+      description: O que aconteceu no seu projeto que mostra a falta.
+    validations:
+      required: true
+  - type: textarea
+    id: proposta
+    attributes:
+      label: O que mudaria
+      description: A regra, a skill ou o modelo, e onde.
+    validations:
+      required: true
+  - type: textarea
+    id: prova
+    attributes:
+      label: A prova
+      description: O comando e a saída, ou o que a regra disse contra o que aconteceu.
+    validations:
+      required: true
+  - type: textarea
+    id: fonte
+    attributes:
+      label: A fonte da proposta
+      description: Um link, ou o livro e a página. Se entrar, vai para o FONTES.md.
+  - type: checkboxes
+    id: revisado
+    attributes:
+      label: Revisão do texto
+      options:
+        - label: "Revisei o texto: não tem nomes de pessoas, empresas ou projetos, e-mails, chaves nem caminhos da minha máquina."
+          required: true

@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Problema de segurança (aviso privado)
+    url: https://github.com/Carlobks/Morg-laws/security/advisories/new
+    about: Uma brecha num modelo, ou um dado pessoal publicado aqui por engano. Não abra uma issue, porque ela é pública.
+  - name: Política de segurança
+    url: https://github.com/Carlobks/Morg-laws/security/policy
+    about: O que conta como problema de segurança e o que fazer se o aviso privado não abrir.

@@ -1,0 +1,65 @@
+name: Problema numa regra
+description: Uma regra, skill ou modelo disse uma coisa e aconteceu outra.
+title: "[Regra] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Este repositório é público:** tudo o que escrever aqui fica visível para qualquer pessoa, e não sai mais. Não ponha **nomes de projetos, empresas ou pessoas**, e-mails, chaves nem caminhos da sua máquina. Troque-os pelo papel («o dono», «Empresa A», «projeto X»).
+
+        Uma issue por problema. Para um resumo da `biblia-akita` que não bate com a página, use «Correção de fonte».
+  - type: dropdown
+    id: onde
+    attributes:
+      label: Onde está o problema
+      options:
+        - Regra do AGENTS.md
+        - Skill
+        - Modelo (hook, portão, teste ou CI)
+        - Catálogo de projetos
+        - Outro
+    validations:
+      required: true
+  - type: input
+    id: arquivo
+    attributes:
+      label: Arquivo e linha
+      description: Por exemplo, skills/git-e-commits/SKILL.md:42.
+    validations:
+      required: true
+  - type: textarea
+    id: regra_disse
+    attributes:
+      label: O que a regra diz
+      description: Cite a frase.
+    validations:
+      required: true
+  - type: textarea
+    id: aconteceu
+    attributes:
+      label: O que aconteceu de fato
+      description: Só o que viu, sem suposições.
+    validations:
+      required: true
+  - type: textarea
+    id: prova
+    attributes:
+      label: A prova
+      description: >-
+        O comando e a saída, ou o trecho da conversa com o agente que mostra o problema, num bloco de código.
+        Sem prova, a issue fica esperando a prova.
+    validations:
+      required: true
+  - type: input
+    id: ferramenta
+    attributes:
+      label: Ferramenta e sistema
+      description: O agente e a versão (Claude Code, Codex…) e o sistema operacional.
+  - type: checkboxes
+    id: revisado
+    attributes:
+      label: Revisão do texto
+      options:
+        - label: "Revisei o texto: não tem nomes de pessoas, empresas ou projetos, e-mails, chaves nem caminhos da minha máquina."
+          required: true
