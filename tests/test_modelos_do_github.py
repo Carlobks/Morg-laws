@@ -20,6 +20,7 @@ except ImportError as erro:
 
 from carregar_modelos import RAIZ
 from leitura_do_repositorio import arquivos_do_git, ler
+from lingua_do_brasil import erros_de_lingua
 from test_caminhos_do_morg_laws import ENDERECO_PROPRIO, LINK_RELATIVO, erro_do_link
 from test_esquema_dos_formularios import (
     PASTA_DOS_FORMULARIOS,
@@ -112,24 +113,6 @@ def erros_do_config(texto):
 def sem_fonte_dos_yml(raiz, arquivos):
     """T8: cada link dos .yml é do próprio repositório ou abre uma entrada do FONTES.md."""
     return links_sem_fonte(raiz, arquivos)
-
-
-PALAVRAS_DE_PORTUGAL = re.compile(
-    r"\b(?:ficheiro|registo|ecrã|utilizador|equipa|telemóvel|facto|artefacto|contacto|omissão|salta)s?\b",
-    re.IGNORECASE)
-PREFIXOS_DE_PORTUGAL = re.compile(r"\bpartilh\w*", re.IGNORECASE)
-CONSTRUCOES_DE_PORTUGAL = re.compile(
-    r"\b(?:continua|continuam|está|estão|fica|ficam|anda|andam)\s+a\s+(?:ver|fazer|falhar|correr|esperar)\b"
-    r"|\w+-(?:lo|la|los|las|se|lhe|lhes|me|te|nos|vos)-(?:ei|ás|á|emos|ão|ia|ias|íamos|iam)\b", re.IGNORECASE)
-
-
-def erros_de_lingua(nome, texto):
-    """T9: palavras e construções do português de Portugal num arquivo novo de `.github/`."""
-    erros = []
-    for padrao in (PALAVRAS_DE_PORTUGAL, PREFIXOS_DE_PORTUGAL, CONSTRUCOES_DE_PORTUGAL):
-        erros += [f"{nome}: «{achado.group()}» é do português de Portugal; escreva em português do Brasil"
-                  for achado in padrao.finditer(texto)]
-    return erros
 
 
 def erros_da_pasta_dos_formularios(pasta):
