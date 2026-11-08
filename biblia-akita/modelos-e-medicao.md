@@ -18,7 +18,7 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita, sobre c
 - Ajuste o nível de esforço do modelo à tarefa: baixo para traduzir e resumir, alto para procurar falhas de segurança, bugs difíceis e otimizações. (p. 312) · **máquina** (configuração do agente) · onde aplicar: ainda nenhuma
 - Modelos abertos, destilados, misturados ou «treinados em casa»: confira a origem e a licença. A destilação passa o estilo, e o conhecimento nem sempre, e «aberto», «local» e «de graça» são três coisas diferentes. (pp. 167–170, 177, 179, 195) · **texto** · onde aplicar: ainda nenhuma
 - Para decisões fechadas (classificar, escolher entre opções), prefira modelos pequenos e especializados, testados contra um gabarito que não muda. Um modelo de chat não é a ferramenta para pôr rótulos. (pp. 181–182, 212, 321) · **texto** · onde aplicar: ainda nenhuma
-- A nota que um modelo dá ao código não mede a qualidade do código. (p. 244) · **texto** · onde aplicar: `codigo-legivel`
+- A nota que um modelo dá ao código não mede a qualidade do código. (p. 244) · **texto** · onde aplicar: ainda nenhuma
 
 ## 3. O que há dentro da caixa
 

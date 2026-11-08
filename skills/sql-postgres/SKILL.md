@@ -114,4 +114,4 @@ Documentação do PostgreSQL 18, consultada em 30 de outubro de 2026 (as mesmas 
 - ALTER TABLE: https://www.postgresql.org/docs/18/sql-altertable.html
 - SET (`SET LOCAL` fora de uma transação): https://www.postgresql.org/docs/18/sql-set.html
 
-Os trechos de SQL foram testados no PostgreSQL 18.3, num banco descartável, em 30 de outubro de 2026. Os locks foram provados com duas ligações ao mesmo banco.
+Os trechos de SQL foram testados no PostgreSQL 18.3, num banco descartável, em 30 de outubro de 2026. Os locks foram provados com duas ligações ao mesmo banco. As páginas do livro *Competente o Suficiente*, de Fabio Akita, que a skill usa, estão em [`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md#livros-e-autores).

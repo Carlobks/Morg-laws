@@ -189,10 +189,102 @@ Lidas em 2026-11-06; as primeiras entradas para `pesquisas/2026-11-05-linha-de-b
 - **Fabio Akita — Competente o Suficiente** (livro). Citado pela página impressa.
   - A pasta `biblia-akita/` resume, com palavras nossas e um arquivo por tema, os conselhos do livro, cada um com a página. Nenhum trecho foi copiado: antes de cada commit, um script local confere que nenhuma sequência de 8 palavras dos resumos é igual ao livro, que nunca entra no repositório.
   - pp. 128–129: skills e ferramentas de terceiros só com leitura completa e uma dor concreta (usado em `escrevendo-regras-de-agente`).
-  - p. 165: modelos esconderam uma biblioteca vulnerável numa lista de exceções (base de "sem silenciar alarme").
+  - p. 165: modelos esconderam uma biblioteca vulnerável numa lista de exceções (usado em `codigo-legivel`, `auditoria-de-seguranca` e `escrevendo-regras-de-agente`).
   - pp. 30–32, 124 e 411: a janela cheia custa dinheiro, tempo e atenção; o resumo da compactação perde o detalhe e o agente volta a propor o que já se descartou; a atenção cai à medida que a janela enche; uma sessão longa se enche de tentativas antigas (usado em `passando-o-trabalho`; o livro não dá nenhum limiar para compactar).
   - pp. 118, 120–121: pôr no pedido um esforço à medida do que está em jogo e não mandar um pedido importante sem o que fica de fora e o critério de pronto (usado em `pondo-o-plano-a-prova`).
   - pp. 322–323: escrever o que faria mudar a conclusão em critérios que alguém de fora consiga medir (base do oráculo em `pondo-o-plano-a-prova`).
+  - pp. 16, 43–46: cada ferramenta, MCP e skill instalada gasta tokens antes da primeira palavra (usado em `escrevendo-regras-de-agente`).
+  - pp. 19, 29–31: o contexto é relido a cada mensagem e enchê-lo custa dinheiro, tempo e precisão (usado em `passando-o-trabalho`).
+  - pp. 19, 319: o modelo não guarda nada da conversa; o que se lembra guarda-se fora (usado em `passando-o-trabalho`).
+  - pp. 19, 38–39: numa conversa longa, um resumo conferido e recomeçar numa conversa limpa (usado em `passando-o-trabalho`).
+  - p. 21: o agente não decide sozinho uma regra de negócio ou legal (usado em `pondo-o-plano-a-prova`).
+  - p. 21: «nenhuma falha encontrada» não é garantia (usado em `auditoria-de-seguranca`).
+  - pp. 21, 69, 158: o agente só acha as falhas que se manda procurar (usado em `auditoria-de-seguranca`).
+  - pp. 31, 33, 124: o tamanho do arquivo de regras pesa: é relido e pago a cada mensagem e o meio do contexto se perde (usado em `escrevendo-regras-de-agente`).
+  - pp. 31–33: na compactação, o início da conversa encolhe e o motivo de uma decisão antiga se perde (usado em `passando-o-trabalho`).
+  - p. 32: não aceitar a explicação do agente sobre uma decisão passada sem a fonte (usado em `testes-e-provas` (em parte) e `comecando-um-projeto`).
+  - pp. 32–33, 36: decisão importante não fica só na conversa: vai para um arquivo de decisões (usado em `passando-o-trabalho`).
+  - p. 35: não transformar cada falha numa regra; muitas são passageiras (usado em `escrevendo-regras-de-agente`).
+  - pp. 36, 323–324, 392–397: a memória em arquivos seus, num formato aberto, e um documento de estado para mudar de agente (usado em `passando-o-trabalho`).
+  - pp. 36–37: os documentos numa pasta, em arquivos curtos, um por assunto (usado em `comecando-um-projeto`).
+  - pp. 43, 50, 112–114: um juiz de fora que diga se o agente acertou, e os meios de executar e de medir (usado em `testes-e-provas`).
+  - pp. 45, 155, 159–161, 311–312: escolher o modelo pelo preço, pelo tempo e pela ferramenta, e testar a combinação (usado em `orquestrando-sessoes` (em parte)).
+  - pp. 45, 78, 122: pedir primeiro o plano, revê-lo e só então avançar, acompanhando enquanto roda (usado em `pondo-o-plano-a-prova` e `orquestrando-sessoes` (em parte)).
+  - p. 47: o «pronto» do agente e o trabalho certo são coisas diferentes (usado em `testes-e-provas` e `git-e-commits` (em parte)).
+  - pp. 48, 416: auditar a própria auditoria e desconfiar dos testes quando o resultado sai mau (usado em `testes-e-provas`).
+  - pp. 49, 153–155, 210: orquestra de agentes só para lotes independentes; custa mais tokens e coordenação (usado em `orquestrando-sessoes`).
+  - pp. 49, 156: mais de um revisor, com modelos e ferramentas diferentes (usado em `orquestrando-sessoes`).
+  - pp. 52–54, 56: não pedir validação com uma pergunta que já traz a resposta (usado em `orquestrando-sessoes`).
+  - pp. 56, 58: citar só o material dado e pedir pontos fortes e fracos em vez de um veredito (usado em `orquestrando-sessoes` (em parte)).
+  - pp. 57, 150–151: a fonte primária decide, não a maioria dos modelos (usado em `orquestrando-sessoes`).
+  - pp. 64, 126: escrever o arquivo de regras no primeiro dia, com a arquitetura e as convenções (usado em `escrevendo-regras-de-agente` (em parte) e `comecando-um-projeto`).
+  - pp. 67, 105, 411: para arejar, trocar de agente ou de sessão (usado em `passando-o-trabalho`).
+  - pp. 67, 106–107, 218: antes de construir do zero, procurar uma solução pronta e bem mantida (usado em `comecando-um-projeto`).
+  - pp. 67, 108–110, 171–172, 410–411: ao depurar: reproduzir, achar o commit que estragou, uma variável de cada vez (usado em `testes-e-provas`).
+  - pp. 69, 241, 248–249, 427–428: uma funcionalidade pequena por vez, com testes; migrações grandes devagar, uma parte de cada vez (usado em `git-e-commits` (em parte) e `testes-e-provas` (em parte)).
+  - pp. 80–81: começar pelo teste, prender cada bug com um teste e só juntar com tudo verde (usado em `testes-e-provas` e `git-e-commits`).
+  - p. 81: testes escritos pelo agente junto com o código pesam mais, não menos (usado em `testes-e-provas` (em parte)).
+  - pp. 81, 156, 231–232, 239: duas auditorias independentes, a segunda sem ler a primeira (usado em `orquestrando-sessoes`).
+  - pp. 89–90: auditorias com perguntas concretas, e não «revê a segurança» (usado em `auditoria-de-seguranca`).
+  - pp. 90, 191–192, 304, 424: testar o objetivo final; o que só aparece na tela confere-se na tela (usado em `testes-e-provas`).
+  - p. 92: um plano só se aprova com as perguntas incômodas (e se parar a meio, se os dados corromperem) (usado em `pondo-o-plano-a-prova` (em parte)).
+  - pp. 94, 99: juntar as regras repetidas num só lugar, porque duas instruções sobre o mesmo assunto se contradizem (usado em `escrevendo-regras-de-agente`).
+  - pp. 96–97: para começar um sistema para outra pessoa, partir das palavras dela (usado em `pondo-o-plano-a-prova` (em parte) e `comecando-um-projeto`).
+  - p. 99: perguntar se o «zero» de um relatório foi medido ou só não encontrado (usado em `testes-e-provas` (em parte)).
+  - p. 105: parar e repensar quando cada ajuste quebra outra coisa (usado em `testes-e-provas` (em parte)).
+  - pp. 105–106: a IA executa um plano ruim com perfeição, e mais rápido (usado em `pondo-o-plano-a-prova` (em parte)).
+  - p. 114: medir onde está o custo em vez de o adivinhar (usado em `testes-e-provas` (em parte)).
+  - pp. 124–125, 243–244: código para um leitor com pressa: arquivos e funções pequenos, nomes que o grep acha, verificação automática (usado em `codigo-legivel`).
+  - pp. 125–126: os testes rodam com um só comando e uma saída previsível (usado em `codigo-legivel`).
+  - p. 126: regras curtas, diretas e em forma de ordem, porque o arquivo é relido a cada pedido (usado em `escrevendo-regras-de-agente`).
+  - pp. 126, 387: o arquivo de regras é o prompt de sistema que se escreve e uma das três gavetas da memória (usado em `escrevendo-regras-de-agente` (em parte)).
+  - p. 127: o trecho típico do arquivo de regras: arquivos pequenos, nomes únicos, bug com teste, testes num comando (usado em `codigo-legivel` e `testes-e-provas`).
+  - pp. 127, 129: uma contribuição não se aprova pela descrição de quem a escreveu: audita-se o código (usado em `orquestrando-sessoes` (em parte)).
+  - pp. 127, 247–248: numa contribuição de fora, auditar o código; a decisão é de uma pessoa (usado em `orquestrando-sessoes` (em parte)).
+  - pp. 127–129: cada regra nasce de um erro vivido; uma linha nova quando o mesmo deslize se repete (usado em `escrevendo-regras-de-agente`).
+  - pp. 128–129, 239: ler tudo antes de instalar uma skill de terceiros; de preferência, escrever a sua (usado em `escrevendo-regras-de-agente`).
+  - pp. 128–129, 412–413: poucas skills, todas em uso; a que ficou encostada é dívida (usado em `escrevendo-regras-de-agente`).
+  - pp. 130, 323: registrar por escrito o trabalho fora do código: pesquisa, decisão, alternativa descartada (usado em `passando-o-trabalho` e `escrevendo-regras-de-agente`).
+  - pp. 133–134, 294: quem usa de verdade é a revisão mais forte, com a mudança pequena atrás de um interruptor (usado em `nextjs-react`).
+  - pp. 135–136: não liberar para todos o que ficou pronto rápido e passa nos testes (usado em `nextjs-react`).
+  - p. 137: as assinaturas custavam menos que o token avulso; um modelo barato pode baixar a qualidade (usado em `orquestrando-sessoes` (em parte)).
+  - p. 153: contar testes diz pouco: ver o que cada um verifica (usado em `testes-e-provas`).
+  - p. 157: «tudo feito» só com a prova de cada exigência (usado em `testes-e-provas`).
+  - pp. 160–161: perguntar porquê quando uma mudança altera um teste existente para ele passar (usado em `git-e-commits`).
+  - pp. 164–165: tirar do alcance do agente o que ele não deve usar (usado em `auditoria-de-seguranca`).
+  - p. 165: exceção a um alarme só com a razão escrita (usado em `codigo-legivel`).
+  - pp. 165–167: perguntar quem escreveu a verificação (usado em `testes-e-provas` (em parte)).
+  - pp. 172, 252, 276–277: dizer o alcance e os limites do que se provou (usado em `testes-e-provas`).
+  - p. 178: o que não foi medido escreve-se «não medido», nunca «zero» (usado em `testes-e-provas` (em parte)).
+  - pp. 191–193: o modelo pode dizer que os testes passaram sem os ter rodado (usado em `testes-e-provas`).
+  - p. 211: não pôr a própria conclusão no pedido de pesquisa: concordar com ela é eco (usado em `orquestrando-sessoes`).
+  - p. 218: registrar a origem e a licença dos dados e acervos de terceiros (usado em `escrevendo-regras-de-agente` (em parte)).
+  - pp. 218–219: na tela, a informação de que a pessoa precisa para agir, não o número interno (usado em `desenhando-telas` (em parte)).
+  - pp. 222, 224: operação destrutiva em lote só depois de ver a contagem do que se protege e do que se apaga (usado em `sql-postgres`).
+  - pp. 223–224: pedir a outro agente que execute e confira o procedimento que o primeiro escreveu (usado em `orquestrando-sessoes` (em parte)).
+  - pp. 226–227: conferir o estado na origem, contando, e não pelo que a ferramenta diz (usado em `testes-e-provas` e `sql-postgres`).
+  - p. 227: o agente trabalha com as permissões de quem o abriu (usado em `auditoria-de-seguranca` (em parte)).
+  - pp. 228, 386: o modo que pula todas as permissões só dentro de uma sandbox (usado em `auditoria-de-seguranca`).
+  - pp. 230, 382: o Git como rede: commits pequenos, cópia remota e o envio na mão de uma pessoa (usado em `git-e-commits`).
+  - pp. 230–231: ler o que a proteção promete; cada camada precisa de quem a audite (usado em `auditoria-de-seguranca`).
+  - pp. 232, 253: o que uma auditoria achou: um atalho de teste esquecido e uma senha em variáveis de ambiente (usado em `auditoria-de-seguranca` (em parte)).
+  - pp. 234–235, 386–387: os agentes longe da produção; as mudanças como receitas versionadas que uma pessoa promove (usado em `sql-postgres` (em parte)).
+  - p. 236: decisão que destrói algo: outra pessoa ou outra sessão olha o plano antes (usado em `orquestrando-sessoes`).
+  - pp. 242–243, 262: o endurecimento pede-se por escrito e confere-se; comandos negados de início (usado em `auditoria-de-seguranca` (em parte)).
+  - pp. 245–246: conferir cada afirmação de um relatório do agente antes de o mandar a terceiros (usado em `orquestrando-sessoes`).
+  - pp. 285–287: antes de entregar uma ferramenta, saber o objetivo, o número que muda e o que tem de continuar funcionando (usado em `pondo-o-plano-a-prova`).
+  - pp. 286–288, 291–292: entregas pequenas e frequentes; velocidade e estabilidade andam juntas (usado em `git-e-commits` (em parte)).
+  - pp. 319, 323: o agente não aprende com a sessão; o que não se guarda evapora (usado em `passando-o-trabalho`).
+  - p. 324: trocar de fornecedor de modelo, mas guardar consigo a memória e o processo (usado em `passando-o-trabalho` (em parte)).
+  - pp. 336, 344: dois números que não batem: dizer o que cada um conta; entre o resumo e a fonte, vale a fonte (usado em `testes-e-provas`).
+  - p. 357: a explicação do agente sobre como verificou não é prova (usado em `testes-e-provas`).
+  - p. 385: permissões em três colunas: pode sem perguntar, pergunta antes, nunca (usado em `auditoria-de-seguranca` (em parte)).
+  - p. 386: antes do push, ver a lista de arquivos de todos os commits por enviar (usado em `auditoria-de-seguranca` (em parte)).
+  - p. 387: três gavetas: as regras, as decisões e pesquisas no git, e a passagem de turno de cada sessão (usado em `passando-o-trabalho` e `escrevendo-regras-de-agente` (em parte)).
+  - p. 389: não deixar o agente ler o .env; a configuração do projeto só aperta a jaula (usado em `auditoria-de-seguranca`).
+  - p. 397: um curl | sh só depois de conferir a soma de verificação (usado em `auditoria-de-seguranca` (em parte)).
+  - pp. 408–409: cada commit pela mesma bateria: estilo, dependências, análise estática e testes (usado em `auditoria-de-seguranca`).
+  - pp. 423–424: controles negativos: um programa vazio tem de reprovar (usado em `testes-e-provas`).
 - **Fabio Akita — blog** — https://akitaonrails.com — lido em 2026-11-04. Sustenta: o índice dos artigos, por mês, de onde saíram os endereços e as datas de publicação da `biblia-akita/leituras.md`.
 
 ## Artigos que o livro recomenda

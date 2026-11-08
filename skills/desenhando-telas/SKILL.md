@@ -178,4 +178,4 @@ O que aparece no hover fica visível em ecrãs sem hover (`@media (hover: none)`
 
 ## Fontes
 
-Ver `references/tetos-e-fontes.md` e [`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md#interface-e-acessibilidade).
+Ver `references/tetos-e-fontes.md` e [`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md#interface-e-acessibilidade). A página do livro *Competente o Suficiente*, de Fabio Akita, que a skill usa em parte, está em [`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md#livros-e-autores).

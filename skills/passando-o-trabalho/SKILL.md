@@ -174,7 +174,7 @@ Ver [`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md#comp
 [`pesquisas/2026-11-02-compactacao-claude-code-e-codex.md`](https://github.com/Carlobks/Morg-laws/blob/main/pesquisas/2026-11-02-compactacao-claude-code-e-codex.md): a
 documentação do Claude Code (o `/compact`, a compactação automática e por inatividade, o que volta depois) e a do
 Codex (o `/compact` e as skills); a especificação Agent Skills; o livro *Competente o Suficiente*, de Fabio Akita
-(pp. 30–32, 124 e 411). O formato do handoff, o commit a cada compactação, os ~150 mil tokens, a pausa
+(pp. 30–32, 124 e 411; as outras páginas que a skill usa estão em [`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md#livros-e-autores)). O formato do handoff, o commit a cada compactação, os ~150 mil tokens, a pausa
 de uma hora e a sessão por assunto fechada no fim do dia são prática do autor do Morg-laws; os problemas que as
 motivaram estão medidos na
 [linha de base do uso](https://github.com/Carlobks/Morg-laws/blob/main/pesquisas/2026-11-05-linha-de-base-do-uso.md).

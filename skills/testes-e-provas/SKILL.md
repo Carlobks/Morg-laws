@@ -75,4 +75,4 @@ description: Guia como provar que um trabalho de agente funciona — o teste que
 
 ## Fontes
 
-Quase sem fonte externa: estas regras vêm da prática do projeto de origem, e os números citados foram medidos lá. A exceção é o arquivo por bug (§3), que se apoia nas fontes da skill `git-e-commits` (o towncrier e o texto do GitLab sobre o changelog que colidia). Quando uma regra passar a apoiar-se numa fonte, ela entra em [`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md).
+Estas regras têm duas origens: a prática do projeto de origem, onde foram medidos os números citados, e as páginas do livro *Competente o Suficiente*, de Fabio Akita, listadas em [`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md#livros-e-autores). Fora isso, o arquivo por bug (§3), que se apoia nas fontes da skill `git-e-commits` (o towncrier e o texto do GitLab sobre o changelog que colidia). Quando uma regra passar a apoiar-se numa fonte, ela entra em [`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md).

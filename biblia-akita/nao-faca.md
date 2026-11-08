@@ -16,7 +16,7 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A pági
 ## 2. Verdade e fontes
 
 - Não aceitar do agente uma lei, uma data ou uma obra sem a conferir: ele inventa com o mesmo à-vontade com que fala do que existe, e não tem como saber se é verdade. (pp. 17–18) #3 · **texto** · onde aplicar: ainda nenhuma
-- Não aceitar a explicação do agente sobre uma decisão passada sem a fonte. Ele pode criar um motivo plausível para o que não lembra. (p. 32) #7 · **texto** · onde aplicar: `testes-e-provas`
+- Não aceitar a explicação do agente sobre uma decisão passada sem a fonte. Ele pode criar um motivo plausível para o que não lembra. (p. 32) #7 · **texto** · onde aplicar: `testes-e-provas`, `comecando-um-projeto`
 - Não usar um chat sem busca para decidir sobre saúde, dinheiro ou lei. Prefira a fonte primária e compare modelos. (p. 51) #11 · **texto** · onde aplicar: ainda nenhuma
 - Não pedir validação com uma pergunta que já traz a resposta ("isto está certo, não está?"). Pergunte quais são os problemas, ou peça uma coisa fechada: as falácias, o contexto que falta. (pp. 52–54, 56) #12 · **texto** · onde aplicar: `orquestrando-sessoes`
 - Não pôr num documento oficial uma citação, um estudo ou um número que o agente trouxe sem abrir a fonte. O tom seguro não prova nada. (pp. 55–56) #13 · **texto** · onde aplicar: ainda nenhuma
@@ -44,7 +44,7 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A pági
 - Não aceitar "os testes passam" quando os testes foram escritos pelo próprio agente junto com o código: com IA, os testes pesam mais, não menos. (p. 81) #25 · **texto** · onde aplicar: `testes-e-provas`
 - Não aprovar um plano sem as perguntas incômodas: e se a operação parar a meio? E se os dados corromperem? E se a máquina de quem usa for mais fraca? E se alguém mudar milhares de arquivos de lugar? (p. 92) #26 · **texto** · onde aplicar: `pondo-o-plano-a-prova`
 - Não continuar a pedir "mais um ajuste" quando cada ajuste quebra outra coisa. Pare e repense. (p. 105) #28 · **texto** · onde aplicar: `testes-e-provas`
-- Não chamar solução a uma mitigação: se parar sem ter achado a causa, diga que é mitigação. (pp. 108–109) #29 · **texto + máquina** (o commit `fix` exige a causa) · onde aplicar: `testes-e-provas`, `git-e-commits`
+- Não chamar solução a uma mitigação: se parar sem ter achado a causa, diga que é mitigação. (pp. 108–109) #29 · **texto + máquina** (o commit `fix` exige a causa) · onde aplicar: ainda nenhuma
 - Não mandar um pedido importante sem dizer o que fica de fora e qual é o critério de pronto. (p. 120) #30 · **texto** · onde aplicar: `pondo-o-plano-a-prova`
 - Não aprovar uma contribuição pela descrição de quem a escreveu: ela diz o que o autor julga ter feito. Audite o código. (pp. 127, 129) #31 · **texto** · onde aplicar: `orquestrando-sessoes`
 - Não liberar para todos um programa que "ficou pronto rápido e os testes passam": só o tempo, quem usa e a revisão mostram se ele presta. (pp. 135–136) #33 · **máquina** (interruptor + grupo de teste) · onde aplicar: `nextjs-react`
@@ -104,4 +104,4 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A pági
 
 - Não pedir a solução pronta quando o objetivo é aprender. Tente sozinho primeiro e peça uma pista. (p. 363) #72 · **texto** · onde aplicar: ainda nenhuma
 - Não publicar o rascunho só porque ele impressiona: os primeiros esboços dizem pouco sobre o resto, e o trabalho está na leitura, no corte e na correção que vêm depois. A versão fácil recusa-se. (pp. 343–344) · **texto** · onde aplicar: ainda nenhuma
-- Não aprovar um push sem ver a lista de arquivos de todos os commits por enviar, incluindo os removidos depois. (p. 386) #78 · **máquina** (`pre-push` com scanner de segredos) · onde aplicar: `auditoria-de-seguranca`, `git-e-commits`
+- Não aprovar um push sem ver a lista de arquivos de todos os commits por enviar, incluindo os removidos depois. (p. 386) #78 · **máquina** (`pre-push` com scanner de segredos) · onde aplicar: `auditoria-de-seguranca`

@@ -30,7 +30,7 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A pági
 - Antes de acelerar as entregas, monte as travas: testes de lógica e de integração, CI, revisão automática desconfiada, interruptores por funcionalidade, um ambiente de testes, voltar atrás em minutos e monitorização. (p. 292) · **máquina** · onde aplicar: ainda nenhuma
 - Garanta que sabe mesmo desfazer uma entrega. O ritmo certo de entregas mede-se pelo preço de um engano no seu ramo. (p. 294) · **texto** · onde aplicar: ainda nenhuma
 - Padronize o deploy, as versões e os scripts, para que «faz o deploy» não deixe nada por adivinhar. (p. 127) · **máquina** (script único) · onde aplicar: ainda nenhuma
-- Até as ferramentas pequenas (scripts de backup, utilitários) levam testes, versão e configuração no lugar certo. (p. 143) · **máquina** (testes) · onde aplicar: `codigo-legivel`
+- Até as ferramentas pequenas (scripts de backup, utilitários) levam testes, versão e configuração no lugar certo. (p. 143) · **máquina** (testes) · onde aplicar: ainda nenhuma
 
 ## 4. Fornecedores e continuidade
 

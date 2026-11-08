@@ -130,4 +130,4 @@ um arquivo novo nasce limpo.
 Os limites (500 linhas por arquivo, 20 por função nova) e as listas vêm da prática do projeto de origem, onde os
 mesmos testes correm como catracas. A forma de saltar um teste no vitest vem da
 [API do vitest](https://vitest.dev/api/test). A forma de cada teste está nos próprios moldes, que dizem o que medem.
-As fontes estão em [`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md#testes-prontos-vitest).
+As fontes estão em [`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md#testes-prontos-vitest). As páginas do livro *Competente o Suficiente*, de Fabio Akita, que a skill usa, estão em [`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md#livros-e-autores).

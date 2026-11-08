@@ -37,7 +37,7 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A pági
 ## 5. O processo de testes
 
 - Comece pelo teste, prenda cada bug com um teste, só junte à linha principal com tudo verde e feche uma brecha de segurança no mesmo commit que a corrige. (pp. 80–81) · **máquina** (hooks e CI) · onde aplicar: `testes-e-provas`, `git-e-commits`
-- Antes de uma troca grande, tenha testes. Refatore pouco e muitas vezes, protegido pelos testes que já existem. (pp. 67, 84–85) · **texto** · onde aplicar: `codigo-legivel`
+- Antes de uma troca grande, tenha testes. Refatore pouco e muitas vezes, protegido pelos testes que já existem. (pp. 67, 84–85) · **texto** · onde aplicar: ainda nenhuma
 - Os testes rodam com um só comando, sem configuração à mão e com uma saída previsível. (pp. 125–126) · **máquina** · onde aplicar: `codigo-legivel`
 - Em sistemas de dinheiro ou regulados, os cenários de teste são mais pesados e há mais de uma trava para cada forma de falhar: voltar o código atrás não devolve um pagamento. (pp. 292–293) · **texto** · onde aplicar: ainda nenhuma
 - Antes de ir para produção, alguém responde: pode ir? aguenta a carga? é seguro? é fácil de manter? conversa com o resto? resolve o problema certo? (pp. 282–283) · **texto** · onde aplicar: ainda nenhuma

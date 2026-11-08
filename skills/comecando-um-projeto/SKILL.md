@@ -98,4 +98,4 @@ $comecando-um-projeto Quero começar (ou organizar) este projeto com você. Ante
 
 ## Fontes
 
-Ver [`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md#entrega-de-regras-a-agentes): como cada ferramenta carrega as regras e as skills; e [`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md#livros-e-autores): o livro e os autores de onde vêm partir das palavras de quem pede, o arquivo de regras no primeiro dia e o registro das decisões de arquitetura.
+Ver [`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md#entrega-de-regras-a-agentes): como cada ferramenta carrega as regras e as skills; [`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md#livros-e-autores): o livro de onde vêm partir das palavras de quem pede, o arquivo de regras no primeiro dia, os documentos curtos numa pasta e a solução pronta antes de construir; e [`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md#testes-e-decisões): o registro das decisões de arquitetura, de Michael Nygard.
