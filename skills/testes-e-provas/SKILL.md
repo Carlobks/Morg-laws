@@ -1,6 +1,6 @@
 ---
 name: testes-e-provas
-description: Guia como provar que um trabalho de agente funciona — o teste que pega o bug antes da correção, como depurar com uma hipótese de cada vez, como auditar contando em vez de amostrar, o que um teste deve afirmar e o que só uma pessoa consegue provar (arrastar e soltar, aparência). Usar ao corrigir um bug, ao escrever ou rever testes, quando um teste ou o CI falha, ao medir quantos casos um problema tem, ou antes de dizer que algo está pronto. Não usar para os comandos de commit (é a git-e-commits), para revisão de segurança (é a auditoria-de-seguranca) nem para as regras da forma do código e os testes prontos que as impõem (é a codigo-legivel).
+description: Guia como provar que um trabalho de agente funciona — o teste que pega o bug antes da correção, depurar uma hipótese de cada vez, auditar contando e não amostrando, o que um teste afirma e o que só uma pessoa prova (arrastar, aparência). Usar ao corrigir um bug, ao escrever ou rever testes, quando um teste ou o CI falha, ao contar quantos casos um problema tem, ou antes de dizer que algo está pronto. Não usar para commits (é a git-e-commits), revisão de segurança (é a auditoria-de-seguranca) nem para as regras da forma do código (é a codigo-legivel).
 ---
 
 # Testes e provas

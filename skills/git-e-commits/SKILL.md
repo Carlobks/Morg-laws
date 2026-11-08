@@ -1,6 +1,6 @@
 ---
 name: git-e-commits
-description: Guia como o agente commita e fecha um ciclo de trabalho — commits atômicos por caminho, mensagens com o porquê, hooks que não se saltam, a marca obrigatória em commits de correção sem teste, o changelog por fragmento e o que conferir antes de pedir o push. Usar ao commitar, ao escrever uma mensagem de commit, quando um hook recusa um commit, ao terminar um bloco de trabalho com arquivos por commitar, ou antes de pedir push ou PR. Não usar para coordenar várias sessões na mesma pasta (é a orquestrando-sessoes) nem para decidir que testes escrever (é a testes-e-provas).
+description: Guia como o agente commita e fecha um ciclo — commits atômicos por caminho, mensagem com o porquê, hooks que não se pulam, a marca em correção sem teste, o changelog por fragmento e o que conferir antes do push. Usar ao commitar ou escrever a mensagem, quando um hook recusa o commit, ao terminar um bloco de trabalho, ou antes de pedir push ou PR. Não usar para coordenar várias sessões na mesma pasta (é a orquestrando-sessoes) nem para decidir que testes escrever (é a testes-e-provas).
 ---
 
 # Git e commits

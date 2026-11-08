@@ -1,6 +1,6 @@
 ---
 name: sql-postgres
-description: Guia como um agente mexe num banco Postgres sem estragar dados nem derrubar o servidor — medir antes de mudar, migrações que só contam depois de conferidas no catálogo, provas dentro de transação que se desfaz, dados com histórico que nunca se apagam, tabelas de registro imutáveis e as armadilhas do Postgres (sequências, ENUM, TRUNCATE). Usar ao escrever SQL que muda esquema ou dados, ao criar uma migração, ao testar uma permissão ou uma função no banco, ou ao decidir como guardar e corrigir dados. Não usar para o que é específico do Supabase, como RLS com papéis anon e authenticated e o PostgREST (é a supabase), nem para consultas de leitura simples.
+description: Guia como um agente mexe num banco Postgres sem estragar dados nem derrubar o servidor — medir antes, migração conferida no catálogo, provas em transação desfeita, histórico que não se apaga, tabelas de registro imutáveis e as armadilhas (sequências, ENUM, TRUNCATE). Usar ao escrever SQL que muda esquema ou dados, ao criar uma migração, ao testar uma permissão ou função no banco, ou ao decidir como guardar e corrigir dados. Não usar para RLS com anon e authenticated ou o PostgREST (é a supabase) nem para leituras simples.
 ---
 
 # SQL e Postgres

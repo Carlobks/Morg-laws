@@ -7,6 +7,7 @@
 - a `description` tem de 1 a 1024 caracteres e traz «Usar» e «Não usar»;
 - cada skill citada numa descrição como «é a <nome>», com ou sem crases, existe em `skills/` (só apanha essa forma, com
   hífen no nome);
+- a soma das descrições de todas as skills não passa de 7.600 caracteres;
 - o arquivo tem menos de 500 linhas;
 - o `evals/trigger-eval.json` tem pelo menos 10 casos, com `should_trigger` verdadeiro e falso.
 As funções recebem a raiz, para os casos de erro serem provados numa pasta temporária.
@@ -32,6 +33,7 @@ REFERENCIA_A_SKILL = re.compile(r"é a `?([a-z0-9]+(?:-[a-z0-9]+)+)`?")
 LIMITE_DA_DESCRICAO = 1024
 LIMITE_DE_LINHAS = 500
 MINIMO_DE_CASOS = 10
+TETO_DA_SOMA = 7600  # o Codex lista as skills em até 8.000 caracteres sem janela conhecida; a folga é para skills novas
 
 
 def cabecalho(texto):
@@ -80,6 +82,18 @@ def erros_dos_casos(pasta, caminho):
     return erros
 
 
+def erros_da_soma(raiz, teto=TETO_DA_SOMA):
+    """Uma mensagem se a soma das descrições passa do teto (a lista das skills tem orçamento nas duas ferramentas)."""
+    tamanhos = {}
+    for arquivo in sorted((raiz / "skills").glob("*/SKILL.md")):
+        tamanhos[arquivo.parent.name] = len(campo(ler(arquivo), "description"))
+    soma = sum(tamanhos.values())
+    if soma <= teto:
+        return []
+    maior = max(tamanhos, key=tamanhos.get)
+    return [f"a soma das descrições é {soma} caracteres; o teto é {teto} (a maior: {maior}, com {tamanhos[maior]})"]
+
+
 def erros_do_formato(raiz):
     """Uma mensagem por problema, em todas as skills da raiz."""
     arquivos = sorted((raiz / "skills").glob("*/SKILL.md"))
@@ -107,6 +121,19 @@ CASOS_BONS = [{"query": f"q{i}", "should_trigger": i % 2 == 0} for i in range(MI
 class FormatoDasSkills(unittest.TestCase):
     def test_todas_as_skills_do_repositorio_passam(self):
         self.assertEqual([], erros_do_formato(RAIZ))
+
+    def test_a_soma_das_descricoes_cabe_no_teto(self):
+        self.assertEqual([], erros_da_soma(RAIZ))
+
+    def test_soma_acima_do_teto_reprova_e_diz_a_maior(self):
+        raiz = self.montar(descricao=DESCRICAO_BOA + "x" * 100)
+        erros = erros_da_soma(raiz, teto=100)
+        self.assertEqual(1, len(erros))
+        self.assertIn("o teto é 100", erros[0])
+        self.assertIn("a maior: exemplo", erros[0])
+
+    def test_soma_no_teto_passa(self):
+        self.assertEqual([], erros_da_soma(self.montar(), teto=len(DESCRICAO_BOA)))
 
     def montar(self, nome="exemplo", pasta="exemplo", descricao=DESCRICAO_BOA, casos=None, linhas=10):
         diretorio = tempfile.TemporaryDirectory()

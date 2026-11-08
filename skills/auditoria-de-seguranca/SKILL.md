@@ -1,6 +1,6 @@
 ---
 name: auditoria-de-seguranca
-description: Guia a revisão de segurança que um agente faz antes de enviar código — segredos nos commits que vão subir, bibliotecas com falhas conhecidas (com linha de base, para só travar o que é novo), armadilhas documentadas de Next.js, React e Supabase, e a medida por achados e cobertura em vez de uma nota única. Usar antes de um push ou de uma release, ao mexer em rotas de API, Server Actions, autenticação, políticas RLS, chaves ou dependências, e quando alguém pergunta "isto é seguro?", "tem brecha?" ou pede uma pontuação de segurança. Não usar para escrever a política RLS ou a migração em si (é a supabase ou a sql-postgres) nem para provar que uma funcionalidade funciona (é a testes-e-provas).
+description: Guia a revisão de segurança antes de enviar código — segredos nos commits, bibliotecas com falhas novas, armadilhas de Next.js, React e Supabase, e achados e cobertura em vez de uma nota. Usar antes de um push ou release, ao mexer em rotas de API, Server Actions, autenticação, RLS, chaves ou dependências, ou quando perguntam "isto é seguro?" ou pedem uma nota de segurança. Não usar para escrever a política RLS ou a migração (é a supabase ou a sql-postgres) nem para provar que algo funciona (é a testes-e-provas).
 ---
 
 # Auditoria de segurança

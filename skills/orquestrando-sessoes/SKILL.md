@@ -1,6 +1,6 @@
 ---
 name: orquestrando-sessoes
-description: Guia como dividir trabalho entre sessões de agente — quando abrir uma sessão nova em vez de continuar ou de usar sub-agentes, como escrever o pedido para uma leitura independente e como várias sessões convivem na mesma pasta sem se atropelar. Usar ao planejar trabalho grande ou dividido em fases, ao abrir a fase seguinte, ao escrever o pedido de uma sessão filha e escolher o modelo dela, ao querer uma auditoria ou revisão independente, quando a sessão que orquestra já vive vários dias, ou quando várias sessões ou pessoas mexem no mesmo repositório. Não usar para escrever o handoff, compactar, retomar o trabalho ou decidir se uma conversa que cresceu se compacta ou passa para uma sessão nova (é a passando-o-trabalho), para escrever o conteúdo das regras (é a escrevendo-regras-de-agente) nem para os comandos de git do dia a dia (é a git-e-commits).
+description: Guia como dividir trabalho entre sessões de agente — sessão nova ou sub-agente, o pedido de uma leitura independente e várias sessões na mesma pasta. Usar ao planejar trabalho grande ou em fases, ao abrir a fase seguinte e escolher o modelo da filha, ao querer uma auditoria independente, quando a orquestradora já vive dias, ou quando várias sessões mexem no mesmo repositório. Não usar para o handoff, compactar, retomar ou decidir se uma conversa que cresceu se compacta (é a passando-o-trabalho), para o conteúdo das regras (é a escrevendo-regras-de-agente) nem para o git do dia a dia (é a git-e-commits).
 ---
 
 # Orquestrando sessões

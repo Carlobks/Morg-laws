@@ -1,6 +1,6 @@
 ---
 name: nextjs-react
-description: Guia um agente a escrever Next.js (App Router) e React sem os erros que só aparecem em produção — Server Actions e rotas que conferem a sessão por si, redirect que não se engole num catch, arquivos 'use server' sem re-exports, variáveis NEXT_PUBLIC estáticas, cache revalidado num só lugar, listas indexadas pelo id, atualização otimista, modais com portal e mudanças atrás de um interruptor. Usar ao escrever ou rever componentes React, Server Actions, rotas de API, middleware ou configuração do Next.js, ao corrigir uma tela que pisca, perde a seleção ou mostra o registro errado, ou antes de apagar uma página. Não usar para o banco e o RLS (é a supabase) nem para provar no navegador que a tela está certa (é a testes-e-provas).
+description: Guia um agente a escrever Next.js (App Router) e React sem os erros que só aparecem em produção — Server Actions que conferem a sessão, redirect engolido num catch, 'use server' sem re-exports, NEXT_PUBLIC estático, cache, listas pelo id, atualização otimista, modais com portal e interruptores. Usar ao escrever ou rever componentes, Server Actions, rotas de API, middleware ou configuração do Next.js, ao corrigir uma tela que pisca ou mostra o valor velho, ou antes de apagar uma página. Não usar para o banco e o RLS (é a supabase) nem para provar no navegador que a tela está certa (é a testes-e-provas).
 ---
 
 # Next.js e React

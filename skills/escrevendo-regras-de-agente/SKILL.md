@@ -1,6 +1,6 @@
 ---
 name: escrevendo-regras-de-agente
-description: Guia como escrever e manter as instruções que um agente de código lê (CLAUDE.md, AGENTS.md, regras por pasta e skills) — onde cada coisa deve ficar, quando uma lição vira regra, o formato curto com o motivo, os limites de tamanho e como transformar texto em barreira de máquina. Usar ao criar ou mudar um CLAUDE.md, AGENTS.md, arquivo de regras ou skill, ao promover uma lição a regra, ou quando o arquivo de instruções está crescendo e o agente começa a ignorá-lo. Não usar para escrever documentação do produto para pessoas, nem para o conteúdo técnico de uma regra (SQL, React, segurança), que tem as suas próprias skills.
+description: Guia como escrever e manter as instruções que um agente lê (CLAUDE.md, AGENTS.md, regras por pasta e skills) — onde cada coisa fica, quando uma lição vira regra, a forma curta com o motivo, o tamanho e a barreira de máquina. Usar ao criar ou mudar um desses arquivos, ao promover uma lição a regra, ou quando o arquivo cresce e o agente o ignora. Não usar para documentação do produto para pessoas nem para o conteúdo técnico de uma regra (SQL, React, segurança), que tem skill própria.
 ---
 
 # Escrevendo regras de agente

@@ -1,6 +1,6 @@
 ---
 name: supabase
-description: Guia o trabalho de um agente num projeto Supabase — RLS que realmente fecha, funções SECURITY DEFINER com guarda de papel, grants aos papéis anon e authenticated, a ordem de uma coluna nova por causa do PostgREST, tipos gerados, autenticação por cookies no servidor e Edge Functions que deixam o RLS decidir. Usar ao criar ou rever políticas RLS, grants ou funções no Supabase, ao acrescentar uma coluna que o cliente lê, ao escrever código que usa o cliente Supabase, ou quando aparecem os erros PGRST204, 42501 ou 42703. Não usar para regras de Postgres que valem fora do Supabase (é a sql-postgres) nem para a revisão de segurança antes do push (é a auditoria-de-seguranca).
+description: Guia o trabalho num projeto Supabase — RLS que fecha de fato, SECURITY DEFINER com guarda de papel, grants a anon e authenticated, a coluna nova e o PostgREST, tipos gerados, login por cookies no servidor e Edge Functions. Usar ao criar ou rever políticas RLS, grants ou funções, ao acrescentar uma coluna que o cliente lê, ao usar o cliente Supabase, ou diante dos erros PGRST204, 42501 ou 42703. Não usar para Postgres fora do Supabase (é a sql-postgres) nem para a revisão de segurança antes do push (é a auditoria-de-seguranca).
 ---
 
 # Supabase

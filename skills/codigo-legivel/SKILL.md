@@ -1,6 +1,6 @@
 ---
 name: codigo-legivel
-description: Diz as regras da forma do código que um agente escreve — arquivo até 500 linhas, função nova até 20, nomes únicos e pesquisáveis, nada de nome genérico, nenhum alarme calado sem motivo, nenhum teste saltado sem condição, os testes num só comando — com o porquê de cada uma e o teste pronto que a impõe em Python e em TypeScript (vitest), e como adotar esses testes num projeto que já viola, com uma linha de base que só encolhe. Usar quando um arquivo ou uma função crescem demais ou é preciso parti-los, ao escolher um nome, antes de calar um aviso do lint ou de saltar um teste, ou ao instalar os testes prontos num projeto. Não usar para provar que um trabalho funciona ou corrigir um bug (é a testes-e-provas), nem para os commits (é a git-e-commits).
+description: Diz as regras da forma do código — arquivo até 500 linhas, função nova até 20, nomes únicos e sem nome genérico, nenhum alarme calado ou teste pulado sem motivo, testes num só comando — com o teste pronto de cada uma (Python e TypeScript) e a linha de base num projeto que já viola. Usar quando um arquivo ou uma função crescem demais ou é preciso parti-los, ao escolher um nome, antes de calar o lint ou pular um teste, ou ao instalar os testes prontos num projeto. Não usar para provar que algo funciona ou corrigir um bug (é a testes-e-provas) nem para os commits (é a git-e-commits).
 ---
 
 # Código legível
