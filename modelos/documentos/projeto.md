@@ -1,8 +1,8 @@
 # <nome do projeto>
 
-Vive em `docs/projeto.md`. É o documento que diz o que o projeto é, para quem e como se organiza; o `AGENTS.md` aponta
-para ele. Escreve-se na primeira conversa e muda quando o projeto muda. O que o dono disse com as próprias palavras
-guarda-se como ele escreveu, em «Palavras do dono».
+Vive em `docs/projeto.md`. É o documento que diz o que o projeto é, para quem e como se organiza; o índice
+`docs/README.md`, que o `AGENTS.md` cita, aponta para ele. Escreve-se na primeira conversa e muda quando o projeto
+muda. O que o dono disse com as próprias palavras guarda-se como ele escreveu, em «Palavras do dono».
 
 ## O que é
 

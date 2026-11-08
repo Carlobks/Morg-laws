@@ -28,7 +28,7 @@ Esta skill **não repete** o método de perguntar: as regras das rondas (até 4 
 - pergunte só o que o código não diz (o porquê, para quem, o que não faz) e mostre o resto como «o que encontrei», para o dono confirmar;
 - escreva a arquitetura **como está**. As escolhas já feitas viram ADR com o estado «aceita (registrada depois, AAAA-MM-DD)», com o contexto que o dono lembrar. Nunca invente um porquê: o agente cria um motivo plausível para o que não sabe;
 - não mude código;
-- um `AGENTS.md` ou `CLAUDE.md` que já existe **nunca se sobrescreve**: mostre a diferença e junte com o «sim»;
+- um arquivo de destino da seção 4 que já existe (`AGENTS.md`, `CLAUDE.md`, `docs/README.md`, uma ADR…) **nunca se sobrescreve**: mostre a diferença e junte com o «sim». As ADR novas continuam a numeração que já houver;
 - a Regra n.º 1 sai do histórico do projeto (o incidente mais caro), perguntada ao dono.
 
 ## 3. As rondas
@@ -43,26 +43,26 @@ Cada ronda fecha com um resumo curto que o dono confirma antes da seguinte. **Na
 | 3. Restrições | Prazo, custo, onde roda, quem mantém, dados pessoais, o que não tem volta. |
 | 4. Arquitetura | Pilha, banco, onde se publica, e o porquê de cada escolha; antes de construir, veja se já existe solução pronta. Cada escolha grande (seção 5) vira ADR proposta. |
 | 5. Regras | O perigo mais caro do projeto (a Regra n.º 1 do molde), com o título em maiúsculas e o motivo; o que pede o «sim»; o banco de produção. |
-| 6. Confirmar e escrever | A lista dos arquivos a escrever e um resumo de cada; com o «sim», escrevem-se e commitam-se por caminho. |
-| 7. Primeiro plano | Pela `pondo-o-plano-a-prova`, com o oráculo; vai para o molde de plano (`assets/molde-plano.md`). A primeira fase, F1, é «as barreiras do mapa» (seção 4). |
+| 6. Confirmar e escrever | A lista dos arquivos a escrever e um resumo de cada; com o «sim», escrevem-se e commitam-se por caminho. Inclui o esqueleto do plano, `docs/planos/0001-<assunto>.md`, só com a F1, «as barreiras do mapa» (seção 4). |
+| 7. Primeiro plano | Pela `pondo-o-plano-a-prova`, com o oráculo; preenche o esqueleto escrito na ronda 6 (molde `assets/molde-plano.md`). |
 
 ## 4. O que se escreve
 
-Leia as cópias com o Read, em `assets/`, e escreva no projeto os arquivos com os **nomes verdadeiros**. Nenhuma cópia se chama `AGENTS.md` nem `CLAUDE.md`: com esse nome, a ferramenta a carregaria sozinha como regra da sessão.
+As cópias estão em `assets/`, na pasta desta skill, ao lado deste `SKILL.md` (no Claude Code, `${CLAUDE_SKILL_DIR}/assets/`; no Codex a variável não se substitui). Leia-as com o Read e escreva no projeto os arquivos com os **nomes verdadeiros**. Nenhuma cópia se chama `AGENTS.md` nem `CLAUDE.md`: com esse nome, a ferramenta a carregaria sozinha como regra da sessão.
 
 | Arquivo no projeto | Cópia na skill | Notas |
 |---|---|---|
 | `docs/projeto.md` | `assets/molde-projeto.md` | Seções na ordem: O que é; Para quem; O que faz; O que não faz; Restrições; Arquitetura (cada peça com o porquê e o link para a ADR); Palavras do dono (o texto original); Perguntas em aberto. |
-| `docs/README.md` | — | Uma tabela, sem molde: o índice de cada `.md` de `docs/`. |
+| `docs/README.md` | — | Uma tabela, sem molde: o índice de cada `.md` de `docs/`, com o `docs/projeto.md`. O `AGENTS.md` cita este índice. |
 | `AGENTS.md` | `assets/molde-AGENTS.md` | A Regra n.º 1 preenchida na ronda 5; o resto como está. |
 | `CLAUDE.md` | `assets/molde-CLAUDE.md` | Só no Claude Code: a linha `@AGENTS.md`. |
 | `docs/regras-e-barreiras.md` | `assets/molde-regras-e-barreiras.md` | O `AGENTS.md` cita-o. Preenche-se como diz o quadro abaixo. |
-| `docs/planos/0001-<assunto>.md` | `assets/molde-plano.md` | Com o oráculo dentro de «Prova»; a F1 é «as barreiras do mapa». |
+| `docs/planos/0001-<assunto>.md` | `assets/molde-plano.md` | Esqueleto na ronda 6, só com a F1 «as barreiras do mapa»; a ronda 7 o preenche, com o oráculo dentro de «Prova». |
 | `docs/decisoes/0001-<decisao>.md`, … | `assets/molde-adr.md` | Uma por escolha grande. |
 
 **O mapa das barreiras num projeto novo.** O molde do mapa cita hooks, testes e portões que esta skill não instala; copiado como está, ele diria que existem barreiras que não existem. Preencha-o assim:
 - **linha cuja barreira existe no projeto** (vista na ronda 0): fica como no molde;
-- **linha cuja barreira não está instalada:** a coluna «Barreira» passa a `por fazer (F1)` (seguida de `; texto` quando o molde já dizia que uma parte é texto). A coluna «Onde» diz em palavras o que falta e onde se faz, por exemplo «instalar a guarda do git (passo a passo em [modelos/README.md](https://github.com/Carlobks/Morg-laws/blob/main/modelos/README.md#como-instalar)); fase F1 de `docs/planos/0001-<assunto>.md`». **Não ponha entre crases um caminho que ainda não existe**: o teste do molde confere que cada caminho entre crases no mapa existe;
+- **linha cuja barreira não está instalada:** a coluna «Barreira» passa a `por fazer (F1)` (seguida de `; texto` quando o molde já dizia que uma parte é texto). A coluna «Onde» diz em palavras o que falta e onde se faz, por exemplo «instalar a guarda do git (passo a passo em [modelos/README.md](https://github.com/Carlobks/Morg-laws/blob/main/modelos/README.md#como-instalar)); fase F1 de `docs/planos/0001-<assunto>.md`». **Não ponha entre crases um caminho que ainda não existe**: o teste do molde confere que cada caminho entre crases no mapa existe. O do plano já existe, porque o esqueleto se escreve na ronda 6, antes do mapa;
 - **linhas só de texto** (DECISÃO É DO DONO, SEM ESCRITA NO BANCO): ficam como no molde;
 - **a Regra n.º 1** preenche-se **igual** no `AGENTS.md` e no mapa: o mesmo título em maiúsculas nos dois, a barreira (`por fazer (F1)`, se ainda não existe) e o «Onde» em palavras.
 
