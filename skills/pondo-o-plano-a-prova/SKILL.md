@@ -79,7 +79,7 @@ O agente pode propor um rascunho a partir das respostas; o oráculo só vale dep
 
 ## 5. Quando parar
 
-Pare quando as cinco lacunas tiverem resposta, ou quando o dono disser que chega. Não continue a perguntar por perguntar: cada ronda custa a atenção do dono.
+Pare quando as cinco lacunas tiverem resposta e, numa mudança, o dono tiver confirmado o oráculo; ou quando o dono disser que chega (numa mudança sem oráculo, o resumo diz isso). Não continue a perguntar por perguntar: cada ronda custa a atenção do dono.
 
 ## 6. O que entregar no fim
 

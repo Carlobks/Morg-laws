@@ -23,7 +23,13 @@ FRASES_DO_ORACULO = (
     "Continua igual",
     "tem de falhar antes",
     "tem de passar antes e depois",
+    "- Dado <a situação>, quando",
+    "- Continua igual: <o que não se mexe>",
+    "Pelo menos uma por oráculo",
+    "só vale depois de o dono",
 )
+DISPENSA = "sem perguntas nem oráculo"
+PARADA = "o dono tiver confirmado o oráculo"
 
 
 def secao(texto, titulo):
@@ -38,6 +44,10 @@ def erros_do_oraculo(texto):
         erros.append("o resumo final não tem a linha «Oráculo»")
     oraculo = secao(texto, "O oráculo")
     erros += [f"a seção do oráculo não traz «{frase}»" for frase in FRASES_DO_ORACULO if frase not in oraculo]
+    if DISPENSA not in secao(texto, "Quando o pedido é uma mudança"):
+        erros.append(f"a seção da mudança não diz que a tarefa pequena dispensa («{DISPENSA}»)")
+    if PARADA not in secao(texto, "Quando parar"):
+        erros.append(f"a seção «Quando parar» não exige o oráculo confirmado («{PARADA}»)")
     return erros
 
 
@@ -69,7 +79,29 @@ class PondoOPlanoAProva(unittest.TestCase):
     def test_sem_a_regra_do_continua_igual_reprova(self):
         self.assertErro(self.texto.replace("tem de passar antes e depois", "passa"), "tem de passar antes e depois")
 
+    def test_sem_a_linha_do_depois_no_modelo_reprova(self):
+        self.assertErro(self.texto.replace("- Dado <a situação>, quando", "- Dado a situação, quando"),
+                        "- Dado <a situação>, quando")
+
+    def test_sem_a_linha_continua_igual_no_modelo_reprova(self):
+        self.assertErro(self.texto.replace("- Continua igual: <o que não se mexe>", "- Igual: <o que não se mexe>"),
+                        "- Continua igual: <o que não se mexe>")
+
+    def test_sem_a_dispensa_reprova(self):
+        self.assertErro(self.texto.replace("sem perguntas nem oráculo", "sem perguntas"), "tarefa pequena dispensa")
+
+    def test_sem_pelo_menos_uma_por_oraculo_reprova(self):
+        self.assertErro(self.texto.replace("Pelo menos uma por oráculo", "Quantas quiser"), "Pelo menos uma por oráculo")
+
+    def test_sem_a_confirmacao_do_dono_reprova(self):
+        self.assertErro(self.texto.replace("só vale depois de o dono", "vale logo, mesmo sem o dono"),
+                        "só vale depois de o dono")
+
+    def test_parar_sem_o_oraculo_confirmado_reprova(self):
+        self.assertErro(self.texto.replace(PARADA, "o resumo estiver escrito"), "«Quando parar» não exige o oráculo")
+
     def test_sem_a_secao_da_mudanca_reprova(self):
+        self.assertErro(self.texto.replace("Quando o pedido é uma mudança", "Outra coisa"), "falta a seção «Quando")
         self.assertErro(self.texto.replace("Quando o pedido é uma mudança", "Outra coisa"), "falta a seção «Quando")
 
     def test_a_secao_vazia_vem_vazia(self):
