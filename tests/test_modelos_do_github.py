@@ -24,7 +24,8 @@ except ImportError as erro:
     raise ImportError("Falta o PyYAML: pip install pyyaml (o CI fixa a 6.0.3 no seguranca.yml).") from erro
 
 from carregar_modelos import RAIZ
-from leitura_do_repositorio import ler
+from leitura_do_repositorio import arquivos_do_git, ler
+from test_caminhos_do_morg_laws import ENDERECO_PROPRIO, LINK_RELATIVO, erro_do_link
 from test_fontes_e_pesquisas import links_sem_fonte
 
 PASTA_DOS_FORMULARIOS = RAIZ / ".github" / "ISSUE_TEMPLATE"
@@ -468,6 +469,106 @@ class CasosDeErroDoConteudo(unittest.TestCase):
         for texto in ("equipamento", "para correr", "ressalta", "saltar", "tem a ver", "de fato", "o contato"):
             with self.subTest(texto=texto):
                 self.assertEqual(erros_de_lingua("a.md", texto), [])
+
+
+MODELO_DE_PR = RAIZ / ".github" / "pull_request_template.md"
+POLITICA_DE_SEGURANCA = RAIZ / ".github" / "SECURITY.md"
+OUTRAS_POLITICAS = (RAIZ / "SECURITY.md", RAIZ / "docs" / "SECURITY.md")
+ENDERECO_DO_FORMULARIO = re.compile(r"https://github\.com/Carlobks/Morg-laws/issues/new\?(?:[^\s)>#]*&)?template=([\w.-]+)")
+ITENS_DO_MODELO_DE_PR = ("scripts/testar.sh", "FONTES.md", "pesquisas/", "português do Brasil")
+SECOES_DO_MODELO_DE_PR = ("## Prova", "## O que não se verificou")
+
+
+def erros_do_modelo_de_pr(texto):
+    """T6: o aviso, as seções, os itens da lista e nenhum link relativo (o texto vai parar ao corpo da PR)."""
+    erros = [f"pull_request_template.md: falta o aviso de público ({frase})" for frase in AVISO_DE_PUBLICO
+             if frase not in texto]
+    erros += [f"pull_request_template.md: falta a seção «{secao}»" for secao in SECOES_DO_MODELO_DE_PR
+              if secao not in texto]
+    erros += [f"pull_request_template.md: a lista não cita {item}" for item in ITENS_DO_MODELO_DE_PR if item not in texto]
+    erros += [f"pull_request_template.md: ({alvo}) é um link relativo; use o link completo do repositório"
+              for alvo in sorted(set(LINK_RELATIVO.findall(texto)))]
+    return erros
+
+
+def erros_da_politica(texto, outras):
+    """T7: o link do aviso privado, o aviso, o apontador para o 4.º formulário, o dado pessoal, e uma política só."""
+    formularios = ENDERECO_DO_FORMULARIO.findall(texto)
+    erros = [f"SECURITY.md: falta o aviso de público ({frase})" for frase in AVISO_DE_PUBLICO if frase not in texto]
+    if LINK_DO_AVISO_PRIVADO not in texto:
+        erros.append(f"SECURITY.md: falta o link {LINK_DO_AVISO_PRIVADO}")
+    if FORMULARIO_DE_CONTATO not in formularios:
+        erros.append(f"SECURITY.md: falta o link do formulário (template={FORMULARIO_DE_CONTATO})")
+    if "dado pessoal" not in texto.lower():
+        erros.append("SECURITY.md: falta a menção do dado pessoal publicado por engano")
+    return erros + [f"{outra}: há outra política de segurança; o GitHub escolhe uma só" for outra in outras]
+
+
+def erros_dos_enderecos(raiz, arquivos, com_blob):
+    """T10: cada `template=` aponta para um formulário do git; cada `…/blob/main/…` de `com_blob` chega a um arquivo."""
+    erros, conhecidos = [], set(arquivos)
+    for nome in sorted(a for a in arquivos if a.endswith((".md", ".yml"))):
+        texto = ler(raiz / nome)
+        erros += [f"{nome}: template={t} não é um formulário de .github/ISSUE_TEMPLATE" for t in ENDERECO_DO_FORMULARIO.findall(texto)
+                  if f".github/ISSUE_TEMPLATE/{t}" not in conhecidos]
+        for ref, caminho, ancora in sorted({m[1:] for m in ENDERECO_PROPRIO.findall(texto)}) if nome in com_blob else []:
+            erro = erro_do_link(raiz, conhecidos, ref, caminho, ancora)
+            erros += [f"{nome}: …/{caminho} — {erro}"] if erro else []
+    return erros
+
+
+def erros_dos_enderecos_do_repositorio():
+    com_blob = [c.relative_to(RAIZ).as_posix() for c in (MODELO_DE_PR, POLITICA_DE_SEGURANCA)]
+    return erros_dos_enderecos(RAIZ, arquivos_do_git(RAIZ), com_blob + ["README.md", "biblia-akita/README.md"])
+
+
+class ModeloDePrEPoliticaDoRepositorio(unittest.TestCase):
+    maxDiff = None
+
+    def test_o_modelo_de_pr_cumpre_o_que_o_plano_pede(self):
+        self.assertEqual(erros_do_modelo_de_pr(ler(MODELO_DE_PR)), [])
+
+    def test_a_politica_cumpre_o_que_o_plano_pede(self):
+        self.assertEqual(erros_da_politica(ler(POLITICA_DE_SEGURANCA), [c for c in OUTRAS_POLITICAS if c.exists()]), [])
+
+    def test_os_enderecos_do_proprio_repositorio_chegam_ao_destino(self):
+        self.assertEqual(erros_dos_enderecos_do_repositorio(), [])
+
+
+class CasosDeErroDoModeloEDaPolitica(unittest.TestCase):
+    maxDiff = None
+
+    def reprova(self, erros, fragmento):
+        self.assertTrue(any(fragmento in erro for erro in erros), f"{fragmento!r} não está em {erros}")
+
+    def test_o_modelo_de_pr_reprova_sem_o_item_do_fontes_e_com_link_relativo(self):
+        texto = ler(MODELO_DE_PR)
+        self.reprova(erros_do_modelo_de_pr(texto.replace("`FONTES.md`", "o arquivo de fontes")), "não cita FONTES.md")
+        self.reprova(erros_do_modelo_de_pr(texto + "[x](../README.md)\n"), "(../README.md) é um link relativo")
+        self.reprova(erros_do_modelo_de_pr(texto.replace("## Prova", "## Teste")), "falta a seção «## Prova»")
+        self.reprova(erros_do_modelo_de_pr(texto.replace("Este repositório é público", "Aviso")), "falta o aviso")
+
+    def test_a_politica_reprova_sem_o_link_com_o_apontador_trocado_e_com_outra_politica(self):
+        texto = ler(POLITICA_DE_SEGURANCA)
+        self.reprova(erros_da_politica(texto.replace(LINK_DO_AVISO_PRIVADO, "https://x.test"), []), "falta o link https")
+        trocado = texto.replace("template=" + FORMULARIO_DE_CONTATO, "template=1-problema-numa-regra.yml")
+        self.reprova(erros_da_politica(trocado, []), "falta o link do formulário")
+        self.reprova(erros_da_politica(texto.replace("dado pessoal", "dado"), []), "falta a menção do dado pessoal")
+        self.reprova(erros_da_politica(texto.replace("Este repositório é público", "A"), []), "falta o aviso")
+        self.reprova(erros_da_politica(texto, [Path("SECURITY.md")]), "há outra política de segurança")
+
+    def test_os_enderecos_reprovam_o_formulario_que_nao_existe_e_o_arquivo_que_nao_existe(self):
+        endereco = "https://github.com/Carlobks/Morg-laws"
+        with tempfile.TemporaryDirectory() as pasta:
+            raiz = Path(pasta)
+            (raiz / "a.md").write_text(f"{endereco}/issues/new?template=3-correcao-de-fonte.yml e {endereco}/blob/main/"
+                                       ".github/SEGURANCA.md e [ok]({endereco}/issues/new?labels=x&template=b.yml)\n", encoding="utf-8")
+            (raiz / ".github" / "ISSUE_TEMPLATE").mkdir(parents=True)
+            (raiz / ".github" / "ISSUE_TEMPLATE" / "b.yml").write_text("x: 1\n", encoding="utf-8")
+            erros = erros_dos_enderecos(raiz, ["a.md", ".github/ISSUE_TEMPLATE/b.yml"], ["a.md"])
+        self.reprova(erros, "template=3-correcao-de-fonte.yml não é um formulário")
+        self.reprova(erros, "SEGURANCA.md — o arquivo não existe no git")
+        self.assertEqual(len(erros), 2)
 
 
 class SemOPyYAML(unittest.TestCase):
