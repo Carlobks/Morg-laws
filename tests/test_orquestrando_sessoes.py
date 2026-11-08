@@ -26,6 +26,11 @@ PEDACOS = (
     "`OFF`",
     "quem orquestra troca o da filha",
     "`/rename",
+    "Cada sessão troca o próprio título",
+    "app de desktop",
+    "CLI do Codex",
+    "a página do CLI não diz como se faz",
+    "Onde a ferramenta não tiver nenhuma forma",
 )
 
 
@@ -67,6 +72,24 @@ class OrquestrandoSessoes(unittest.TestCase):
 
     def test_sem_o_rename_reprova(self):
         self.assertErro(self.texto.replace("`/rename <título>`", "um comando"), "/rename")
+
+    def test_sem_cada_sessao_troca_o_proprio_reprova(self):
+        self.assertErro(self.texto.replace("Cada sessão troca o próprio título", "Alguém troca"),
+                        "Cada sessão troca o próprio título")
+
+    def test_sem_a_app_de_desktop_reprova(self):
+        self.assertErro(self.texto.replace("na app de desktop do Claude Code", "no Claude Code"), "app de desktop")
+
+    def test_o_codex_sem_dizer_que_e_o_cli_reprova(self):
+        self.assertErro(self.texto.replace("no CLI do Codex", "no Codex"), "CLI do Codex")
+
+    def test_sem_dizer_que_a_pagina_do_cli_nao_cobre_a_extensao_reprova(self):
+        self.assertErro(self.texto.replace("a página do CLI não diz como se faz", "tudo funciona igual"),
+                        "a página do CLI não diz como se faz")
+
+    def test_sem_o_que_fazer_quando_nao_ha_forma_reprova(self):
+        self.assertErro(self.texto.replace("Onde a ferramenta não tiver nenhuma forma", "Em qualquer caso"),
+                        "Onde a ferramenta não tiver nenhuma forma")
 
     def test_palavra_de_portugal_no_item_reprova(self):
         self.assertErro(self.texto.replace("em poucas palavras", "em poucas palavras partilhadas"), "partilhadas")
