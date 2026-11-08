@@ -56,7 +56,7 @@ jobs:
       # Versões fixas sem --require-hashes, por escolha: um pacote republicado com a mesma versão passaria, mas
       # este job só lê o repositório e não tem segredos. Com segredos ou escrita, use um requirements com hashes.
       - name: Ferramentas com versões fixas
-        run: ${{ steps.python.outputs.python-path }} -m pip install --disable-pip-version-check coverage==7.17.0 ruff==0.17.2
+        run: ${{ steps.python.outputs.python-path }} -m pip install --disable-pip-version-check coverage==7.17.0 ruff==0.17.2 pyyaml==6.0.3
       # O Node da versão fixada no projeto de exemplo TypeScript; o scripts/testar.sh roda o npm ci do lockfile dele.
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:

@@ -53,7 +53,7 @@ Mudou um modelo? Rode os testes antes de commitar (o CI roda os mesmos em todo p
 versão em `tests/exemplo-ts/.nvmrc` e do npm; o script roda o `npm ci` do exemplo quando o lockfile muda:
 
 ```bash
-pip install coverage ruff
+pip install coverage ruff pyyaml
 sh scripts/testar.sh
 ```
 
