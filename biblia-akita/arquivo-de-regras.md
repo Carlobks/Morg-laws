@@ -4,7 +4,7 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita, sobre o
 
 ## 1. Quando e com que forma
 
-- Escreva o arquivo de regras no primeiro dia: a arquitetura, onde fica cada coisa e as convenções. Sem ele, o agente faz o que é mais comum no treino, e não o que o seu projeto pede. (pp. 64, 126) · **texto** · onde aplicar: `escrevendo-regras-de-agente`
+- Escreva o arquivo de regras no primeiro dia: a arquitetura, onde fica cada coisa e as convenções. Sem ele, o agente faz o que é mais comum no treino, e não o que o seu projeto pede. (pp. 64, 126) · **texto** · onde aplicar: `escrevendo-regras-de-agente`, `comecando-um-projeto`
 - Ele é, na prática, o prompt de sistema que você mesmo escreve, e uma das três gavetas da memória do projeto. (pp. 126, 387) · **texto** · onde aplicar: `escrevendo-regras-de-agente`
 - Escreva curto, direto e em ordens; nada de prosa filosófica. O arquivo é relido a cada pedido e cada linha ocupa espaço. (p. 126) · **máquina** (limite de linhas no CI) · onde aplicar: `escrevendo-regras-de-agente`
 - Escreva em linguagem comum e clara, como para alguém no primeiro dia de estágio. (p. 42) · **texto** · onde aplicar: `escrevendo-regras-de-agente`

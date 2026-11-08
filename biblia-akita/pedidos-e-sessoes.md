@@ -5,12 +5,12 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A pági
 ## 1. Montar o pedido
 
 - Um pedido tem quatro partes: o que quer; como, em linhas gerais e aberto a sugestões; o que não quer, que é a parte mais esquecida e a que mais vale; e como vai saber que ficou certo. Antes de enviar, pergunte-se o que só você sabe e o agente ignora. (pp. 118, 120–121) · **texto** · onde aplicar: `pondo-o-plano-a-prova`
-- Trate o modelo como um prestador de serviço contratado, não como um mágico, e ponha no pedido um esforço à medida do que está em jogo. Um modelo de pedido com quinze seções trata o sintoma, não a causa. (pp. 118, 121) · **texto** · onde aplicar: ainda nenhuma
+- Trate o modelo como um prestador de serviço contratado, não como um mágico, e ponha no pedido um esforço à medida do que está em jogo. Um modelo de pedido com quinze seções trata o sintoma, não a causa. (pp. 118, 121) · **texto** · onde aplicar: `pondo-o-plano-a-prova`
 - Diga as exceções do seu domínio: os casos que parecem repetidos e não são. (p. 119) · **texto** · onde aplicar: `pondo-o-plano-a-prova`
 - Fora da programação, use as mesmas quatro partes e peça, no fim, a lista de cada afirmação de fato para conferir. (p. 121) · **texto** · onde aplicar: ainda nenhuma
 - Mande citar só o que está no material dado e marcar o resto como impossível de verificar. Peça os pontos fortes e fracos em vez de um veredito, e pergunte o que ficou de fora. (pp. 56, 58) · **texto** · onde aplicar: `orquestrando-sessoes`
 - Para começar um sistema para outra pessoa, parta das palavras dela. (pp. 96–97) · **texto** · onde aplicar: `pondo-o-plano-a-prova`
-- Antes de construir do zero, procure no primeiro dia se já existe uma solução pronta, um modelo treinado ou uma biblioteca, e escolha uma base bem mantida. (pp. 67, 106–107, 218) · **texto** · onde aplicar: ainda nenhuma
+- Antes de construir do zero, procure no primeiro dia se já existe uma solução pronta, um modelo treinado ou uma biblioteca, e escolha uma base bem mantida. (pp. 67, 106–107, 218) · **texto** · onde aplicar: `comecando-um-projeto`
 - Quando concluir que um modelo «não serve», releia primeiro o que lhe pediu. (p. 116) · **texto** · onde aplicar: ainda nenhuma
 
 ## 2. Conduzir o trabalho

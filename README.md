@@ -12,7 +12,7 @@ o que deu errado, a regra que nasceu disso e a fonte que a sustenta.
 | `skills/` | Regras por assunto (SQL, Supabase, Next.js, segurança, sessões…). O agente só abre o que o projeto usa. |
 | `biblia-akita/` | Resumo, com palavras nossas, do livro *Competente o Suficiente*, de Fabio Akita, um arquivo por tema, cada conselho com a página e a skill que já o aplica. |
 | `aprendizados/` | Notas datadas sobre bibliotecas, ferramentas e erros que custaram caro. |
-| `modelos/` | Arquivos prontos para copiar, que transformam as regras em barreiras de máquina: hooks do Claude Code e `settings.json` em três colunas, hooks e portões do git, testes das regras, testes prontos da forma do código em Python e em TypeScript (vitest), changelog por fragmentos, CI e moldes de documento (AGENTS.md, CLAUDE.md, mapa das barreiras, plano, handoff, ADR). Índice em [modelos/README.md](modelos/README.md). |
+| `modelos/` | Arquivos prontos para copiar, que transformam as regras em barreiras de máquina: hooks do Claude Code e `settings.json` em três colunas, hooks e portões do git, testes das regras, testes prontos da forma do código em Python e em TypeScript (vitest), changelog por fragmentos, CI e moldes de documento (AGENTS.md, CLAUDE.md, documento do projeto, mapa das barreiras, plano, handoff, ADR). Índice em [modelos/README.md](modelos/README.md). |
 | `tests/` e `scripts/testar.sh` | Os testes dos modelos: cobertura de linhas e ramos a 100 %, um projeto de exemplo em Python e outro em TypeScript (`tests/exemplo-ts/`, com o `package-lock.json` fixado) montados só com eles, e a prova de que as duas línguas dão o mesmo veredito. |
 | `pesquisas/` | As pesquisas feitas para o repositório, uma por arquivo, com o índice em [pesquisas/README.md](pesquisas/README.md). |
 | `projetos/` | O catálogo de projetos reais, anonimizados: de onde vem cada regra, com o incidente que a fez nascer. A regra de anonimato e o que barra cada commit estão em [projetos/README.md](projetos/README.md). |
@@ -26,7 +26,7 @@ O repositório está em construção: as pastas aparecem conforme as fases avan�
 npx skills add Carlobks/Morg-laws
 ```
 
-O comando instala as skills em `.claude/skills/` (ou na pasta do agente que escolher). As regras não vêm com elas: copie o molde [modelos/documentos/AGENTS.md](modelos/documentos/AGENTS.md) para a raiz do projeto, como `AGENTS.md`, e preencha o que está entre `<…>`. No Claude Code, junte um `CLAUDE.md` com a linha `@AGENTS.md` (molde em [modelos/documentos/CLAUDE.md](modelos/documentos/CLAUDE.md)). O `AGENTS.md` da raiz deste repositório não se copia: leva também as regras de quem trabalha no próprio Morg-laws. Detalhes e versão testada em [aprendizados/2026-10-30-instalacao-das-skills.md](aprendizados/2026-10-30-instalacao-das-skills.md).
+O comando instala as skills em `.claude/skills/` (ou na pasta do agente que escolher). As regras não vêm com elas: copie o molde [modelos/documentos/AGENTS.md](modelos/documentos/AGENTS.md) para a raiz do projeto, como `AGENTS.md`, e preencha o que está entre `<…>`. No Claude Code, junte um `CLAUDE.md` com a linha `@AGENTS.md` (molde em [modelos/documentos/CLAUDE.md](modelos/documentos/CLAUDE.md)). O `AGENTS.md` da raiz deste repositório não se copia: leva também as regras de quem trabalha no próprio Morg-laws. Ou deixe a skill `comecando-um-projeto` escrever os dois (veja a primeira mensagem, abaixo). Detalhes e versão testada em [aprendizados/2026-10-30-instalacao-das-skills.md](aprendizados/2026-10-30-instalacao-das-skills.md).
 
 Para que as regras sejam cumpridas e não só lidas, copie os modelos que servem ao projeto: os passos estão em
 [modelos/README.md](modelos/README.md). O mínimo recomendado é a guarda do git, o hook de segredos e o que pergunta
@@ -35,6 +35,20 @@ antes do push (`modelos/claude/`), o `pre-commit` com o comando único de testes
 linhas, função nova até 20, nomes únicos, alarmes e testes saltados), copie os testes prontos de `modelos/testes/`
 (Python) ou de `modelos/testes-ts/` (TypeScript, vitest); a skill `codigo-legivel` diz as regras e como adotá-las num
 projeto que já viola.
+
+### Primeira mensagem num projeto
+
+No Claude Code:
+
+```text
+/comecando-um-projeto Quero começar (ou organizar) este projeto com você. Antes de escrever código, me faça as perguntas em rondas, confirme comigo cada resposta e deixe escritos o documento do projeto, o AGENTS.md, o primeiro plano e as decisões de arquitetura.
+```
+
+No Codex:
+
+```text
+$comecando-um-projeto Quero começar (ou organizar) este projeto com você. Antes de escrever código, me faça as perguntas em rondas, confirme comigo cada resposta e deixe escritos o documento do projeto, o AGENTS.md, o primeiro plano e as decisões de arquitetura.
+```
 
 ## Para quem contribui
 

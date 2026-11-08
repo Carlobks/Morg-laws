@@ -10,6 +10,11 @@ E a skill `comecando-um-projeto`:
   arquivo de `skills/` se chama `AGENTS.md`, `CLAUDE.md` nem `CLAUDE.local.md` (a ferramenta o carregaria como regra);
 - o `SKILL.md` e o `evals/` não levam palavras nem construções do português de Portugal (as cópias de `assets/` ficam
   de fora: são iguais aos moldes).
+E a mensagem inicial, a seção «Primeira mensagem num projeto» do README:
+- tem os dois blocos iguais aos da seção 6 da skill, com o mesmo corpo depois do prefixo (`/` no Claude Code, `$` no
+  Codex) e o nome da skill no prefixo;
+- fica depois do bloco do `npx skills add` e antes de «Para quem contribui»;
+- não leva palavras nem construções do português de Portugal.
 As funções recebem o texto ou a raiz, para os casos de erro serem provados sem tocar no repositório.
 """
 
@@ -33,6 +38,11 @@ DESTINOS_DA_SKILL = ("docs/projeto.md", "docs/README.md", "AGENTS.md", "CLAUDE.m
 COPIAS_DOS_MOLDES = {f"assets/molde-{nome}.md": f"modelos/documentos/{nome}.md"
                      for nome in ("projeto", "AGENTS", "CLAUDE", "regras-e-barreiras", "plano", "adr")}
 NOMES_QUE_AS_FERRAMENTAS_CARREGAM = ("AGENTS.md", "CLAUDE.md", "CLAUDE.local.md")
+SECAO_DO_README = "### Primeira mensagem num projeto"
+SECAO_DA_SKILL = "## 6. Mensagem inicial"
+INSTALACAO = "npx skills add"
+PROXIMA_SECAO_DO_README = "## Para quem contribui"
+BLOCO_DE_TEXTO = re.compile(r"```text\n(.*?)\n```", re.DOTALL)
 SECOES_DO_PROJETO = ("O que é", "Para quem", "O que faz", "O que não faz", "Restrições", "Arquitetura",
                      "Palavras do dono", "Perguntas em aberto")
 
@@ -74,6 +84,47 @@ def erros_das_copias(raiz):
     erros += [f"{extra} está em assets/ e fora do mapa" for extra in sorted(achados - set(COPIAS_DOS_MOLDES))]
     nomes = [p for p in (raiz / "skills").rglob("*") if p.name in NOMES_QUE_AS_FERRAMENTAS_CARREGAM]
     return erros + [f"{p.relative_to(raiz).as_posix()} seria carregado como regra da sessão" for p in nomes]
+
+
+def secao_de(texto, titulo):
+    """O texto da seção que começa em `titulo`, até o próximo título do mesmo nível ou acima; vazio se não existe."""
+    inicio = texto.find(titulo + "\n")
+    if inicio < 0:
+        return ""
+    nivel = len(titulo.split()[0])
+    fim = re.search(rf"^#{{1,{nivel}}} ", texto[inicio + len(titulo):], re.MULTILINE)
+    return texto[inicio:] if not fim else texto[inicio:inicio + len(titulo) + fim.start()]
+
+
+def erros_da_ordem_no_readme(readme):
+    """A seção da mensagem fica depois do bloco do `npx skills add` e antes de «Para quem contribui»."""
+    posicoes = [readme.find(INSTALACAO), readme.find(SECAO_DO_README + "\n"), readme.find(PROXIMA_SECAO_DO_README)]
+    if min(posicoes) < 0:
+        return ["falta no README o bloco da instalação, a seção da mensagem ou «Para quem contribui»"]
+    return [] if posicoes == sorted(posicoes) else ["a seção da mensagem está fora do lugar no README"]
+
+
+def erros_dos_prefixos(blocos, nome):
+    """Dois blocos: `/nome corpo` e `$nome corpo`, com o mesmo corpo."""
+    if len(blocos) != 2:
+        return [f"esperava 2 blocos de texto na mensagem, achei {len(blocos)}"]
+    corpos = [bloco.removeprefix(prefixo + nome + " ") for bloco, prefixo in zip(blocos, "/$")]
+    erros = [f"o bloco {n} não começa por {prefixo}{nome} " for n, prefixo in enumerate("/$", 1)
+             if not blocos[n - 1].startswith(prefixo + nome + " ")]
+    return erros or ([] if corpos[0] == corpos[1] else ["o corpo difere entre o Claude Code e o Codex"])
+
+
+def erros_da_mensagem(readme, skill):
+    """Os blocos do README iguais aos da skill, na ordem certa e com o nome da skill no prefixo."""
+    no_readme = BLOCO_DE_TEXTO.findall(secao_de(readme, SECAO_DO_README))
+    na_skill = BLOCO_DE_TEXTO.findall(secao_de(skill, SECAO_DA_SKILL))
+    nome = re.search(r"^name: (.+)$", skill, re.MULTILINE).group(1)
+    erros = [] if no_readme == na_skill else ["os blocos do README diferem dos da seção 6 da skill"]
+    return erros + erros_da_ordem_no_readme(readme) + erros_dos_prefixos(no_readme, nome)
+
+
+def erros_de_lingua_da_mensagem(readme):
+    return erros_de_lingua("README.md", secao_de(readme, SECAO_DO_README))
 
 
 def erros_de_lingua_da_skill(raiz):
@@ -172,6 +223,44 @@ class SkillComecandoUmProjeto(unittest.TestCase):
         arquivo = raiz / PASTA_DA_SKILL / "SKILL.md"
         arquivo.write_text(arquivo.read_text(encoding="utf-8") + "\nO ficheiro do projeto.\n", encoding="utf-8")
         self.assertIn("ficheiro", erros_de_lingua_da_skill(raiz)[0])
+
+
+class MensagemInicial(unittest.TestCase):
+    def setUp(self):
+        self.readme = ler(RAIZ / "README.md")
+        self.skill = ler(RAIZ / PASTA_DA_SKILL / "SKILL.md")
+
+    def assertErro(self, readme, trecho):
+        erros = erros_da_mensagem(readme, self.skill)
+        self.assertTrue(any(trecho in erro for erro in erros), f"esperava «{trecho}» em {erros}")
+
+    def test_a_mensagem_passa(self):
+        self.assertEqual([], erros_da_mensagem(self.readme, self.skill))
+
+    def test_uma_palavra_trocada_no_readme_reprova(self):
+        self.assertErro(self.readme.replace("me faça as perguntas em rondas", "me faça as perguntas em etapas", 1),
+                        "diferem")
+
+    def test_a_secao_depois_de_para_quem_contribui_reprova(self):
+        secao = secao_de(self.readme, SECAO_DO_README)
+        movido = self.readme.replace(secao, "").rstrip("\n") + "\n\n" + secao
+        self.assertErro(movido, "fora do lugar")
+
+    def test_a_secao_antes_da_instalacao_reprova(self):
+        secao = secao_de(self.readme, SECAO_DO_README)
+        movido = self.readme.replace(secao, "").replace("## Como usar num projeto", secao + "## Como usar num projeto")
+        self.assertErro(movido, "fora do lugar")
+
+    def test_o_nome_errado_no_prefixo_do_codex_reprova(self):
+        errado = self.readme.replace("$comecando-um-projeto", "$comecando-o-projeto")
+        self.assertErro(errado, "não começa por $comecando-um-projeto")
+
+    def test_a_mensagem_esta_em_portugues_do_brasil(self):
+        self.assertEqual([], erros_de_lingua_da_mensagem(self.readme))
+
+    def test_palavra_de_portugal_na_mensagem_reprova(self):
+        mutado = self.readme.replace("confirme comigo", "partilhe comigo", 1)
+        self.assertIn("partilhe", erros_de_lingua_da_mensagem(mutado)[0])
 
 
 if __name__ == "__main__":
