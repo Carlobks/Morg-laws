@@ -58,6 +58,7 @@ A segunda é o que o repositório local tem, contado nos arquivos:
 |---|---|
 | Formulários em `.github/ISSUE_TEMPLATE/` | quatro (problema numa regra, sugestão, correção de fonte e pedir um contato de segurança) e o `config.yml` |
 | Testes que os conferem | `tests/test_esquema_dos_formularios.py` (a forma, incluindo a do molde `modelos/github/ISSUE_TEMPLATE/erro.yml`) e `tests/test_modelos_do_github.py` (o conteúdo, o `config.yml`, o modelo de PR, a política, a língua e os endereços) |
+| O que o teste recusa além do GitHub | um `.md` em `.github/ISSUE_TEMPLATE/` (só o formulário obriga a prova) e qualquer formulário que não seja um dos quatro |
 | PyYAML | não há pacote para o Python 3.15 local; instalou-se compilando a partir do código-fonte, num ambiente descartável, e o CI fixa a versão 6.0.3 |
 
 O que as páginas dizem, lido hoje e posto em forma de regra do desenho:
@@ -65,17 +66,20 @@ O que as páginas dizem, lido hoje e posto em forma de regra do desenho:
 - **Formulário ou modelo em Markdown.** O formulário mostra campos e deixa marcar os obrigatórios; o modelo em
   Markdown só orienta. Por isso a prova (o comando e a saída) vai num campo obrigatório. O `required` só vale em
   repositório público, e este é.
-- **O `config.yml`.** Com `blank_issues_enabled: false`, quem só lê não vê a issue em branco e ninguém foge da prova;
-  quem escreve vê a opção marcada «Maintainers only». Os `contact_links` levam `name`, `url` e `about`. A ordem do
+- **O `config.yml`.** Com `blank_issues_enabled: false`, quem tem o papel Read ou Triage não vê a issue em branco e
+  não foge da prova; quem tem Write, Maintain ou Admin continua vendo a opção, marcada «Maintainers only». Os `contact_links` levam `name`, `url` e `about`. A ordem do
   seletor é alfabética, e um número na frente do nome do arquivo a fixa.
 - **O que o GitHub recusa.** A página dos erros lista 21 casos. Os que mais pesam no desenho: `body` vazio ou sem
   nenhum campo que não seja `markdown`, `label`s repetidos ou parecidos demais, opções repetidas, a palavra `None`
   e valores que o YAML lê como booleanos (`Yes`, `No`).
+  Das outras páginas vêm mais cinco: um `name` de 3 caracteres ou menos esconde o formulário do seletor; o texto vazio
+  ou só com espaços não vale no topo nem nos rótulos; o rótulo de uma caixa não repete o de outro campo; o `default` do
+  `dropdown` é o índice de uma opção, e com ele não pode haver a opção «n/a»; o `min_length` não é negativo.
 - **Onde fica o `SECURITY.md`.** Em `.github`, na raiz ou em `docs`, e o GitHub procura nessa ordem. A página da
   política de segurança não diz isso; vem da página dos arquivos de saúde da comunidade.
 - **Segurança em privado.** Quem é dono ou administrador liga o aviso privado em Settings → Advanced Security. Quem
-  recebe o aviso são os administradores e os gestores de segurança que seguem o repositório (All Activity, ou Custom
-  com Security alerts). Sem política de segurança, a divulgação coordenada manda abrir uma issue a pedir um contato,
+  recebe o aviso são os administradores e os gerentes de segurança que seguem o repositório (All Activity, ou Custom
+  com Security alerts). Sem política de segurança, a divulgação coordenada manda abrir uma issue pedindo um contato,
   sem detalhe nenhum, porque ela fica pública na hora.
 - **Links que abrem o formulário.** O parâmetro `template` da URL escolhe o formulário, e uma URL com parâmetros
   inválidos dá 404.
@@ -87,7 +91,7 @@ O que as páginas dizem, lido hoje e posto em forma de regra do desenho:
 - **O endereço `…/security/advisories/new`** não está escrito em nenhuma das páginas lidas, que falam do botão «Report
   a vulnerability». Sem login, medi o `302`. Com login e o aviso desligado, não sei o que ele mostra, e a página de
   reportar em privado não diz se a opção some ou fica desabilitada.
-- **Onde o GitHub mostra o erro de um formulário inválido.** A página dos erros diz que aparece ao criar, guardar ou
+- **Onde o GitHub mostra o erro de um formulário inválido.** A página dos erros diz que aparece ao criar, salvar ou
   ver o formulário, sem dizer onde. Também não sei se a API de GraphQL lista os formulários `.yml`, nem se uma PR aberta
   pelo `gh pr create` sem corpo usa o modelo de PR.
 - **A sintaxe dos formulários está em *public preview*** e pode mudar. O teste local confere o que a página diz hoje;
@@ -106,6 +110,6 @@ O que as páginas dizem, lido hoje e posto em forma de regra do desenho:
 ## Conclusão
 
 Formulários `.yml` com a prova num campo obrigatório; um quarto, só para pedir um contato de segurança sem nenhum
-detalhe; a issue em branco desligada; o `SECURITY.md` em `.github/`, a apontar para esse quarto quando o aviso privado
+detalhe; a issue em branco desligada; o `SECURITY.md` em `.github/`, apontando para esse quarto quando o aviso privado
 não abre; e um teste local do esquema que vale também para o molde `erro.yml`. O aviso privado é ligado à mão pelo dono,
 antes do push. As regras saíram de um projeto real e ninguém as mediu: o caso que alguém viveu é a prova que conta.
