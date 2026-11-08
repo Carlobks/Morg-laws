@@ -31,9 +31,9 @@ Contado nos arquivos do próprio repositório, em 2026-11-08:
 | O quê | Resultado |
 |---|---|
 | Skills | 12 |
-| Descrições | de 574 a 865 caracteres, 8.361 no total |
+| Descrições | de 574 a 865 caracteres, 8.361 no total (contado antes do alargamento da `pondo-o-plano-a-prova`, no commit `e63d480`) |
 | Skills com palavras de Portugal no `SKILL.md` | 9 de 12 (a `pondo-o-plano-a-prova` não tem nenhuma) |
-| `AGENTS.md` do molde | 60 linhas |
+| `AGENTS.md` da raiz | 60 linhas (o teto do `pre-commit`) |
 
 O que as páginas dizem, com palavras nossas:
 
@@ -49,7 +49,7 @@ O que as páginas dizem, com palavras nossas:
 - **Compactação:** ao resumir a conversa, o Claude Code anexa de novo a chamada mais recente de cada skill com os
   primeiros 5.000 tokens dela, num orçamento comum de 25.000. Uma skill de cerca de cem linhas cabe inteira.
 - **Codex e a lista inicial:** se a janela do modelo não for conhecida, a lista de nomes e descrições usa no máximo 8.000
-  caracteres, e o Codex encurta as descrições primeiro. Hoje elas somam 8.361, e com as desta fase chegam perto de 9.400:
+  caracteres, e o Codex encurta as descrições primeiro. Antes do alargamento da `pondo-o-plano-a-prova` (commit `e63d480`) elas somavam 8.361, e com as desta fase chegam perto de 9.400:
   na condição de a janela não ser conhecida, passam do limite. A página não diz que parte corta; com a janela conhecida o
   limite é 2 % dela, que a página não traduz em caracteres.
 - **Renomear:** na app de desktop clica-se no título da sessão ou pede-se ao Claude; no terminal do Claude Code,
