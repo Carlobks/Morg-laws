@@ -581,6 +581,8 @@ def erros_da_politica(texto, outras):
         erros.append(f"SECURITY.md: falta o link do formulário (template={FORMULARIO_DE_CONTATO})")
     if "dado pessoal" not in texto.lower():
         erros.append("SECURITY.md: falta a menção do dado pessoal publicado por engano")
+    if "pela issue de contato" not in texto:
+        erros.append("SECURITY.md: a resposta também vem pela issue de contato (o 4.º formulário não dá aviso)")
     return erros + [f"{outra}: há outra política de segurança; o GitHub escolhe uma só" for outra in outras]
 
 
@@ -665,6 +667,8 @@ class CasosDeErroDoModeloEDaPolitica(unittest.TestCase):
         trocado = texto.replace("template=" + FORMULARIO_DE_CONTATO, "template=1-problema-numa-regra.yml")
         self.reprova(erros_da_politica(trocado, []), "falta o link do formulário")
         self.reprova(erros_da_politica(texto.replace("dado pessoal", "dado"), []), "falta a menção do dado pessoal")
+        sem_a_issue = texto.replace("pela issue de contato", "pelo aviso")
+        self.reprova(erros_da_politica(sem_a_issue, []), "a resposta também vem pela issue de contato")
         self.reprova(erros_da_politica(texto.replace("Este repositório é público", "A"), []), "falta o aviso")
         self.reprova(erros_da_politica(texto, [Path("SECURITY.md")]), "há outra política de segurança")
 

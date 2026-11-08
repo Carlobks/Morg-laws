@@ -24,4 +24,4 @@ Só a `main`. O repositório não tem versões lançadas.
 
 ## O que esperar
 
-Sem prazo prometido. A resposta vem pelo próprio aviso.
+Sem prazo prometido. A resposta vem pelo próprio aviso privado, ou pela issue de contato.
