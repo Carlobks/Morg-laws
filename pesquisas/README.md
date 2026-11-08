@@ -18,3 +18,4 @@ está no `FONTES.md`.
 | [Compactação no Claude Code e no Codex](2026-11-02-compactacao-claude-code-e-codex.md) | O que o `/compact` aceita em cada ferramenta, quando compactam sozinhas, o que volta depois e se a mesma skill serve às duas? | 2026-11-02 |
 | [Código morto](2026-11-03-codigo-morto.md) | Como achar sempre do mesmo jeito o código que ficou para trás, e o que a ferramenta (knip) não vê? | 2026-11-03 |
 | [Linha de base do uso](2026-11-05-linha-de-base-do-uso.md) | Quanto custava e como se comportava o trabalho com agentes num projeto real antes das regras, e o que se vai comparar depois? | 2026-11-05 |
+| [Modelos de issue e de PR](2026-11-08-modelos-de-issue-e-de-pr.md) | Que modelos de issue e de PR o GitHub aceita, como se pede a prova sem deixá-la fugir e como se manda a segurança para um canal privado num repositório público? | 2026-11-08 |
