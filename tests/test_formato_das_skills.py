@@ -3,8 +3,10 @@
 - o `name` é igual ao nome da pasta, só tem `a-z`, algarismos e hífens, não começa nem acaba em hífen, não tem hífen
   duplo, tem até 64 caracteres e não leva as palavras reservadas `claude` e `anthropic` (a página das skills da
   plataforma e a especificação aberta, no `FONTES.md`);
+- o cabeçalho é YAML válido (lido com o `yaml`; um «: » solto numa descrição sem aspas o parte);
 - a `description` tem de 1 a 1024 caracteres e traz «Usar» e «Não usar»;
-- cada skill citada numa descrição como «é a <nome>» existe em `skills/` (só apanha essa forma, com hífen no nome);
+- cada skill citada numa descrição como «é a <nome>», com ou sem crases, existe em `skills/` (só apanha essa forma, com
+  hífen no nome);
 - o arquivo tem menos de 500 linhas;
 - o `evals/trigger-eval.json` tem pelo menos 10 casos, com `should_trigger` verdadeiro e falso.
 As funções recebem a raiz, para os casos de erro serem provados numa pasta temporária.
@@ -16,22 +18,33 @@ import tempfile
 import unittest
 from pathlib import Path
 
+try:  # primeiro de tudo: sem o PyYAML o teste falha com o texto da casa, e não se esconde num skip
+    import yaml
+except ImportError as erro:
+    raise ImportError("Falta o PyYAML: pip install pyyaml (o CI fixa a 6.0.3 no seguranca.yml).") from erro
+
 from carregar_modelos import RAIZ
 from leitura_do_repositorio import ler
 
 NOME_VALIDO = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
 PALAVRAS_RESERVADAS = ("claude", "anthropic")
-REFERENCIA_A_SKILL = re.compile(r"é a ([a-z0-9]+(?:-[a-z0-9]+)+)")
+REFERENCIA_A_SKILL = re.compile(r"é a `?([a-z0-9]+(?:-[a-z0-9]+)+)`?")
 LIMITE_DA_DESCRICAO = 1024
 LIMITE_DE_LINHAS = 500
 MINIMO_DE_CASOS = 10
 
 
+def cabecalho(texto):
+    """O cabeçalho entre os dois `---`, lido como YAML (levanta `yaml.YAMLError` se não for YAML válido); vazio se faltar."""
+    if not texto.startswith("---"):
+        return {}
+    lido = yaml.safe_load(texto.split("---")[1])
+    return lido if isinstance(lido, dict) else {}
+
+
 def campo(texto, chave):
-    """O valor de uma linha `chave: valor` do começo do arquivo, entre os dois `---`; vazio se faltar."""
-    cabecalho = texto.split("---")[1] if texto.startswith("---") else ""
-    achado = re.search(rf"^{chave}: *(.*)$", cabecalho, re.MULTILINE)
-    return achado.group(1).strip() if achado else ""
+    """O valor do campo `chave` do cabeçalho, como texto; vazio se faltar."""
+    return str(cabecalho(texto).get(chave) or "").strip()
 
 
 def erros_do_nome(pasta, nome):
@@ -74,6 +87,11 @@ def erros_do_formato(raiz):
     erros = []
     for arquivo in arquivos:
         pasta, texto = arquivo.parent.name, ler(arquivo)
+        try:
+            cabecalho(texto)
+        except yaml.YAMLError as erro:
+            erros.append(f"{pasta}: o cabeçalho não é YAML válido ({str(erro).splitlines()[0]})")
+            continue
         erros += erros_do_nome(pasta, campo(texto, "name"))
         erros += erros_da_descricao(pasta, campo(texto, "description"), nomes_das_skills)
         if len(texto.splitlines()) >= LIMITE_DE_LINHAS:
@@ -145,8 +163,34 @@ class FormatoDasSkills(unittest.TestCase):
     def test_menos_de_dez_casos_reprovam(self):
         self.assertErro(self.montar(casos=CASOS_BONS[:4]), "o mínimo é 10")
 
+    def test_skill_citada_com_crases_que_nao_existe_reprova(self):
+        self.assertErro(self.montar(descricao=DESCRICAO_BOA + " (é a `skill-que-nao-existe`)"),
+                        "«é a skill-que-nao-existe», que não existe")
+
+    def test_descricao_de_1024_caracteres_passa(self):
+        descricao = DESCRICAO_BOA + "x" * (LIMITE_DA_DESCRICAO - len(DESCRICAO_BOA))
+        self.assertEqual([], erros_do_formato(self.montar(descricao=descricao)))
+
+    def test_arquivo_de_499_linhas_passa(self):
+        # `linhas` são só as do corpo; o cabeçalho põe mais 4 (`---`, name, description, `---`)
+        self.assertEqual([], erros_do_formato(self.montar(linhas=LIMITE_DE_LINHAS - 1 - 4)))
+
     def test_arquivo_de_500_linhas_reprova(self):
-        self.assertErro(self.montar(linhas=LIMITE_DE_LINHAS), "linhas; o limite é 499")
+        self.assertErro(self.montar(linhas=LIMITE_DE_LINHAS - 4), "linhas; o limite é 499")
+
+    def test_cabecalho_que_nao_e_yaml_reprova(self):
+        self.assertErro(self.montar(descricao="Faz uma coisa: a outra. Usar quando precisar. Não usar para nada."),
+                        "o cabeçalho não é YAML válido")
+
+    def test_descricao_entre_aspas_com_dois_pontos_passa(self):
+        descricao = '"Faz uma coisa: a outra. Usar quando precisar. Não usar para nada."'
+        self.assertEqual([], erros_do_formato(self.montar(descricao=descricao)))
+
+    def test_descricao_em_bloco_do_yaml_passa(self):
+        self.assertEqual([], erros_do_formato(self.montar(descricao=">\n  " + DESCRICAO_BOA)))
+
+    def test_cabecalho_que_nao_e_um_mapa_vem_vazio(self):
+        self.assertEqual({}, cabecalho("---\n- a\n- b\n---\n"))
 
     def test_o_campo_vazio_vem_vazio(self):
         self.assertEqual("", campo("sem cabeçalho", "name"))
