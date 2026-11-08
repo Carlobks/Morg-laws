@@ -36,7 +36,7 @@ Antes de desenhar, **escreva as suposições de volume**: quantos registros, o n
 3. **Um número protagonista**, grande, com algarismos de largura fixa (`tabular-nums`). O resto é apoio. Nunca uma parede de indicadores iguais.
 4. **Cartões por seção:** poucos cartões, poucas linhas cada, ordenados pela frequência de consulta.
 5. **Permissões à vista:**
-   - **ação** sem permissão fica **desativada, com o motivo em texto visível**. Um `title` não aparece num botão desativado nem num ecrã de toque;
+   - **ação** sem permissão fica **desativada, com o motivo em texto visível**. Um `title` não aparece num botão desativado nem numa tela de toque;
    - **navegação** sem permissão ou vazia fica **visível e explica porquê**. Não se esconde nem se desativa sem explicação.
 
 **Limites vêm de medição**, não de "7 ± 2" (isso é sobre memorizar, não sobre ver) nem da lei de Hick (que manda ordenar, não cortar).
@@ -111,7 +111,7 @@ Em tablets e celulares não há hover.
 | Rótulo de um ícone | Sempre visível, nunca só no tooltip |
 | Enriquecimento puro | Hover à vontade |
 
-O que aparece no hover fica visível em ecrãs sem hover (`@media (hover: none)`).
+O que aparece no hover fica visível em telas sem hover (`@media (hover: none)`).
 
 ## 8. Botões
 
@@ -139,7 +139,7 @@ O que aparece no hover fica visível em ecrãs sem hover (`@media (hover: none)`
   - **estado:** está a acontecer.
 - **Tempos:** 200–500 ms, com um teto de 700 ms. No máximo duas ou três coisas a mexer ao mesmo tempo, e nada de bounce.
 - **Respeite o `prefers-reduced-motion`** do sistema. Com ele ligado, tira-se o movimento, mas o **sinal fica**: o estado final aparece sem a animação, nunca some. Use uma duração de `0.01ms` em vez de `none`: com `none`, o `transitionend` não dispara e o código que espera por ele fica parado.
-- **Transição de página só com opacidade.** Um `transform` cria um novo contexto de empilhamento e parte elementos `fixed` e o arrastar e largar.
+- **Transição de página só com opacidade.** Um `transform` cria um novo contexto de empilhamento e quebra elementos `fixed` e o arrastar e soltar.
 - **Navegação lenta pede retorno imediato** no elemento clicado.
 - Uma animação verifica-se pelo que **pinta** (o valor resolvido ou os píxeis entre frames), não pela variável que a alimenta.
 
