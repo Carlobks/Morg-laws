@@ -23,7 +23,7 @@ if [ ! -f "$exemplo/node_modules/.package-lock.json" ] || [ "$exemplo/package-lo
 fi
 
 echo "== Python (unittest + coverage)"
-"$py" -m coverage run --branch --include='modelos/claude/hooks/*,modelos/git/portoes/*,modelos/changelog/*,tests/dados_do_catalogo.py' -m unittest discover -s tests || {
+"$py" -m coverage run --branch --include='modelos/claude/hooks/*,modelos/git/portoes/*,modelos/changelog/*,tests/dados_do_catalogo.py,tests/verificador_do_manual.py' -m unittest discover -s tests || {
   echo "FALHOU: testes." >&2; exit 1; }
 "$py" -m coverage report --show-missing --fail-under=100 || { echo "FALHOU: cobertura abaixo de 100 %." >&2; exit 1; }
 
