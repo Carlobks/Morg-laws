@@ -1,0 +1,9 @@
+# As pessoas que o manual pode nomear (duas palavras com maiúscula seguidas, fora do início de frase). Um por linha.
+# Autores citados, o autor do manual e as três personas dos leitores simulados. Este arquivo é público.
+Carlobks
+Bia
+Davi
+Lena
+Fabio Akita
+Matt Pocock
+Christopher Alexander
