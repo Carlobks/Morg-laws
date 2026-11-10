@@ -7,7 +7,7 @@
   "05-o-ciclo-de-uma-mudanca", "06-as-regras", "07-como-se-garante", "08-quando-da-errado", "09-glossario",
   "10-pedidos-prontos", "11-como-este-manual-foi-feito")
 // O Typst não sabe se um arquivo existe: cada fase acrescenta aqui a parte que escreveu (as outras não partem a compilação).
-#let escritas = ()
+#let escritas = ("03-pedir",)
 
 #let fonte-corpo = "Libertinus Serif"
 #let fonte-titulos = "Stardos Stencil"
