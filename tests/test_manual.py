@@ -74,7 +74,28 @@ class PorTexto(ManualTemporario):
         self.assertEqual(len(self.erros(NOME, "No Codex o arquivo se chama AGENTS.\n")), 1)
         com = "No Codex vale o mesmo ([documentação](https://example.com/codex/agents)).\n"
         self.assertEqual(self.erros(NOME, com), [])
-        self.assertEqual(self.erros(NOME, "O autor ainda não usou o Codex.\n"), [])
+        self.assertEqual(self.erros(NOME, "O autor ainda não usou o Claude.\n"), [])
+
+    def test_todo_paragrafo_com_codex_pede_o_link_e_a_excecao_esta_a_vista(self):
+        for texto in ("O Codex lê o `AGENTS.md` sozinho.\n", "O Codex lê o arquivo.\n\nOutro.\n"):
+            with self.subTest(texto=texto):
+                self.assertEqual(len(self.erros(NOME, texto)), 1)
+        self.assertEqual(self.erros(NOME, "O Codex lê o [guia](https://example.com/codex/agents).\n"), [])
+        self.assertEqual(len(self.erros(NOME, "O que vale: `no Codex [x](https://example.com/codex)`.\n")), 0)
+        self.assertEqual(len(self.erros(NOME, "Veja `https://example.com/codex` no Codex.\n")), 1)
+        self.assertEqual(self.erros(NOME, "```\nno Codex\n```\n"), [])
+        frase = "O autor ainda não usou o Codex."
+        with mock.patch.object(verificador, "EXCECOES_DO_CODEX", frozenset({(NOME, frase)})):
+            self.assertEqual(self.erros(NOME, frase + "\n"), [])
+        self.assertEqual(len(self.erros(NOME, frase + "\n")), 1)
+
+    def test_pagina_ou_pag_por_extenso_reprova_e_pede_p_n(self):
+        for texto in ("Veja a página 31.\n", "Veja pág. 9.\n", "Veja as págs. 9 e 10.\n", "Veja páginas 3–5.\n"):
+            with self.subTest(texto=texto):
+                erros = self.erros(NOME, texto)
+                self.assertEqual(len(erros), 1)
+                self.assertIn("escreva p. N", erros[0])
+        self.assertEqual(self.erros(NOME, "A página inicial do site e a `página 3`.\n"), [])
 
     def test_no_codex_com_link_que_nao_e_do_codex_reprova(self):
         self.assertEqual(len(self.erros(NOME, "No Codex vale o mesmo ([doc](https://example.com/x)).\n")), 1)
@@ -142,6 +163,16 @@ class PorPar(ManualTemporario):
         erros = self.erros("manual/03-pedir.md", par("Só uma opinião."))
         self.assertEqual(len(erros), 1)
         self.assertIn("sem fonte", erros[0])
+
+    def test_texto_antes_do_primeiro_h3_do_par_reprova_e_sem_texto_passa(self):
+        solto = "## P6 X\n\n" + "palavra " * 50 + "\n\n### Na prática\n\nTexto.\n\n### Por quê e fonte\n\n[a](https://example.com)\n"
+        erros = self.erros("manual/03-pedir.md", solto)
+        self.assertEqual(len(erros), 1)
+        self.assertIn("texto antes de «### Na prática»", erros[0])
+        em_codigo = solto.replace("palavra " * 50, "```\nx\n```")
+        self.assertEqual(len(self.erros("manual/03-pedir.md", em_codigo)), 0)
+        self.assertEqual(verificador.texto_antes_do_primeiro_h3("a.md", "Q", ["", "", "### A"]), [])
+        self.assertEqual(len(verificador.texto_antes_do_primeiro_h3("a.md", "Q", ["Só texto, sem lados."])), 1)
 
     def test_par_com_pagina_do_livro_ou_decisao_com_porque_tem_fonte(self):
         self.assertEqual(self.erros("manual/03-pedir.md", par("Veja o livro (p. 165).")), [])
@@ -229,6 +260,15 @@ class PorTeto(ManualTemporario):
                      "manual/palavras-que-abrem-frase.txt"):
             with self.subTest(nome=nome):
                 self.assertEqual(self.erros(nome, "x\n" * 5000), [])
+
+    def test_imagem_so_se_acusa_pela_extensao_e_so_passa_em_imagens(self):
+        png = b"\x89PNG\r\n\x1a\n\x00\xff"
+        for nome in ("manual/outra/fluxo.png", "manual/imagens/fluxo.png"):
+            caminho = self.raiz / nome
+            caminho.parent.mkdir(parents=True, exist_ok=True)
+            caminho.write_bytes(png)
+        self.assertEqual(len(verificador.erros_do_manual(self.raiz, ["manual/outra/fluxo.png"])), 1)
+        self.assertEqual(verificador.erros_do_manual(self.raiz, ["manual/imagens/fluxo.png"]), [])
 
 
 class ManualDoRepositorio(unittest.TestCase):

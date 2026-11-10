@@ -3,7 +3,7 @@
 Já cobertos sem mudar nada: o link sem entrada no `FONTES.md`, o número de decisão e o link relativo partido
 (`test_fontes_e_pesquisas.py`, `test_caminhos_do_morg_laws.py`) e o link externo morto (o lychee no CI).
 Aqui nascem: o link solto, a página do livro sem entrada, o par e a seção sem fonte, a decisão sem porquê, a nota de
-rodapé num par, o «no Codex» sem link, os tetos por lado e por parte, o português de Portugal e a afirmação de que as
+rodapé num par, o «Codex» sem link, a «página N» por extenso, os tetos por lado e por parte, o português de Portugal e a afirmação de que as
 regras foram medidas. As funções recebem a raiz e a lista de arquivos (ou o nome e o texto), para os casos de erro
 serem provados numa pasta temporária."""
 
@@ -17,7 +17,7 @@ PASTA = "manual/"
 TETO_POR_LADO = 325  # palavras de «Na prática» e de «Por quê e fonte»; provisório, a M1b fixa-o com o primeiro par
 MOLDE = "manual/manual.typ"
 TETO_DO_MOLDE_EM_LINHAS = 150
-FORA_DO_TETO = ("manual/fontes/", "manual/pessoas-citaveis.txt", "manual/nomes-citaveis.txt",
+FORA_DO_TETO = ("manual/fontes/", "manual/imagens/", "manual/pessoas-citaveis.txt", "manual/nomes-citaveis.txt",
                 "manual/palavras-que-abrem-frase.txt")
 TETOS_POR_PARTE = {  # palavras da prosa (fora de blocos de código) por parte; estimativa, a rever na M1b
     "manual/README.md": 500, "manual/00-antes-de-comecar.md": 1100, "manual/01-o-que-e-o-morg-laws.md": 1000,
@@ -27,13 +27,15 @@ TETOS_POR_PARTE = {  # palavras da prosa (fora de blocos de código) por parte; 
     "manual/10-pedidos-prontos.md": 1800, "manual/11-como-este-manual-foi-feito.md": 1000}
 PARTES_EM_TEXTO_SEGUIDO = ("00", "01", "06", "07", "10", "11")  # prefixos do nome; o glossário (09) não pede fonte
 EXCECOES_DE_SECAO = frozenset({("manual/06-as-regras.md", "O índice das skills")})  # (arquivo, título) sem fonte
-ORDEM_DO_PAR = ["Na prática", "Por quê e fonte"]
+EXCECOES_DO_CODEX = frozenset()  # (arquivo, primeiros 40 caracteres do parágrafo) que cita o Codex sem link
+ORDEM_DO_PAR =["Na prática", "Por quê e fonte"]
 
 CRASES = re.compile(r"`[^`]*`")
 LINK_MARCADO = re.compile(r"\[[^\]]*\]\([^)\s]*\)")
 LINK_COM_ENDERECO = re.compile(r"\]\(https?://")
 LINK_DO_CODEX = re.compile(r"\]\(https?://[^)\s]*codex[^)\s]*\)", re.IGNORECASE)
-NO_CODEX = re.compile(r"\bno Codex\b", re.IGNORECASE)
+CODEX = re.compile(r"\bCodex\b")
+PAGINA_POR_EXTENSO = re.compile(r"\b(?:páginas?|págs?\.)\s*\d", re.IGNORECASE)
 PAR_DE_PROCEDIMENTO = re.compile(r"P\d+\b")
 CITACAO_DE_PAGINA = re.compile(r"(?<![\w.])pp?\. ?(\d+(?:\s?[–-]\s?\d+)?(?:(?:,\s?| e )\d+(?:\s?[–-]\s?\d+)?)*)")
 ITEM_DE_PAGINA = re.compile(r"\d+(?:\s?[–-]\s?\d+)?")
@@ -124,6 +126,17 @@ def notas_de_rodape_num_par(nome, titulo, linhas):
     return [f"{nome}: «{titulo}»: nota de rodapé num par — ponha a fonte em link"] * any("[^" in l for l in linhas)
 
 
+def texto_antes_do_primeiro_h3(nome, titulo, linhas):
+    """O texto entre o `## P…` e o primeiro `###` não tem lado no PDF: reprova (só a prosa conta, não o código)."""
+    antes = []
+    for linha in linhas:
+        if linha.startswith("### "):
+            break
+        antes.append(linha)
+    return [f"{nome}: «{titulo}»: texto antes de «### Na prática» — ponha-o dentro de um dos dois lados"] \
+        * bool(" ".join(prosa(antes)).strip())
+
+
 def lados_do_par(nome, titulo, linhas):
     """A ordem «Na prática» → «Por quê e fonte», o teto de palavras de cada lado e a fonte da teoria."""
     lados = linhas_por_secao("\n".join(linhas), 3)
@@ -139,7 +152,8 @@ def pares_do_texto(nome, texto):
     erros = []
     for titulo, linhas in linhas_por_secao(texto, 2):
         if PAR_DE_PROCEDIMENTO.match(titulo):
-            erros += notas_de_rodape_num_par(nome, titulo, linhas) + lados_do_par(nome, titulo, linhas)
+            erros += (notas_de_rodape_num_par(nome, titulo, linhas) + texto_antes_do_primeiro_h3(nome, titulo, linhas)
+                      + lados_do_par(nome, titulo, linhas))
     return erros
 
 
@@ -159,9 +173,16 @@ def decisoes_sem_porque(nome, texto):
 
 
 def codex_sem_link(nome, texto):
-    """Um parágrafo com «no Codex» leva um link para a documentação dele (só a presença; a fonte entra no FONTES.md)."""
-    return [f"{nome}: «no Codex» sem link para a documentação do Codex no mesmo parágrafo — «{p.strip()[:40]}…»"
-            for p in paragrafos(texto) if NO_CODEX.search(p) and not LINK_DO_CODEX.search(p)]
+    """Todo parágrafo de prosa com «Codex» leva um link para a documentação dele (só a presença; a fonte entra no
+    FONTES.md). As exceções, (arquivo, início do parágrafo), estão em EXCECOES_DO_CODEX."""
+    return [f"{nome}: «Codex» sem link para a documentação do Codex no mesmo parágrafo — «{p.strip()[:40]}…»"
+            for p in paragrafos(texto_de_prosa(texto))
+            if CODEX.search(p) and not LINK_DO_CODEX.search(p) and (nome, p.strip()[:40]) not in EXCECOES_DO_CODEX]
+
+
+def pagina_por_extenso(nome, texto):
+    """«página 31» e «pág. 9» não se leem como página do livro: o manual escreve «p. N»."""
+    return [f"{nome}: «{achado.group()}» — escreva p. N" for achado in PAGINA_POR_EXTENSO.finditer(texto_de_prosa(texto))]
 
 
 def blocos_do_paragrafo(paragrafo):
@@ -199,12 +220,12 @@ def medido_sem_negacao(nome, texto):
 
 
 def teto_de_um_arquivo(raiz, nome):
-    """O arquivo dentro do teto: o molde em linhas, cada parte em palavras; o que não tem teto reprova."""
-    linhas = ler(raiz / nome).splitlines()
+    """O arquivo dentro do teto: o molde em linhas, cada parte em palavras; o que não tem teto reprova, sem ser lido
+    (só o `.md` e o `.typ` com teto se leem; uma imagem acusa-se pela extensão)."""
     if nome == MOLDE:
-        medida, teto, unidade = len(linhas), TETO_DO_MOLDE_EM_LINHAS, "linhas"
+        medida, teto, unidade = len(ler(raiz / nome).splitlines()), TETO_DO_MOLDE_EM_LINHAS, "linhas"
     elif nome in TETOS_POR_PARTE:
-        medida, teto, unidade = palavras_da_prosa(linhas), TETOS_POR_PARTE[nome], "palavras"
+        medida, teto, unidade = palavras_da_prosa(ler(raiz / nome).splitlines()), TETOS_POR_PARTE[nome], "palavras"
     else:
         return [f"{nome}: arquivo fora de qualquer teto — ponha-o em TETOS_POR_PARTE ou em FORA_DO_TETO"]
     return [f"{nome}: {medida} {unidade} (teto {teto})"] * (medida > teto)
@@ -218,7 +239,7 @@ def erros_de_teto_por_parte(raiz, arquivos):
 
 
 VERIFICACOES_DO_TEXTO = (links_soltos, pares_do_texto, secoes_sem_fonte, decisoes_sem_porque, codex_sem_link,
-                         medido_sem_negacao, lingua_do_brasil.erros_de_lingua)
+                         pagina_por_extenso, medido_sem_negacao, lingua_do_brasil.erros_de_lingua)
 
 
 def erros_do_manual(raiz, arquivos):
