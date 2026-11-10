@@ -76,6 +76,12 @@ class PorTexto(ManualTemporario):
         self.assertEqual(self.erros(NOME, com), [])
         self.assertEqual(self.erros(NOME, "O autor ainda não usou o Codex.\n"), [])
 
+    def test_no_codex_com_link_que_nao_e_do_codex_reprova(self):
+        self.assertEqual(len(self.erros(NOME, "No Codex vale o mesmo ([doc](https://example.com/x)).\n")), 1)
+
+    def test_porque_antes_da_decisao_no_mesmo_paragrafo_reprova(self):
+        self.assertEqual(len(self.erros(NOME, f"Porquê: antes. Foi {VOZES}.\n")), 1)
+
     def test_so_pt_br(self):
         erros = self.erros(NOME, "Abra o ficheiro.\n")
         self.assertEqual(len(erros), 1)
@@ -98,6 +104,9 @@ class AfirmacaoDeMedicao(ManualTemporario):
         self.assertEqual(self.erros(NOME, "À medida que o contexto enche, a atenção cai.\n"), [])
         self.assertEqual(self.erros(NOME, "A regra é curta e as skills são claras.\n"), [])
         self.assertEqual(len(self.erros(NOME, "Não é um número. As regras foram medidas.\n")), 1)
+
+    def test_a_negacao_depois_do_verbo_nao_salva(self):
+        self.assertEqual(len(self.erros(NOME, "As regras foram medidas, não só lidas.\n")), 1)
 
 
 class PorPar(ManualTemporario):
@@ -136,6 +145,13 @@ class PorPar(ManualTemporario):
         self.assertEqual(len(erros), 1)
         self.assertIn("«Por quê e fonte» tem", erros[0])
         self.assertEqual(self.erros("manual/03-pedir.md", com_cinco), [])
+
+    def test_teto_por_lado_vale_tambem_para_a_pratica(self):
+        longa = "## P6 X\n\n### Na prática\n\num dois três quatro cinco\n\n### Por quê e fonte\n\n[a](https://example.com/x)\n"
+        with mock.patch.object(verificador, "TETO_POR_LADO", 4):
+            erros = self.erros("manual/03-pedir.md", longa)
+        self.assertEqual(len(erros), 1)
+        self.assertIn("«Na prática» tem", erros[0])
 
     def test_o_teto_por_lado_provisorio_e_325(self):
         self.assertEqual(verificador.TETO_POR_LADO, 325)

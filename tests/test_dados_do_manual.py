@@ -92,6 +92,10 @@ class SituacaoDoManual(base.RepositorioTemporario):
         self.preparar("# Fontes\n", "FONTES.md")
         self.assertEqual(self.nomes(indice), [ARQUIVO])
 
+    def test_a_lista_publica_de_palavras_mudada_rele_o_manual_todo(self):
+        self.preparar("# lista\n", catalogo.PALAVRAS)
+        self.assertEqual(self.nomes({"MORG_LER_DO_INDICE": "1"}), [ARQUIVO])
+
     def test_o_disco_le_a_arvore_com_os_arquivos_novos_e_so_os_md(self):
         self.preparar("x\n", "manual/fontes/licenca.txt")
         base.escrever(self.pasta / "manual" / "nova.md", f"número {NUMERO}\n")
