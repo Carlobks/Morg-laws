@@ -37,9 +37,12 @@ PAR_DE_PROCEDIMENTO = re.compile(r"P\d+\b")
 CITACAO_DE_PAGINA = re.compile(r"(?<![\w.])pp?\. ?(\d+(?:\s?[–-]\s?\d+)?(?:(?:,\s?| e )\d+(?:\s?[–-]\s?\d+)?)*)")
 ITEM_DE_PAGINA = re.compile(r"\d+(?:\s?[–-]\s?\d+)?")
 DECISAO_DO_PO = re.compile(r"vozes da cabeça de Carlobks \(decisão de \d{4}-\d\d-\d\d\)")
-SENTENCA = re.compile(r"(?<=[.!?])\s+|\n")
+SENTENCA = re.compile(r"(?<=[.!?])(?<!\bp\.)(?<!\bpp\.)\s+")
+ABRE_BLOCO = re.compile(r"\s*(?:[-*+]\s|\d+[.)]\s|\||#)")
+DE_CITACAO = re.compile(r"^\s*(?:>\s*)+")
+ORACAO = re.compile(r"[:;]")
 AFIRMA_MEDICAO = re.compile(r"\b(?:medid|testad|validad|comprovad|provad)[oa]s?\b", re.IGNORECASE)
-SOBRE_AS_REGRAS = re.compile(r"\bregras?\b|\bo Morg-laws\b", re.IGNORECASE)
+SOBRE_AS_REGRAS = re.compile(r"\bregras?\b|\b[dn]?o Morg-laws\b|\bskills?\b", re.IGNORECASE)
 NEGACAO = re.compile(r"\b(?:não|nunca|nenhum|nenhuma)\b", re.IGNORECASE)
 
 
@@ -160,13 +163,36 @@ def codex_sem_link(nome, texto):
             for p in paragrafos(texto) if NO_CODEX.search(p) and not LINK_DO_CODEX.search(p)]
 
 
+def blocos_do_paragrafo(paragrafo):
+    """As linhas de um parágrafo juntas em blocos: só uma linha de continuação se junta à anterior; um item de lista,
+    uma linha de tabela, um título ou uma citação nova abrem bloco novo."""
+    blocos, citacao_antes = [], False
+    for linha in paragrafo.splitlines():
+        limpa, e_citacao = DE_CITACAO.sub("", linha), linha.lstrip().startswith(">")
+        if not blocos or ABRE_BLOCO.match(limpa) or blocos[-1].startswith("#") or (e_citacao and not citacao_antes):
+            blocos.append(limpa.strip())
+        else:
+            blocos[-1] += " " + limpa.strip()
+        citacao_antes = e_citacao
+    return blocos
+
+
+def frases_do_texto(texto):
+    """As frases da prosa: a quebra de linha não parte a frase; o ponto de «p.» e «pp.» também não."""
+    return [frase for paragrafo in paragrafos(texto_de_prosa(texto)) for bloco in blocos_do_paragrafo(paragrafo)
+            for frase in SENTENCA.split(bloco)]
+
+
 def medido_sem_negacao(nome, texto):
-    """Nenhum texto diz que as regras foram medidas: «regra(s)» ou «o Morg-laws» com um verbo de medição na mesma
-    frase reprova, a menos que haja não, nunca ou nenhum antes do verbo."""
+    """Nenhum texto diz que as regras foram medidas: «regra(s)», «skills» ou «o/do/no Morg-laws» com um verbo de
+    medição na mesma frase reprova, a menos que haja não, nunca ou nenhum antes do verbo, na mesma oração (sem «:» nem
+    «;» no meio). O resto fica com a leitura do Davi: a negação que não nega o verbo («as regras que não mudam foram
+    medidas») e o verbo em outra forma («nós medimos as regras») passam."""
     erros = []
-    for frase in SENTENCA.split(texto_de_prosa(texto)):
+    for frase in frases_do_texto(texto):
         verbo = AFIRMA_MEDICAO.search(frase)
-        if verbo and SOBRE_AS_REGRAS.search(frase) and not NEGACAO.search(frase[:verbo.start()]):
+        oracao = ORACAO.split(frase[:verbo.start()])[-1] if verbo else ""
+        if verbo and SOBRE_AS_REGRAS.search(frase) and not NEGACAO.search(oracao):
             erros.append(f"{nome}: afirma que as regras foram medidas, testadas ou provadas — «{frase.strip()[:60]}»")
     return erros
 

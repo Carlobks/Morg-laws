@@ -105,6 +105,30 @@ class AfirmacaoDeMedicao(ManualTemporario):
         self.assertEqual(self.erros(NOME, "A regra é curta e as skills são claras.\n"), [])
         self.assertEqual(len(self.erros(NOME, "Não é um número. As regras foram medidas.\n")), 1)
 
+    def test_a_ressalva_quebrada_em_linhas_passa_e_a_afirmacao_quebrada_reprova(self):
+        ressalva = ("> **A medição paga não foi feita.** As tentativas nunca correram, por decisão do dono: a validação\n"
+                    "> das regras passa a ser pelo uso real. Nenhum resultado\n"
+                    "> deste banco pode ser apresentado como medido, e nenhum documento pode dizer que as regras\n"
+                    "> foram medidas.\n")
+        self.assertEqual(self.erros(NOME, ressalva), [])
+        self.assertEqual(len(self.erros(NOME, "As regras do Morg-laws foram\nmedidas em 12 casos.\n")), 1)
+        self.assertEqual(len(verificador.medido_sem_negacao(NOME, "A regra (veja p. 3) foi medida.\n")), 1)
+
+    def test_item_de_lista_linha_de_tabela_e_titulo_abrem_frase_nova(self):
+        for texto in ("- Nunca rode o hook sem ler\n- As regras foram testadas em 12 casos\n",
+                      "1. Nunca rode o hook\n2. As regras foram testadas\n",
+                      "| Não se mediu | x |\n| As regras foram medidas | y |\n",
+                      "# Nunca\nAs regras foram medidas.\n", "> Nunca isto.\n\n> As regras foram medidas.\n"):
+            with self.subTest(texto=texto):
+                self.assertEqual(len(self.erros(NOME, texto)), 1)
+
+    def test_a_negacao_so_vale_na_mesma_oracao_e_o_morg_laws_e_as_skills_contam(self):
+        for texto in ("Nunca se esqueça: as regras foram medidas.\n", "Cada regra tem o seu teste; o código testado passa.\n",
+                      "As skills do Morg-laws foram testadas.\n", "No Morg-laws, a skill foi validada.\n"):
+            with self.subTest(texto=texto):
+                self.assertEqual(len(self.erros(NOME, texto)), 1)
+        self.assertEqual(self.erros(NOME, "As skills nunca foram medidas.\n"), [])
+
     def test_a_negacao_depois_do_verbo_nao_salva(self):
         self.assertEqual(len(self.erros(NOME, "As regras foram medidas, não só lidas.\n")), 1)
 
