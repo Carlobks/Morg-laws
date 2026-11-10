@@ -17,7 +17,8 @@ PASTA = "manual/"
 TETO_POR_LADO = 325  # palavras de «Na prática» e de «Por quê e fonte»; provisório, a M1b fixa-o com o primeiro par
 MOLDE = "manual/manual.typ"
 TETO_DO_MOLDE_EM_LINHAS = 150
-FORA_DO_TETO = ("manual/fontes/", "manual/pessoas-citaveis.txt")
+FORA_DO_TETO = ("manual/fontes/", "manual/pessoas-citaveis.txt", "manual/nomes-citaveis.txt",
+                "manual/palavras-que-abrem-frase.txt")
 TETOS_POR_PARTE = {  # palavras da prosa (fora de blocos de código) por parte; estimativa, a rever na M1b
     "manual/README.md": 500, "manual/00-antes-de-comecar.md": 1100, "manual/01-o-que-e-o-morg-laws.md": 1000,
     "manual/02-instalar.md": 3500, "manual/03-pedir.md": 2800, "manual/04-sessoes.md": 5400,

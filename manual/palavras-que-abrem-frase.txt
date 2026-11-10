@@ -1,0 +1,17 @@
+# As palavras comuns que abrem uma frase, um item de lista ou uma célula de tabela e vêm antes de um nome técnico
+# («Leia AGENTS», «Abra Typst»). Uma por linha, em minúsculas, uma palavra só. A lista pública de palavras
+# (tests/palavras-com-maiuscula.txt) já vale e não muda; aqui entra só o que lhe falta, em geral um imperativo.
+# Nunca entra um nome de pessoa. Este arquivo é público.
+abra
+apague
+cole
+confira
+copie
+crie
+depois
+escreva
+instale
+leia
+rode
+use
+veja

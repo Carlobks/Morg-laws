@@ -18,11 +18,14 @@ import dados_do_catalogo as catalogo
 
 PASTA = "manual"
 PESSOAS = "manual/pessoas-citaveis.txt"
+NOMES_CITAVEIS = "manual/nomes-citaveis.txt"
+PALAVRAS_QUE_ABREM = "manual/palavras-que-abrem-frase.txt"
 FONTES = "FONTES.md"
 Conteudo = namedtuple("Conteudo", "origem texto")
 ALVO_DE_LINK = re.compile(r"\]\([^)\s]*\)")
 ENDERECO = re.compile(r"https?://[^\s<>()\[\]`\"'*|]+", re.IGNORECASE)
-SEQUENCIA = re.compile(r"(?<![\w-])[A-ZÀ-Ý][\wà-ÿ'’-]+(?:[  ]+[A-ZÀ-Ý][\wà-ÿ'’-]+)+")
+PARTICULAS = frozenset({"da", "de", "do", "das", "dos"})
+SEQUENCIA = re.compile(r"(?<![\w-])[A-ZÀ-Ý][\wà-ÿ'’-]+(?:[  ]+(?:(?:da|de|do|das|dos)[  ]+)?[A-ZÀ-Ý][\wà-ÿ'’-]+)+")
 DICA_DE_ARQUIVO = "domínio (se for nome de arquivo, ponha em crases)"
 
 
@@ -45,33 +48,46 @@ def sem_o_aceito(corrida, aceitos):
     return corrida.split()
 
 
-def nomes_de_pessoas(texto, aceitos):
-    """[(linha, 'nome de pessoa', trecho)]: duas ou mais palavras com maiúscula, fora do início de frase, não aceitas."""
+def palavras_do_nome(corrida, antes, abrem):
+    """As palavras da corrida que contam: nenhuma se forem todas em maiúsculas (um título, «SEM DADOS REAIS»); sem a
+    primeira, no início de frase, se ela abre frase (comum ou da lista do manual) ou se a corrida tem três ou mais.
+    Custo: um nome escrito todo em maiúsculas («MARIA SOUZA») passa; no CI só este detector o veria."""
+    palavras = corrida.split()
+    contadas = [palavra for palavra in palavras if palavra not in PARTICULAS]
+    if all(palavra.isupper() for palavra in contadas):
+        return []
+    abre = catalogo._abre_frase(antes) and (len(contadas) >= 3 or contadas[0].lower() in abrem)
+    return palavras[1:] if abre else palavras
+
+
+def nomes_de_pessoas(texto, aceitos, abrem=frozenset()):
+    """[(linha, 'nome de pessoa', trecho)]: duas ou mais palavras com maiúscula, não aceitas (as partículas da, de, do,
+    das e dos não contam), sem a palavra que abre a frase."""
     achados = []
     for numero, linha in enumerate(texto.splitlines(), 1):
         for corrida in SEQUENCIA.finditer(linha):
-            palavras = corrida.group(0).split()
-            palavras = palavras[1:] if catalogo._abre_frase(linha[:corrida.start()]) else palavras
-            if len(palavras) >= 2 and sem_o_aceito(" ".join(palavras), aceitos):
+            palavras = palavras_do_nome(corrida.group(0), linha[:corrida.start()], abrem)
+            contadas = [palavra for palavra in palavras if palavra not in PARTICULAS]
+            if len(contadas) >= 2 and [p for p in sem_o_aceito(" ".join(palavras), aceitos) if p not in PARTICULAS]:
                 achados.append((numero, "nome de pessoa", " ".join(palavras)))
     return achados
 
 
-def dados_do_manual(texto, aceitos, dominios):
+def dados_do_manual(texto, aceitos, dominios, abrem=frozenset()):
     """Todos os dados do texto por linha: o que o catálogo detecta, com o domínio dos arquivos explicado, e os nomes."""
     limpo = ALVO_DE_LINK.sub("]", texto)
     fora_nomes = [(n, DICA_DE_ARQUIVO if tipo == "domínio" else tipo, t)
                   for n, tipo, t in catalogo.dados_fora_nomes(limpo, dominios)]
-    return sorted(fora_nomes + nomes_de_pessoas(limpo, aceitos), key=lambda achado: achado[0])
+    return sorted(fora_nomes + nomes_de_pessoas(limpo, aceitos, abrem), key=lambda achado: achado[0])
 
 
 def problemas(conteudos, situacao, termos, ambiente=os.environ):
     """As mensagens de tudo o que não pode estar no manual; vazia se estiver limpo."""
-    aceitos, dominios = situacao
+    aceitos, dominios, abrem = situacao
     mensagens = [f"lista negra: o termo n.º {n} não compila em Python (classe POSIX ou sintaxe só do grep -E); reescreva-o"
                  for n in catalogo.termos_que_nao_compilam(termos)]
     for c in conteudos:
-        achados = dados_do_manual(c.texto, aceitos, dominios) + catalogo.termos_no_texto(c.texto, termos)
+        achados = dados_do_manual(c.texto, aceitos, dominios, abrem) + catalogo.termos_no_texto(c.texto, termos)
         mensagens += [catalogo.mensagem(c.origem, achado, ambiente) for achado in achados]
     return list(dict.fromkeys(mensagens))
 
@@ -96,11 +112,12 @@ def ler_do_disco(raiz, caminho):
 
 
 def md_do_indice(raiz):
-    """Os `.md` preparados de `manual/`; se a lista de pessoas, o FONTES.md ou a lista pública mudou, todos."""
+    """Os `.md` preparados de `manual/`; se uma das listas (pessoas, nomes, palavras que abrem frase, a lista pública)
+    ou o FONTES.md mudou, todos."""
     mudados = _saida_git(raiz, "diff", "--cached", "--name-only", "-z", "--diff-filter=ACMR", "--",
                          PASTA, FONTES, catalogo.PALAVRAS)
     todos = _saida_git(raiz, "ls-files", "-z", "--", PASTA)
-    relido = any(c in mudados.split("\0") for c in (PESSOAS, FONTES, catalogo.PALAVRAS))
+    relido = any(c in mudados.split("\0") for c in (PESSOAS, NOMES_CITAVEIS, PALAVRAS_QUE_ABREM, FONTES, catalogo.PALAVRAS))
     return _nomes_dos_md(todos if relido else mudados)
 
 
@@ -110,9 +127,11 @@ def md_do_disco(raiz):
 
 
 def situacao_do_manual(raiz, ambiente=os.environ):
-    """([Conteudo], (nomes aceitos, domínios aceitos)): o índice no pre-commit (MORG_LER_DO_INDICE=1), o disco no resto."""
+    """([Conteudo], (nomes aceitos, domínios aceitos, palavras que abrem frase)): o índice no pre-commit
+    (MORG_LER_DO_INDICE=1), o disco no resto."""
     ler, md = (ler_do_indice, md_do_indice) if ambiente.get("MORG_LER_DO_INDICE") == "1" else (ler_do_disco, md_do_disco)
-    publicos = catalogo.ler_palavras(ler(raiz, catalogo.PALAVRAS))[1]
-    aceitos = pessoas_citaveis(ler(raiz, PESSOAS)) | publicos
+    comuns, publicos, _ = catalogo.ler_palavras(ler(raiz, catalogo.PALAVRAS))
+    aceitos = pessoas_citaveis(ler(raiz, PESSOAS)) | pessoas_citaveis(ler(raiz, NOMES_CITAVEIS)) | publicos
+    abrem = comuns | {palavra.lower() for palavra in pessoas_citaveis(ler(raiz, PALAVRAS_QUE_ABREM))}
     conteudos = [Conteudo(nome, ler(raiz, nome)) for nome in md(raiz)]
-    return conteudos, (aceitos, dominios_do_fontes(ler(raiz, FONTES)))
+    return conteudos, (aceitos, dominios_do_fontes(ler(raiz, FONTES)), abrem)

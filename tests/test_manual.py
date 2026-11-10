@@ -225,7 +225,8 @@ class PorTeto(ManualTemporario):
         for nome in ("manual/zzz.md", "manual/solto.txt"):
             with self.subTest(nome=nome):
                 self.assertEqual(len(self.erros(nome, "x\n")), 1)
-        for nome in ("manual/fontes/licenca.txt", "manual/pessoas-citaveis.txt"):
+        for nome in ("manual/fontes/licenca.txt", "manual/pessoas-citaveis.txt", "manual/nomes-citaveis.txt",
+                     "manual/palavras-que-abrem-frase.txt"):
             with self.subTest(nome=nome):
                 self.assertEqual(self.erros(nome, "x\n" * 5000), [])
 

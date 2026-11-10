@@ -1,0 +1,5 @@
+# Os produtos e as obras que o manual pode nomear (duas palavras com maiúscula seguidas). Um por linha.
+# Só entra o que é público: o nome de um produto, de uma ferramenta ou de uma obra (livro, artigo, documentação).
+# Nunca entra o nome de uma pessoa (essas vão em pessoas-citaveis.txt) nem de uma empresa ou de um cliente.
+# Este arquivo é público.
+Claude Code
