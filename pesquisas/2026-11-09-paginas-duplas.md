@@ -35,6 +35,8 @@ Lidas em 2026-11-09.
   https://developer.chrome.com/blog/print-margins.
 - **WeasyPrint, «API Reference», seção «Supported Features»** —
   https://doc.courtbouillon.org/weasyprint/stable/api_reference.html.
+- **WeasyPrint, «First Steps», instalação** —
+  https://doc.courtbouillon.org/weasyprint/stable/first_steps.html.
 
 ## O que se mediu
 
@@ -42,8 +44,7 @@ Lidas em 2026-11-09.
    Nenhuma das duas diz de que lado. Os anúncios de livreiros dizem que a peça vai à direita e as notas à esquerda,
    mas isso não foi conferido num exemplar. A página dupla aqui é um **auxílio de leitura**: as duas páginas falam das
    mesmas linhas, uma é o texto e a outra explica palavras.
-2. **Loeb.** A fonte secundária diz que o original grego ou latino fica à esquerda e a tradução à direita, para ler
-   um lado e conferir no outro. É o mesmo texto duas vezes, em duas línguas; também é auxílio de leitura, não de
+2. **Loeb.** A fonte secundária diz que o original grego ou latino fica à esquerda e a tradução à direita. É o mesmo texto duas vezes, em duas línguas; também é auxílio de leitura, não de
    ensino.
 3. **A Pattern Language.** Pela fonte secundária, cada padrão segue sempre a mesma ordem: uma visualização
    (opcional), o resumo do problema, a análise, a solução, que começa por «Therefore» («portanto»), e os padrões que
@@ -103,7 +104,7 @@ seguinte (conferir só o início deixaria passar uma teoria que transborda). Not
 doc do `footnote` diz que uma nota pode partir-se entre páginas. Nada disto foi corrido: prova-se no primeiro par
 montado. No CSS de
 impressão, os pares pedem o WeasyPrint (os navegadores ainda não dão notas de rodapé nem o número da página no
-sumário), que no Windows sai como executável à parte ou pelo MSYS2.
+sumário), que no Windows sai como executável à parte, ou pelo `pip` com o Pango do MSYS2.
 
 **A forma mais simples, se o par não couber ou não servir:** um procedimento por seção, em texto seguido, sempre na
 mesma ordem — primeiro «Na prática», depois «Por quê e fonte» —, com o mesmo teste de que nenhum par fica sem fonte.
