@@ -5,3 +5,5 @@ __pycache__/
 node_modules/
 # A cache do lychee, no CI e na prova local.
 .lycheecache
+# O PDF do manual: gerado a partir de manual/manual.typ, nunca versionado.
+manual/*.pdf
