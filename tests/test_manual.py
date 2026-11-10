@@ -193,23 +193,40 @@ class PorPar(ManualTemporario):
         self.assertIn("nota de rodapé", erros[0])
         self.assertEqual(verificador.notas_de_rodape_num_par("a.md", "Q", ["Texto sem nota."]), [])
 
-    def test_teto_por_lado(self):
+    def test_teto_da_teoria(self):
         com_cinco = par("um dois três quatro [cinco](https://example.com/x)")
-        with mock.patch.object(verificador, "TETO_POR_LADO", 4):
+        with mock.patch.object(verificador, "TETO_DA_TEORIA", 4):
             erros = self.erros("manual/03-pedir.md", com_cinco)
         self.assertEqual(len(erros), 1)
-        self.assertIn("«Por quê e fonte» tem", erros[0])
+        self.assertIn("«Por quê e fonte» tem 5 palavras (teto 4)", erros[0])
         self.assertEqual(self.erros("manual/03-pedir.md", com_cinco), [])
 
-    def test_teto_por_lado_vale_tambem_para_a_pratica(self):
+    def test_teto_da_pratica(self):
         longa = "## P6 X\n\n### Na prática\n\num dois três quatro cinco\n\n### Por quê e fonte\n\n[a](https://example.com/x)\n"
-        with mock.patch.object(verificador, "TETO_POR_LADO", 4):
+        with mock.patch.object(verificador, "TETO_DA_PRATICA", 4):
             erros = self.erros("manual/03-pedir.md", longa)
         self.assertEqual(len(erros), 1)
-        self.assertIn("«Na prática» tem", erros[0])
+        self.assertIn("«Na prática» tem 5 palavras (teto 4)", erros[0])
+        self.assertEqual(self.erros("manual/03-pedir.md", longa), [])
 
-    def test_o_teto_por_lado_provisorio_e_325(self):
-        self.assertEqual(verificador.TETO_POR_LADO, 325)
+    def test_cada_lado_tem_o_seu_teto(self):
+        longa = "## P6 X\n\n### Na prática\n\num dois três quatro cinco\n\n### Por quê e fonte\n\n[a](https://example.com/x)\n"
+        with mock.patch.object(verificador, "TETO_DA_TEORIA", 4):
+            self.assertEqual(self.erros("manual/03-pedir.md", longa), [])
+        com_cinco = par("um dois três quatro [cinco](https://example.com/x)")
+        with mock.patch.object(verificador, "TETO_DA_PRATICA", 4):
+            self.assertEqual(self.erros("manual/03-pedir.md", com_cinco), [])
+
+    def test_os_tetos_por_lado_sao_250_e_400(self):
+        self.assertEqual((verificador.TETO_DA_PRATICA, verificador.TETO_DA_TEORIA), (250, 400))
+
+    def test_os_tetos_dos_procedimentos_seguem_a_conta_de_n_pares(self):
+        pares = {"02-instalar": 5, "03-pedir": 4, "04-sessoes": 8, "05-o-ciclo-de-uma-mudanca": 5,
+                 "08-quando-da-errado": 2}
+        for parte, n in pares.items():
+            with self.subTest(parte=parte):
+                esperado = n * (verificador.TETO_DA_PRATICA + verificador.TETO_DA_TEORIA) + 200
+                self.assertEqual(verificador.TETOS_POR_PARTE[f"manual/{parte}.md"], esperado)
 
     def test_o_molde_dentro_de_um_bloco_de_codigo_nao_conta_nas_palavras(self):
         molde = "```\n" + "palavra " * 400 + "\n```\n"

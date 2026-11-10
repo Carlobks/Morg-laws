@@ -15,16 +15,20 @@ import test_fontes_e_pesquisas as fontes
 from leitura_do_repositorio import ler
 
 PASTA_DO_MANUAL = "manual/"
-TETO_POR_LADO = 325  # palavras de «Na prática» e de «Por quê e fonte»; medido com o par P6 compilado: 342 na prática (com
-# 8 linhas de código em dois blocos) e 677 na teoria cabem numa página de 6 x 9,6 pol.; o lado que limita é a prática, e 325 fica abaixo
+# Palavras de cada lado do par, abaixo do que cabe numa página de 6 x 9,6 pol. O método: encher um lado do P6 com prosa
+# real do repositório (parágrafos de 60, 120 e 1000 palavras), compilar com o comando do README e achar o maior
+# enchimento que sai 0. A prática leva o código (9 linhas no Markdown, 14 impressas) e cabe de 251 a 334 palavras; a
+# teoria, sem código, de 431 a 603. Os tetos ficam abaixo do menor: o `panic` do molde é a rede, estes são o aviso cedo.
+TETO_DA_PRATICA = 250
+TETO_DA_TEORIA = 400
 MOLDE = "manual/manual.typ"
 TETO_DO_MOLDE_EM_LINHAS = 150
 FORA_DO_TETO = ("manual/fontes/", "manual/imagens/", "manual/pessoas-citaveis.txt", "manual/nomes-citaveis.txt",
                 "manual/palavras-que-abrem-frase.txt")
-TETOS_POR_PARTE = {  # palavras da prosa (fora de blocos de código) por parte; estimativa, a rever na M1b
+TETOS_POR_PARTE = {  # palavras da prosa (fora de blocos de código) por parte; com pares: n × (250 + 400) + 200
     "manual/README.md": 500, "manual/00-antes-de-comecar.md": 1100, "manual/01-o-que-e-o-morg-laws.md": 1000,
-    "manual/02-instalar.md": 3500, "manual/03-pedir.md": 2800, "manual/04-sessoes.md": 5400,
-    "manual/05-o-ciclo-de-uma-mudanca.md": 3500, "manual/06-as-regras.md": 2000,
+    "manual/02-instalar.md": 3450, "manual/03-pedir.md": 2800, "manual/04-sessoes.md": 5400,
+    "manual/05-o-ciclo-de-uma-mudanca.md": 3450, "manual/06-as-regras.md": 2000,
     "manual/07-como-se-garante.md": 2700, "manual/08-quando-da-errado.md": 1500, "manual/09-glossario.md": 1800,
     "manual/10-pedidos-prontos.md": 1800, "manual/11-como-este-manual-foi-feito.md": 1000}
 PARTES_EM_TEXTO_SEGUIDO = ("00", "01", "06", "07", "10", "11")  # prefixos do nome; o glossário (09) não pede fonte
@@ -143,8 +147,9 @@ def lados_do_par(nome, titulo, linhas):
     lados = linhas_por_secao("\n".join(linhas), 3)
     if [lado for lado, _ in lados] != ORDEM_DO_PAR:
         return [f"{nome}: «{titulo}»: precisa de «### Na prática» e depois «### Por quê e fonte»"]
-    erros = [f"{nome}: «{titulo}»: «{lado}» tem {n} palavras (teto {TETO_POR_LADO})"
-             for lado, corpo in lados if (n := palavras_da_prosa(corpo)) > TETO_POR_LADO]
+    tetos = (TETO_DA_PRATICA, TETO_DA_TEORIA)
+    erros = [f"{nome}: «{titulo}»: «{lado}» tem {n} palavras (teto {teto})"
+             for (lado, corpo), teto in zip(lados, tetos) if (n := palavras_da_prosa(corpo)) > teto]
     return erros + [f"{nome}: «{titulo}»: a teoria está sem fonte"] * (not tem_fonte(lados[1][1]))
 
 
