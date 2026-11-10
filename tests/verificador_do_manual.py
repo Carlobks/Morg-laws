@@ -244,6 +244,27 @@ def erros_de_teto_por_parte(raiz, arquivos):
     return erros
 
 
+def lista_do_molde(texto, nome):
+    """Os nomes da tupla `#let <nome> = (...)` do molde, lidos como texto (sem o Typst e sem rede)."""
+    tupla = re.search(r"#let " + nome + r" = \((.*?)\)\s*(?:\n|$)", texto, re.DOTALL)
+    return re.findall(r'"([^"]+)"', tupla.group(1)) if tupla else []
+
+
+def erros_da_lista_do_molde(raiz, arquivos):
+    """As `escritas` do molde são os `manual/NN-*.md` do git, e as `partes` são as chaves de TETOS_POR_PARTE (sem o
+    README), pela mesma ordem: uma parte fora da lista fica fora do PDF sem aviso."""
+    molde = ler(raiz / MOLDE)
+    no_git = sorted(a.removeprefix(PASTA_DO_MANUAL).removesuffix(".md") for a in arquivos
+                    if re.fullmatch(r"manual/\d\d-[^/]*\.md", a))
+    dos_tetos = [c.removeprefix(PASTA_DO_MANUAL).removesuffix(".md") for c in TETOS_POR_PARTE if c != "manual/README.md"]
+    erros = []
+    for nome, esperado, origem in (("escritas", no_git, "os manual/NN-*.md do git"), ("partes", dos_tetos, "as chaves de TETOS_POR_PARTE")):
+        lista = lista_do_molde(molde, nome)
+        if lista != esperado:
+            erros.append(f"{MOLDE}: `{nome}` {lista} diferem de {origem} {esperado}")
+    return erros
+
+
 VERIFICACOES_DO_TEXTO = (links_soltos, pares_do_texto, secoes_sem_fonte, decisoes_sem_porque, codex_sem_link,
                          pagina_por_extenso, medido_sem_negacao, lingua_do_brasil.erros_de_lingua)
 

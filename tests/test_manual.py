@@ -288,11 +288,46 @@ class PorTeto(ManualTemporario):
         self.assertEqual(verificador.erros_do_manual(self.raiz, ["manual/imagens/fluxo.png"]), [])
 
 
+MOLDE_COM_LISTAS = ('#let partes = ("00-a", "03-pedir",\n  "04-b")\n#let escritas = ("03-pedir",)\n')
+
+
+class ListaDasPartesDoMolde(ManualTemporario):
+
+    def erros_da_lista(self, molde, *arquivos, tetos=None):
+        self.escrever(verificador.MOLDE, molde)
+        tetos = tetos or {"manual/README.md": 1, "manual/00-a.md": 1, "manual/03-pedir.md": 1, "manual/04-b.md": 1}
+        with mock.patch.object(verificador, "TETOS_POR_PARTE", tetos):
+            return verificador.erros_da_lista_do_molde(self.raiz, list(arquivos))
+
+    def test_lista_conforme_passa_com_uma_so_escrita_e_a_virgula_final(self):
+        self.assertEqual(self.erros_da_lista(MOLDE_COM_LISTAS, "manual/03-pedir.md", "manual/README.md"), [])
+
+    def test_parte_escrita_fora_das_escritas_reprova(self):
+        erros = self.erros_da_lista(MOLDE_COM_LISTAS, "manual/03-pedir.md", "manual/04-b.md")
+        self.assertEqual(len(erros), 1)
+        self.assertIn("escritas", erros[0])
+        self.assertIn("04-b", erros[0])
+
+    def test_escrita_sem_arquivo_no_git_reprova(self):
+        self.assertEqual(len(self.erros_da_lista(MOLDE_COM_LISTAS, "manual/README.md")), 1)
+
+    def test_partes_diferentes_dos_tetos_ou_noutra_ordem_reprovam(self):
+        trocadas = {"manual/README.md": 1, "manual/04-b.md": 1, "manual/03-pedir.md": 1, "manual/00-a.md": 1}
+        for tetos in (trocadas, {"manual/README.md": 1, "manual/00-a.md": 1, "manual/03-pedir.md": 1}):
+            with self.subTest(tetos=tetos):
+                erros = self.erros_da_lista(MOLDE_COM_LISTAS, "manual/03-pedir.md", tetos=tetos)
+                self.assertEqual(len(erros), 1)
+                self.assertIn("partes", erros[0])
+
+
 class ManualDoRepositorio(unittest.TestCase):
     maxDiff = None
 
     def test_o_manual_do_git_esta_conforme(self):
         self.assertEqual(verificador.erros_do_manual(RAIZ, arquivos_do_git(RAIZ, "manual/*")), [])
+
+    def test_as_listas_do_molde_batem_com_o_git_e_com_os_tetos(self):
+        self.assertEqual(verificador.erros_da_lista_do_molde(RAIZ, arquivos_do_git(RAIZ, "manual/*")), [])
 
 
 if __name__ == "__main__":
