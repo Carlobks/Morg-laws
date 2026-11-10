@@ -187,6 +187,22 @@ class PorPar(ManualTemporario):
                 self.assertEqual(len(erros), 1)
                 self.assertIn("«### Na prática» e depois «### Por quê e fonte»", erros[0])
 
+    def test_o_mesmo_numero_de_par_duas_vezes_reprova_no_mesmo_arquivo_e_entre_arquivos(self):
+        dois = par() + "\n" + PAR.format(teoria=TEORIA_COM_LINK).replace("As quatro partes", "Outra cópia")
+        erros = self.erros("manual/03-pedir.md", dois)
+        self.assertEqual(len(erros), 1)
+        self.assertIn("o P6 já existe em manual/03-pedir.md", erros[0])
+        self.escrever("manual/02-instalar.md", par())
+        self.escrever("manual/03-pedir.md", par())
+        erros = verificador.erros_do_manual(self.raiz, ["manual/02-instalar.md", "manual/03-pedir.md"])
+        self.assertEqual(len(erros), 1)
+        self.assertIn("manual/03-pedir.md", erros[0])
+        self.assertIn("o P6 já existe em manual/02-instalar.md", erros[0])
+
+    def test_numeros_de_par_diferentes_e_titulos_que_nao_sao_par_passam(self):
+        texto = par() + "\n" + PAR.format(teoria=TEORIA_COM_LINK).replace("P6", "P7") + "\n## P2P não é par\n"
+        self.assertEqual(self.erros("manual/03-pedir.md", texto), [])
+
     def test_nota_de_rodape_num_par_reprova(self):
         erros = self.erros("manual/03-pedir.md", par(TEORIA_COM_LINK + "[^1]\n\n[^1]: nota"))
         self.assertEqual(len(erros), 1)

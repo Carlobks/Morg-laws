@@ -43,12 +43,15 @@
 #show heading: it => {
   let texto = texto-do(it)
   if it.level <= 2 { fecha-o-par() }
-  if it.level == 2 and texto.starts-with("P") and texto.len() > 1 and texto.at(1).match(regex("\d")) != none {
+  if it.level == 2 and texto.match(regex("^P\d+\b")) != none {
     pagebreak(to: "even")
     par-aberto.update(texto)
     marca("ini-pratica", texto)
   } else if it.level == 3 and texto == "Por quê e fonte" {
-    context marca("fim-pratica", par-aberto.get())
+    context {
+      if par-aberto.get() == none { panic("«Por quê e fonte» fora de um par: falta o «## P<n>» antes dela") }
+      marca("fim-pratica", par-aberto.get())
+    }
     pagebreak(to: "odd", weak: true)
     context marca("ini-teoria", par-aberto.get())
   }
@@ -65,7 +68,8 @@
       if achada == none { panic("o par «" + nome + "» não tem a marca «" + tipo + "»") }
       achada.at(1)
     })
-    if ini-p != fim-p or calc.odd(ini-p) { panic("o par «" + nome + "»: a prática não cabe numa página par (começa na " + str(ini-p) + ", acaba na " + str(fim-p) + ")") }
+    if ini-p != fim-p { panic("o par «" + nome + "»: a prática não cabe numa página só (começa na " + str(ini-p) + ", acaba na " + str(fim-p) + ")") }
+    if calc.odd(ini-p) { panic("o par «" + nome + "»: a prática começa numa página ímpar, a " + str(ini-p)) }
     if ini-t != fim-t or ini-t != fim-p + 1 { panic("o par «" + nome + "»: a teoria não cabe na página ímpar seguinte (começa na " + str(ini-t) + ", acaba na " + str(fim-t) + ")") }
   }
 }

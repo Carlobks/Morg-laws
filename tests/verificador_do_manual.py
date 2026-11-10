@@ -265,15 +265,28 @@ def erros_da_lista_do_molde(raiz, arquivos):
     return erros
 
 
+def pares_repetidos(vistos, nome, texto):
+    """O mesmo `P<n>` em dois títulos, do mesmo arquivo ou de outro, reprova; `vistos` guarda onde cada um nasceu."""
+    erros = []
+    for titulo, _ in linhas_por_secao(texto, 2):
+        achado = PAR_DE_PROCEDIMENTO.match(titulo)
+        if achado and achado.group() in vistos:
+            erros.append(f"{nome}: «{titulo}»: o {achado.group()} já existe em {vistos[achado.group()]}")
+        elif achado:
+            vistos[achado.group()] = nome
+    return erros
+
+
 VERIFICACOES_DO_TEXTO = (links_soltos, pares_do_texto, secoes_sem_fonte, decisoes_sem_porque, codex_sem_link,
                          pagina_por_extenso, medido_sem_negacao, lingua_do_brasil.erros_de_lingua)
 
 
 def erros_do_manual(raiz, arquivos):
     """Todos os erros do manual: `arquivos` são os caminhos relativos à raiz (os de `manual/` do git)."""
-    conhecidas, erros = paginas_conhecidas(raiz), erros_de_teto_por_parte(raiz, arquivos)
+    conhecidas, erros, vistos = paginas_conhecidas(raiz), erros_de_teto_por_parte(raiz, arquivos), {}
     for nome in sorted(a for a in arquivos if a.endswith(".md")):
         texto = ler(raiz / nome)
+        erros += pares_repetidos(vistos, nome, texto)
         erros += [erro for verificacao in VERIFICACOES_DO_TEXTO for erro in verificacao(nome, texto)]
         erros += paginas_sem_entrada(nome, texto, conhecidas)
     return erros
