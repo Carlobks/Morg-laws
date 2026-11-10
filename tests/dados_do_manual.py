@@ -15,15 +15,14 @@ from collections import namedtuple
 from urllib.parse import urlsplit
 
 import dados_do_catalogo as catalogo
+import test_fontes_e_pesquisas as fontes
 
-PASTA = "manual"
+PASTA_DO_MANUAL = "manual"
 PESSOAS = "manual/pessoas-citaveis.txt"
 NOMES_CITAVEIS = "manual/nomes-citaveis.txt"
 PALAVRAS_QUE_ABREM = "manual/palavras-que-abrem-frase.txt"
 FONTES = "FONTES.md"
-Conteudo = namedtuple("Conteudo", "origem texto")
-ALVO_DE_LINK = re.compile(r"\]\([^)\s]*\)")
-ENDERECO = re.compile(r"https?://[^\s<>()\[\]`\"'*|]+", re.IGNORECASE)
+ConteudoDoManual = namedtuple("ConteudoDoManual", "origem texto")
 PARTICULAS = frozenset({"da", "de", "do", "das", "dos"})
 SEQUENCIA = re.compile(r"(?<![\w-])[A-ZÀ-Ý][\wà-ÿ'’-]+(?:[  ]+(?:(?:da|de|do|das|dos)[  ]+)?[A-ZÀ-Ý][\wà-ÿ'’-]+)+")
 DICA_DE_ARQUIVO = "domínio (se for nome de arquivo, ponha em crases)"
@@ -37,7 +36,7 @@ def pessoas_citaveis(texto):
 
 def dominios_do_fontes(texto):
     """Os domínios dos endereços do FONTES.md, mais os que o catálogo já aceita."""
-    enderecos = (urlsplit(endereco.rstrip(".,;:!?»")).hostname for endereco in ENDERECO.findall(texto))
+    enderecos = (urlsplit(endereco.rstrip(".,;:!?»")).hostname for endereco in fontes.URL.findall(texto))
     return catalogo.DOMINIOS_ACEITOS | {dominio for dominio in enderecos if dominio}
 
 
@@ -75,13 +74,13 @@ def nomes_de_pessoas(texto, aceitos, abrem=frozenset()):
 
 def dados_do_manual(texto, aceitos, dominios, abrem=frozenset()):
     """Todos os dados do texto por linha: o que o catálogo detecta, com o domínio dos arquivos explicado, e os nomes."""
-    limpo = ALVO_DE_LINK.sub("]", texto)
+    limpo = catalogo.ALVO_DE_LINK.sub("]", texto)
     fora_nomes = [(n, DICA_DE_ARQUIVO if tipo == "domínio" else tipo, t)
                   for n, tipo, t in catalogo.dados_fora_nomes(limpo, dominios)]
     return sorted(fora_nomes + nomes_de_pessoas(limpo, aceitos, abrem), key=lambda achado: achado[0])
 
 
-def problemas(conteudos, situacao, termos, ambiente=os.environ):
+def problemas_do_manual(conteudos, situacao, termos, ambiente=os.environ):
     """As mensagens de tudo o que não pode estar no manual; vazia se estiver limpo."""
     aceitos, dominios, abrem = situacao
     mensagens = [f"lista negra: o termo n.º {n} não compila em Python (classe POSIX ou sintaxe só do grep -E); reescreva-o"
@@ -99,7 +98,7 @@ def _saida_git(raiz, *argumentos):
 
 def _nomes_dos_md(saida):
     nomes = (nome for nome in saida.split("\0") if nome)
-    return [nome for nome in nomes if nome.startswith(PASTA + "/") and nome.lower().endswith(".md")]
+    return [nome for nome in nomes if nome.startswith(PASTA_DO_MANUAL + "/") and nome.lower().endswith(".md")]
 
 
 def ler_do_indice(raiz, caminho):
@@ -115,23 +114,23 @@ def md_do_indice(raiz):
     """Os `.md` preparados de `manual/`; se uma das listas (pessoas, nomes, palavras que abrem frase, a lista pública)
     ou o FONTES.md mudou, todos."""
     mudados = _saida_git(raiz, "diff", "--cached", "--name-only", "-z", "--diff-filter=ACMR", "--",
-                         PASTA, FONTES, catalogo.PALAVRAS)
-    todos = _saida_git(raiz, "ls-files", "-z", "--", PASTA)
+                         PASTA_DO_MANUAL, FONTES, catalogo.PALAVRAS)
+    todos = _saida_git(raiz, "ls-files", "-z", "--", PASTA_DO_MANUAL)
     relido = any(c in mudados.split("\0") for c in (PESSOAS, NOMES_CITAVEIS, PALAVRAS_QUE_ABREM, FONTES, catalogo.PALAVRAS))
     return _nomes_dos_md(todos if relido else mudados)
 
 
 def md_do_disco(raiz):
     """A árvore commitada mais os arquivos novos que o .gitignore não esconde, lidos do disco."""
-    return _nomes_dos_md(_saida_git(raiz, "ls-files", "-z", "--cached", "--others", "--exclude-standard", "--", PASTA))
+    return _nomes_dos_md(_saida_git(raiz, "ls-files", "-z", "--cached", "--others", "--exclude-standard", "--", PASTA_DO_MANUAL))
 
 
 def situacao_do_manual(raiz, ambiente=os.environ):
-    """([Conteudo], (nomes aceitos, domínios aceitos, palavras que abrem frase)): o índice no pre-commit
+    """([ConteudoDoManual], (nomes aceitos, domínios aceitos, palavras que abrem frase)): o índice no pre-commit
     (MORG_LER_DO_INDICE=1), o disco no resto."""
     ler, md = (ler_do_indice, md_do_indice) if ambiente.get("MORG_LER_DO_INDICE") == "1" else (ler_do_disco, md_do_disco)
     comuns, publicos, _ = catalogo.ler_palavras(ler(raiz, catalogo.PALAVRAS))
     aceitos = pessoas_citaveis(ler(raiz, PESSOAS)) | pessoas_citaveis(ler(raiz, NOMES_CITAVEIS)) | publicos
     abrem = comuns | {palavra.lower() for palavra in pessoas_citaveis(ler(raiz, PALAVRAS_QUE_ABREM))}
-    conteudos = [Conteudo(nome, ler(raiz, nome)) for nome in md(raiz)]
+    conteudos = [ConteudoDoManual(nome, ler(raiz, nome)) for nome in md(raiz)]
     return conteudos, (aceitos, dominios_do_fontes(ler(raiz, FONTES)), abrem)

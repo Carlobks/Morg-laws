@@ -16,7 +16,8 @@ from projeto_de_exemplo import apagar, escrever, git
 NUMERO = "123" + "456" + "789"  # conhecido como falso (ver test_dados_do_catalogo.py)
 PALAVRAS = "## comuns\numa\noutra\n## nomes\nEmpresa A | papel\n"
 COPIAS = (".githooks", "tests/test_projetos_sem_dados.py", "tests/dados_do_catalogo.py", "tests/carregar_modelos.py",
-          "tests/test_manual_sem_dados.py", "tests/dados_do_manual.py",
+          "tests/test_manual_sem_dados.py", "tests/dados_do_manual.py", "tests/test_fontes_e_pesquisas.py",
+          "tests/leitura_do_repositorio.py",
           "modelos/testes/carregar_por_caminho.py", "modelos/testes/test_dados_pessoais.py")
 FERRAMENTAS_DO_HOOK = ("git", "sh", "grep", "mktemp", "rm", "wc", "head", "dirname", "cat")
 ARQUIVO = "projetos/erp-de-servicos/sonda.md"

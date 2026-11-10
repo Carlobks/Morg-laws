@@ -17,7 +17,7 @@ class ManualSemDados(unittest.TestCase):
 
     def test_nada_que_identifique_pessoas_ou_empresas(self):
         conteudos, situacao = manual.situacao_do_manual(RAIZ)
-        mensagens = manual.problemas(conteudos, situacao, catalogo.molde.termos_da_lista_negra())
+        mensagens = manual.problemas_do_manual(conteudos, situacao, catalogo.molde.termos_da_lista_negra())
         self.assertEqual(mensagens, [], "troque o dado pelo papel («o dono») e ponha os nomes de arquivo em crases")
 
 

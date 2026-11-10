@@ -6,6 +6,7 @@ import unittest
 import dados_do_catalogo as catalogo
 import dados_do_manual as manual
 import test_precommit_do_catalogo as base
+import verificador_do_manual as verificador
 
 NUMERO = "123" + "456" + "789"  # conhecido como falso
 CITAVEIS = frozenset({"Fabio Akita", "Matt Pocock", "Carlobks", "Claude Code"})
@@ -17,6 +18,18 @@ ARQUIVO = "manual/03-pedir.md"
 
 def tipos(texto, aceitos=ACEITOS, dominios=DOMINIOS):
     return [tipo for _, tipo, _ in manual.dados_do_manual(texto, aceitos, dominios, ABREM)]
+
+
+class NomesDoManual(unittest.TestCase):
+
+    def test_os_nomes_sao_proprios_e_as_regras_vem_do_catalogo_e_do_fontes(self):
+        for novo in ("ConteudoDoManual", "problemas_do_manual", "PASTA_DO_MANUAL"):
+            self.assertTrue(hasattr(manual, novo), novo)
+        self.assertTrue(hasattr(verificador, "PASTA_DO_MANUAL"))
+        for modulo, copiado in ((manual, ("Conteudo", "problemas", "PASTA", "ENDERECO", "ALVO_DE_LINK")),
+                                (verificador, ("PASTA", "CRASES"))):
+            for nome in copiado:
+                self.assertFalse(hasattr(modulo, nome), f"{modulo.__name__}.{nome} devia vir de outro módulo")
 
 
 class DadosDoTexto(unittest.TestCase):
@@ -77,8 +90,8 @@ class DadosDoTexto(unittest.TestCase):
         self.assertLessEqual({"code.claude.com", "docs.github.com", "user.name"}, dominios)
 
     def test_problemas_diz_onde_e_nunca_mostra_o_termo_da_lista_negra(self):
-        conteudos = [manual.Conteudo("manual/a.md", f"número {NUMERO}\nFalei do zeca.\n")]
-        mensagens = manual.problemas(conteudos, (ACEITOS, DOMINIOS, ABREM), ["zeca", "*" + "abc"], {"CI": "true"})
+        conteudos = [manual.ConteudoDoManual("manual/a.md", f"número {NUMERO}\nFalei do zeca.\n")]
+        mensagens = manual.problemas_do_manual(conteudos, (ACEITOS, DOMINIOS, ABREM), ["zeca", "*" + "abc"], {"CI": "true"})
         nao_compila = "lista negra: o termo n.º 2 não compila em Python (classe POSIX ou sintaxe só do grep -E); reescreva-o"
         self.assertEqual(sorted(mensagens), [nao_compila, "manual/a.md:1: documento",
                                              "manual/a.md:2: lista negra — termo n.º 1"])
@@ -132,7 +145,7 @@ class SituacaoDoManual(base.RepositorioTemporario):
         self.assertEqual(self.nomes({}), [ARQUIVO, "manual/nova.md"])
         conteudos, (aceitos, _, _) = manual.situacao_do_manual(self.pasta, {})
         self.assertIn("Fabio Akita", aceitos)
-        self.assertEqual(len(manual.problemas(conteudos, (aceitos, DOMINIOS, ABREM), [])), 1)
+        self.assertEqual(len(manual.problemas_do_manual(conteudos, (aceitos, DOMINIOS, ABREM), [])), 1)
 
     def test_o_disco_sem_o_arquivo_le_vazio(self):
         self.assertEqual(manual.ler_do_disco(self.pasta, "nao/existe.md"), "")

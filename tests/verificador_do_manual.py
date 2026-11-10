@@ -9,11 +9,12 @@ serem provados numa pasta temporária."""
 
 import re
 
+import dados_do_catalogo as catalogo
 import lingua_do_brasil
 import test_fontes_e_pesquisas as fontes
 from leitura_do_repositorio import ler
 
-PASTA = "manual/"
+PASTA_DO_MANUAL = "manual/"
 TETO_POR_LADO = 325  # palavras de «Na prática» e de «Por quê e fonte»; provisório, a M1b fixa-o com o primeiro par
 MOLDE = "manual/manual.typ"
 TETO_DO_MOLDE_EM_LINHAS = 150
@@ -30,7 +31,6 @@ EXCECOES_DE_SECAO = frozenset({("manual/06-as-regras.md", "O índice das skills"
 EXCECOES_DO_CODEX = frozenset()  # (arquivo, primeiros 40 caracteres do parágrafo) que cita o Codex sem link
 ORDEM_DO_PAR =["Na prática", "Por quê e fonte"]
 
-CRASES = re.compile(r"`[^`]*`")
 LINK_MARCADO = re.compile(r"\[[^\]]*\]\([^)\s]*\)")
 LINK_COM_ENDERECO = re.compile(r"\]\(https?://")
 LINK_DO_CODEX = re.compile(r"\]\(https?://[^)\s]*codex[^)\s]*\)", re.IGNORECASE)
@@ -74,7 +74,7 @@ def prosa(linhas):
 
 def texto_de_prosa(texto):
     """O texto sem os blocos de código e sem o que está entre crases."""
-    return CRASES.sub(" ", "\n".join(prosa(texto.splitlines())))
+    return catalogo.CRASES.sub(" ", "\n".join(prosa(texto.splitlines())))
 
 
 def palavras_da_prosa(linhas):
@@ -159,7 +159,7 @@ def pares_do_texto(nome, texto):
 
 def secoes_sem_fonte(nome, texto):
     """Nas partes em texto seguido, cada `##` leva fonte; as exceções estão em EXCECOES_DE_SECAO, à vista."""
-    if not nome.removeprefix(PASTA).startswith(PARTES_EM_TEXTO_SEGUIDO):
+    if not nome.removeprefix(PASTA_DO_MANUAL).startswith(PARTES_EM_TEXTO_SEGUIDO):
         return []
     return [f"{nome}: «{titulo}»: a seção está sem fonte" for titulo, linhas in linhas_por_secao(texto, 2)
             if (nome, titulo) not in EXCECOES_DE_SECAO and not tem_fonte(linhas)]
