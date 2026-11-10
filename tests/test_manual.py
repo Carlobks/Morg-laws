@@ -67,7 +67,7 @@ class PorTexto(ManualTemporario):
         com = f"Foi assim porque {VOZES} quis. Porquê: para ser simples.\n"
         self.assertEqual(len(self.erros(NOME, sem)), 1)
         self.assertEqual(self.erros(NOME, com), [])
-        self.assertEqual(self.erros(NOME, "Explica «as vozes da cabeça de Carlobks» numa linha.\n"), [])
+        self.assertEqual(self.erros(NOME, "Explica “as vozes da cabeça de Carlobks” numa linha.\n"), [])
         self.assertEqual(len(self.erros(NOME, f"Porquê: antes.\n\n{sem}")), 1)
 
     def test_no_codex_sem_link_reprova_e_com_link_passa(self):
@@ -202,6 +202,16 @@ class PorPar(ManualTemporario):
     def test_numeros_de_par_diferentes_e_titulos_que_nao_sao_par_passam(self):
         texto = par() + "\n" + PAR.format(teoria=TEORIA_COM_LINK).replace("P6", "P7") + "\n## P2P não é par\n"
         self.assertEqual(self.erros("manual/03-pedir.md", texto), [])
+
+    def test_aspas_francesas_na_prosa_reprovam_e_as_curvas_e_o_codigo_passam(self):
+        for texto in ("Diz «fica bom» aqui.\n", "Fecha» sozinha.\n"):
+            with self.subTest(texto=texto):
+                erros = self.erros(NOME, texto)
+                self.assertEqual(len(erros), 1)
+                self.assertIn("aspas curvas", erros[0])
+        for texto in ("Diz “fica ‘bom’ ou não” aqui.\n", "```\n«no código»\n```\n", "Veja `«x»`.\n"):
+            with self.subTest(texto=texto):
+                self.assertEqual(self.erros(NOME, texto), [])
 
     def test_nota_de_rodape_num_par_reprova(self):
         erros = self.erros("manual/03-pedir.md", par(TEORIA_COM_LINK + "[^1]\n\n[^1]: nota"))

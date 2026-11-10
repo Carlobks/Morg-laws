@@ -186,6 +186,11 @@ def codex_sem_link(nome, texto):
             if CODEX.search(p) and not LINK_DO_CODEX.search(p) and (nome, p.strip()[:40]) not in EXCECOES_DO_CODEX]
 
 
+def aspas_francesas(nome, texto):
+    """O manual usa as aspas curvas “ ” (e ‘ ’ dentro delas), como no Brasil; as «» são do resto do repositório."""
+    return [f"{nome}: aspas «» na prosa — no manual use aspas curvas “ ”"] * bool(re.search(r"[«»]", texto_de_prosa(texto)))
+
+
 def pagina_por_extenso(nome, texto):
     """«página 31» e «pág. 9» não se leem como página do livro: o manual escreve «p. N»."""
     return [f"{nome}: «{achado.group()}» — escreva p. N" for achado in PAGINA_POR_EXTENSO.finditer(texto_de_prosa(texto))]
@@ -278,7 +283,7 @@ def pares_repetidos(vistos, nome, texto):
 
 
 VERIFICACOES_DO_TEXTO = (links_soltos, pares_do_texto, secoes_sem_fonte, decisoes_sem_porque, codex_sem_link,
-                         pagina_por_extenso, medido_sem_negacao, lingua_do_brasil.erros_de_lingua)
+                         pagina_por_extenso, aspas_francesas, medido_sem_negacao, lingua_do_brasil.erros_de_lingua)
 
 
 def erros_do_manual(raiz, arquivos):

@@ -31,14 +31,14 @@ Como vou saber que ficou certo: os testes passam, o PDF compila e cada trecho te
 O que costuma dar errado:
 
 - A terceira parte fica em branco. É a que mais vale e a mais esquecida.
-- O critério de pronto é «fica bom». O agente não consegue conferir isso, e você também não.
+- O critério de pronto é “fica bom”. O agente não consegue conferir isso, e você também não.
 - O pedido deixa de fora o que só você sabe: o combinado de ontem, o arquivo que não se mexe, o prazo.
 
 ### Por quê e fonte
 
 O agente não adivinha o que ficou na sua cabeça. Cada parte que falta vira um palpite dele, e cada palpite errado custa
 uma volta de retrabalho. A parte do que você não quer evita o erro mais caro, o de ele fazer a mais. A do critério de pronto
-transforma «acho que está bom» em algo que se confere.
+transforma “acho que está bom” em algo que se confere.
 
 A mesma ideia aparece no guia de boas práticas do Claude Code, que pede ao agente um jeito de verificar o próprio trabalho
 ([boas práticas do Claude Code](https://code.claude.com/docs/en/best-practices)), e no livro *Competente o Suficiente*,
