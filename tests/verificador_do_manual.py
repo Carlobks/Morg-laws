@@ -15,7 +15,8 @@ import test_fontes_e_pesquisas as fontes
 from leitura_do_repositorio import ler
 
 PASTA_DO_MANUAL = "manual/"
-TETO_POR_LADO = 325  # palavras de «Na prática» e de «Por quê e fonte»; provisório, a M1b fixa-o com o primeiro par
+TETO_POR_LADO = 325  # palavras de «Na prática» e de «Por quê e fonte»; medido com o par P6 compilado: 342 na prática (com
+# 8 linhas de código em dois blocos) e 677 na teoria cabem numa página de 6 x 9,6 pol.; o lado que limita é a prática, e 325 fica abaixo
 MOLDE = "manual/manual.typ"
 TETO_DO_MOLDE_EM_LINHAS = 150
 FORA_DO_TETO = ("manual/fontes/", "manual/imagens/", "manual/pessoas-citaveis.txt", "manual/nomes-citaveis.txt",
