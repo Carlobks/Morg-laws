@@ -3,3 +3,4 @@
 # Nunca entra o nome de uma pessoa (essas vão em pessoas-citaveis.txt) nem de uma empresa ou de um cliente.
 # Este arquivo é público.
 Claude Code
+Arch Linux
