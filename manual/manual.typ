@@ -11,16 +11,19 @@
 
 #let fonte-corpo = "Libertinus Serif"
 #let fonte-titulos = "Stardos Stencil"
-#let commit = sys.inputs.at("commit", default: "sem commit")
+#let commit = sys.inputs.at("commit", default: none)
 
 #set document(title: "Morg-laws: manual de uso")
-#set page(width: 6in, height: 9.6in, binding: left, numbering: "1",
+#set page(width: 6in, height: 9.6in, binding: left,
   margin: (inside: 0.9in, outside: 0.6in, top: 0.7in, bottom: 0.8in))
 #set text(font: fonte-corpo, size: 10.5pt, lang: "pt", region: "BR")
 #set par(justify: true, leading: 0.62em)
 #show heading: set text(font: fonte-titulos, weight: "bold")
 #show raw: set text(size: 8.5pt)
 #show link: set text(fill: rgb("#1f4e79"))
+
+// A página em branco que a paridade pede sai sem número (a capa também, mais abaixo).
+#let quebra(..argumentos) = { set page(numbering: none); pagebreak(..argumentos) }
 
 // --- Os pares: a prática na página par, a teoria na ímpar seguinte, cada lado numa página só ---
 #let marca(tipo, nome) = [#metadata((tipo: tipo, nome: nome)) <marca-do-par>]
@@ -44,7 +47,7 @@
   let texto = texto-do(it)
   if it.level <= 2 { fecha-o-par() }
   if it.level == 2 and texto.match(regex("^P\d+\b")) != none {
-    pagebreak(to: "even")
+    quebra(to: "even")
     par-aberto.update(texto)
     marca("ini-pratica", texto)
   } else if it.level == 3 and texto == "Por quê e fonte" {
@@ -52,7 +55,7 @@
       if par-aberto.get() == none { panic("«Por quê e fonte» fora de um par: falta o «## P<n>» antes dela") }
       marca("fim-pratica", par-aberto.get())
     }
-    pagebreak(to: "odd", weak: true)
+    quebra(to: "odd", weak: true)
     context marca("ini-teoria", par-aberto.get())
   }
   it
@@ -80,22 +83,24 @@
   #v(0.4em)
   #text(size: 14pt)[Manual de uso]
 ]
-#pagebreak(to: "odd")
+#quebra(to: "odd")
+#set page(numbering: "1")
 #outline(title: "Sumário", depth: 2)
 
 #for parte in partes.filter(p => p in escritas) {
-  pagebreak(to: "odd", weak: true)
+  quebra(to: "odd", weak: true)
   cmarker.render(read(parte + ".md"))
   fecha-o-par()
 }
 
 #confere-os-pares()
 
-#pagebreak(to: "even", weak: true)
+#quebra(to: "even", weak: true)
 #v(1fr)
 #set text(size: 9pt)
 #set par(justify: false)
-*Colofão.* Gerado em #datetime.today().display("[day]/[month]/[year]") a partir do commit #raw(commit).
+*Colofão.* Gerado em #datetime.today().display("[day]/[month]/[year]")#if commit != none [ a partir do commit #raw(commit)].
 
 Corpo em #fonte-corpo (SIL Open Font License 1.1, vem com o Typst). Títulos em #fonte-titulos, de Vernon Adams
-(SIL Open Font License 1.1, em `manual/fontes/`). Composto com o Typst (Apache-2.0).
+(SIL Open Font License 1.1, em `manual/fontes/`). Código em DejaVu Sans Mono (licença Bitstream Vera, vem com o Typst).
+Composto com o Typst (Apache-2.0).
