@@ -20,7 +20,7 @@ em Markdown nesta pasta e feito para ser lido como PDF.
 | `10-pedidos-prontos.md` | Os pedidos que se copiam |
 | `11-como-este-manual-foi-feito.md` | O posfácio |
 
-Por enquanto só a parte `03-pedir.md` existe, com um par de prova. As outras vêm por fases.
+Por enquanto só a parte `00-antes-de-comecar.md` existe, e a `03-pedir.md`, com um par de prova. As outras vêm por fases.
 
 Os procedimentos vão em páginas duplas: na página par, **Na prática**; na ímpar, **Por quê e fonte**.
 
