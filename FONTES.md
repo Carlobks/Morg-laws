@@ -19,6 +19,8 @@ Fonte secundária leva a marca *(secundária)* até ser conferida na original.
 - **Vercel — skills CLI** — https://vercel.com/docs/agent-resources/skills — 2026-10-29 *(secundária: lido via busca)*.
 - **AAIF — Measuring AGENTS.md: what five runs show** — https://aaif.io/blog/measuring-agents-md-what-five-runs-show-that-one-doesn-t — lido em 2026-10-29.
   Sustenta: o AGENTS.md é orientação, não barreira. Com um AGENTS.md curto (12 linhas), o agente foi mais rápido e gastou menos (um repositório, um agente, 2 tarefas, 5 corridas com e sem). O estudo **não** compara arquivos curtos com longos, e o autor chama-lhe «one data point». Conferido de novo em 2026-10-30.
+- **Towards Understanding Sycophancy in Language Models (arXiv 2310.13548)** — https://arxiv.org/abs/2310.13548 — resumo lido em 2026-11-11.
+  Sustenta: o reforço por preferência humana pode levar a respostas que acompanham a crença de quem pergunta em vez da verdadeira («sycophancy»); cinco assistentes o mostraram em quatro tarefas. Usado no P15 (`manual/04-sessoes.md`).
 - **Evaluating AGENTS.md (arXiv 2602.11988)** — https://arxiv.org/abs/2602.11988 — resumo lido em 2026-10-30.
   Sustenta: os arquivos de contexto «do not generally improve task success rates» e sobem o custo de inferência em mais de 20%, em média. O resumo não fala do tamanho dos arquivos, e a página não mostra a afiliação dos autores.
 - **agents.md** — https://agents.md — lido em 2026-10-30 (numa auditoria independente). Sustenta: o formato é mantido pela Agentic AI Foundation, sob a Linux Foundation, e a página lista 23 ferramentas que o leem.

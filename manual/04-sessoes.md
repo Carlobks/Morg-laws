@@ -71,7 +71,7 @@ Quando acabar, troque o título para OK, ou me peça, com o título pronto (P13)
 O que costuma dar errado:
 
 - Deixar o que não se faz de fora. A filha faz a mais.
-- Pedir uma auditoria dizendo a sua conclusão. Ela tende a confirmá-la.
+- Pedir uma auditoria dizendo a sua conclusão. Ela tende a confirmá-la (a fonte está no P15).
 - Esquecer o que já falhou: a filha repete.
 
 ### Por quê e fonte
@@ -225,7 +225,7 @@ O que costuma dar errado:
 
 ### Por quê e fonte
 
-O relatório de uma auditoria volta no mesmo tom confiante, acerte ou erre. Só uma leitura que parte da fonte separa um do outro, e o exemplo mostra o caso em que a correção proposta tinha um defeito que só a conferência viu. O livro de Fabio Akita mostra que, sem a fonte, o agente pode inventar um motivo plausível para uma decisão antiga (p. 32) e lembra que a explicação dele sobre como verificou não é prova (p. 357). Mais de um revisor, com modelos diferentes, também vem do livro (pp. 49, 156).
+O relatório de uma auditoria volta no mesmo tom confiante, acerte ou erre. Só uma leitura que parte da fonte separa um do outro, e o exemplo mostra o caso em que a correção proposta tinha um defeito que só a conferência viu. O livro de Fabio Akita mostra que, sem a fonte, o agente pode inventar um motivo plausível para uma decisão antiga (p. 32) e lembra que a explicação dele sobre como verificou não é prova (p. 357). Mais de um revisor, com modelos diferentes, também vem do livro (pp. 49, 156). Que o modelo tende a concordar com quem pede vem de uma [pesquisa sobre bajulação](https://arxiv.org/abs/2310.13548) em assistentes de IA: as respostas acompanham a crença de quem pergunta, mesmo quando ela não é a verdadeira.
 
 Mais uma decisão de Carlobks (2026-11-06): a conferência vem antes de o achado chegar a ele. Porquê: nas palavras dele, arrumadas, foi experimentando: começou a pedir a conferência antes de o trabalho chegar a ele e sempre achava algum erro; então passou a pedir sempre, porque prefere receber o trabalho bem feito, com uma confirmação. Foi aprendendo a não confiar cegamente.
 
