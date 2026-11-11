@@ -12,7 +12,7 @@ As dez regras valem para qualquer projeto.
 
 **Commit sem pedido, push com o “sim”.** Commitar não precisa de pedido; o push e o PR precisam, a cada vez. O commit é atômico, por caminho, e nunca se usa `git add -A` nem `git add .`. O porquê: o push publica no momento em que sai. O detalhe está na seção “Quando commitar e quando pedir” da skill [`git-e-commits`](https://github.com/Carlobks/Morg-laws/blob/main/skills/git-e-commits/SKILL.md), que se apoia no livro (pp. 230, 382). Ver a parte 05 (P19 e P22).
 
-**Os hooks são a rede.** Nunca se pula um hook com `--no-verify` nem se desliga; se um hook recusou, corrige-se a causa. O porquê: pulado, o hook deixa passar o erro. O detalhe está na seção “Os hooks são a rede” da skill [`git-e-commits`](https://github.com/Carlobks/Morg-laws/blob/main/skills/git-e-commits/SKILL.md), e o livro manda passar cada commit pela mesma bateria (pp. 408–409). Ver a parte 05 (P20) e a parte 07.
+**Os hooks são a rede.** Nunca se pula um hook com `--no-verify` nem se desliga; se um hook recusou, se corrige a causa. O porquê: pulado, o hook deixa passar o erro. O detalhe está na seção “Os hooks são a rede” da skill [`git-e-commits`](https://github.com/Carlobks/Morg-laws/blob/main/skills/git-e-commits/SKILL.md), e o livro manda passar cada commit pela mesma bateria (pp. 408–409). Ver a parte 05 (P20) e a parte 07.
 
 **Não piorar.** O que já viola não pode piorar, e um arquivo novo nasce limpo. O porquê: senão a dívida só cresce. O mecanismo é a catraca, uma linha de base que só encolhe, na seção 4 da skill [`codigo-legivel`](https://github.com/Carlobks/Morg-laws/blob/main/skills/codigo-legivel/SKILL.md) e na seção 6 da skill [`testes-e-provas`](https://github.com/Carlobks/Morg-laws/blob/main/skills/testes-e-provas/SKILL.md). Como ela funciona por dentro está na parte 07.
 
@@ -28,7 +28,7 @@ As dez regras valem para qualquer projeto.
 
 ## O “Nunca”
 
-São quatro proibições, e as quatro têm barreira de máquina na parte 07.
+São quatro proibições. Três têm barreira de máquina na parte 07; a do banco fica em texto, porque nenhuma máquina sabe se houve o seu “sim” (o mapa das barreiras do molde diz isso).
 
 **Sem escrita no banco.** Nunca se escreve no banco de produção, nem no esquema nem nos dados, sem o “sim” explícito do dono. O porquê: o banco de produção é de todo mundo. As armadilhas de uma escrita, e como prová-la numa transação desfeita, estão na skill [`sql-postgres`](https://github.com/Carlobks/Morg-laws/blob/main/skills/sql-postgres/SKILL.md).
 
@@ -47,7 +47,7 @@ O `AGENTS.md` traz uma tabela de nove situações, cada uma com a skill que se a
 | Escrever ou mudar um `CLAUDE.md`, um `AGENTS.md` ou uma skill | `escrevendo-regras-de-agente` | Diz onde cada coisa vai, a forma curta com o motivo e quando um texto vira barreira |
 | Projeto novo, pedido grande ou mudança sem limites | `comecando-um-projeto`, `pondo-o-plano-a-prova` | A primeira conduz o começo do projeto; a segunda interroga o dono até o plano poder ser executado |
 | Dividir trabalho entre sessões ou agentes | `orquestrando-sessoes` | Escolhe entre sessão nova e sub-agente, pede a leitura independente e organiza várias sessões na mesma pasta |
-| Compactar a conversa, parar ou retomar | `passando-o-trabalho` | Guarda o estado num handoff, commita-o e conduz a retomada |
+| Compactar a conversa, parar ou retomar | `passando-o-trabalho` | Guarda o estado num handoff, o commita e conduz a retomada |
 | Commitar ou fechar um ciclo | `git-e-commits` | Commit por caminho, mensagem com o porquê, hooks que não se pulam e changelog por fragmento |
 | Escrever ou partir código, corrigir um bug, testar | `codigo-legivel`, `testes-e-provas` | A primeira fixa a forma do código; a segunda diz como provar que funciona |
 | Criar, redesenhar ou rever uma tela | `desenhando-telas` | Decide o que mostrar, quantas abas e ações cabem, cor, contraste e movimento |
@@ -66,6 +66,6 @@ O `AGENTS.md` fecha com cinco regras que valem só para o Morg-laws, e que vale 
 
 **Pesquisa que outra sessão vai reler vai para `pesquisas/`.** Fica lá com o índice, em um arquivo por pesquisa, para não ter de ser refeita, e o CI confere as pesquisas e as fontes delas. O formato está em [`pesquisas/README.md`](https://github.com/Carlobks/Morg-laws/blob/main/pesquisas/README.md).
 
-**Nada de terceiros copiado.** Escreve-se com estrutura própria e cita-se a inspiração no `FONTES.md`, na seção [“Inspirações (nada copiado)”](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md#inspirações-nada-copiado).
+**Nada de terceiros copiado.** Escreve-se com estrutura própria, e a inspiração se cita no `FONTES.md`, na seção [“Inspirações (nada copiado)”](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md#inspirações-nada-copiado).
 
 **Escrita em português do Brasil.** Um teste do repositório recusa as formas de Portugal nos textos, como neste manual. A regra está no [`AGENTS.md`](https://github.com/Carlobks/Morg-laws/blob/main/AGENTS.md).
