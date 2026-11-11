@@ -6,10 +6,10 @@ Cada termo numa frase, em ordem alfabética, com a parte do manual que o explica
 - **`AGENTS.md`**: o arquivo curto de regras que o agente lê inteiro em todo turno; o `CLAUDE.md` ao lado só aponta para ele (parte 01 e P2).
 - **auditoria a frio**: uma sessão nova, sem a conversa que produziu o trabalho, que o lê e dá um veredito (ver o P15).
 - **barreira**: um programa que recusa o que não pode passar, em vez de só pedir; o texto é conselho, e o que tem de valer vira barreira (parte 07 e P3).
-- **branch (ramo)**: uma linha de commits do projeto; a principal é a `main` (ver o P13).
+- **branch (ramo)**: uma linha de commits do projeto; a principal costuma se chamar `main` (ver o P17).
 - **catraca**: uma linha de base que só encolhe: o que já viola uma regra fica congelado numa lista, e o que é novo nasce limpo (parte 07).
 - **CI**: a conferência que roda os mesmos testes numa máquina limpa a cada push, fora do alcance de quem commita (parte 07).
-- **commit**: um pacote de mudanças gravado no histórico do git, com uma mensagem que diz o que mudou e porquê (ver o P19).
+- **commit**: um pacote de mudanças gravado no histórico do git, com uma mensagem que diz o que mudou e por quê (ver o P19).
 - **commit por caminho**: o commit que nomeia os arquivos que leva (`git commit -F msg -- <arquivos>`), para não levar o que é de outra sessão (ver o P19 e o P17).
 - **compactar**: pedir ao agente que troque a conversa antiga por um resumo, para liberar a janela (ver o P10).
 - **conferência**: uma sessão separada que confere, na fonte, cada afirmação de um relatório antes de ele chegar a você (ver o P15).
@@ -46,6 +46,6 @@ Cada termo numa frase, em ordem alfabética, com a parte do manual que o explica
 - **sub-agente**: um agente lançado por dentro de uma sessão, que você não vê nem corrige; serve para buscas amplas e tarefas independentes (ver o P11).
 - **suíte**: o conjunto de todos os testes do projeto, rodado de uma vez (ver o P22).
 - **teste**: um programa que confere se outro faz o que deve; um bug corrigido traz o seu teste, visto falhar antes (ver o P21).
-- **token**: a unidade em que o modelo lê e escreve texto, mais ou menos um pedaço de palavra; o limite da janela se conta em tokens (ver o P10).
+- **token**: a unidade em que o modelo lê e escreve texto, mais ou menos um pedaço de palavra; o limite da janela se conta em tokens (ver o P10); no CI, é também a credencial com que um programa acessa um serviço (parte 07).
 - **veredito**: o resultado de uma auditoria no topo do relatório: “aprovado”, “aprovado com correções” ou “refazer” (ver o P15).
 - **worktree**: uma segunda pasta de trabalho do mesmo repositório, onde um script pode trocar arquivos sem atrapalhar as outras sessões (ver o P17).
