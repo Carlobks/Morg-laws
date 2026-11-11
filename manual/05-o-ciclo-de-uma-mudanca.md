@@ -47,12 +47,12 @@ Um commit é uma mudança com um propósito. Duas mudanças independentes são d
 ```
 git status --short -uall
 git add -- <arquivo1> <arquivo2>
-git commit -F msg.txt -- <arquivo1> <arquivo2>
+git commit -F msg -- <arquivo1> <arquivo2>
 ```
 
 - Use sempre o `-uall`: sem ele, uma pasta nova aparece como uma linha só e os arquivos dentro dela ficam fora do commit.
 - Nunca `git add -A` nem `git add .`: eles levam o que não é seu (P17).
-- A mensagem vai num arquivo, com `-F`. Título de até 72 caracteres, com o tipo e a área, sem ponto final; uma linha em branco; e um corpo que diz o que mudou e por quê. A mensagem é tão pública quanto o código: sem dados reais.
+- A mensagem vai num arquivo (aqui, `msg`), com `-F`. Título de até 72 caracteres, com o tipo e a área, sem ponto final; uma linha em branco; e um corpo que diz o que mudou e por quê. A mensagem é tão pública quanto o código: sem dados reais.
 
 Um exemplo real, a mensagem de um commit do próprio repositório, abreviada:
 

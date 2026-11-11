@@ -285,7 +285,7 @@ Onde vive no Morg-laws: a skill `passando-o-trabalho`, com o comando de compacta
 
 Quando duas sessões (ou duas pessoas) trabalham na mesma pasta, o índice do git e a branch são de todas. Cada uma cuida do que é seu:
 
-- Commite sempre por caminho: `git commit -F msg -- <arquivos>`. Um `git commit` sem caminhos leva tudo o que outra sessão deixou preparado.
+- Commite sempre por caminho (P19, na parte 05): `git commit -F msg -- <arquivos>`. Um `git commit` sem caminhos leva tudo o que outra sessão deixou preparado.
 - Nunca use `git stash`: ele tira do disco também o que as outras sessões mudaram nos arquivos que o git já acompanha.
 - Não commite trabalho alheio. O aviso de arquivos por commitar conta arquivos, e não donos: use `git log -1 -- <arquivo>` e a memória do que você mexeu.
 - Confirme o `HEAD` antes de pedir um reteste: outra sessão pode ter mudado a branch.
