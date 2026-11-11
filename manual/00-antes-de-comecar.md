@@ -1,6 +1,6 @@
 # Antes de começar
 
-> **Aviso.** Este manual é trabalho de um não profissional: um achado próprio de um não profissional, não uma crítica a ninguém. Quem o escreve está aprendendo, e o que está aqui é o que funcionou para ele num projeto real, não um padrão da área.
+> **Aviso.** Este manual é o achado próprio de um não profissional, não uma crítica a ninguém. Quem o escreve está aprendendo, e o que está aqui é o que ele usa num projeto real, não um padrão da área.
 
 ## Quem escreveu isto
 
@@ -26,4 +26,4 @@ O manual é sobre o Claude Code, que o autor usa quase todo dia. Ele deve servir
 
 ## O que este manual não promete
 
-As regras do Morg-laws saíram de um projeto real, em uso, e a prova delas é o uso real em outros projetos e as issues que voltam para o repositório. Não há medição paga das regras, e nenhum texto aqui diz o contrário. O método de prova existe no repositório, na pasta `prova/`, para quem quiser correr. Quem quiser os números do uso que originou as regras lê a [pesquisa da linha de base](https://github.com/Carlobks/Morg-laws/blob/main/pesquisas/2026-11-05-linha-de-base-do-uso.md), que também é achado de um não profissional.
+As regras do Morg-laws saíram de um projeto real, em uso, e a prova delas é o uso real em outros projetos e as issues que voltam para o repositório. As regras não foram medidas, e nenhum texto aqui diz o contrário. O método de prova existe no repositório, na pasta `prova/`, para quem quiser rodar. Quem quiser os números do uso que originou as regras lê a [pesquisa da linha de base](https://github.com/Carlobks/Morg-laws/blob/main/pesquisas/2026-11-05-linha-de-base-do-uso.md), que também é achado de um não profissional.
