@@ -171,7 +171,7 @@ Como ela se mantém magra:
 
 - Lê só o veredito: o topo do relatório, a lista do que ficou por verificar e o resultado da conferência. Não lê o relatório inteiro nem os diffs.
 - Pede que a filha avise no fim da fase, numa mensagem curta: o veredito, o commit e o que ficou por fazer. Um aviso no meio acorda a orquestradora sem decisão para tomar.
-- Renova-se todo dia: no fim do dia grava o handoff (P16) e fecha; no dia seguinte, uma orquestradora nova o lê.
+- Ela se renova todo dia: no fim do dia grava o handoff (P16) e fecha; no dia seguinte, uma orquestradora nova o lê.
 
 Um exemplo, o papel de uma orquestradora real, reescrito:
 
@@ -224,11 +224,9 @@ O que costuma dar errado:
 
 ### Por quê e fonte
 
-O relatório de uma auditoria volta no mesmo tom confiante, acerte ou erre. Só uma leitura que parte da fonte separa um do outro, e o exemplo mostra o caso em que a correção proposta tinha um defeito que só a conferência viu. O livro de Fabio Akita manda não aceitar a explicação do agente sobre uma decisão sem a fonte (p. 32) e lembra que a explicação dele sobre como verificou não é prova (p. 357). Mais de um revisor, com modelos diferentes, também vem do livro (pp. 49, 156).
+O relatório de uma auditoria volta no mesmo tom confiante, acerte ou erre. Só uma leitura que parte da fonte separa um do outro, e o exemplo mostra o caso em que a correção proposta tinha um defeito que só a conferência viu. O livro de Fabio Akita mostra que, sem a fonte, o agente pode inventar um motivo plausível para uma decisão antiga (p. 32) e lembra que a explicação dele sobre como verificou não é prova (p. 357). Mais de um revisor, com modelos diferentes, também vem do livro (pp. 49, 156).
 
-As vozes da cabeça de Carlobks (decisão de 2026-11-06): a auditoria a frio fica no maior modelo. Porquê: a skill diz que um modelo mais barato pode baixar a qualidade, e por isso o plano e a auditoria ficam no maior ([`orquestrando-sessoes`](https://github.com/Carlobks/Morg-laws/blob/main/skills/orquestrando-sessoes/SKILL.md)).
-
-As vozes da cabeça de Carlobks (decisão de 2026-11-06): a conferência vem antes de o achado chegar a ele. Porquê: nas palavras dele, arrumadas, foi por teste: começou a pedir a conferência antes de o trabalho chegar a ele e sempre achava algum erro; então passou a pedir sempre, porque prefere receber o trabalho bem feito, com uma confirmação. Foi aprendendo a não confiar cegamente.
+As vozes da cabeça de Carlobks (decisão de 2026-11-06): a conferência vem antes de o achado chegar a ele. Porquê: nas palavras dele, arrumadas, foi experimentando: começou a pedir a conferência antes de o trabalho chegar a ele e sempre achava algum erro; então passou a pedir sempre, porque prefere receber o trabalho bem feito, com uma confirmação. Foi aprendendo a não confiar cegamente.
 
 Onde vive no Morg-laws: as seções “Leitura independente” e “A orquestradora magra e diária” da skill `orquestrando-sessoes`.
 
@@ -254,11 +252,16 @@ O molde `modelos/documentos/handoff.md` tem seis seções: objetivo, estado veri
 | Detector | 1 | detector de dados e `pre-commit` |
 Testes: `sh scripts/testar.sh` passa, 501 testes, cobertura de 100%.
 
+## Decisões e porquê
+- O teto em palavras, e não em linhas: a linha muda com a largura.
+
 ## Descartado
 - Contar o “medido” só por `grep` → casa “à medida que” → virou um detector com a ressalva.
 
 ## Próximos passos
 1. Escrever o molde do Typst e provar com um par.
+
+Cuidados: nenhum.
 ```
 
 O que costuma dar errado:
@@ -305,4 +308,4 @@ O que costuma dar errado:
 
 O índice do git é um só, e o `git commit` sem caminhos grava tudo o que está preparado, de quem for. O `git stash` esconde também o trabalho de quem não o pediu. Reescrever um histórico que outros já têm muda os hashes de todos e tira o chão de quem já o tinha. Por isso a saída de um engano é sempre um commit novo e um aviso, nunca refazer o passado.
 
-Onde vive no Morg-laws: a seção “Várias sessões na mesma pasta” da skill `orquestrando-sessoes` e a seção “Quando algo dá errado” da skill `git-e-commits`. O `index.lock` apoia-se no código do git (`lockfile.c`), na seção [“Git e contas” do `FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md#git-e-contas). A regra de nunca commitar o trabalho de outra sessão está no `AGENTS.md`, como “só o próprio trabalho”.
+Onde vive no Morg-laws: a seção “Várias sessões na mesma pasta” da skill `orquestrando-sessoes` e a seção “Quando algo dá errado” da skill `git-e-commits`. O `index.lock` se apoia no código do git (`lockfile.c`), na seção [“Git e contas” do `FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md#git-e-contas). A regra de nunca commitar o trabalho de outra sessão está no `AGENTS.md`, como “só o próprio trabalho”.
