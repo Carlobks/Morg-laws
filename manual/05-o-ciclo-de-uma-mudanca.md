@@ -74,7 +74,7 @@ O que costuma dar errado:
 
 ### Por quê e fonte
 
-O commit é o único lugar onde o trabalho fica a salvo: num projeto real, 109 arquivos viveram só no disco de uma máquina até alguém notar. O Git é a rede, com commits pequenos e o envio na mão de uma pessoa (livro *Competente o Suficiente*, de Fabio Akita, pp. 230, 382), e as entregas pequenas e frequentes andam junto com a estabilidade (pp. 286–288, 291–292). O porquê escrito na mensagem é o que a pessoa que ler o histórico não tem como adivinhar.
+O commit é o único lugar onde o trabalho fica a salvo: num projeto real, 109 arquivos viveram só no disco de uma máquina até alguém notar ([o que se mediu no projeto de origem](https://github.com/Carlobks/Morg-laws/blob/main/projetos/erp-de-servicos/o-que-se-mediu.md)). O Git é a rede, com commits pequenos e o envio na mão de uma pessoa (livro *Competente o Suficiente*, de Fabio Akita, pp. 230, 382), e as entregas pequenas e frequentes andam junto com a estabilidade (pp. 286–288, 291–292). O porquê escrito na mensagem é o que a pessoa que ler o histórico não tem como adivinhar. O `git add` é o que põe um arquivo novo no git: sem ele, o commit por caminho recusa. Num arquivo que o git já acompanha, o commit por caminho grava o que está no disco, e o hook do git vê só esses caminhos.
 
 O commit por caminho existe por causa da pasta compartilhada: o aviso de arquivos por commitar conta arquivos, e não donos. E uma mudança que quem usa nota leva um fragmento próprio no changelog, em vez de um arquivo único que colide quando várias sessões escrevem ao mesmo tempo (o texto do GitLab, na seção [“Changelog e versões” do `FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md#changelog-e-versões)).
 
@@ -103,6 +103,8 @@ que reprovou, e commitei assim mesmo, porque o hook do commit não roda esse tes
 Corrigi num commit novo, sem amend.
 Daí em diante: adicionar os caminhos ao índice, rodar os portões, só então commitar.
 ```
+
+Aqui o hook não recusou: o teste vermelho era de um portão que se roda à mão. Com um portão vermelho também não se commita.
 
 O que costuma dar errado:
 
@@ -151,7 +153,7 @@ O que costuma dar errado:
 
 ### Por quê e fonte
 
-Um teste que nunca falhou não prova nada. O livro de Fabio Akita manda prender cada bug com um teste e só juntar com tudo verde (pp. 80–81), e lembra que um programa vazio tem de reprovar: os controles negativos (pp. 423–424). Num projeto real, 86 de 199 commits de correção não tinham teste antes dessa regra.
+Um teste que nunca falhou não prova nada. O livro de Fabio Akita manda prender cada bug com um teste e só juntar com tudo verde (pp. 80–81), e lembra que um programa vazio tem de reprovar: os controles negativos (pp. 423–424). Num projeto real, 86 de 199 commits de correção não tinham teste antes dessa regra ([o que se mediu no projeto de origem](https://github.com/Carlobks/Morg-laws/blob/main/projetos/erp-de-servicos/o-que-se-mediu.md)).
 
 Onde vive no Morg-laws: a seção “Correção sem teste tem de dizer porquê” da skill `git-e-commits` e a seção “Bug tem teste” da skill `testes-e-provas`. O `AGENTS.md` traz a regra “bug traz teste”.
 
@@ -168,6 +170,8 @@ Antes de pedir o “sim”, confira, no fim da fase:
 3. o scanner de segredos (o `gitleaks`) sobre os commits por enviar;
 4. a lista negra sobre os arquivos novos;
 5. a lista dos arquivos de todos os commits por enviar.
+
+Peça ao agente cada uma, com a saída. O `pre-push` roda o gitleaks de novo no envio, mas aí o “sim” já foi dado.
 
 Só então pergunte. Um exemplo, reescrito, o fim de uma fase:
 
