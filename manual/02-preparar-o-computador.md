@@ -103,24 +103,24 @@ $currentPath = [Environment]::GetEnvironmentVariable('PATH', 'User')
 
 Feche o PowerShell e abra outro. No Windows, com o Python há mais um caso, descrito na [documentação do Python](https://docs.python.org/3/using/windows.html): se o `python` abre a loja de aplicativos em vez do Python, ative os apelidos “Python (default)” em “Gerenciar apelidos de execução de aplicativos”; e se o `py` reclama que não abre um arquivo, desinstale o “Python launcher” antigo em Aplicativos instalados.
 
+## A conta no GitHub
+
+O GitHub é o site onde o código fica guardado e onde o Morg-laws mora. Para este manual você só precisa da conta, que serve para a próxima seção e para o P4. Crie-a pela página de cadastro que a documentação indica: a [página oficial](https://docs.github.com/en/get-started/start-your-journey/creating-an-account-on-github) pede um e-mail e a verificação dele, que o GitHub faz por uma mensagem que você recebe.
+
+Depois de criar a conta, a [página do e-mail de commit](https://docs.github.com/en/account-and-profile/how-tos/setting-up-and-managing-your-personal-account-on-github/managing-email-preferences/setting-your-commit-email-address) mostra onde ligar a opção “Keep my email addresses private”: no site, na sua foto, Settings e Emails. Com ela ligada, os commits passam a usar um endereço noreply. Anote esse endereço: é o e-mail da próxima seção e o que o P4 pede.
+
 ## Seu nome e e-mail no git
 
-O git escreve o nome e o e-mail de quem fez cada commit. Sem eles, o primeiro commit é recusado. Diga-os uma vez, para todos os projetos desta máquina. Troque o texto entre aspas pelo seu nome e pelo seu e-mail de verdade, mantendo as aspas:
+O git escreve o nome e o e-mail de quem fez cada commit. Sem eles, o primeiro commit é recusado. Diga-os uma vez, para todos os projetos desta máquina. Troque o texto entre aspas pelo seu nome e pelo endereço noreply da sua conta no GitHub, mantendo as aspas:
 
 ```
 git config --global user.name "seu nome"
-git config --global user.email "seu e-mail"
+git config --global user.email "seu endereço noreply"
 ```
 
 Para conferir, `git config user.name` e `git config user.email` mostram o que ficou. Isso vem do [primeiro uso do git](https://git-scm.com/book/en/v2/Getting-Started-First-Time-Git-Setup), que explica que o `--global` vale para todos os projetos do seu usuário.
 
-Por enquanto, use um e-mail seu qualquer. No P4, o manual troca o e-mail só do repositório do seu projeto pelo e-mail noreply do GitHub, que esconde o seu e-mail verdadeiro dos commits públicos.
-
-## A conta no GitHub
-
-O GitHub é o site onde o código fica guardado e onde o Morg-laws mora. Para este manual você só precisa da conta, que serve para o P4 e para o que vier depois. Crie-a pela página de cadastro que a documentação indica: a [página oficial](https://docs.github.com/en/get-started/start-your-journey/creating-an-account-on-github) pede um e-mail e a verificação dele, que o GitHub faz por uma mensagem que você recebe.
-
-Depois de criar a conta, a [página do e-mail de commit](https://docs.github.com/en/account-and-profile/how-tos/setting-up-and-managing-your-personal-account-on-github/managing-email-preferences/setting-your-commit-email-address) mostra onde ligar a opção “Keep my email addresses private”: no site, na sua foto, Settings e Emails. Com ela ligada, os commits passam a usar um endereço noreply. É esse endereço que o P4 pede.
+O noreply esconde o seu e-mail pessoal dos commits públicos. No P4, o manual confere esse mesmo endereço e o grava só no repositório do projeto.
 
 ## A pasta do projeto, o `git init` e o primeiro commit
 
@@ -160,7 +160,7 @@ O `-F msg` lê a mensagem do arquivo `msg`, e o `-- teste.txt` diz que o commit 
 git log --oneline
 ```
 
-Aparece uma linha com o código curto do commit e a mensagem “primeiro commit”. Se o git responder que não sabe quem você é, volte à seção do nome e do e-mail. O arquivo `msg` fica de fora do commit, de propósito, e pode ser apagado quando quiser. Esse mesmo commit é a prova do passo 6 do P3.
+Aparece uma linha com o código curto do commit e a mensagem “primeiro commit”. Se o git responder que não sabe quem você é, volte à seção do nome e do e-mail. O arquivo `msg` fica de fora do commit, de propósito, e pode ser apagado quando quiser. No passo 6 do P3, repita-o com outro arquivo, já com os hooks ligados.
 
 ## A cópia do Morg-laws
 
