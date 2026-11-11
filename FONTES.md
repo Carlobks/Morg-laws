@@ -324,6 +324,8 @@ Lidas em 2026-11-07 para o workflow `links` (`.github/workflows/links.yml`) e o 
 - **lychee-action — README e `action.yml` (v2.9.0)** — https://github.com/lycheeverse/lychee-action/blob/v2.9.0/action.yml (README: https://github.com/lycheeverse/lychee-action/blob/v2.9.0/README.md) — Sustenta: a receita da cache com `restore` e `save` separados; o `action.yml` baixa o binário com `curl -sfLO` sem conferir o sha256, que é o motivo de se usar o binário oficial.
 - **GitHub Docs — eventos que disparam workflows** — https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows — Sustenta: os agendados correm no último commit da `main`, podem atrasar no começo de cada hora e desligam-se num repositório público ao fim de 60 dias sem atividade; o aviso a quem mexeu por último no `cron`; o `GITHUB_TOKEN` só lê nas PRs vindas de forks.
 - **GitHub Docs — cache de dependências** — https://docs.github.com/en/actions/reference/workflows-and-actions/dependency-caching — Sustenta: uma cache não se reescreve; o `restore-keys`; uma PR lê a cache da base e a que cria fica só para ela; a remoção ao fim de 7 dias sem uso; o limite de 10 GB.
+- **GitHub Docs — workflows** — https://docs.github.com/en/actions/concepts/workflows-and-actions/workflows — lido em 2026-11-11.
+  Sustenta: cada execução usa a versão do workflow que está no commit (ou na referência) do evento; usado na parte 07.
 
 ## Modelos de issue e de PR (GitHub)
 
