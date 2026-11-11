@@ -31,7 +31,7 @@ No macOS e no Linux, `cd ~` volta para a sua pasta pessoal; o PowerShell já abr
 
 ## O Claude Code: conta, instalar e entrar
 
-O Claude Code só funciona com uma conta paga: a [página oficial](https://code.claude.com/docs/en/setup#authenticate) lista as contas Pro, Max, Ultra, Team, Enterprise e Console, e diz que o plano gratuito do claude.ai não inclui o Claude Code. Os planos e os preços ficam no site do Claude. Crie a conta lá antes de seguir.
+O Claude Code só funciona com uma conta paga: a [página oficial](https://code.claude.com/docs/en/setup#authenticate) lista as contas Pro, Max, Ultra, Team, Enterprise e Console, e diz que o plano gratuito do claude.ai não inclui o Claude Code. Os planos e os preços ficam no site do Claude. O Console é a conta de quem prefere pagar pela API. Crie a conta lá antes de seguir.
 
 A instalação é um comando colado no terminal. Cada sistema tem o seu:
 
@@ -79,7 +79,7 @@ No Windows, se o PowerShell recusar o `npm` com “running scripts is disabled o
 
 **Python 3.** Sirva-se da [página de downloads do Python](https://www.python.org/downloads/).
 
-- Windows: a página de downloads oferece o gerenciador de instalação do Python (também na loja de aplicativos da Microsoft), o caminho que a [documentação do Windows](https://docs.python.org/3/using/windows.html) recomenda. Depois dele existem os comandos `python`, `py` e `pymanager`, e este manual usa o `py`. Confira com `py --version`.
+- Windows: a página de downloads oferece o gerenciador de instalação do Python (também na loja de aplicativos da Microsoft), o caminho que a [documentação do Windows](https://docs.python.org/3/using/windows.html) recomenda. Depois dele existem os comandos `python`, `py` e `pymanager` (o mesmo que o `py`, sem confusão com o `py` antigo), e este manual usa o `py`. Na primeira vez que você rodar `py`, sem nenhum Python instalado, ele instala sozinho a versão mais recente. Confira com `py --version`.
 - macOS: baixe o instalador do Python 3 na mesma página e confira com `python3 --version`.
 - Linux: a página de downloads do Python não dá pacote pronto para Linux e manda compilar o código-fonte. O autor usa o gerenciador de pacotes da própria distribuição, que é o jeito comum no Linux. Confira com `python3 --version`.
 
@@ -108,7 +108,7 @@ Feche o PowerShell e abra outro. No Windows, com o Python há mais um caso, desc
 
 O GitHub é o site onde o código fica guardado e onde o Morg-laws mora. Para este manual você só precisa da conta, que serve para a próxima seção e para o P4. Crie-a pela página de cadastro que a documentação indica: a [página oficial](https://docs.github.com/en/get-started/start-your-journey/creating-an-account-on-github) pede um e-mail e a verificação dele, que o GitHub faz por uma mensagem que você recebe.
 
-Depois de criar a conta, a [página do e-mail de commit](https://docs.github.com/en/account-and-profile/how-tos/setting-up-and-managing-your-personal-account-on-github/managing-email-preferences/setting-your-commit-email-address) mostra onde ligar a opção “Keep my email addresses private”: no site, na sua foto, Settings e Emails. Com ela ligada, os commits passam a usar um endereço noreply. Anote esse endereço: é o e-mail da próxima seção e o que o P4 pede.
+Depois de criar a conta, a [página do e-mail de commit](https://docs.github.com/en/account-and-profile/how-tos/setting-up-and-managing-your-personal-account-on-github/managing-email-preferences/setting-your-commit-email-address) mostra onde ligar a opção “Keep my email addresses private”: no site, na sua foto, Settings e Emails. Com ela ligada, os commits passam a usar um endereço noreply. Anote esse endereço: é o e-mail da próxima seção e o que o P4 pede. Ele começa pelo número da conta, um `+` e o nome dela, segundo a [referência de e-mails do GitHub](https://docs.github.com/en/account-and-profile/reference/email-addresses-reference).
 
 ## Seu nome e e-mail no git
 
