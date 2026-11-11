@@ -176,8 +176,9 @@ Como ela se mantém magra:
 Um exemplo, o papel de uma orquestradora real, reescrito:
 
 ```
-Papel: escrever os pedidos das filhas, receber os resultados, conferir cada um por amostra no git,
-levar as decisões ao dono e registrá-las. Mais ninguém as registra.
+Papel: escrever os pedidos das filhas, receber os resultados, conferir no git os hashes, os testes
+e o veredito de cada um (sem ler os diffs), levar as decisões ao dono e registrá-las.
+Mais ninguém as registra.
 Não faz: implementar, auditar, lançar sub-agentes.
 Cada fase vai para uma sessão nova, com o modelo escolhido na hora: o maior para plano, auditoria
 e conferência; o médio para implementar e corrigir.
