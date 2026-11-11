@@ -37,6 +37,7 @@ Cada termo numa frase, em ordem alfabética, com a parte do manual que o explica
 - **noreply**: o e-mail que o GitHub dá a cada conta para os commits, e que é público por desenho (ver o P4).
 - **oráculo**: a conferência que você escreve antes de começar, e que diz se o resultado está certo, sem dizer como se faz (ver o P7).
 - **orquestradora**: a sessão que só escreve os pedidos das filhas, recebe os resultados e decide o passo seguinte (ver o P14).
+- **P (procedimento)**: cada tarefa do manual num par de páginas, de P1 a P24.
 - **pedido**: o texto que você manda ao agente; leva as quatro partes, e nas sessões filhas leva tudo o que a filha precisa saber (ver o P6 e o P11).
 - **permissões (`deny`, `ask`, `allow`)**: as três colunas do `settings.json`: o que o agente não pode usar, o que ele pergunta antes e o que ele faz livre (parte 07).
 - **plano**: o texto do que vai mudar, em quais arquivos e em que ordem, que você lê e aprova antes de o agente mexer (ver o P18 e o P9).
@@ -57,7 +58,9 @@ Cada termo numa frase, em ordem alfabética, com a parte do manual que o explica
 - **terminal**: a janela onde se digitam os comandos (parte 00).
 - **teste**: um programa que confere se outro faz o que deve; um bug corrigido traz o seu teste, visto falhar antes (ver o P21).
 - **tipo do commit (`fix`, `test`…)**: a primeira palavra do título da mensagem, que diz o tipo da mudança (ver o P19 e o P21).
-- **token**: a unidade em que o modelo lê e escreve texto, mais ou menos um pedaço de palavra; o limite da janela se conta em tokens (ver o P10); no CI, é também a credencial com que um programa acessa um serviço (parte 07).
+- **token (do modelo)**: a unidade em que o modelo lê e escreve texto, mais ou menos um pedaço de palavra; o limite da janela se conta em tokens (ver o P10).
+- **token (credencial)**: no CI, a credencial com que um programa acessa um serviço (parte 07).
+- **turno**: uma ida e volta da conversa: o seu pedido e a resposta do agente.
 - **variável de ambiente**: um valor que o sistema entrega aos programas pelo nome, como a `MORG_PY`, que diz qual Python rodar (parte 07).
 - **veredito**: o resultado de uma auditoria no topo do relatório: “aprovado”, “aprovado com correções” ou “refazer” (ver o P15).
 - **`vitest`**: o programa que roda os testes em TypeScript (parte 07).

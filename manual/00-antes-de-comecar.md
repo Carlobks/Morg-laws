@@ -12,7 +12,7 @@ O agente de código fez o rascunho do texto e conferiu as fontes. O que é decis
 
 Se você nunca usou um agente nem o git, estas seis palavras bastam para entrar.
 
-- **Sessão.** No Claude Code, uma sessão é uma conversa com o agente, com a memória do que ficou dito nela. Uma sessão nova começa sem essa memória (P10).
+- **Sessão.** No Claude Code, uma sessão é uma conversa com o agente, com a memória do que ficou dito nela. Uma sessão nova começa sem essa memória (P10, um dos procedimentos numerados).
 - **Terminal.** É a janela onde se digitam os comandos, como os que este manual mostra.
 - **Repositório.** É a pasta do projeto que o git acompanha.
 - **O git e porque se usa.** O git guarda cada versão do trabalho: dá para ver o que o agente mudou, voltar atrás e não perder nada ([o que é o Git, no livro oficial](https://git-scm.com/book/en/v2/Getting-Started-What-is-Git%3F)).
