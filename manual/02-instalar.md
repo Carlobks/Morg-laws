@@ -82,7 +82,7 @@ Texto é conselho. Para as regras serem cumpridas, copie as barreiras do Morg-la
 3. Ligue os hooks do git: `git config core.hooksPath .githooks`.
 4. Defina `COMANDO_DOS_TESTES` no `pre-commit`: o comando que roda os testes do seu projeto. Para começar, copie `modelos/testes/test_regras.py` para `tests/`.
 5. Prove: peça ao agente um commit com `--no-verify` e veja a recusa.
-6. Prove também o hook do git: faça você, no terminal, um commit de um arquivo de teste e veja o `pre-commit` rodar os testes. Se nenhuma das duas provas recusar ou rodar, a barreira não está ligada: confira o `core.hooksPath` e a marca de executável.
+6. Prove também o hook do git: faça você, no terminal, um commit de um arquivo de teste e veja o `pre-commit` rodar os testes. Se a do 5 não recusar, confira o `.claude/settings.json`; se a do 6 não rodar, o `core.hooksPath` e a marca de executável.
 
 O que o hook do agente responde, de verdade, a esse pedido (o resto da frase diz o que a opção faz):
 
@@ -99,7 +99,7 @@ O que costuma dar errado:
 
 ### Por quê e fonte
 
-Um `AGENTS.md` é orientação, não barreira: o agente pode esquecê-lo ou escolher outro caminho. Por isso o que tem de ser cumprido vira hook, teste ou CI. No Claude Code, um hook `PreToolUse` que sai com 2 bloqueia a chamada e mostra o motivo ao agente, e o campo `onFailure` com o valor `block` faz um hook que falha também bloquear, desde a versão 2.1.295 (o `claude --version` mostra a sua; [documentação de hooks](https://code.claude.com/docs/en/hooks)). Numa versão mais antiga o campo é ignorado, e um hook que não inicia deixa passar.
+Um `AGENTS.md` é orientação, não barreira: o agente pode esquecê-lo ou escolher outro caminho. Por isso o que tem de ser cumprido vira hook, teste ou CI. No Claude Code, um hook `PreToolUse` que sai com 2 bloqueia a chamada e mostra o motivo ao agente, e o campo `onFailure` com o valor `block` faz um hook que falha também bloquear, desde a versão 2.1.295 (o `claude --version` mostra a sua; [documentação de hooks](https://code.claude.com/docs/en/hooks)). Numa versão mais antiga o campo é ignorado, e um hook que não inicia deixa passar. O código 2 é o número com que o hook diz “recusei”.
 
 Há duas camadas, e uma cobre a outra. Os hooks do agente (`modelos/claude/`) olham o que o agente tenta fazer, como o `--no-verify` acima. Os hooks do git (`.githooks/`) rodam em todo commit, do agente ou feito à mão. As duas se somam às permissões do agente, que a [documentação de permissões](https://code.claude.com/docs/en/permissions) descreve.
 
