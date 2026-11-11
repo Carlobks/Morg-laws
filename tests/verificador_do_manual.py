@@ -26,7 +26,7 @@ TETO_DO_MOLDE_EM_LINHAS = 150
 FORA_DO_TETO = ("manual/fontes/", "manual/imagens/", "manual/pessoas-citaveis.txt", "manual/nomes-citaveis.txt",
                 "manual/palavras-que-abrem-frase.txt")
 TETOS_POR_PARTE = {  # palavras da prosa (fora de blocos de código) por parte; com pares: n × (250 + 400) + 200
-    "manual/README.md": 500, "manual/00-antes-de-comecar.md": 1100, "manual/01-o-que-e-o-morg-laws.md": 1000,
+    "manual/README.md": 500, "manual/00-antes-de-comecar.md": 1500, "manual/01-o-que-e-o-morg-laws.md": 1000,
     "manual/02-instalar.md": 3450, "manual/03-pedir.md": 2800, "manual/04-sessoes.md": 5400,
     "manual/05-o-ciclo-de-uma-mudanca.md": 3450, "manual/06-as-regras.md": 2000,
     "manual/07-como-se-garante.md": 2700, "manual/08-quando-da-errado.md": 1500, "manual/09-glossario.md": 1800,
