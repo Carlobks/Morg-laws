@@ -20,7 +20,7 @@ Uma última combinação sobre a escrita: as páginas do livro que o manual cita
 
 ## Para qual ferramenta é
 
-O manual é sobre o Claude Code, que o autor usa quase todo dia. Ele deve servir também para o Codex, que segue o mesmo padrão de skills, como diz a [documentação de skills do Codex](https://developers.openai.com/codex/skills). Mas o autor ainda não usou o Codex: onde o manual diz como algo funciona nele, vem da documentação, não da prática. Se você usa o Codex e algo não bater, abra uma issue (a parte `01-o-que-e-o-morg-laws.md` mostra como).
+O manual é sobre o Claude Code, que o autor usa quase todo dia. Ele deve servir também para o Codex, que segue o mesmo padrão de skills, como diz a [documentação de skills do Codex](https://developers.openai.com/codex/skills). Mas o autor ainda não usou o Codex: onde o manual diz como algo funciona nele, vem da documentação, não da prática. Os passos que dependem do Claude Code dizem isso no lugar: os hooks do agente e o `settings.json` (P3), as sessões filhas, os títulos e os avisos entre sessões (P11, P12, P14) e a compactação (P10). Os hooks do git, os testes e o CI não dependem do agente. Se você usa o Codex e algo não bater, abra uma issue (a parte `01-o-que-e-o-morg-laws.md` mostra como).
 
 ## O que este manual não promete
 
