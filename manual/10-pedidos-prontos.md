@@ -1,10 +1,22 @@
 # Pedidos prontos
 
-Esta parte reúne os pedidos que as outras partes ensinam a escrever, já escritos para você copiar. Cada um vem num bloco, com uma linha antes que diz quando usar e uma remissão ao procedimento que o explica. Os exemplos falam de um projeto inventado, um aplicativo de lista de compras, e você troca os trechos entre sinais de menor e maior pelo que é seu. Os pedidos seguem as skills [`orquestrando-sessoes`](https://github.com/Carlobks/Morg-laws/blob/main/skills/orquestrando-sessoes/SKILL.md) e [`pondo-o-plano-a-prova`](https://github.com/Carlobks/Morg-laws/blob/main/skills/pondo-o-plano-a-prova/SKILL.md), e cada seção abaixo diz de qual.
+Esta parte reúne os pedidos principais que as outras partes ensinam, já escritos para você copiar. Cada um vem num bloco, com uma linha antes que diz quando usar e uma remissão ao procedimento que o explica. Os exemplos falam de um projeto inventado, um aplicativo de lista de compras, e você troca os trechos entre sinais de menor e maior pelo que é seu. Os pedidos seguem as skills [`comecando-um-projeto`](https://github.com/Carlobks/Morg-laws/blob/main/skills/comecando-um-projeto/SKILL.md), [`orquestrando-sessoes`](https://github.com/Carlobks/Morg-laws/blob/main/skills/orquestrando-sessoes/SKILL.md) e [`pondo-o-plano-a-prova`](https://github.com/Carlobks/Morg-laws/blob/main/skills/pondo-o-plano-a-prova/SKILL.md), e cada seção abaixo diz de qual.
+
+## A primeira mensagem
+
+Use ao abrir o agente num projeto, novo ou que já existe, antes de pedir qualquer código. Explicado no procedimento P5, na parte 02.
+
+```
+/comecando-um-projeto Quero começar (ou organizar) este projeto com você. Antes de escrever código, me faça as perguntas em rondas, confirme comigo cada resposta e deixe escritos o documento do projeto, o AGENTS.md, o primeiro plano e as decisões de arquitetura.
+```
+
+No Codex, o mesmo texto, com `$` no lugar da barra ([documentação do Codex](https://developers.openai.com/codex/skills)).
+
+A fonte é a seção 6 da skill [`comecando-um-projeto`](https://github.com/Carlobks/Morg-laws/blob/main/skills/comecando-um-projeto/SKILL.md), a mensagem inicial, igual nas duas ferramentas fora o prefixo.
 
 ## Uma tarefa nas quatro partes
 
-Use quando a tarefa é de verdade e você quer o resultado à primeira. Explicado no procedimento P6, na parte 03. A terceira parte, o que você não quer, é a que mais vale, e o critério de pronto da quarta é algo que o agente consegue conferir sozinho.
+Use quando a tarefa é de verdade e você quer o resultado de primeira. Explicado no procedimento P6, na parte 03. A terceira parte, o que você não quer, é a que mais vale, e o critério de pronto da quarta é algo que o agente consegue conferir sozinho.
 
 ```
 O que quero: que a lista de compras mostre o total de itens marcados no topo da tela.
@@ -14,6 +26,18 @@ Como vou saber que ficou certo: um teste novo para o contador passa, os testes a
 ```
 
 A fonte é a seção 6 da skill [`pondo-o-plano-a-prova`](https://github.com/Carlobks/Morg-laws/blob/main/skills/pondo-o-plano-a-prova/SKILL.md): o resumo que ela manda entregar tem o objetivo, o que fica de fora e a prova de pronto, as mesmas peças do pedido.
+
+## O oráculo
+
+Use junto com uma tarefa que muda algo que a pessoa vê, antes de o agente começar. Explicado no procedimento P7, na parte 03.
+
+```
+Oráculo
+- Dado <a situação>, quando <a pessoa faz X>, então <o que ela vê ou o estado que fica>.
+- Continua igual: <o que não se mexe>, conferido por <tela, comando, número>.
+```
+
+A fonte é a seção 3 da skill [`pondo-o-plano-a-prova`](https://github.com/Carlobks/Morg-laws/blob/main/skills/pondo-o-plano-a-prova/SKILL.md), que traz o molde e pede pelo menos uma linha “Continua igual”.
 
 ## Pôr o plano à prova
 
@@ -27,6 +51,18 @@ Eu o confirmo antes de você começar. Se eu disser “chega”, pare de pergunt
 ```
 
 A fonte são as seções 4 e 6 da skill [`pondo-o-plano-a-prova`](https://github.com/Carlobks/Morg-laws/blob/main/skills/pondo-o-plano-a-prova/SKILL.md): como perguntar e o que entregar no fim.
+
+## Pedir o plano
+
+Use quando a mudança mexe em vários arquivos, antes de o agente escrever qualquer coisa. Explicado no procedimento P18, na parte 05. Leia o plano e só então diga “sim”.
+
+```
+Antes de mexer em qualquer arquivo, me entregue um plano: o que muda, em quais arquivos, em que ordem e como cada passo se prova.
+Quando houver uma decisão que é minha, pergunte, explicada, com a opção recomendada marcada.
+Não comece antes do meu “sim”.
+```
+
+A fonte é a seção 8 da skill [`orquestrando-sessoes`](https://github.com/Carlobks/Morg-laws/blob/main/skills/orquestrando-sessoes/SKILL.md), o plano que o dono lê, e a seção 6 da [`pondo-o-plano-a-prova`](https://github.com/Carlobks/Morg-laws/blob/main/skills/pondo-o-plano-a-prova/SKILL.md), o resumo que o dono confirma antes de começar.
 
 ## Abrir uma sessão filha
 
@@ -48,7 +84,22 @@ O relatório vai para <arquivo do relatório>: os commits, a prova de cada passo
 Quando acabar, troque o título para OK e avise num parágrafo.
 ```
 
-A fonte é a seção 3 da skill [`orquestrando-sessoes`](https://github.com/Carlobks/Morg-laws/blob/main/skills/orquestrando-sessoes/SKILL.md), que manda fazer as fases uma de cada vez, cada uma curta. A escolha do modelo da filha está no procedimento P12.
+A fonte são as seções 4 e 6 da skill [`orquestrando-sessoes`](https://github.com/Carlobks/Morg-laws/blob/main/skills/orquestrando-sessoes/SKILL.md): o que leva o pedido da filha, o título e o commit por caminho. A escolha do modelo da filha está no procedimento P12.
+
+## O papel da orquestradora
+
+Use ao abrir a sessão que orquestra um trabalho de várias fases. Explicado no procedimento P14, na parte 04.
+
+```
+Papel: escrever os pedidos das filhas, receber os resultados, conferir cada um por amostra no git,
+levar as decisões ao dono e registrá-las. Mais ninguém as registra.
+Não faz: implementar, auditar, lançar sub-agentes.
+Cada fase vai para uma sessão nova, com o modelo escolhido na hora: o maior para plano, auditoria
+e conferência; o médio para implementar e corrigir.
+Quando uma filha acaba, chega um aviso curto. Em cada troca de fase: handoff gravado, depois compactar.
+```
+
+A fonte é a seção 4 da skill [`orquestrando-sessoes`](https://github.com/Carlobks/Morg-laws/blob/main/skills/orquestrando-sessoes/SKILL.md), a orquestradora magra e diária: ela só encaminha, lê só o veredito e se renova todo dia.
 
 ## Uma auditoria a frio
 
