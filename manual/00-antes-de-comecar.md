@@ -4,11 +4,9 @@
 
 ## Quem escreveu isto
 
-<!-- rascunho do agente: Carlobks reescreve à mão -->
+Eu sou o Carlobks, estou na casa dos vinte e escrevo este manual para compartilhar o que ando vivendo: o sonho de poder criar o que vem na minha cabeça. Sou um júnior que nunca trabalhou na área. Fiz o SENAI e tive o prazer de ter um professor incrível, o Cenora. Desde lá venho apaixonado por criar, porque foi ali que fiz o meu primeiro site, sobre o criador da franquia Zelda. Lembro de ficar horas só trocando a posição das imagens, e quando adicionei JavaScript ao site fiquei louco: passava o mouse pelos ícones e eles reagiam. Sempre quis fazer um jogo ou algo assim, mas era realmente algo enorme. Desde fevereiro de 2026 caí de cabeça nas IAs que escrevem código e quero aprender a lógica por trás delas. Escrevi o manual para mim e para qualquer pessoa que ainda não sabe usar agentes: um guia prático para ler, ou imprimir e ter sempre à mão, com o que o Morg-laws já aplica desde o início.
 
-Quem escreveu este manual é Carlobks. Ele é um júnior que nunca trabalhou na área, caiu de cabeça nas IAs que escrevem código e quer aprender a lógica por trás delas. Escreveu o manual para si e para qualquer pessoa que ainda não sabe usar agentes: um guia prático para ler, ou imprimir e ter sempre à mão, com o que o Morg-laws já aplica desde o início.
-
-O agente de código fez o rascunho do texto e conferiu as fontes. O que é decisão, escolha ou gosto é de Carlobks. A história dele, de como chegou até aqui, fica para outro livro: aqui o manual é só prático. Não há aqui o nome civil de ninguém nem dado pessoal, só o nome Carlobks, e é assim porque o repositório é público. O mesmo tom do aviso do topo está na [pesquisa da linha de base do uso](https://github.com/Carlobks/Morg-laws/blob/main/pesquisas/2026-11-05-linha-de-base-do-uso.md), que também é o achado de um não profissional.
+O agente de código fez o rascunho do texto e conferiu as fontes. O que é decisão, escolha ou gosto é meu. A história inteira, de como cheguei até aqui, fica para outro livro: aqui o manual é só prático. Não há aqui o nome civil de ninguém nem dado pessoal, só o nome Carlobks, e é assim porque o repositório é público. O mesmo tom do aviso do topo está na [pesquisa da linha de base do uso](https://github.com/Carlobks/Morg-laws/blob/main/pesquisas/2026-11-05-linha-de-base-do-uso.md), que também é o achado de um não profissional. A intenção é esta: tudo o que eu conseguir melhorar, vou colocando aqui no manual, para qualquer pessoa, de um jeito prático e simples.
 
 ## Como ler este manual
 
