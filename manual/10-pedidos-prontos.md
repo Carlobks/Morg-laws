@@ -81,7 +81,7 @@ Já falhou e não se repete: <o que se tentou e não deu>.
 Em cada commit: adicione só os caminhos dele, rode os testes, commite por caminho. Um commit por passo.
 Está proibido: ler segredos, escrever no banco, lançar sub-agentes, fazer push.
 O relatório vai para <arquivo do relatório>: os commits, a prova de cada passo, os desvios e o que não se verificou.
-Quando acabar, troque o título para OK e avise num parágrafo.
+Quando acabar, troque o título para OK, ou me peça, com o título pronto (P13), e avise num parágrafo.
 ```
 
 A fonte são as seções 4 e 6 da skill [`orquestrando-sessoes`](https://github.com/Carlobks/Morg-laws/blob/main/skills/orquestrando-sessoes/SKILL.md): o que leva o pedido da filha, o título e o commit por caminho. A escolha do modelo da filha está no procedimento P12.

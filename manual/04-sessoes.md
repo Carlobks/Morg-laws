@@ -64,7 +64,7 @@ O que se faz é o que o plano manda, e mais nada. Se algo não bater, não impro
 Em cada commit: adicione só os caminhos dele, rode os portões, commite por caminho.
 Está proibido: ler segredos, escrever no banco, lançar sub-agentes, fazer push.
 O relatório vai para tal arquivo: commits, a prova de cada passo, desvios e o que não se verificou.
-Quando acabar, troque o título para OK e avise num parágrafo.
+Quando acabar, troque o título para OK, ou me peça, com o título pronto (P13), e avise num parágrafo.
 ```
 
 O que costuma dar errado:
@@ -135,21 +135,20 @@ A área vai em maiúsculas e o assunto em poucas palavras. Cada sessão troca o 
 ```
 ATIVO | MORG-LAWS · plano do manual de uso
 ESPERA | MORG-LAWS · pergunta sobre o formato (exemplo)
-OK | MORG-LAWS · implementação da M2 (começar: 00, 01, 02)
+OK | MORG-LAWS · revisão da parte 02 do manual
 OFF | MORG-LAWS · ideia guardada para depois (exemplo)
 ```
 
 Como renomear:
 
 - Na app de desktop do Claude Code: clique no título da sessão, ou peça ao agente, que tem essa ação lá.
-- No terminal, no Claude Code e no Codex ([comandos do Codex](https://developers.openai.com/codex/cli/slash-commands)): `/rename <título>`, que você digita. O agente não roda o `/rename`, que é um comando seu: ele pede a você, com o título pronto.
+- No terminal, no Claude Code e no Codex ([comandos do Codex](https://developers.openai.com/codex/cli/slash-commands)): `/rename <título>`, que você digita. O agente pede a você, com o título pronto.
 - Na extensão e na app do Codex, a documentação não diz como: o agente escreve o título no topo da primeira resposta.
 
 O que costuma dar errado:
 
 - Esquecer de trocar o título ao mudar de estado.
 - Um assunto longo demais: o título passa a não caber na lista.
-- Deixar o agente da filha sem o id da própria sessão: quem orquestra troca o título dela.
 
 ### Por quê e fonte
 
@@ -157,7 +156,7 @@ Com muitas sessões abertas você se perde. O título diz, de relance, quais esp
 
 Uma decisão de Carlobks (2026-11-08): o título `ESTADO | ÁREA · assunto`. Porquê: nas palavras dele, arrumadas, tinha 70 sessões abertas e se perdia naquela imensidão; o título foi um jeito de se organizar. Criou também pastas para as sessões. Assim sabe no que está trabalhando no momento.
 
-O `/rename` está na [documentação de comandos do Claude Code](https://code.claude.com/docs/en/commands): muda o nome da sessão e o mostra na barra do prompt; sem nome, gera um a partir da conversa. O nome tem no máximo 200 caracteres. Na app de desktop, clicar no título ou pedir ao agente vem da [documentação da app de desktop](https://code.claude.com/docs/en/desktop); o `/rename` do Codex, dos [comandos do Codex](https://developers.openai.com/codex/cli/slash-commands), que não dizem como se faz na extensão nem na app.
+O `/rename` está na [documentação de comandos do Claude Code](https://code.claude.com/docs/en/commands): muda o nome da sessão e o mostra na barra do prompt; sem nome, gera um a partir da conversa. O nome tem no máximo 200 caracteres, e um comando só é reconhecido no começo da sua mensagem: quem o digita é você. Na app de desktop, clicar no título ou pedir ao agente vem da [documentação da app de desktop](https://code.claude.com/docs/en/desktop); o `/rename` do Codex, dos [comandos do Codex](https://developers.openai.com/codex/cli/slash-commands), que não dizem como se faz na extensão nem na app.
 
 Onde vive no Morg-laws: a seção “Várias sessões na mesma pasta” da skill `orquestrando-sessoes`, que traz os quatro estados e a forma de renomear em cada ferramenta.
 
