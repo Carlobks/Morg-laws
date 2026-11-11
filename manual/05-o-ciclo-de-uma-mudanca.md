@@ -112,7 +112,7 @@ O que costuma dar errado:
 
 ### Por quê e fonte
 
-Pulado, o hook deixa passar o erro: ele é a rede, e uma rede com um buraco só se nota quando algo cai. O livro de Fabio Akita manda passar cada commit pela mesma bateria: estilo, dependências, análise estática e testes (pp. 408–409). Hook recusou, corrige-se a causa; o texto que só aconselha não é cumprido, e o que tem de valer sempre vira hook ou teste.
+Pulado, o hook deixa passar o erro: ele é a rede, e uma rede com um buraco só se nota quando algo cai. O livro de Fabio Akita manda passar cada commit pela mesma bateria: estilo, dependências, análise estática e testes (pp. 408–409). Hook recusou, se corrige a causa; o texto que só aconselha não é cumprido, e o que tem de valer sempre vira hook ou teste.
 
 O exemplo mostra outra lição: o portão que você roda à mão e o hook do commit podem conferir coisas diferentes. Rodar os dois, na ordem certa, evita depender de sorte.
 
@@ -131,7 +131,7 @@ Um `fix` traz o teste que pega o bug, visto falhando antes da correção. O pass
 3. Commite o teste e a correção juntos, com o porquê na mensagem.
 4. Quando não há como testar, escreva no corpo do commit a linha `Sem-teste: <motivo concreto>`. Um hook pode exigi-la.
 
-Um exemplo real: um `fix` do próprio repositório.
+Um exemplo real: um `fix` do próprio repositório, com o nome do arquivo trocado por uma descrição.
 
 ```
 fix(hooks): o pre-commit recusa quando o teste do catálogo falta no disco
@@ -187,6 +187,6 @@ O que costuma dar errado:
 
 O push publica no momento em que sai: o que entra num repositório público não sai mais, e um segredo publicado se roda ou se revoga, nunca se esconde. Por isso o “sim” é do dono, a cada vez. O livro de Fabio Akita manda ver a lista de arquivos de todos os commits por enviar antes do push (p. 386) e lembra que o envio é feito na mão de uma pessoa (pp. 230, 382).
 
-A conferência é da orquestradora (P14), e não da filha que escreveu o trabalho: quem escreveu lê o que quis dizer (P15).
+A conferência é de uma sessão que não escreveu o trabalho, e não da filha que o escreveu: quem escreveu lê o que quis dizer (P15). A orquestradora lê só o resultado dela (P14).
 
 Onde vive no Morg-laws: o `AGENTS.md`, regra “commit sem pedido, push com o sim”, e a seção “Quando commitar e quando pedir” da skill `git-e-commits`.
