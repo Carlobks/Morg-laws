@@ -31,6 +31,7 @@ Fonte secundária leva a marca *(secundária)* até ser conferida na original.
 - **Claude — Agent Skills, visão geral da plataforma** — https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview — lido em 2026-11-08, a página inteira. Sustenta: o `name` com até 64 caracteres, só minúsculas, algarismos e hífens, sem marcas XML e sem as palavras reservadas `anthropic` e `claude`; a `description` não vazia, com até 1.024 caracteres e sem marcas XML (a base do `tests/test_formato_das_skills.py`).
 - **Claude Code — app de desktop** — https://code.claude.com/docs/en/desktop — lido em 2026-11-08 (os primeiros 100.000 de 221.007 caracteres). Sustenta: na app de desktop renomeia-se uma sessão abrindo-a e clicando no título dela, na barra do título, ou pedindo ao Claude que a renomeie ou arquive (a base do item do título das sessões em `skills/orquestrando-sessoes/`).
 - **skills (a ferramenta do `npx skills add`)** — https://github.com/vercel-labs/skills — lido em 2026-11-02: o começo do README, `docs/agents.md` (procura por Codex e Claude Code) e os formatos de origem em `docs/commands.md`. Sustenta: instala para o Claude Code em `.claude/skills/` e para o Codex em `.agents/skills/`, escolhe os agentes com `-a` e aceita uma pasta local como origem.
+  Relido em 2026-11-11 (`docs/agents.md`). Sustenta também: o valor do `-a` é `codex` para o Codex e `claude-code` para o Claude Code.
 
 ## Compactação da conversa
 
