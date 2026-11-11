@@ -44,7 +44,7 @@ A mesma ideia aparece no guia de boas práticas do Claude Code, que pede ao agen
 ([boas práticas do Claude Code](https://code.claude.com/docs/en/best-practices)), e no livro *Competente o Suficiente*,
 de Fabio Akita: o pedido importante não sai sem o que fica de fora e o critério de pronto (pp. 118, 120–121).
 
-Onde vive no Morg-laws: a skill `pondo-o-plano-a-prova` pergunta pelas quatro partes antes de um pedido grande começar.
+Onde vive no Morg-laws: a skill `pondo-o-plano-a-prova` pergunta, antes de um pedido grande começar, por cinco lacunas: três são o que você quer, o que fica de fora e como saber que ficou certo; as outras duas são o que não tem volta e quem decide.
 
 ## P7 · O oráculo
 
@@ -140,7 +140,7 @@ Para um pedido grande, antes de o agente executar, peça que ele o ponha à prov
 Antes de começar, ponha este plano à prova: faça perguntas em rondas de no máximo quatro, com opções e a recomendada marcada com ➡️.
 ```
 
-Como a conversa corre:
+Como a conversa segue:
 
 1. O agente lê primeiro o que pode ler e só pergunta o que depende de você.
 2. Cada ronda tem até quatro perguntas, e cada uma traz opções e uma marcada com ➡️, com o porquê numa frase.
@@ -150,9 +150,9 @@ Como a conversa corre:
 Um exemplo. Uma ronda sobre o formato deste manual aconteceu na conversa, e só o resumo ficou escrito. Deste resumo se vê o jeito de cada ponto:
 
 ```
-Formato: o Markdown é a única fonte, e só o PDF sai dele. Quem escolheu: Carlobks.
+Formato: o Markdown é a única fonte, e só o PDF sai dele. Quem escolheu: Carlobks, porque o HTML e o site fogem do escopo por agora.
 Onde vive: uma pasta, um arquivo por parte. Quem escolheu: a recomendação, aceita.
-Página: o tamanho do PDF do livro de referência. Quem escolheu: Carlobks.
+Página: o tamanho do PDF do livro de referência. Quem escolheu: Carlobks, para imprimir este igual ao livro.
 ```
 
 O resumo guarda o ponto, a escolha e quem escolheu: a recomendação ou outra coisa.
@@ -165,7 +165,7 @@ O que costuma dar errado:
 
 ### Por quê e fonte
 
-Um plano ruim é executado com perfeição, e mais rápido (livro *Competente o Suficiente*, de Fabio Akita, pp. 105–106). As perguntas incômodas são o que decide se um plano se aprova (p. 92), e pedir primeiro o plano, revê-lo e só então avançar poupa o retrabalho (pp. 45, 78, 122).
+Um plano ruim é executado com perfeição, e mais rápido (livro *Competente o Suficiente*, de Fabio Akita, pp. 105–106). As perguntas incômodas, do tipo “e se…?”, são as que tornam o resultado confiável, e o agente não as faz sozinho (p. 92), e pedir primeiro o plano, revê-lo e só então avançar poupa o retrabalho (pp. 45, 78, 122).
 
 As regras da conversa são da skill `pondo-o-plano-a-prova`: rondas curtas, opções concretas com uma recomendada, o termo técnico explicado dentro da pergunta, e parar quando as lacunas têm resposta, porque cada ronda custa a sua atenção. Não faça ao agente uma pergunta que já traz a resposta (pp. 52–54): ele tende a concordar.
 
