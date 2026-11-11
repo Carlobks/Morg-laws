@@ -54,6 +54,7 @@ O pedido leva o objetivo, os arquivos, o que já se descartou, como se prova e o
 
 ```
 Título: ATIVO | ÁREA · implementação do passo 3
+Modelo: o médio (Sonnet)
 
 Implemente o passo 3 do plano. Você trabalha na pasta tal, em commits locais, sem push.
 Antes de começar, confira que a árvore está limpa e que o último commit é o combinado.
@@ -192,7 +193,7 @@ O que costuma dar errado:
 
 ### Por quê e fonte
 
-Cada aviso de uma filha acorda a orquestradora, e cada vez que ela acorda relê o contexto inteiro. Quanto mais viva, mais cada aviso custa. Por isso ela encaminha e decide, e o trabalho pesado fica em sessões que nascem limpas e morrem no fim da fase. O livro de Fabio Akita recomenda a orquestra de agentes só para lotes independentes, porque ela custa mais tokens e mais coordenação (pp. 49, 153–155, 210).
+Na app de desktop do Claude Code, cada aviso de uma filha acorda a orquestradora, e cada vez que ela acorda relê o contexto inteiro. Quanto mais viva, mais cada aviso custa. Por isso ela encaminha e decide, e o trabalho pesado fica em sessões que nascem limpas e morrem no fim da fase. O livro de Fabio Akita recomenda a orquestra de agentes só para lotes independentes, porque ela custa mais tokens e mais coordenação (pp. 49, 153–155, 210).
 
 Onde vive no Morg-laws: a seção “A orquestradora magra e diária” da skill `orquestrando-sessoes` ([`SKILL.md`](https://github.com/Carlobks/Morg-laws/blob/main/skills/orquestrando-sessoes/SKILL.md)), que traz a tabela do modelo da filha (P12). O custo de cada aviso vem das [boas práticas do Claude Code](https://code.claude.com/docs/en/best-practices): cada pedido manda a conversa inteira de volta.
 
