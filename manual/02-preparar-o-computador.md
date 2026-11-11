@@ -75,6 +75,8 @@ node --version
 npm --version
 ```
 
+No Windows, se o PowerShell recusar o `npm` com “running scripts is disabled on this system”, rode uma vez `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`: libera os scripts só para o seu usuário, sem administrador, segundo a [documentação da Microsoft](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-5.1).
+
 **Python 3.** Sirva-se da [página de downloads do Python](https://www.python.org/downloads/).
 
 - Windows: a página de downloads oferece o gerenciador de instalação do Python (também na loja de aplicativos da Microsoft), o caminho que a [documentação do Windows](https://docs.python.org/3/using/windows.html) recomenda. Depois dele existem os comandos `python`, `py` e `pymanager`, e este manual usa o `py`. Confira com `py --version`.
