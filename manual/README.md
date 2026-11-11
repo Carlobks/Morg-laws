@@ -15,14 +15,14 @@ em Markdown nesta pasta e feito para ser lido como PDF.
 | `05-o-ciclo-de-uma-mudanca.md` | O plano, o commit por caminho, o hook que recusa, o push |
 | `06-as-regras.md` | As regras, cada uma com o porquê e a fonte |
 | `07-como-se-garante.md` | Como o texto vira barreira |
-| `08-quando-da-errado.md` | O que fazer quando o agente falha |
-| `09-glossario.md` | Cada termo numa frase |
+| `08-quando-da-errado.md` | O que fazer quando o agente diz “pronto” sem prova, ou esquece o combinado |
+| `09-glossario.md` | Cada termo numa frase, com a parte que o explica |
 | `10-pedidos-prontos.md` | Os pedidos que se copiam |
 | `11-como-este-manual-foi-feito.md` | O posfácio |
 
 Por enquanto só as partes `00-antes-de-comecar.md`, `01-o-que-e-o-morg-laws.md`, `02-instalar.md`, `03-pedir.md`, `04-sessoes.md`, `05-o-ciclo-de-uma-mudanca.md`, `06-as-regras.md`, `07-como-se-garante.md`, `08-quando-da-errado.md`, `09-glossario.md` e `10-pedidos-prontos.md` existem. Falta só a `11-como-este-manual-foi-feito.md`, que vem por último.
 
-Os procedimentos vão em páginas duplas: na página par, **Na prática**; na ímpar, **Por quê e fonte**.
+Os procedimentos (P1 a P24) vão em páginas duplas: na página par, **Na prática**; na ímpar, **Por quê e fonte**.
 
 ## Gerar o PDF
 
