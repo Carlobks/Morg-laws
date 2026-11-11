@@ -12,7 +12,7 @@ Os requisitos mínimos estão na [página de instalação do Claude Code](https:
 
 ## O Claude Code: conta, instalar e entrar
 
-O Claude Code só funciona com uma conta paga: a [página oficial](https://code.claude.com/docs/en/setup#authenticate) lista as contas Pro, Max, Ultra, Team, Enterprise e Console, e diz que o plano gratuito do claude.ai não inclui o Claude Code. Os planos e os preços ficam no site do Claude e mudam com o tempo, por isso não são copiados aqui. Crie a conta lá antes de seguir.
+O Claude Code só funciona com uma conta paga: a [página oficial](https://code.claude.com/docs/en/setup#authenticate) lista as contas Pro, Max, Ultra, Team, Enterprise e Console, e diz que o plano gratuito do claude.ai não inclui o Claude Code. Os planos e os preços ficam no site do Claude. Crie a conta lá antes de seguir.
 
 A instalação é um comando colado no terminal, que a próxima seção ensina a abrir. Cada sistema tem o seu:
 
@@ -30,8 +30,7 @@ O comando não mostra progresso enquanto baixa: deixe a janela aberta e espere a
 claude --version
 ```
 
-Aparece um número de versão. Para entrar, digite `claude` e aperte Enter: o programa abre o navegador para você entrar com a sua conta, e o terminal mostra “Login successful” quando termina. Se o navegador não abrir, a tecla `c` copia o endereço de login para você colar. A página oficial de instalação lista ainda o Homebrew (`brew install --cask claude-code`) e o WinGet (`winget install Anthropic.ClaudeCode`) como alternativas; essas duas não se atualizam sozinhas.
-
+Aparece um número de versão. Para entrar, digite `claude` e aperte Enter: o programa abre o navegador para você entrar com a sua conta, e o terminal mostra “Login successful” quando termina. Se o navegador não abrir, a tecla `c` copia o endereço de login para você colar.
 Fontes: [instalação](https://code.claude.com/docs/en/setup), [guia do terminal para iniciantes](https://code.claude.com/docs/en/terminal-guide) e [login](https://code.claude.com/docs/en/authentication).
 
 ## O terminal: abrir e andar entre pastas
@@ -51,7 +50,7 @@ O terminal está sempre dentro de uma pasta, e os comandos agem sobre ela. Quatr
 - `cd nome-da-pasta` entra numa pasta que está dentro desta; `cd ..` sobe uma pasta.
 - `mkdir nome-da-pasta` cria uma pasta nova.
 
-Se você abriu o terminal e quer o seu usuário como ponto de partida, `cd ~` volta para a sua pasta pessoal no macOS e no Linux; no PowerShell, o terminal já abre ali.
+No macOS e no Linux, `cd ~` volta para a sua pasta pessoal; o PowerShell já abre nela.
 
 ## Instalar o git, o Node e o Python
 
@@ -191,15 +190,17 @@ Essa pasta é a raiz do projeto, a pasta de nível mais alto, a que tem dentro a
 Os nomes que começam por ponto, como `.git`, `.claude` e `.githooks`, são ocultos: os programas não os mostram a menos que você peça. O P1 cria a `.claude/skills/`, e quem não vê arquivos ocultos acha que o comando falhou.
 
 - Windows: no explorador de arquivos, em Windows 11 clique em Exibir, depois em Mostrar, e marque Itens ocultos; em Windows 10, clique em Exibir, Opções, a aba Exibir, e marque “Mostrar arquivos, pastas e unidades ocultos”, segundo a [página da Microsoft](https://support.microsoft.com/en-us/windows/view-hidden-files-and-folders-in-windows-97fbc472-c603-9d90-91d0-1166d1d9f4b5).
-- macOS e Linux: no terminal, `ls -a` lista tudo, ocultos incluídos. O autor usa assim no Linux; o gerenciador de arquivos de cada sistema tem ainda o seu atalho para mostrá-los, que este manual não descreve.
+- macOS e Linux: no terminal, `ls -a` lista tudo, ocultos incluídos. O autor usa assim no Linux.
 - No PowerShell, a mesma lista sai com `ls -Force`.
 
 ## Copiar arquivos e editar um arquivo de texto
 
 Copiar é o que o P2 e o P3 pedem o tempo todo. Se estiver no terminal, são comandos:
 
-- macOS e Linux: `cp origem destino` copia um arquivo, e `cp -r origem destino` copia uma pasta com tudo que há nela.
-- PowerShell: `Copy-Item origem -Destination destino` copia um arquivo, e com `-Recurse` no fim copia uma pasta inteira, como na [documentação do PowerShell](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/copy-item).
+- macOS e Linux: `cp origem destino` copia um arquivo, e `cp -r origem/. destino` copia o que há dentro de uma pasta.
+- PowerShell: `Copy-Item origem -Destination destino` copia um arquivo, e `Copy-Item origem\* -Destination destino -Recurse` copia o que há dentro de uma pasta, como na [documentação do PowerShell](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/copy-item).
+
+Sem o `/.` ou o `\*`, a pasta iria parar dentro do destino que já existe. Um destino novo se cria antes: `mkdir -p destino` (no PowerShell, `mkdir destino`).
 
 Com a pasta do Morg-laws ao lado do projeto, um exemplo, a partir da raiz do projeto, no macOS e no Linux:
 
