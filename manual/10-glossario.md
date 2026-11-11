@@ -49,13 +49,13 @@ Cada termo numa frase, em ordem alfabética, com a parte do manual que o explica
 - **raiz do projeto**: a pasta de nível mais alto do projeto, onde ficam o `AGENTS.md` e o `CLAUDE.md` (ver o P1 e o P2).
 - **regra**: uma instrução do `AGENTS.md` ou de uma skill, escrita com o motivo (parte 07).
 - **relatório**: o texto que uma sessão filha devolve; chega como dado, que você confere, e não como verdade (ver o P11).
-- **repositório**: a pasta do projeto que o git acompanha (parte 00).
+- **repositório**: a pasta do projeto que o git acompanha (partes 00 e 02).
 - **sessão**: uma conversa com o agente, com a memória do que ficou dito nela; uma sessão nova começa sem essa memória (parte 00 e parte 05).
 - **sessão filha**: uma sessão nova que recebe um pedido escrito e devolve um resultado (ver o P11).
 - **skill**: uma pasta com instruções sobre um assunto; o agente lê só a descrição no começo e abre o resto quando o assunto aparece (parte 01 e P1).
 - **sub-agente**: um agente lançado por dentro de uma sessão, que você não vê nem corrige; serve para buscas amplas e tarefas independentes (ver o P11).
 - **suíte**: o conjunto de todos os testes do projeto, rodado de uma vez (ver o P22).
-- **terminal**: a janela onde se digitam os comandos (parte 00).
+- **terminal**: a janela onde se digitam os comandos (partes 00 e 02).
 - **teste**: um programa que confere se outro faz o que deve; um bug corrigido traz o seu teste, visto falhar antes (ver o P21).
 - **tipo do commit (`fix`, `test`…)**: a primeira palavra do título da mensagem, que diz o tipo da mudança (ver o P19 e o P21).
 - **token (do modelo)**: a unidade em que o modelo lê e escreve texto, mais ou menos um pedaço de palavra; o limite da janela se conta em tokens (ver o P10).

@@ -1,6 +1,6 @@
 # Instalar
 
-Cinco passos põem o Morg-laws para funcionar num projeto: instalar as skills, pôr as regras, ligar as barreiras, guardar a lista negra e fazer a primeira mensagem. Faça na ordem, no seu projeto, dentro de uma pasta que já é um repositório do git. Você precisa do Node (para o `npx`), do Python 3 (os hooks são scripts dele) e, para copiar os modelos, de uma cópia deste repositório aberta em outra pasta.
+Cinco passos põem o Morg-laws para funcionar num projeto: instalar as skills, pôr as regras, ligar as barreiras, guardar a lista negra e fazer a primeira mensagem. Faça na ordem, no seu projeto. Se o git, o Node, o Python, a pasta do projeto ou a cópia deste repositório ainda faltam, a parte `02` leva você até eles.
 
 Cada passo é um par de páginas. Se você só quer fazer, leia a da esquerda de cada um e vá em frente.
 
@@ -82,7 +82,7 @@ Texto é conselho. Para as regras serem cumpridas, copie as barreiras do Morg-la
 3. Ligue os hooks do git: `git config core.hooksPath .githooks`.
 4. Defina `COMANDO_DOS_TESTES` no `pre-commit`: o comando que roda os testes do seu projeto. Para começar, copie `modelos/testes/test_regras.py` para `tests/`.
 5. Prove: peça ao agente um commit com `--no-verify` e veja a recusa.
-6. Prove também o hook do git: faça você, no terminal, um commit de um arquivo de teste e veja o `pre-commit` rodar os testes. Se a do 5 não recusar, confira o `.claude/settings.json`; se a do 6 não rodar, o `core.hooksPath` e a marca de executável.
+6. Prove também o hook do git: faça você um commit de teste, como o da parte `02`, e veja o `pre-commit` rodar os testes. Se a do 5 não recusar, confira o `.claude/settings.json`; se a do 6 não rodar, o `core.hooksPath` e a marca de executável.
 
 O que o hook do agente responde, de verdade, a esse pedido (o resto da frase diz o que a opção faz):
 

@@ -25,7 +25,7 @@ As outras palavras novas estão no glossário, a parte `10`.
 
 O manual tem partes numeradas, de `00` a `12`. Cada parte é um arquivo em `manual/`, e o PDF junta todas. Os procedimentos, os “faça assim”, vêm em páginas duplas: na página da esquerda, **Na prática**, com o molde, um exemplo preenchido e o que costuma dar errado; na da direita, **Por quê e fonte**, com a teoria, a fonte e onde aquilo vive no Morg-laws. Você pode ler só a esquerda e fazer. Quando quiser saber por que, vira a página.
 
-**Se você tem pressa:** leia a parte `03-instalar.md`, que põe tudo para funcionar, e depois a `04-pedir.md`, que ensina a pedir. O resto você consulta quando precisar. A parte `01-o-que-e-o-morg-laws.md` explica o que você acabou de instalar, e a `09-quando-da-errado.md` serve para o dia em que algo falhar.
+**Se você tem pressa:** leia a parte `02-preparar-o-computador.md`, que deixa o computador pronto, depois a `03-instalar.md`, que põe tudo para funcionar, e a `04-pedir.md`, que ensina a pedir. O resto você consulta quando precisar. A parte `01-o-que-e-o-morg-laws.md` explica o que você acabou de instalar, e a `09-quando-da-errado.md` serve para o dia em que algo falhar.
 
 Você vai ver a expressão “as vozes da cabeça de Carlobks”. É uma brincadeira dele: quando uma escolha é do autor e não de uma fonte, o manual diz isso assim, com a data em que ele decidiu, e diz também o porquê. Se um porquê não estiver escrito, o manual não cita a decisão. Assim você sempre sabe o que é fato de uma fonte e o que é preferência de uma pessoa.
 
