@@ -14,7 +14,7 @@ Na raiz do seu projeto, rode:
 npx skills add Carlobks/Morg-laws -a claude-code -y
 ```
 
-O comando copia as skills do repositório para a pasta do agente e cria um arquivo com a origem de cada uma:
+Esse comando foi testado na versão 1.7.4 do pacote. Ele copia as skills do repositório para a pasta do agente e cria um arquivo com a origem de cada uma:
 
 ```
 .claude/skills/<nome-da-skill>/
@@ -77,11 +77,12 @@ Onde vive no Morg-laws: o molde é `modelos/documentos/AGENTS.md`, e o teste `mo
 
 Texto é conselho. Para as regras serem cumpridas, copie as barreiras do Morg-laws:
 
-1. Copie `modelos/claude/` para `.claude/` do seu projeto (os hooks do agente e o `settings.json`).
-2. Copie `modelos/git/hooks/` para `.githooks/` e dê a marca de executável: `git add --chmod=+x .githooks/*`.
+1. Copie `modelos/claude/` para `.claude/` do seu projeto: são os hooks do agente e o `settings.json` do Claude Code.
+2. Copie `modelos/git/hooks/` para `.githooks/` e `modelos/git/portoes/` para `scripts/portoes/`: os hooks do git chamam esses scripts, e sem eles todo commit é recusado. Confira a marca de executável no disco com `ls -l .githooks` (no Linux e no macOS, `chmod +x .githooks/*` se faltar o `x`). O `git add --chmod=+x .githooks/*` grava a marca também no git, para quem clonar depois.
 3. Ligue os hooks do git: `git config core.hooksPath .githooks`.
-4. Defina `COMANDO_DOS_TESTES` no `pre-commit`: o comando que roda os testes do seu projeto.
+4. Defina `COMANDO_DOS_TESTES` no `pre-commit`: o comando que roda os testes do seu projeto. Para começar, copie `modelos/testes/test_regras.py` para `tests/`.
 5. Prove: peça ao agente um commit com `--no-verify` e veja a recusa.
+6. Prove também o hook do git: faça você, no terminal, um commit de um arquivo de teste e veja o `pre-commit` rodar os testes. Se nenhuma das duas provas recusar ou rodar, a barreira não está ligada: confira o `core.hooksPath` e a marca de executável.
 
 O que o hook do agente responde, de verdade, a esse pedido (o resto da frase diz o que a opção faz):
 
@@ -89,7 +90,7 @@ O que o hook do agente responde, de verdade, a esse pedido (o resto da frase diz
 Bloqueado (portões do git, Morg-laws): --no-verify …
 ```
 
-O comando sai com código 2, e o agente não commita.
+No Claude Code, o comando sai com código 2, e o agente não commita.
 
 O que costuma dar errado:
 
@@ -98,7 +99,7 @@ O que costuma dar errado:
 
 ### Por quê e fonte
 
-Um `AGENTS.md` é orientação, não barreira: o agente pode esquecê-lo ou escolher outro caminho. Por isso o que tem de ser cumprido vira hook, teste ou CI. No Claude Code, um hook `PreToolUse` que sai com 2 bloqueia a chamada e mostra o motivo ao agente, e o campo `onFailure` com o valor `block` faz um hook que falha também bloquear, desde a versão 2.1.295 ([documentação de hooks](https://code.claude.com/docs/en/hooks)). Numa versão mais antiga o campo é ignorado, e um hook que não inicia deixa passar.
+Um `AGENTS.md` é orientação, não barreira: o agente pode esquecê-lo ou escolher outro caminho. Por isso o que tem de ser cumprido vira hook, teste ou CI. No Claude Code, um hook `PreToolUse` que sai com 2 bloqueia a chamada e mostra o motivo ao agente, e o campo `onFailure` com o valor `block` faz um hook que falha também bloquear, desde a versão 2.1.295 (o `claude --version` mostra a sua; [documentação de hooks](https://code.claude.com/docs/en/hooks)). Numa versão mais antiga o campo é ignorado, e um hook que não inicia deixa passar.
 
 Há duas camadas, e uma cobre a outra. Os hooks do agente (`modelos/claude/`) olham o que o agente tenta fazer, como o `--no-verify` acima. Os hooks do git (`.githooks/`) rodam em todo commit, do agente ou feito à mão. As duas se somam às permissões do agente, que a [documentação de permissões](https://code.claude.com/docs/en/permissions) descreve.
 
@@ -139,7 +140,7 @@ O que entra num repositório público não sai mais: o histórico guarda tudo, t
 
 O e-mail noreply é público por desenho, e por isso seguro de commitar. Sem a identidade local, o commit usa a global da máquina, que costuma ser a pessoal; o portão `identidade.py` recusa outro e-mail. Uma regra do próprio `AGENTS.md` diz o mesmo em curto: nunca dados reais em testes, exemplos ou commits.
 
-O hook lê a lista sozinho, então o agente não precisa abri-la: a pasta que o modelo sugere para ela, `~/.config/morg-laws`, já vem negada ao agente no `settings.json`.
+O hook lê a lista sozinho, então o agente não precisa abri-la: a pasta que o modelo sugere para ela, `~/.config/morg-laws`, já vem negada ao agente no `settings.json` (o arquivo de permissões do Claude Code).
 
 Onde vive no Morg-laws: `modelos/git/hooks/pre-commit` e `modelos/git/portoes/lista_negra.py`; a nota sobre a identidade está na [nota de aprendizado sobre o git](https://github.com/Carlobks/Morg-laws/blob/main/aprendizados/2026-11-01-git.md).
 
