@@ -3,11 +3,11 @@
 //   typst compile --root . --font-path manual/fontes --ignore-system-fonts --input commit="$(git describe --always --dirty)" manual/manual.typ manual/manual.pdf
 #import "@preview/cmarker:0.1.10"
 
-#let partes = ("00-antes-de-comecar", "01-o-que-e-o-morg-laws", "03-instalar", "04-pedir", "05-sessoes",
+#let partes = ("00-antes-de-comecar", "01-o-que-e-o-morg-laws", "02-preparar-o-computador", "03-instalar", "04-pedir", "05-sessoes",
   "06-o-ciclo-de-uma-mudanca", "07-as-regras", "08-como-se-garante", "09-quando-da-errado", "10-glossario",
   "11-pedidos-prontos", "12-como-este-manual-foi-feito")
 // O Typst não sabe se um arquivo existe: cada fase acrescenta aqui a parte que escreveu (as outras não partem a compilação).
-#let escritas = ("00-antes-de-comecar", "01-o-que-e-o-morg-laws", "03-instalar", "04-pedir", "05-sessoes",
+#let escritas = ("00-antes-de-comecar", "01-o-que-e-o-morg-laws", "02-preparar-o-computador", "03-instalar", "04-pedir", "05-sessoes",
   "06-o-ciclo-de-uma-mudanca", "07-as-regras", "08-como-se-garante", "09-quando-da-errado", "10-glossario", "11-pedidos-prontos")
 
 #let fonte-corpo = "Libertinus Serif"
