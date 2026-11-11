@@ -8,7 +8,7 @@
   "10-pedidos-prontos", "11-como-este-manual-foi-feito")
 // O Typst não sabe se um arquivo existe: cada fase acrescenta aqui a parte que escreveu (as outras não partem a compilação).
 #let escritas = ("00-antes-de-comecar", "01-o-que-e-o-morg-laws", "02-instalar", "03-pedir", "04-sessoes",
-  "05-o-ciclo-de-uma-mudanca", "06-as-regras", "07-como-se-garante", "08-quando-da-errado", "10-pedidos-prontos")
+  "05-o-ciclo-de-uma-mudanca", "06-as-regras", "07-como-se-garante", "08-quando-da-errado", "09-glossario", "10-pedidos-prontos")
 
 #let fonte-corpo = "Libertinus Serif"
 #let fonte-titulos = "Stardos Stencil"

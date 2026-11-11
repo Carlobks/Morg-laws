@@ -1,0 +1,51 @@
+# Glossário
+
+Cada termo numa frase, em ordem alfabética, com a parte do manual que o explica. Os procedimentos aparecem como P1 a P24.
+
+- **agente**: o programa de IA que lê o seu projeto e escreve código por você, como o Claude Code (parte 00).
+- **`AGENTS.md`**: o arquivo curto de regras que o agente lê inteiro em todo turno; o `CLAUDE.md` ao lado só aponta para ele (parte 01 e P2).
+- **auditoria a frio**: uma sessão nova, sem a conversa que produziu o trabalho, que o lê e dá um veredito (ver o P15).
+- **barreira**: um programa que recusa o que não pode passar, em vez de só pedir; o texto é conselho, e o que tem de valer vira barreira (parte 07 e P3).
+- **branch (ramo)**: uma linha de commits do projeto; a principal é a `main` (ver o P13).
+- **catraca**: uma linha de base que só encolhe: o que já viola uma regra fica congelado numa lista, e o que é novo nasce limpo (parte 07).
+- **CI**: a conferência que roda os mesmos testes numa máquina limpa a cada push, fora do alcance de quem commita (parte 07).
+- **commit**: um pacote de mudanças gravado no histórico do git, com uma mensagem que diz o que mudou e porquê (ver o P19).
+- **commit por caminho**: o commit que nomeia os arquivos que leva (`git commit -F msg -- <arquivos>`), para não levar o que é de outra sessão (ver o P19 e o P17).
+- **compactar**: pedir ao agente que troque a conversa antiga por um resumo, para liberar a janela (ver o P10).
+- **conferência**: uma sessão separada que confere, na fonte, cada afirmação de um relatório antes de ele chegar a você (ver o P15).
+- **contexto**: tudo o que o agente tem diante de si numa conversa: a sua mensagem, o que ele leu e o que já se disse; ocupa a janela (ver o P10).
+- **desvio**: um ponto em que o resultado não bateu com o que o pedido mandava; é registrado no relatório, e não resolvido por conta própria (ver o P11).
+- **diff**: a lista exata do que mudou entre duas versões de um arquivo (ver o P22).
+- **fonte**: o lugar de onde vem uma afirmação, com a data em que foi lida e o que ela sustenta; as fontes do Morg-laws ficam no `FONTES.md` (parte 06).
+- **fragmento do changelog**: um arquivo pequeno, um por mudança, em vez de um arquivo único de histórico que colide quando várias sessões escrevem (ver o P19).
+- **git**: o programa que guarda o histórico do projeto, em commits (ver o P19).
+- **gitleaks**: o scanner que procura segredos, como chaves e senhas, nos commits antes de saírem (ver o P22 e a parte 07).
+- **handoff**: o arquivo que a próxima sessão lê para continuar o trabalho: objetivo, estado, decisões, o que já falhou e próximos passos (ver o P16).
+- **hash**: o código que identifica um commit; reescrever o histórico já publicado muda o hash de todos (ver o P20).
+- **hook**: um programa que roda num momento fixo, como antes do commit, e pode recusar (ver o P20 e a parte 07).
+- **índice do git**: a lista do que está preparado para o próximo commit, e que as sessões da mesma pasta compartilham (ver o P17).
+- **janela de contexto**: o espaço, medido em tokens, que o modelo enxerga de uma vez; quando enche, o agente fica caro, lento e menos atento (ver o P10).
+- **linha de base**: a lista do que já viola uma regra e fica congelado; é o que uma catraca protege (parte 07).
+- **lista negra**: os termos que nunca podem entrar no repositório; fica fora dele, e o hook mostra só as linhas que casaram (ver o P4 e a parte 07).
+- **modelo**: o motor de IA por trás do agente, em tamanhos diferentes, como Haiku, Sonnet e Opus no Claude Code (ver o P12).
+- **Morg-laws**: este repositório de regras, skills e modelos para agentes de código (parte 01).
+- **noreply**: o e-mail que o GitHub dá a cada conta para os commits, e que é público por desenho (ver o P4).
+- **oráculo**: a conferência que você escreve antes de começar, e que diz se o resultado está certo, sem dizer como se faz (ver o P7).
+- **orquestradora**: a sessão que só escreve os pedidos das filhas, recebe os resultados e decide o passo seguinte (ver o P14).
+- **pedido**: o texto que você manda ao agente; leva as quatro partes, e nas sessões filhas leva tudo o que a filha precisa saber (ver o P6 e o P11).
+- **permissões (`deny`, `ask`, `allow`)**: as três colunas do `settings.json`: o que o agente não pode usar, o que ele pergunta antes e o que ele faz livre (parte 07).
+- **plano**: o texto do que vai mudar, em quais arquivos e em que ordem, que você lê e aprova antes de o agente mexer (ver o P18 e o P9).
+- **portão**: uma conferência que tem de passar antes de seguir, como a suíte, o gitleaks ou a lista negra (ver o P20 e o P22).
+- **pôr o plano à prova**: fazer ao plano as perguntas incômodas, como o que ele deixa de fora, antes de dizer “sim” (ver o P9).
+- **push**: enviar os commits para o repositório remoto; é o momento em que se publica, e por isso exige o seu “sim” (ver o P22).
+- **regra**: uma instrução do `AGENTS.md` ou de uma skill, escrita com o motivo (parte 06).
+- **relatório**: o texto que uma sessão filha devolve; chega como dado, que você confere, e não como verdade (ver o P11).
+- **sessão**: uma conversa com o agente, com a memória do que ficou dito nela (parte 04).
+- **sessão filha**: uma sessão nova que recebe um pedido escrito e devolve um resultado (ver o P11).
+- **skill**: uma pasta com instruções sobre um assunto; o agente lê só a descrição no começo e abre o resto quando o assunto aparece (parte 01 e P1).
+- **sub-agente**: um agente lançado por dentro de uma sessão, que você não vê nem corrige; serve para buscas amplas e tarefas independentes (ver o P11).
+- **suíte**: o conjunto de todos os testes do projeto, rodado de uma vez (ver o P22).
+- **teste**: um programa que confere se outro faz o que deve; um bug corrigido traz o seu teste, visto falhar antes (ver o P21).
+- **token**: a unidade em que o modelo lê e escreve texto, mais ou menos um pedaço de palavra; o limite da janela se conta em tokens (ver o P10).
+- **veredito**: o resultado de uma auditoria no topo do relatório: “aprovado”, “aprovado com correções” ou “refazer” (ver o P15).
+- **worktree**: uma segunda pasta de trabalho do mesmo repositório, onde um script pode trocar arquivos sem atrapalhar as outras sessões (ver o P17).
