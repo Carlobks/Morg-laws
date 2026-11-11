@@ -27,7 +27,7 @@ FORA_DO_TETO = ("manual/fontes/", "manual/imagens/", "manual/pessoas-citaveis.tx
                 "manual/palavras-que-abrem-frase.txt")
 TETOS_POR_PARTE = {  # palavras da prosa (fora de blocos de código) por parte; com pares: n × (250 + 400) + 200
     "manual/README.md": 500, "manual/00-antes-de-comecar.md": 1500, "manual/01-o-que-e-o-morg-laws.md": 1000,
-    "manual/02-preparar-o-computador.md": 2500, "manual/03-instalar.md": 3450, "manual/04-pedir.md": 2800, "manual/05-sessoes.md": 5400,
+    "manual/02-preparar-o-computador.md": 2600, "manual/03-instalar.md": 3450, "manual/04-pedir.md": 2800, "manual/05-sessoes.md": 5400,
     "manual/06-o-ciclo-de-uma-mudanca.md": 3450, "manual/07-as-regras.md": 2000,
     "manual/08-como-se-garante.md": 2700, "manual/09-quando-da-errado.md": 1500, "manual/10-glossario.md": 1800,
     "manual/11-pedidos-prontos.md": 1800, "manual/12-como-este-manual-foi-feito.md": 1000}

@@ -185,7 +185,9 @@ cd meu-projeto
 claude
 ```
 
-Essa pasta é a raiz do projeto, a pasta de nível mais alto, a que tem dentro a `.git` do `git init` e onde ficarão o `AGENTS.md` e o `CLAUDE.md`. Quando o manual diz “na raiz do seu projeto”, é nela que o terminal tem de estar, e o `pwd` confirma. Para sair do Claude Code, digite `exit`, ou aperte `Ctrl + D` duas vezes com a linha vazia. Esses passos estão também no [guia oficial](https://code.claude.com/docs/en/terminal-guide).
+Essa pasta é a raiz do projeto, a pasta de nível mais alto, a que tem dentro a `.git` do `git init` e onde ficarão o `AGENTS.md` e o `CLAUDE.md`. Quando o manual diz “na raiz do seu projeto”, é nela que o terminal tem de estar, e o `pwd` confirma. Para sair do Claude Code, digite `exit`, ou aperte `Ctrl + D` duas vezes com a linha vazia. Esses passos estão também no [guia oficial](https://code.claude.com/docs/en/terminal-guide). Os comandos da `03` se digitam no terminal, fora do Claude Code.
+
+Na primeira vez numa pasta, o Claude Code pergunta se você confia nela ([segurança](https://code.claude.com/docs/en/security)): confirme só na do seu projeto.
 
 ## Ver arquivos ocultos
 
