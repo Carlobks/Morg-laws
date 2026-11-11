@@ -10,29 +10,6 @@ Três sistemas aparecem aqui: Windows, macOS e Linux. Em cada passo em que o com
 
 Os requisitos mínimos estão na [página de instalação do Claude Code](https://code.claude.com/docs/en/setup#system-requirements): macOS 13 ou mais novo, Windows 10 (versão 1809) ou mais novo, ou uma destas distribuições Linux: Ubuntu 20.04, Debian 10 ou Alpine 3.19, ou mais novas.
 
-## O Claude Code: conta, instalar e entrar
-
-O Claude Code só funciona com uma conta paga: a [página oficial](https://code.claude.com/docs/en/setup#authenticate) lista as contas Pro, Max, Ultra, Team, Enterprise e Console, e diz que o plano gratuito do claude.ai não inclui o Claude Code. Os planos e os preços ficam no site do Claude. Crie a conta lá antes de seguir.
-
-A instalação é um comando colado no terminal, que a próxima seção ensina a abrir. Cada sistema tem o seu:
-
-macOS ou Linux: na [página de instalação](https://code.claude.com/docs/en/setup#install-claude-code), aba “macOS, Linux, WSL”, está a linha do instalador. Ela começa por `curl -fsSL`, termina em `| bash` e leva no meio o endereço do instalador; copie-a inteira dali e cole no terminal. O manual não a repete porque o endereço é do site do Claude e pode mudar.
-
-Windows, no PowerShell:
-
-```
-irm https://claude.ai/install.ps1 | iex
-```
-
-O comando não mostra progresso enquanto baixa: deixe a janela aberta e espere a mensagem de que o Claude Code foi instalado. Você não precisa de administrador no Windows. Quando acabar, feche o terminal, abra outro e confira:
-
-```
-claude --version
-```
-
-Aparece um número de versão. Para entrar, digite `claude` e aperte Enter: o programa abre o navegador para você entrar com a sua conta, e o terminal mostra “Login successful” quando termina. Se o navegador não abrir, a tecla `c` copia o endereço de login para você colar.
-Fontes: [instalação](https://code.claude.com/docs/en/setup), [guia do terminal para iniciantes](https://code.claude.com/docs/en/terminal-guide) e [login](https://code.claude.com/docs/en/authentication).
-
 ## O terminal: abrir e andar entre pastas
 
 O terminal é a janela onde você digita os comandos. O [guia oficial do Claude Code](https://code.claude.com/docs/en/terminal-guide) diz como abri-lo:
@@ -51,6 +28,29 @@ O terminal está sempre dentro de uma pasta, e os comandos agem sobre ela. Quatr
 - `mkdir nome-da-pasta` cria uma pasta nova.
 
 No macOS e no Linux, `cd ~` volta para a sua pasta pessoal; o PowerShell já abre nela.
+
+## O Claude Code: conta, instalar e entrar
+
+O Claude Code só funciona com uma conta paga: a [página oficial](https://code.claude.com/docs/en/setup#authenticate) lista as contas Pro, Max, Ultra, Team, Enterprise e Console, e diz que o plano gratuito do claude.ai não inclui o Claude Code. Os planos e os preços ficam no site do Claude. Crie a conta lá antes de seguir.
+
+A instalação é um comando colado no terminal. Cada sistema tem o seu:
+
+macOS ou Linux: na [página de instalação](https://code.claude.com/docs/en/setup#install-claude-code), aba “macOS, Linux, WSL”, está a linha do instalador. Ela começa por `curl -fsSL`, termina em `| bash` e leva no meio o endereço do instalador; copie-a inteira dali e cole no terminal. O manual não a repete porque o endereço é do site do Claude e pode mudar.
+
+Windows, no PowerShell:
+
+```
+irm https://claude.ai/install.ps1 | iex
+```
+
+O comando não mostra progresso enquanto baixa: deixe a janela aberta e espere a mensagem de que o Claude Code foi instalado. Você não precisa de administrador no Windows. Quando acabar, feche o terminal, abra outro e confira:
+
+```
+claude --version
+```
+
+Aparece um número de versão. Para entrar, digite `claude` e aperte Enter: o programa abre o navegador para você entrar com a sua conta, e o terminal mostra “Login successful” quando termina. Se o navegador não abrir, a tecla `c` copia o endereço de login para você colar.
+Fontes: [instalação](https://code.claude.com/docs/en/setup), [guia do terminal para iniciantes](https://code.claude.com/docs/en/terminal-guide) e [login](https://code.claude.com/docs/en/authentication).
 
 ## Instalar o git, o Node e o Python
 
