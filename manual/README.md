@@ -20,7 +20,7 @@ em Markdown nesta pasta e feito para ser lido como PDF.
 | `10-pedidos-prontos.md` | Os pedidos que se copiam |
 | `11-como-este-manual-foi-feito.md` | O posfácio |
 
-Por enquanto só as partes `00-antes-de-comecar.md`, `01-o-que-e-o-morg-laws.md`, `02-instalar.md`, `03-pedir.md`, `04-sessoes.md`, `05-o-ciclo-de-uma-mudanca.md` e `06-as-regras.md` existem. As outras vêm por fases.
+Por enquanto só as partes `00-antes-de-comecar.md`, `01-o-que-e-o-morg-laws.md`, `02-instalar.md`, `03-pedir.md`, `04-sessoes.md`, `05-o-ciclo-de-uma-mudanca.md`, `06-as-regras.md` e `07-como-se-garante.md` existem. As outras vêm por fases.
 
 Os procedimentos vão em páginas duplas: na página par, **Na prática**; na ímpar, **Por quê e fonte**.
 
