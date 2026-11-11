@@ -1,6 +1,6 @@
 # Instalar
 
-Cinco passos põem o Morg-laws para funcionar num projeto: instalar as skills, pôr as regras, ligar as barreiras, guardar a lista negra e fazer a primeira mensagem. Faça na ordem, no seu projeto, dentro de uma pasta que já é um repositório do git. Você precisa do Node (para o `npx`), do Python 3 (os hooks são scripts dele) e, para copiar os modelos, de uma cópia deste repositório aberta noutra pasta.
+Cinco passos põem o Morg-laws para funcionar num projeto: instalar as skills, pôr as regras, ligar as barreiras, guardar a lista negra e fazer a primeira mensagem. Faça na ordem, no seu projeto, dentro de uma pasta que já é um repositório do git. Você precisa do Node (para o `npx`), do Python 3 (os hooks são scripts dele) e, para copiar os modelos, de uma cópia deste repositório aberta em outra pasta.
 
 Cada passo é um par de páginas. Se você só quer fazer, leia a da esquerda de cada um e vá em frente.
 
@@ -26,7 +26,7 @@ Para o Codex, troque `claude-code` por `codex`: as skills vão para `.agents/ski
 O que costuma dar errado:
 
 - Achar que acabou. O comando instala só as skills. O `AGENTS.md` não vem, e o passo seguinte existe por isso.
-- Instalar sem ler. A ferramenta avisa no fim que as skills correm com todas as permissões do agente. Leia a que lhe interessa antes de confiar nela.
+- Instalar sem ler. A ferramenta avisa no fim que as skills rodam com todas as permissões do agente. Leia a que lhe interessa antes de confiar nela.
 - Rodar fora do projeto. Confira com `pwd` ou `cd` que a pasta é a raiz do repositório.
 
 ### Por quê e fonte
@@ -59,13 +59,13 @@ O que costuma dar errado:
 
 - Deixar um `<…>` sem preencher.
 - Pôr dez regras na Regra n.º 1. É uma só, a mais cara.
-- Passar de 60 linhas. O arquivo é lido inteiro em todo turno.
+- Passar de 100 linhas, somando o `AGENTS.md` e o `CLAUDE.md`. Os dois são lidos inteiros em todo turno, e o `test_regras.py` do molde reprova acima disso.
 
 ### Por quê e fonte
 
 O `AGENTS.md` é o arquivo que várias ferramentas leem, num [formato aberto](https://agents.md). O Claude Code, porém, lê o `CLAUDE.md`, e com os dois lado a lado lê só ele: daí a linha `@AGENTS.md`, que importa o outro, como diz a [documentação de memória do Claude Code](https://code.claude.com/docs/en/memory). Um import não economiza contexto, só evita escrever as regras duas vezes.
 
-O arquivo é curto de propósito. Um estudo sobre arquivos de contexto achou que eles em geral não melhoram a taxa de tarefas resolvidas e que aumentam o custo em mais de 20% em média ([o estudo no arXiv](https://arxiv.org/abs/2602.11988)); outro, de cinco corridas num só repositório, viu um `AGENTS.md` de 12 linhas deixar o agente mais rápido e mais barato, e o autor mesmo o chama de um único ponto de dados ([AAIF](https://aaif.io/blog/measuring-agents-md-what-five-runs-show-that-one-doesn-t)). Nenhum dos dois diz qual o tamanho certo. O de 60 linhas é um limite de prática deste repositório, e um hook o confere.
+O arquivo é curto de propósito. Um estudo sobre arquivos de contexto achou que eles em geral não melhoram a taxa de tarefas resolvidas e que aumentam o custo em mais de 20% em média ([o estudo no arXiv](https://arxiv.org/abs/2602.11988)); outro, de cinco corridas num só repositório, viu um `AGENTS.md` de 12 linhas deixar o agente mais rápido e mais barato, e o autor mesmo o chama de um único ponto de dados ([AAIF](https://aaif.io/blog/measuring-agents-md-what-five-runs-show-that-one-doesn-t)). Nenhum dos dois diz qual o tamanho certo. O limite de 100 linhas é o do teste do molde; o `AGENTS.md` do próprio Morg-laws fica em 60, e um hook dele o confere.
 
 A Regra n.º 1 ganha um lugar só dela porque o perigo mais caro merece uma linha à parte, e o motivo escrito ao lado mostra ao agente o que custou da última vez. Essa forma, com a regra e o motivo juntos, é a que o teste do repositório confere em todas as regras.
 
@@ -93,12 +93,12 @@ O comando sai com código 2, e o agente não commita.
 
 O que costuma dar errado:
 
-- Copiar e nunca provar. Um hook que não arranca pode deixar tudo passar.
-- Esquecer o `core.hooksPath`: sem ele os hooks do git não correm.
+- Copiar e nunca provar. Um hook que não inicia pode deixar tudo passar.
+- Esquecer o `core.hooksPath`: sem ele os hooks do git não rodam.
 
 ### Por quê e fonte
 
-Um `AGENTS.md` é orientação, não barreira: o agente pode esquecê-lo ou escolher outro caminho. Por isso o que tem de ser cumprido vira hook, teste ou CI. No Claude Code, um hook `PreToolUse` que sai com 2 bloqueia a chamada e mostra o motivo ao agente, e o campo `onFailure` com o valor `block` faz um hook que falha também bloquear, desde a versão 2.1.295 ([documentação de hooks](https://code.claude.com/docs/en/hooks)). Numa versão mais antiga o campo é ignorado, e um hook que não arranca deixa passar.
+Um `AGENTS.md` é orientação, não barreira: o agente pode esquecê-lo ou escolher outro caminho. Por isso o que tem de ser cumprido vira hook, teste ou CI. No Claude Code, um hook `PreToolUse` que sai com 2 bloqueia a chamada e mostra o motivo ao agente, e o campo `onFailure` com o valor `block` faz um hook que falha também bloquear, desde a versão 2.1.295 ([documentação de hooks](https://code.claude.com/docs/en/hooks)). Numa versão mais antiga o campo é ignorado, e um hook que não inicia deixa passar.
 
 Há duas camadas, e uma cobre a outra. Os hooks do agente (`modelos/claude/`) olham o que o agente tenta fazer, como o `--no-verify` acima. Os hooks do git (`.githooks/`) rodam em todo commit, do agente ou feito à mão. As duas se somam às permissões do agente, que a [documentação de permissões](https://code.claude.com/docs/en/permissions) descreve.
 
