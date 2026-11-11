@@ -8,7 +8,7 @@ Serve para três coisas. Dar ao agente o combinado do projeto, para você não r
 
 ## De onde veio
 
-Tudo saiu de um sistema web de gestão feito para duas empresas de serviços, conduzido por uma pessoa que não escreve o código: pede, aprova e confere, e os agentes propõem e implementam. Cada regra nasceu de algo que deu errado nesse projeto, e o catálogo `projetos/` conta isso sem o nome da empresa, sem nomes de pessoas e sem trechos de código, no [catálogo do projeto de origem](https://github.com/Carlobks/Morg-laws/blob/main/projetos/erp-de-servicos/README.md). O repositório é anonimizado de propósito: o que entra num repositório público não sai mais.
+Tudo saiu de um sistema web de gestão feito para duas empresas de serviços, conduzido por uma pessoa que não escreve o código: pede, aprova e confere, e os agentes propõem e implementam. Cada regra nasceu de algo que deu errado nesse projeto, e o catálogo `projetos/` conta isso sem o nome da empresa, sem nomes de pessoas (o autor assina como Carlobks) e sem trechos de código, no [catálogo do projeto de origem](https://github.com/Carlobks/Morg-laws/blob/main/projetos/erp-de-servicos/README.md). O repositório é anonimizado de propósito: o que entra num repositório público não sai mais.
 
 ## O que tem cada pasta
 

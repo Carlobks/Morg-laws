@@ -17,7 +17,7 @@ Se a prova não vem, ou vem só em palavras, não aceite. Peça: “rode de novo
 
 Se a saída mostra uma falha e cada ajuste do agente quebra outra coisa, pare. Peça um plano novo (P18) em vez de mais um ajuste.
 
-Um exemplo, de um incidente real do projeto de origem: três vezes no mesmo dia os testes passavam, e o navegador continuava recebendo a folha de estilos antiga. A pergunta e a resposta que a prova pede:
+Um exemplo, de um incidente real do projeto de origem ([regra 28 do catálogo](https://github.com/Carlobks/Morg-laws/blob/main/projetos/erp-de-servicos/regras-e-incidentes.md)): três vezes no mesmo dia os testes passavam, e o navegador continuava recebendo a folha de estilos antiga. A pergunta e a resposta que a prova pede:
 
 ```
 Você: o que você provou, e o que não?
