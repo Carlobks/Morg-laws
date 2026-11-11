@@ -16,7 +16,7 @@ FONTES_MD = ("# Fontes\n\n## Livros e autores\n\n- **Livro** (livro).\n  - pp. 3
 BIBLIA = "- Um conselho. (pp. 118, 120–121) · **texto**\n"
 PAR = "## P6 As quatro partes\n\n### Na prática\n\nEscreva o que quer.\n\n### Por quê e fonte\n\n{teoria}\n"
 TEORIA_COM_LINK = "O porquê está [aqui](https://example.com/x)."
-NOME = "manual/09-glossario.md"  # parte com teto e sem seções que peçam fonte
+NOME = "manual/10-glossario.md"  # parte com teto e sem seções que peçam fonte
 VOZES = "as vozes da cabeça de Carlobks (decisão de 2026-11-08)"
 
 
@@ -157,51 +157,51 @@ class AfirmacaoDeMedicao(ManualTemporario):
 class PorPar(ManualTemporario):
 
     def test_par_completo_passa(self):
-        self.assertEqual(self.erros("manual/03-pedir.md", par()), [])
+        self.assertEqual(self.erros("manual/04-pedir.md", par()), [])
 
     def test_par_sem_fonte_reprova(self):
-        erros = self.erros("manual/03-pedir.md", par("Só uma opinião."))
+        erros = self.erros("manual/04-pedir.md", par("Só uma opinião."))
         self.assertEqual(len(erros), 1)
         self.assertIn("sem fonte", erros[0])
 
     def test_texto_antes_do_primeiro_h3_do_par_reprova_e_sem_texto_passa(self):
         solto = "## P6 X\n\n" + "palavra " * 50 + "\n\n### Na prática\n\nTexto.\n\n### Por quê e fonte\n\n[a](https://example.com)\n"
-        erros = self.erros("manual/03-pedir.md", solto)
+        erros = self.erros("manual/04-pedir.md", solto)
         self.assertEqual(len(erros), 1)
         self.assertIn("texto antes de «### Na prática»", erros[0])
         em_codigo = solto.replace("palavra " * 50, "```\nx\n```")
-        self.assertEqual(len(self.erros("manual/03-pedir.md", em_codigo)), 0)
+        self.assertEqual(len(self.erros("manual/04-pedir.md", em_codigo)), 0)
         self.assertEqual(verificador.texto_antes_do_primeiro_h3("a.md", "Q", ["", "", "### A"]), [])
         self.assertEqual(len(verificador.texto_antes_do_primeiro_h3("a.md", "Q", ["Só texto, sem lados."])), 1)
 
     def test_par_com_pagina_do_livro_ou_decisao_com_porque_tem_fonte(self):
-        self.assertEqual(self.erros("manual/03-pedir.md", par("Veja o livro (p. 165).")), [])
-        self.assertEqual(self.erros("manual/03-pedir.md", par(f"Foi {VOZES}. Porquê: simples.")), [])
-        self.assertEqual(len(self.erros("manual/03-pedir.md", par(f"Foi {VOZES}."))), 2)
+        self.assertEqual(self.erros("manual/04-pedir.md", par("Veja o livro (p. 165).")), [])
+        self.assertEqual(self.erros("manual/04-pedir.md", par(f"Foi {VOZES}. Porquê: simples.")), [])
+        self.assertEqual(len(self.erros("manual/04-pedir.md", par(f"Foi {VOZES}."))), 2)
 
     def test_par_fora_de_ordem_ou_incompleto_reprova(self):
         trocado = "## P6 X\n\n### Por quê e fonte\n\n[a](https://example.com)\n\n### Na prática\n\nTexto.\n"
         for texto in (trocado, "## P6 X\n\n### Na prática\n\nTexto.\n"):
             with self.subTest(texto=texto):
-                erros = self.erros("manual/03-pedir.md", texto)
+                erros = self.erros("manual/04-pedir.md", texto)
                 self.assertEqual(len(erros), 1)
                 self.assertIn("«### Na prática» e depois «### Por quê e fonte»", erros[0])
 
     def test_o_mesmo_numero_de_par_duas_vezes_reprova_no_mesmo_arquivo_e_entre_arquivos(self):
         dois = par() + "\n" + PAR.format(teoria=TEORIA_COM_LINK).replace("As quatro partes", "Outra cópia")
-        erros = self.erros("manual/03-pedir.md", dois)
+        erros = self.erros("manual/04-pedir.md", dois)
         self.assertEqual(len(erros), 1)
-        self.assertIn("o P6 já existe em manual/03-pedir.md", erros[0])
-        self.escrever("manual/02-instalar.md", par())
-        self.escrever("manual/03-pedir.md", par())
-        erros = verificador.erros_do_manual(self.raiz, ["manual/02-instalar.md", "manual/03-pedir.md"])
+        self.assertIn("o P6 já existe em manual/04-pedir.md", erros[0])
+        self.escrever("manual/03-instalar.md", par())
+        self.escrever("manual/04-pedir.md", par())
+        erros = verificador.erros_do_manual(self.raiz, ["manual/03-instalar.md", "manual/04-pedir.md"])
         self.assertEqual(len(erros), 1)
-        self.assertIn("manual/03-pedir.md", erros[0])
-        self.assertIn("o P6 já existe em manual/02-instalar.md", erros[0])
+        self.assertIn("manual/04-pedir.md", erros[0])
+        self.assertIn("o P6 já existe em manual/03-instalar.md", erros[0])
 
     def test_numeros_de_par_diferentes_e_titulos_que_nao_sao_par_passam(self):
         texto = par() + "\n" + PAR.format(teoria=TEORIA_COM_LINK).replace("P6", "P7") + "\n## P2P não é par\n"
-        self.assertEqual(self.erros("manual/03-pedir.md", texto), [])
+        self.assertEqual(self.erros("manual/04-pedir.md", texto), [])
 
     def test_aspas_francesas_na_prosa_reprovam_e_as_curvas_e_o_codigo_passam(self):
         for texto in ("Diz «fica bom» aqui.\n", "Fecha» sozinha.\n"):
@@ -214,7 +214,7 @@ class PorPar(ManualTemporario):
                 self.assertEqual(self.erros(NOME, texto), [])
 
     def test_nota_de_rodape_num_par_reprova(self):
-        erros = self.erros("manual/03-pedir.md", par(TEORIA_COM_LINK + "[^1]\n\n[^1]: nota"))
+        erros = self.erros("manual/04-pedir.md", par(TEORIA_COM_LINK + "[^1]\n\n[^1]: nota"))
         self.assertEqual(len(erros), 1)
         self.assertIn("nota de rodapé", erros[0])
         self.assertEqual(verificador.notas_de_rodape_num_par("a.md", "Q", ["Texto sem nota."]), [])
@@ -222,33 +222,33 @@ class PorPar(ManualTemporario):
     def test_teto_da_teoria(self):
         com_cinco = par("um dois três quatro [cinco](https://example.com/x)")
         with mock.patch.object(verificador, "TETO_DA_TEORIA", 4):
-            erros = self.erros("manual/03-pedir.md", com_cinco)
+            erros = self.erros("manual/04-pedir.md", com_cinco)
         self.assertEqual(len(erros), 1)
         self.assertIn("«Por quê e fonte» tem 5 palavras (teto 4)", erros[0])
-        self.assertEqual(self.erros("manual/03-pedir.md", com_cinco), [])
+        self.assertEqual(self.erros("manual/04-pedir.md", com_cinco), [])
 
     def test_teto_da_pratica(self):
         longa = "## P6 X\n\n### Na prática\n\num dois três quatro cinco\n\n### Por quê e fonte\n\n[a](https://example.com/x)\n"
         with mock.patch.object(verificador, "TETO_DA_PRATICA", 4):
-            erros = self.erros("manual/03-pedir.md", longa)
+            erros = self.erros("manual/04-pedir.md", longa)
         self.assertEqual(len(erros), 1)
         self.assertIn("«Na prática» tem 5 palavras (teto 4)", erros[0])
-        self.assertEqual(self.erros("manual/03-pedir.md", longa), [])
+        self.assertEqual(self.erros("manual/04-pedir.md", longa), [])
 
     def test_cada_lado_tem_o_seu_teto(self):
         longa = "## P6 X\n\n### Na prática\n\num dois três quatro cinco\n\n### Por quê e fonte\n\n[a](https://example.com/x)\n"
         with mock.patch.object(verificador, "TETO_DA_TEORIA", 4):
-            self.assertEqual(self.erros("manual/03-pedir.md", longa), [])
+            self.assertEqual(self.erros("manual/04-pedir.md", longa), [])
         com_cinco = par("um dois três quatro [cinco](https://example.com/x)")
         with mock.patch.object(verificador, "TETO_DA_PRATICA", 4):
-            self.assertEqual(self.erros("manual/03-pedir.md", com_cinco), [])
+            self.assertEqual(self.erros("manual/04-pedir.md", com_cinco), [])
 
     def test_os_tetos_por_lado_sao_250_e_400(self):
         self.assertEqual((verificador.TETO_DA_PRATICA, verificador.TETO_DA_TEORIA), (250, 400))
 
     def test_os_tetos_dos_procedimentos_seguem_a_conta_de_n_pares(self):
-        pares = {"02-instalar": 5, "03-pedir": 4, "04-sessoes": 8, "05-o-ciclo-de-uma-mudanca": 5,
-                 "08-quando-da-errado": 2}
+        pares = {"03-instalar": 5, "04-pedir": 4, "05-sessoes": 8, "06-o-ciclo-de-uma-mudanca": 5,
+                 "09-quando-da-errado": 2}
         for parte, n in pares.items():
             with self.subTest(parte=parte):
                 esperado = n * (verificador.TETO_DA_PRATICA + verificador.TETO_DA_TEORIA) + 200
@@ -257,7 +257,7 @@ class PorPar(ManualTemporario):
     def test_o_molde_dentro_de_um_bloco_de_codigo_nao_conta_nas_palavras(self):
         molde = "```\n" + "palavra " * 400 + "\n```\n"
         pratica = "## P6 X\n\n### Na prática\n\n" + molde + "\n### Por quê e fonte\n\n[a](https://example.com)\n"
-        self.assertEqual(self.erros("manual/03-pedir.md", pratica), [])
+        self.assertEqual(self.erros("manual/04-pedir.md", pratica), [])
 
 
 class PorSecao(ManualTemporario):
@@ -265,15 +265,15 @@ class PorSecao(ManualTemporario):
     def test_secao_de_texto_seguido_sem_fonte_reprova_e_com_fonte_passa(self):
         sem = "# Regras\n\n## O núcleo\n\nUm texto sem fonte.\n"
         com = "# Regras\n\n## O núcleo\n\nUm texto [com fonte](https://example.com/x).\n"
-        self.assertEqual(len(self.erros("manual/06-as-regras.md", sem)), 1)
-        self.assertEqual(self.erros("manual/06-as-regras.md", com), [])
+        self.assertEqual(len(self.erros("manual/07-as-regras.md", sem)), 1)
+        self.assertEqual(self.erros("manual/07-as-regras.md", com), [])
 
     def test_partes_fora_da_lista_e_excecoes_nao_pedem_fonte(self):
         sem = "# X\n\n## O núcleo\n\nUm texto sem fonte.\n"
-        self.assertEqual(self.erros("manual/09-glossario.md", sem), [])
-        self.assertEqual(self.erros("manual/08-quando-da-errado.md", sem), [])
+        self.assertEqual(self.erros("manual/10-glossario.md", sem), [])
+        self.assertEqual(self.erros("manual/09-quando-da-errado.md", sem), [])
         excecao = "# X\n\n## " + next(iter(verificador.EXCECOES_DE_SECAO))[1] + "\n\nUm índice.\n"
-        self.assertEqual(self.erros("manual/06-as-regras.md", excecao), [])
+        self.assertEqual(self.erros("manual/07-as-regras.md", excecao), [])
 
 
 class PorTeto(ManualTemporario):
@@ -314,22 +314,22 @@ class PorTeto(ManualTemporario):
         self.assertEqual(verificador.erros_do_manual(self.raiz, ["manual/imagens/fluxo.png"]), [])
 
 
-MOLDE_COM_LISTAS = ('#let partes = ("00-a", "03-pedir",\n  "04-b")\n#let escritas = ("03-pedir",)\n')
+MOLDE_COM_LISTAS = ('#let partes = ("00-a", "04-pedir",\n  "04-b")\n#let escritas = ("04-pedir",)\n')
 
 
 class ListaDasPartesDoMolde(ManualTemporario):
 
     def erros_da_lista(self, molde, *arquivos, tetos=None):
         self.escrever(verificador.MOLDE, molde)
-        tetos = tetos or {"manual/README.md": 1, "manual/00-a.md": 1, "manual/03-pedir.md": 1, "manual/04-b.md": 1}
+        tetos = tetos or {"manual/README.md": 1, "manual/00-a.md": 1, "manual/04-pedir.md": 1, "manual/04-b.md": 1}
         with mock.patch.object(verificador, "TETOS_POR_PARTE", tetos):
             return verificador.erros_da_lista_do_molde(self.raiz, list(arquivos))
 
     def test_lista_conforme_passa_com_uma_so_escrita_e_a_virgula_final(self):
-        self.assertEqual(self.erros_da_lista(MOLDE_COM_LISTAS, "manual/03-pedir.md", "manual/README.md"), [])
+        self.assertEqual(self.erros_da_lista(MOLDE_COM_LISTAS, "manual/04-pedir.md", "manual/README.md"), [])
 
     def test_parte_escrita_fora_das_escritas_reprova(self):
-        erros = self.erros_da_lista(MOLDE_COM_LISTAS, "manual/03-pedir.md", "manual/04-b.md")
+        erros = self.erros_da_lista(MOLDE_COM_LISTAS, "manual/04-pedir.md", "manual/04-b.md")
         self.assertEqual(len(erros), 1)
         self.assertIn("escritas", erros[0])
         self.assertIn("04-b", erros[0])
@@ -338,10 +338,10 @@ class ListaDasPartesDoMolde(ManualTemporario):
         self.assertEqual(len(self.erros_da_lista(MOLDE_COM_LISTAS, "manual/README.md")), 1)
 
     def test_partes_diferentes_dos_tetos_ou_noutra_ordem_reprovam(self):
-        trocadas = {"manual/README.md": 1, "manual/04-b.md": 1, "manual/03-pedir.md": 1, "manual/00-a.md": 1}
-        for tetos in (trocadas, {"manual/README.md": 1, "manual/00-a.md": 1, "manual/03-pedir.md": 1}):
+        trocadas = {"manual/README.md": 1, "manual/04-b.md": 1, "manual/04-pedir.md": 1, "manual/00-a.md": 1}
+        for tetos in (trocadas, {"manual/README.md": 1, "manual/00-a.md": 1, "manual/04-pedir.md": 1}):
             with self.subTest(tetos=tetos):
-                erros = self.erros_da_lista(MOLDE_COM_LISTAS, "manual/03-pedir.md", tetos=tetos)
+                erros = self.erros_da_lista(MOLDE_COM_LISTAS, "manual/04-pedir.md", tetos=tetos)
                 self.assertEqual(len(erros), 1)
                 self.assertIn("partes", erros[0])
 

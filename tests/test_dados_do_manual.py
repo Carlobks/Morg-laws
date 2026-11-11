@@ -13,7 +13,7 @@ CITAVEIS = frozenset({"Fabio Akita", "Matt Pocock", "Carlobks", "Claude Code"})
 ABREM = frozenset({"veja", "leia", "depois", "disse"})
 ACEITOS = CITAVEIS | {"GitHub", "Markdown"}
 DOMINIOS = catalogo.DOMINIOS_ACEITOS | {"docs.github.com"}
-ARQUIVO = "manual/03-pedir.md"
+ARQUIVO = "manual/04-pedir.md"
 
 
 def tipos(texto, aceitos=ACEITOS, dominios=DOMINIOS):
@@ -111,8 +111,8 @@ class SituacaoDoManual(base.RepositorioTemporario):
     def test_o_indice_le_so_o_preparado(self):
         indice = {"MORG_LER_DO_INDICE": "1"}
         self.assertEqual(self.nomes(indice), [])
-        self.preparar("Outro texto.\n", "manual/04-sessoes.md")
-        self.assertEqual(self.nomes(indice), ["manual/04-sessoes.md"])
+        self.preparar("Outro texto.\n", "manual/05-sessoes.md")
+        self.assertEqual(self.nomes(indice), ["manual/05-sessoes.md"])
 
     def test_a_lista_de_pessoas_ou_o_fontes_mudados_releem_o_manual_todo(self):
         indice = {"MORG_LER_DO_INDICE": "1"}

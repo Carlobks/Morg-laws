@@ -4,7 +4,7 @@ Esta parte reúne os pedidos principais que as outras partes ensinam, já escrit
 
 ## A primeira mensagem
 
-Use ao abrir o agente num projeto, novo ou que já existe, antes de pedir qualquer código. Explicado no procedimento P5, na parte 02.
+Use ao abrir o agente num projeto, novo ou que já existe, antes de pedir qualquer código. Explicado no procedimento P5, na parte 03.
 
 ```
 /comecando-um-projeto Quero começar (ou organizar) este projeto com você. Antes de escrever código, me faça as perguntas em rondas, confirme comigo cada resposta e deixe escritos o documento do projeto, o AGENTS.md, o primeiro plano e as decisões de arquitetura.
@@ -16,7 +16,7 @@ A fonte é a seção 6 da skill [`comecando-um-projeto`](https://github.com/Carl
 
 ## Uma tarefa nas quatro partes
 
-Use quando a tarefa é de verdade e você quer o resultado de primeira. Explicado no procedimento P6, na parte 03. A terceira parte, o que você não quer, é a que mais vale, e o critério de pronto da quarta é algo que o agente consegue conferir sozinho.
+Use quando a tarefa é de verdade e você quer o resultado de primeira. Explicado no procedimento P6, na parte 04. A terceira parte, o que você não quer, é a que mais vale, e o critério de pronto da quarta é algo que o agente consegue conferir sozinho.
 
 ```
 O que quero: que a lista de compras mostre o total de itens marcados no topo da tela.
@@ -29,7 +29,7 @@ A fonte é a seção 6 da skill [`pondo-o-plano-a-prova`](https://github.com/Car
 
 ## O oráculo
 
-Use junto com uma tarefa que muda algo que a pessoa vê, antes de o agente começar. Explicado no procedimento P7, na parte 03.
+Use junto com uma tarefa que muda algo que a pessoa vê, antes de o agente começar. Explicado no procedimento P7, na parte 04.
 
 ```
 Oráculo
@@ -41,7 +41,7 @@ A fonte é a seção 3 da skill [`pondo-o-plano-a-prova`](https://github.com/Car
 
 ## Pôr o plano à prova
 
-Use quando o pedido é grande, antes de o agente executar qualquer coisa. Explicado no procedimento P9, na parte 03. Para uma tarefa pequena e clara, não use: ela dispensa as perguntas.
+Use quando o pedido é grande, antes de o agente executar qualquer coisa. Explicado no procedimento P9, na parte 04. Para uma tarefa pequena e clara, não use: ela dispensa as perguntas.
 
 ```
 Antes de começar, ponha este plano à prova. Leia primeiro o que puder ler no projeto e só pergunte o que depende de mim.
@@ -54,7 +54,7 @@ A fonte são as seções 4 e 6 da skill [`pondo-o-plano-a-prova`](https://github
 
 ## Pedir o plano
 
-Use quando a mudança mexe em vários arquivos, antes de o agente escrever qualquer coisa. Explicado no procedimento P18, na parte 05. Leia o plano e só então diga “sim”.
+Use quando a mudança mexe em vários arquivos, antes de o agente escrever qualquer coisa. Explicado no procedimento P18, na parte 06. Leia o plano e só então diga “sim”.
 
 ```
 Antes de mexer em qualquer arquivo, me entregue um plano: o que muda, em quais arquivos, em que ordem e como cada passo se prova.
@@ -66,7 +66,7 @@ A fonte é a seção 8 da skill [`orquestrando-sessoes`](https://github.com/Carl
 
 ## Abrir uma sessão filha
 
-Use quando um passo do plano é trabalho de verdade e merece uma sessão só dele. Explicado no procedimento P11, na parte 04. O que a filha não faz tem de estar escrito, porque ela faz a mais, e o que já falhou também, porque ela o repete.
+Use quando um passo do plano é trabalho de verdade e merece uma sessão só dele. Explicado no procedimento P11, na parte 05. O que a filha não faz tem de estar escrito, porque ela faz a mais, e o que já falhou também, porque ela o repete.
 
 ```
 Título: ATIVO | LISTA · implementação do passo 2
@@ -88,7 +88,7 @@ A fonte são as seções 4 e 6 da skill [`orquestrando-sessoes`](https://github.
 
 ## O papel da orquestradora
 
-Use ao abrir a sessão que orquestra um trabalho de várias fases. Explicado no procedimento P14, na parte 04.
+Use ao abrir a sessão que orquestra um trabalho de várias fases. Explicado no procedimento P14, na parte 05.
 
 ```
 Papel: escrever os pedidos das filhas, receber os resultados, conferir no git os hashes, os testes
@@ -104,7 +104,7 @@ A fonte é a seção 4 da skill [`orquestrando-sessoes`](https://github.com/Carl
 
 ## Uma auditoria a frio
 
-Use quando um trabalho está pronto e você quer uma leitura independente, antes de levá-lo adiante. Explicado no procedimento P15, na parte 04. Abra uma sessão nova, no maior modelo, e não conte a ela o que você acha do trabalho: um auditor que recebe a conclusão tende a confirmá-la.
+Use quando um trabalho está pronto e você quer uma leitura independente, antes de levá-lo adiante. Explicado no procedimento P15, na parte 05. Abra uma sessão nova, no maior modelo, e não conte a ela o que você acha do trabalho: um auditor que recebe a conclusão tende a confirmá-la.
 
 ```
 Audite, só lendo, o trabalho em <pasta ou arquivos>. Você não escreve nada no projeto.
@@ -119,7 +119,7 @@ A fonte é a seção 2 da skill [`orquestrando-sessoes`](https://github.com/Carl
 
 ## Uma conferência
 
-Use depois da auditoria, antes de agir sobre o relatório. Explicado no procedimento P15, na parte 04. A conferência é outra sessão: o relatório volta a você como dado, e não como verdade.
+Use depois da auditoria, antes de agir sobre o relatório. Explicado no procedimento P15, na parte 05. A conferência é outra sessão: o relatório volta a você como dado, e não como verdade.
 
 ```
 Confira o relatório em <arquivo do relatório>. Você não escreve nada no projeto.
@@ -133,7 +133,7 @@ A fonte é a mesma seção 2 da skill [`orquestrando-sessoes`](https://github.co
 
 ## Passar o trabalho antes de compactar
 
-Use quando a conversa está longa e vai ser compactada, ou quando o trabalho vai parar por mais de uma hora. Explicado no procedimento P16, na parte 04.
+Use quando a conversa está longa e vai ser compactada, ou quando o trabalho vai parar por mais de uma hora. Explicado no procedimento P16, na parte 05.
 
 ```
 Antes de compactar, grave o handoff deste assunto em .context/HANDOFF-<assunto>.md, no molde de seis seções:
@@ -147,7 +147,7 @@ A fonte são as seções 1 a 4 da skill [`passando-o-trabalho`](https://github.c
 
 ## Ao retomar
 
-Use na sessão nova, depois de compactar ou no dia seguinte. Explicado no procedimento P16, na parte 04.
+Use na sessão nova, depois de compactar ou no dia seguinte. Explicado no procedimento P16, na parte 05.
 
 ```
 Leia .context/HANDOFF-<assunto>.md inteiro. Depois rode git status -s e git log -3 e diga se batem com o que o arquivo afirma.

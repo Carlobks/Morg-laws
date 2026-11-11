@@ -136,7 +136,7 @@ A área vai em maiúsculas e o assunto em poucas palavras. Cada sessão troca o 
 ```
 ATIVO | MORG-LAWS · plano do manual de uso
 ESPERA | MORG-LAWS · pergunta sobre o formato (exemplo)
-OK | MORG-LAWS · revisão da parte 02 do manual
+OK | MORG-LAWS · revisão da parte 03 do manual
 OFF | MORG-LAWS · ideia guardada para depois (exemplo)
 ```
 
@@ -235,7 +235,7 @@ Onde vive no Morg-laws: as seções “Leitura independente” e “A orquestrad
 
 ### Na prática
 
-O handoff é o arquivo que a próxima sessão lê para continuar o trabalho. Grave-o antes de compactar e antes de parar, em `.context/HANDOFF-<assunto>.md`, um por assunto, e commite só esse arquivo, pelo caminho (P19, na parte 05). Na retomada, o agente o lê inteiro, roda `git status -s` e confere com o que o arquivo diz.
+O handoff é o arquivo que a próxima sessão lê para continuar o trabalho. Grave-o antes de compactar e antes de parar, em `.context/HANDOFF-<assunto>.md`, um por assunto, e commite só esse arquivo, pelo caminho (P19, na parte 06). Na retomada, o agente o lê inteiro, roda `git status -s` e confere com o que o arquivo diz.
 
 O molde `modelos/documentos/handoff.md` tem seis seções: objetivo, estado verificado, decisões e porquê, descartado, próximos passos e cuidados. Preenchido com um passo deste manual (a máquina em Python, a primeira subfase), ele fica assim:
 
@@ -285,7 +285,7 @@ Onde vive no Morg-laws: a skill `passando-o-trabalho`, com o comando de compacta
 
 Quando duas sessões (ou duas pessoas) trabalham na mesma pasta, o índice do git e a branch são de todas. Cada uma cuida do que é seu:
 
-- Commite sempre por caminho (P19, na parte 05): `git commit -F msg -- <arquivos>`. Um `git commit` sem caminhos leva tudo o que outra sessão deixou preparado.
+- Commite sempre por caminho (P19, na parte 06): `git commit -F msg -- <arquivos>`. Um `git commit` sem caminhos leva tudo o que outra sessão deixou preparado.
 - Nunca use `git stash`: ele tira do disco também o que as outras sessões mudaram nos arquivos que o git já acompanha.
 - Não commite trabalho alheio. O aviso de arquivos por commitar conta arquivos, e não donos: use `git log -1 -- <arquivo>` e a memória do que você mexeu.
 - Confirme o `HEAD` antes de pedir um reteste: outra sessão pode ter mudado a branch.

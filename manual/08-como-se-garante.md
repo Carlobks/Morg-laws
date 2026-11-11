@@ -1,6 +1,6 @@
 # Como se garante
 
-A parte 06 disse o que cada regra manda. Esta diz como o Morg-laws faz uma regra ser cumprida mesmo quando o agente a esquece ou escolhe outro caminho. A resposta é uma só, repetida em três lugares: o que tem de ser cumprido deixa de ser texto e vira uma barreira de máquina, que recusa em vez de pedir. Aqui estão as três camadas, o que cada arquivo pronto recusa, as catracas que seguram a dívida de um projeto que já viola e o jeito de ligar tudo, sem repetir os passos do procedimento P3 da parte 02.
+A parte 07 disse o que cada regra manda. Esta diz como o Morg-laws faz uma regra ser cumprida mesmo quando o agente a esquece ou escolhe outro caminho. A resposta é uma só, repetida em três lugares: o que tem de ser cumprido deixa de ser texto e vira uma barreira de máquina, que recusa em vez de pedir. Aqui estão as três camadas, o que cada arquivo pronto recusa, as catracas que seguram a dívida de um projeto que já viola e o jeito de ligar tudo, sem repetir os passos do procedimento P3 da parte 03.
 
 ## Texto vira barreira
 
@@ -37,7 +37,7 @@ São três hooks em `sh` (o Git para Windows traz um), que chamam scripts em Pyt
 
 O `pre-commit` roda antes de o commit existir e confere a identidade do autor, a lista negra e o comando único de testes, que você define em `COMANDO_DOS_TESTES`. O `commit-msg` confere o formato da mensagem e passa a mensagem pela mesma lista negra, porque a mensagem de um commit também é pública. O formato tem cinco marcas que liberam uma recusa com o motivo escrito: `Sem-teste:` para um `fix` sem teste de regressão, `Teste-mudado:` para um teste alterado, `Sem-changelog:` para uma mudança sem fragmento, `Alarme-novo:` para deixar subir a contagem de alarmes calados e `Changelog-corrigido:` para mudar uma versão já lançada do `CHANGELOG.md`. O `pre-push` mostra o que vai sair, roda o gitleaks sobre os commits que vão sair e roda o `npm audit` com linha de base em cada pasta com `package-lock.json`. Há também uma versão do `pre-push` só em `sh`, sem Python, em `modelos/pre-push`: vai para o mesmo `.githooks/pre-push`, no lugar da outra, e precisa da marca de executável.
 
-A parte 05 mostra o que o aluno vê quando um deles recusa (P20). A fonte de cada hook é a seção “Os hooks são a rede” da skill [`git-e-commits`](https://github.com/Carlobks/Morg-laws/blob/main/skills/git-e-commits/SKILL.md).
+A parte 06 mostra o que o aluno vê quando um deles recusa (P20). A fonte de cada hook é a seção “Os hooks são a rede” da skill [`git-e-commits`](https://github.com/Carlobks/Morg-laws/blob/main/skills/git-e-commits/SKILL.md).
 
 ## O CI
 
@@ -79,7 +79,7 @@ O Morg-laws é público, por isso a lista negra é o que mais pesa nele. Ela fic
 
 ## Os passos técnicos
 
-O procedimento P3 da parte 02 liga o mínimo: copiar, dar a marca de executável, ligar o `core.hooksPath` e definir o comando de testes. O “Como instalar” de [`modelos/README.md`](https://github.com/Carlobks/Morg-laws/blob/main/modelos/README.md) manda mais algumas coisas, e é nelas que um projeto real costuma tropeçar.
+O procedimento P3 da parte 03 liga o mínimo: copiar, dar a marca de executável, ligar o `core.hooksPath` e definir o comando de testes. O “Como instalar” de [`modelos/README.md`](https://github.com/Carlobks/Morg-laws/blob/main/modelos/README.md) manda mais algumas coisas, e é nelas que um projeto real costuma tropeçar.
 
 1. **A identidade.** Use um e-mail só deste repositório, no formato `noreply` do GitHub, com `git config --local`, para o seu e-mail pessoal não ficar público em cada commit.
 2. **A lista negra.** Guarde-a fora do repositório, um termo por linha, e aponte para ela com a configuração `morg.listaNegra` do git. A pasta que o molde usa já está no `deny` e no `bloquear_segredos.py`; se usar outra, ajuste os dois.

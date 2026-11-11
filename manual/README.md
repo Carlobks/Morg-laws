@@ -9,18 +9,18 @@ em Markdown nesta pasta e feito para ser lido como PDF.
 |---|---|
 | `00-antes-de-comecar.md` | Quem escreveu, e como ler o manual |
 | `01-o-que-e-o-morg-laws.md` | O que é, para que serve, o que tem cada pasta |
-| `02-instalar.md` | Instalar as skills, pôr as regras, ligar as barreiras |
-| `03-pedir.md` | Como pedir: as quatro partes, o oráculo, a tarefa pequena, pôr o plano à prova |
-| `04-sessoes.md` | Continuar, compactar, abrir uma sessão filha, várias sessões na mesma pasta |
-| `05-o-ciclo-de-uma-mudanca.md` | O plano, o commit por caminho, o hook que recusa, o push |
-| `06-as-regras.md` | As regras, cada uma com o porquê e a fonte |
-| `07-como-se-garante.md` | Como o texto vira barreira |
-| `08-quando-da-errado.md` | O que fazer quando o agente diz “pronto” sem prova, ou esquece o combinado |
-| `09-glossario.md` | Cada termo numa frase, com a parte que o explica |
-| `10-pedidos-prontos.md` | Os pedidos que se copiam |
-| `11-como-este-manual-foi-feito.md` | O posfácio |
+| `03-instalar.md` | Instalar as skills, pôr as regras, ligar as barreiras |
+| `04-pedir.md` | Como pedir: as quatro partes, o oráculo, a tarefa pequena, pôr o plano à prova |
+| `05-sessoes.md` | Continuar, compactar, abrir uma sessão filha, várias sessões na mesma pasta |
+| `06-o-ciclo-de-uma-mudanca.md` | O plano, o commit por caminho, o hook que recusa, o push |
+| `07-as-regras.md` | As regras, cada uma com o porquê e a fonte |
+| `08-como-se-garante.md` | Como o texto vira barreira |
+| `09-quando-da-errado.md` | O que fazer quando o agente diz “pronto” sem prova, ou esquece o combinado |
+| `10-glossario.md` | Cada termo numa frase, com a parte que o explica |
+| `11-pedidos-prontos.md` | Os pedidos que se copiam |
+| `12-como-este-manual-foi-feito.md` | O posfácio |
 
-Por enquanto só as partes `00-antes-de-comecar.md`, `01-o-que-e-o-morg-laws.md`, `02-instalar.md`, `03-pedir.md`, `04-sessoes.md`, `05-o-ciclo-de-uma-mudanca.md`, `06-as-regras.md`, `07-como-se-garante.md`, `08-quando-da-errado.md`, `09-glossario.md` e `10-pedidos-prontos.md` existem. Falta só a `11-como-este-manual-foi-feito.md`, que vem por último.
+Por enquanto só as partes `00-antes-de-comecar.md`, `01-o-que-e-o-morg-laws.md`, `03-instalar.md`, `04-pedir.md`, `05-sessoes.md`, `06-o-ciclo-de-uma-mudanca.md`, `07-as-regras.md`, `08-como-se-garante.md`, `09-quando-da-errado.md`, `10-glossario.md` e `11-pedidos-prontos.md` existem. Falta só a `12-como-este-manual-foi-feito.md`, que vem por último.
 
 Os procedimentos (P1 a P24) vão em páginas duplas: na página par, **Na prática**; na ímpar, **Por quê e fonte**.
 
