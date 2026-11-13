@@ -1,6 +1,6 @@
 ---
 name: passando-o-trabalho
-description: Guarda o trabalho em curso (estado, decisões, o que já falhou e não se repete) num handoff por assunto em .context/ antes de compactar ou de parar, commita só esse arquivo, entrega o /compact pronto (Claude Code ou Codex) e conduz a retomada. Usar quando a conversa está longa e vai ser compactada, na dúvida entre compactar e abrir uma sessão nova, numa pausa de mais de uma hora ou no fim do dia, ou ao retomar («lê o handoff»). Não usar para dividir trabalho entre sessões ou pedir uma auditoria independente (é a orquestrando-sessoes), para commits ou push do dia a dia (é a git-e-commits) nem para resumir documentos ou escrever changelog.
+description: Guarda o trabalho em curso (estado, decisões, o que já falhou e não se repete) num handoff por assunto em .context/, commita só esse arquivo e conduz os dois fins. Parar (fim do dia ou pausa de mais de uma hora) é gravar, commitar e parar, sem compactar; uma sessão nova lê o handoff depois. Compactar (a conversa cresceu e o mesmo trabalho continua) entrega o /compact pronto, para Claude Code ou Codex. Conduz também a retomada («lê o handoff»). Usar no fim do dia, numa pausa de mais de uma hora, quando a conversa está longa e vai ser compactada, na dúvida entre compactar e abrir uma sessão nova, ou ao retomar. Não usar para dividir trabalho entre sessões ou pedir uma auditoria independente (é a orquestrando-sessoes), para commits ou push do dia a dia (é a git-e-commits) nem para resumir documentos ou escrever changelog.
 ---
 
 # Passando o trabalho
@@ -8,16 +8,25 @@ description: Guarda o trabalho em curso (estado, decisões, o que já falhou e n
 O resumo de uma compactação é escrito pelo próprio modelo, com a janela cheia, e perde o que mais faz falta para
 continuar: caminhos, nomes, erros literais e o que já se tentou sem sucesso. Sem essa lista, o agente volta a propor
 o que já se descartou (livro *Competente o Suficiente*, pp. 30–32). Esta skill põe esse estado num arquivo
-no git **antes** de compactar ou de parar, e o resumo só precisa de apontar para ele.
+no git **antes** de parar ou de compactar, e o resumo só precisa de apontar para ele.
 
-O essencial, se esta skill chegar cortada depois de uma compactação:
+O essencial, se esta skill chegar cortada:
+
+**Primeiro: parar ou compactar?**
+
+- **Parar** (fim do dia, ou pausa de mais de uma hora): gravar o handoff, commitá-lo e parar. **Não compactar.** A
+  resposta entrega a mensagem para colar na sessão nova, que retoma.
+- **Compactar** (a conversa cresceu e o mesmo trabalho continua agora): gravar o handoff, commitá-lo, entregar o
+  `/compact` e a mensagem de retomada.
+
+Nos dois casos:
 
 1. Conferir o estado no git, sem despejar diffs na conversa.
 2. Gravar `.context/HANDOFF-<assunto>.md` com Objetivo, Estado verificado, Decisões, Descartado e Próximos passos.
 3. Commitar **só** esse arquivo, pelo caminho, com os hooks do projeto. Pasta ignorada: ver a seção 3.
-4. Entregar o comando de compactação e a mensagem de retomada.
+4. Entregar o que o caso pede: a mensagem de retomada para a sessão nova (parar) ou o `/compact` com essa mensagem
+   (compactar).
 5. Ao retomar: ler o handoff inteiro, comparar com o `git status -s`, reler o «Descartado», seguir o passo 1.
-6. Pausa de mais de uma hora ou fim do dia: handoff antes de parar; ao voltar, uma sessão nova que o lê.
 
 ## 1. Conferir o estado, em silêncio
 
@@ -95,20 +104,36 @@ git commit -F <arquivo-da-mensagem> -- .context/HANDOFF-<assunto>.md
     siga-a. Se não estiver, pergunte ao dono se tira a pasta do `.gitignore`, uma única vez por projeto, e registe a
     resposta nas Decisões deste handoff. Com um «não», o handoff fica só no disco, e a resposta diz isso.
 
-## 4. Compactar
+## 4. Parar ou compactar
 
-**Compactar ou abrir uma sessão nova?** Quando a conversa cresceu, a pergunta é desta skill. Para continuar o mesmo
-trabalho, compacte com o handoff. Para um trabalho sem relação com este, grave o handoff e abra uma sessão nova: ela
-não precisa do histórico desta. Dividir o trabalho em várias sessões é da skill `orquestrando-sessoes`.
+Escolha o caso antes de tudo. Parar é o do fim do dia e o da pausa longa; compactar é o da conversa que cresceu e do
+mesmo trabalho que continua agora.
 
-**Uma sessão por assunto, fechada no fim do dia.** No fim do dia, grave e commite o handoff e feche a sessão; no dia
-seguinte, uma sessão nova o lê. Uma sessão aberta durante dias junta assuntos, e cada pedido relê todos eles.
+### Parar: fim do dia, ou pausa de mais de uma hora
 
-**Pausa de mais de uma hora:** grave e commite o handoff antes de parar. Ao voltar, abra uma sessão nova que o lê,
-em vez de escrever na antiga. Numa assinatura, a cache do pedido dura cerca de uma hora; depois dela, a primeira
-mensagem reprocessa a conversa inteira, e uma sessão nova com o handoff sai mais barata. A compactação por
+**No fim do dia não se compacta.** Grave o handoff, commite-o e pare. No dia seguinte, uma sessão nova o lê: o
+resumo de uma compactação não leva o que o handoff leva, e uma sessão aberta durante dias junta assuntos, com cada
+pedido relendo todos eles. Uma sessão por assunto, fechada no fim do dia.
+
+**Pausa de mais de uma hora:** o mesmo. Grave e commite o handoff antes de parar e, ao voltar, abra uma sessão nova
+que o lê, em vez de escrever na antiga. Numa assinatura, a cache do pedido dura cerca de uma hora; depois dela, a
+primeira mensagem reprocessa a conversa inteira, e uma sessão nova com o handoff sai mais barata. A compactação por
 inatividade do Claude Code não resolve isto: só age a partir de 200 mil tokens, e o resumo dela é o automático, sem
 o handoff.
+
+A resposta termina com uma linha com o caminho do handoff e o hash do commit (ou «só no disco», se a pasta estiver
+ignorada) e, depois dela, a mensagem para colar na sessão nova (na língua do usuário, como o bloco abaixo, em
+português do Brasil só como modelo):
+
+```text
+Retomando um trabalho que parou. O estado está em .context/HANDOFF-<assunto>.md; os outros HANDOFF-*.md dessa pasta são de outros assuntos e não se tocam. Leia esse arquivo inteiro, rode git status -s e diga o que mudou em relação à tabela, releia o «Descartado» e não proponha nada dele. Diga numa frase onde estávamos e siga o passo 1 dos próximos passos ([resumo do passo]). Se ele pedir uma decisão minha, pergunte antes.
+```
+
+### Compactar: a conversa cresceu e o mesmo trabalho continua
+
+**Compactar ou abrir uma sessão nova?** Quando a conversa cresceu, a pergunta é desta skill. Para continuar o mesmo
+trabalho agora, compacte com o handoff. Para um trabalho sem relação com este, grave o handoff e abra uma sessão
+nova: ela não precisa do histórico desta. Dividir o trabalho em várias sessões é da skill `orquestrando-sessoes`.
 
 **Quando:** compacte à mão por volta de **150 mil tokens**, com instruções, em vez de esperar pela automática.
 **O número é uma escolha do autor do Morg-laws, feita depois de medir o próprio uso**, em que reler a conversa era
