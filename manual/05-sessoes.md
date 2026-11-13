@@ -38,7 +38,7 @@ Cada mensagem manda a conversa inteira de volta, e uma conversa longa fica cara,
 
 As vozes da cabeça de Carlobks (decisão de 2026-11-06): compactar cedo. Porquê: numa medição do trabalho antes das regras, reler o contexto foi a maior parte do custo, 64% ([medições do uso](https://github.com/Carlobks/Morg-laws/blob/main/pesquisas/2026-11-05-linha-de-base-do-uso.md)). O número diz que reler pesa, não em que ponto compactar.
 
-Outra decisão de Carlobks (2026-11-06): o número é por volta de 150 mil tokens. Porquê: nas palavras dele, arrumadas, testou o plano Pro e o Max 5x; no Pro a janela é menor e ele compactava mais vezes; foi sentindo que 150 mil a 200 mil tokens era o máximo que queria usar. Muitas vezes compacta antes, quando a tarefa ou o tempo deixam, porque quanto menos distração na janela, mais atenção o modelo dá ao que ele quer. É a prática de uma pessoa, e não um limite da ferramenta.
+Decisão de Carlobks (2026-11-06): o número é por volta de 150 mil tokens. Porquê: nas palavras dele, arrumadas, testou o plano Pro e o Max 5x; no Pro a janela é menor e ele compactava mais vezes; foi sentindo que 150 mil a 200 mil tokens era o máximo que queria usar. Muitas vezes compacta antes, quando a tarefa ou o tempo deixam, porque quanto menos distração na janela, mais atenção o modelo dá ao que ele quer. É a prática de uma pessoa, e não um limite da ferramenta.
 
 Os comandos estão na [documentação do Claude Code](https://code.claude.com/docs/en/commands): `/compact`, que aceita instruções de foco, e `/context`, que mostra o que ocupa a janela.
 
@@ -110,7 +110,7 @@ O que costuma dar errado:
 
 Um modelo mais barato pode baixar a qualidade, e é a auditoria e o plano que mais pagam por isso. O guia de boas práticas do Claude Code diz que o Sonnet custa menos no trabalho de rotina e que o Haiku serve para sub-agentes de tarefas simples ([boas práticas](https://code.claude.com/docs/en/best-practices)). O livro de Fabio Akita manda escolher o modelo pelo preço, pelo tempo e pela ferramenta, e testar a combinação (pp. 45, 155, 159–161, 311–312).
 
-Mais uma decisão de Carlobks (2026-11-06): a auditoria a frio fica no maior modelo. Porquê: a skill diz que um modelo mais barato pode baixar a qualidade, e por isso o plano e a auditoria ficam no maior ([`orquestrando-sessoes`](https://github.com/Carlobks/Morg-laws/blob/main/skills/orquestrando-sessoes/SKILL.md)). Uma segunda auditoria, em outro modelo ou em outra ferramenta, continua a valer.
+Decisão de Carlobks (2026-11-06): a auditoria a frio fica no maior modelo. Porquê: a skill diz que um modelo mais barato pode baixar a qualidade, e por isso o plano e a auditoria ficam no maior ([`orquestrando-sessoes`](https://github.com/Carlobks/Morg-laws/blob/main/skills/orquestrando-sessoes/SKILL.md)). Uma segunda auditoria, em outro modelo ou em outra ferramenta, continua a valer.
 
 Onde vive no Morg-laws: a seção “A orquestradora magra e diária” da skill `orquestrando-sessoes`, que traz esta tabela.
 
@@ -155,7 +155,7 @@ O que costuma dar errado:
 
 Com muitas sessões abertas você se perde. O título diz, de relance, quais esperam por você e quais terminaram.
 
-Uma decisão de Carlobks (2026-11-08): o título `ESTADO | ÁREA · assunto`. Porquê: nas palavras dele, arrumadas, tinha 70 sessões abertas e se perdia naquela imensidão; o título foi um jeito de se organizar. Criou também pastas para as sessões. Assim sabe no que está trabalhando no momento.
+Decisão de Carlobks (2026-11-08): o título `ESTADO | ÁREA · assunto`. Porquê: nas palavras dele, arrumadas, tinha 70 sessões abertas e se perdia naquela imensidão; o título foi um jeito de se organizar. Criou também pastas para as sessões. Assim sabe no que está trabalhando no momento.
 
 O `/rename` está na [documentação de comandos do Claude Code](https://code.claude.com/docs/en/commands): muda o nome da sessão e o mostra na barra do prompt; sem nome, gera um a partir da conversa. O nome tem no máximo 200 caracteres, e um comando só é reconhecido no começo da sua mensagem: quem o digita é você. Na app de desktop, clicar no título ou pedir ao agente vem da [documentação da app de desktop](https://code.claude.com/docs/en/desktop); o `/rename` do Codex, dos [comandos do Codex](https://developers.openai.com/codex/cli/slash-commands), que não dizem como se faz na extensão nem na app.
 
@@ -227,7 +227,7 @@ O que costuma dar errado:
 
 O relatório de uma auditoria volta no mesmo tom confiante, acerte ou erre. Só uma leitura que parte da fonte separa um do outro, e o exemplo mostra o caso em que a correção proposta tinha um defeito que só a conferência viu. O livro de Fabio Akita mostra que, sem a fonte, o agente pode inventar um motivo plausível para uma decisão antiga (p. 32) e lembra que a explicação dele sobre como verificou não é prova (p. 357). Mais de um revisor, com modelos diferentes, também vem do livro (pp. 49, 156). Que o modelo tende a concordar com quem pede vem de uma [pesquisa sobre bajulação](https://arxiv.org/abs/2310.13548) em assistentes de IA: as respostas acompanham a crença de quem pergunta, mesmo quando ela não é a verdadeira.
 
-Mais uma decisão de Carlobks (2026-11-06): a conferência vem antes de o achado chegar a ele. Porquê: nas palavras dele, arrumadas, foi experimentando: começou a pedir a conferência antes de o trabalho chegar a ele e sempre achava algum erro; então passou a pedir sempre, porque prefere receber o trabalho bem feito, com uma confirmação. Foi aprendendo a não confiar cegamente.
+Decisão de Carlobks (2026-11-06): a conferência vem antes de o achado chegar a ele. Porquê: nas palavras dele, arrumadas, foi experimentando: começou a pedir a conferência antes de o trabalho chegar a ele e sempre achava algum erro; então passou a pedir sempre, porque prefere receber o trabalho bem feito, com uma confirmação. Foi aprendendo a não confiar cegamente.
 
 Onde vive no Morg-laws: as seções “Leitura independente” e “A orquestradora magra e diária” da skill `orquestrando-sessoes`.
 

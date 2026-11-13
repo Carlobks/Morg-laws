@@ -8,6 +8,7 @@ cole
 confira
 copie
 crie
+decisão
 depois
 escreva
 instale
