@@ -131,14 +131,14 @@ O `pre-commit` recusa um commit se o autor, um nome de arquivo ou uma linha nova
 O que costuma dar errado:
 
 - Pôr a lista dentro do repositório. Ela então publica o que devia esconder.
-- Esquecer o e-mail: sem ele, o commit sai com o da configuração global, que costuma ser o pessoal.
+- Esquecer o e-mail: sem ele, o commit sai com o da configuração global, que em outra máquina costuma ser o pessoal.
 - Sem a lista, o hook só avisa, não recusa.
 
 ### Por quê e fonte
 
 O que entra num repositório público não sai mais: o histórico guarda tudo, também o que você apagou depois. Por isso um nome, um e-mail ou um número real nunca entram, e o filtro tem de rodar antes do commit, não depois. A lista fica fora do repositório porque, dentro dele, seria a lista dos nomes que você queria esconder.
 
-O e-mail noreply é público por desenho, e por isso seguro de commitar. Sem a identidade local, o commit usa a global da máquina, que costuma ser a pessoal; o portão `identidade.py` recusa outro e-mail. Uma regra do próprio `AGENTS.md` diz o mesmo em curto: nunca dados reais em testes, exemplos ou commits.
+O e-mail noreply é público por desenho, e por isso seguro de commitar. Sem a identidade local, o commit usa a global da máquina: o noreply, se você seguiu a parte `02`, e em outra máquina, em geral, a pessoal; o portão `identidade.py` recusa outro e-mail. Uma regra do próprio `AGENTS.md` diz o mesmo em curto: nunca dados reais em testes, exemplos ou commits.
 
 O hook lê a lista sozinho, então o agente não precisa abri-la: a pasta que o modelo sugere para ela, `~/.config/morg-laws`, já vem negada ao agente no `settings.json` (o arquivo de permissões do Claude Code).
 

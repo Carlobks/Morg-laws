@@ -121,7 +121,7 @@ git config --global user.email "seu endereço noreply"
 
 Para conferir, `git config user.name` e `git config user.email` mostram o que ficou. Isso vem do [primeiro uso do git](https://git-scm.com/book/en/v2/Getting-Started-First-Time-Git-Setup), que explica que o `--global` vale para todos os projetos do seu usuário.
 
-O noreply esconde o seu e-mail pessoal dos commits públicos. No P4, o manual confere esse mesmo endereço e o grava só no repositório do projeto.
+O noreply esconde o seu e-mail pessoal dos commits públicos. No P4, o manual grava esse mesmo endereço só no repositório do projeto.
 
 ## A pasta do projeto, o `git init` e o primeiro commit
 
