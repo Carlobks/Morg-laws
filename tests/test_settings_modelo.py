@@ -9,7 +9,8 @@ from carregar_modelos import MODELOS, PASTA_HOOKS
 SETTINGS = json.loads((MODELOS / "claude" / "settings.json").read_text(encoding="utf-8"))
 # Os hooks fora do PreToolUse: o evento e o matcher de cada um. Um hook quebrado aqui não pode parar a compactação.
 FORA_DO_PRE_TOOL_USE = {"lembrar_o_handoff.py": ("PreCompact", "manual"),
-                        "retomar_pelo_handoff.py": ("SessionStart", "compact")}
+                        "retomar_pelo_handoff.py": ("SessionStart", "compact"),
+                        "aviso_da_pausa.py": ("UserPromptSubmit", None)}
 
 
 def hooks_ligados():

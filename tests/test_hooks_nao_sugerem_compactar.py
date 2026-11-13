@@ -11,13 +11,16 @@ import unittest
 from carregar_modelos import carregar_hook
 
 # O hook e as constantes com o texto que ele mostra (ao usuário ou ao agente).
-TEXTOS_POR_HOOK = {"lembrar_o_handoff": ("TEXTO_DA_PARADA",), "retomar_pelo_handoff": ("TEXTO_DA_RETOMADA",)}
+TEXTOS_POR_HOOK = {"lembrar_o_handoff": ("TEXTO_DA_PARADA",), "retomar_pelo_handoff": ("TEXTO_DA_RETOMADA",),
+                   "aviso_da_pausa": ("TEXTO_DO_AVISO",)}
 FRASES_COM_COMPACT = {
     "A conversa foi compactada.",
     "Compactação parada (Morg-laws): o /compact não aponta para um .context/HANDOFF-<assunto>.md gravado e commitado.",
     "Grave o handoff com a skill passando-o-trabalho e use o /compact que ela entrega.",
     "Se vai parar (fim do dia ou pausa de mais de uma hora), não compacte: grave o handoff e pare.",
     "Para compactar mesmo assim, ponha «sem handoff».",
+    ("Antes de responder, diga ao usuário: se o trabalho continua, grave o handoff (skill `passando-o-trabalho`) e "
+     "abra uma sessão nova que o lê; não compacte."),
 }
 FIM_DE_FRASE = re.compile(r"(?<=[.?!])\s+")
 
