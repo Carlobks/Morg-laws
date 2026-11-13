@@ -114,7 +114,7 @@ Onde vive no Morg-laws: a lista completa, com o que cada arquivo recusa, está e
 Dois cuidados para o que você commita não expor ninguém.
 
 1. Identidade só deste repositório, com o e-mail noreply que o GitHub dá à sua conta:
-   `git config --local user.email <o seu e-mail noreply>`
+   `git config --local user.email "o seu e-mail noreply"`
 2. Uma lista negra fora do repositório, um termo por linha, e o git sabendo onde ela está:
    `git config morg.listaNegra <caminho da lista>`
 

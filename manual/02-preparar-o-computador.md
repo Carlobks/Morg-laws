@@ -68,7 +68,7 @@ Confira:
 git --version
 ```
 
-**Node.** Na [página de download do Node](https://nodejs.org/en/download) escolha a versão marcada como LTS e o download do seu sistema. Confira:
+**Node.** Na [página de download do Node](https://nodejs.org/en/download) escolha a versão marcada como LTS e o download do seu sistema. No Linux, a página só dá um arquivo compactado; o autor usa o `mise`, que veio com a distribuição dele. Confira:
 
 ```
 node --version

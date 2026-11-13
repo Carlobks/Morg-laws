@@ -48,7 +48,7 @@ Onde vive no Morg-laws: a skill `passando-o-trabalho`, com a pergunta “parar o
 
 ### Na prática
 
-Uma sessão filha é uma sessão nova que recebe um pedido escrito e devolve um resultado. Você a abre à mão, como qualquer sessão nova, e cola o pedido. Na app de desktop do Claude Code, quando o agente nota um trabalho fora da tarefa, ele o sugere como tarefa, e o botão “Start” a começa numa sessão nova. E a vê trabalhar: pode lê-la e corrigi-la no meio do trabalho.
+Uma sessão filha é uma sessão nova que recebe um pedido escrito e devolve um resultado. Você a abre à mão, como qualquer sessão nova, e cola o pedido. E a vê trabalhar: pode lê-la e corrigi-la no meio do trabalho. Na app de desktop do Claude Code, quando o agente nota um trabalho fora da tarefa, ele o sugere como tarefa, e o botão “Start” a começa numa sessão nova.
 
 O pedido leva o objetivo, os arquivos, o que já se descartou, como se prova e o modelo (P12). Um pedido de implementação, assim:
 
