@@ -12,7 +12,7 @@ A pergunta que decide o que vira barreira está na seção 6 da skill [`escreven
 
 Cada camada olha para um momento diferente, e uma cobre o que a outra deixa passar.
 
-1. **Os hooks do agente** olham o que o agente tenta fazer: um comando, uma escrita de arquivo. Vivem em `modelos/claude/hooks/` e se ligam no `modelos/claude/settings.json`. Só valem no Claude Code, mas pegam o erro antes de ele acontecer.
+1. **Os hooks do agente** olham o que o agente tenta fazer (um comando, uma escrita de arquivo), a compactação e a mensagem do usuário. Vivem em `modelos/claude/hooks/` e se ligam no `modelos/claude/settings.json`. Só valem no Claude Code, mas pegam o erro antes de ele acontecer.
 2. **Os hooks do git** olham o commit e o push, de quem for: do agente, de uma pessoa ou de outra ferramenta. Vivem em `modelos/git/hooks/`, com a lógica em `modelos/git/portoes/`.
 3. **O CI** roda o mesmo comando de testes numa máquina limpa, a cada push, e não depende da configuração da máquina de quem commita. Vive em `modelos/github/workflows/ci.yml`.
 
@@ -20,16 +20,19 @@ A fonte da forma geral é a skill [`escrevendo-regras-de-agente`](https://github
 
 ## Os hooks do agente
 
-São quatro scripts em Python, só com a biblioteca padrão, e um `settings.json` que os liga ao Claude Code. Os três primeiros olham comandos de shell; o quarto olha escritas de arquivo.
+São sete scripts em Python, só com a biblioteca padrão, e um `settings.json` que os liga ao Claude Code. Os três primeiros olham comandos de shell; o quarto olha escritas de arquivo; os três últimos cuidam da compactação e da pausa.
 
 - **`guarda_do_git.py`** recusa o que contorna os hooks do git: `--no-verify`, mudar o `core.hooksPath`, `git add -A`, `commit -a`, um commit sem caminhos, uma mensagem com `-m` de várias linhas e o `git stash`. É a regra “Os hooks são a rede” e o “Nunca” dos commits alheios, em forma de máquina.
 - **`bloquear_segredos.py`** recusa ler segredos pela shell, porque o `deny` das permissões só cobre a ferramenta Read, e recusa `curl … | sh`. É o “Nunca” dos segredos.
 - **`perguntar_antes.py`** não recusa: pergunta. Antes de um push, de tudo o que escreve no GitHub (PR, issue, comentário, versão), de instalações e de mudanças nas regras do agente, ele pede o “sim” do dono, também quando uma regra `ask` das permissões não perguntaria. Num projeto real, um `git push` saiu sem pergunta no modo automático, embora a documentação diga que as regras `ask` perguntam também ali ([modos de permissão](https://code.claude.com/docs/en/permission-modes)); o hook não depende de qual dos dois vale na sua versão.
 - **`limite_de_linhas.py`** recusa que um arquivo de código passe de 500 linhas e cresça. Só bloqueia se passar do limite e crescer: encolher um arquivo antigo e grande é sempre permitido.
+- **`lembrar_o_handoff.py`** para o `/compact` digitado à mão que não aponta para um handoff gravado e commitado, e diz como gravá-lo. Quem vai parar não compacta; para compactar mesmo assim, escreva “sem handoff”.
+- **`retomar_pelo_handoff.py`** manda o agente, depois de qualquer compactação, ler o handoff do assunto e conferir o `git status -s`.
+- **`aviso_da_pausa.py`** avisa o agente na primeira mensagem depois de mais de uma hora: grave o handoff e abra uma sessão nova, sem compactar. Só avisa, não para a mensagem.
 
-As permissões do `settings.json` têm três colunas. O `deny` tira do alcance do agente o que ele não deve usar, como `.env`, chaves e a pasta da lista negra. O `ask` pergunta antes de um push ou de uma instalação. O `allow` libera o que é só leitura. O livro manda tirar do alcance do agente o que ele não deve usar (pp. 164–165). O `settings.json` ainda desliga o modo que pula as permissões e põe `onFailure: block` em cada hook, de modo que um hook que falha também bloqueia, e não deixa passar.
+As permissões do `settings.json` têm três colunas. O `deny` tira do alcance do agente o que ele não deve usar, como `.env`, chaves e a pasta da lista negra. O `ask` pergunta antes de um push ou de uma instalação. O `allow` libera o que é só leitura. O livro manda tirar do alcance do agente o que ele não deve usar (pp. 164–165). O `settings.json` ainda desliga o modo que pula as permissões e põe `onFailure: block` em cada hook do `PreToolUse`, de modo que um hook que falha também bloqueia, e não deixa passar. Os três novos levam `onFailure: continue`: um deles quebrado não pode parar a compactação nem a mensagem.
 
-Os hooks do agente só olham o que o agente tenta. Uma edição feita pela shell escapa do `limite_de_linhas.py`, e um commit feito à mão não passa por nenhum deles. Para isso existe a camada seguinte. A fonte é a seção sobre hooks do [`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md) e a skill [`auditoria-de-seguranca`](https://github.com/Carlobks/Morg-laws/blob/main/skills/auditoria-de-seguranca/SKILL.md).
+Os hooks do agente só olham o que acontece dentro do Claude Code: o que o agente tenta, a compactação e a mensagem. Uma edição feita pela shell escapa do `limite_de_linhas.py`, e um commit feito à mão não passa por nenhum deles. Para isso existe a camada seguinte. A fonte é a seção sobre hooks do [`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md) e a skill [`auditoria-de-seguranca`](https://github.com/Carlobks/Morg-laws/blob/main/skills/auditoria-de-seguranca/SKILL.md).
 
 ## Os hooks do git
 
@@ -57,7 +60,7 @@ Os testes prontos vivem em `modelos/testes/`, em Python, e têm uma versão em T
 
 **Dados pessoais.** `test_dados_pessoais.py` recusa caminhos de pastas pessoais, e-mails pessoais, termos da lista negra e os números de documento que o projeto ligar. É o “Nunca” dos dados reais.
 
-**Permissões e CI.** `test_permissoes.py` confere as três colunas, o modo que pula as permissões desligado e os hooks ligados com `onFailure: block`. `test_ci.py`, acima, confere o CI.
+**Permissões e CI.** `test_permissoes.py` confere as três colunas, o modo que pula as permissões desligado e o `onFailure: block` nos hooks do `PreToolUse`. `test_ci.py`, acima, confere o CI.
 
 **Regras e documentos.** `test_regras.py` confere o arquivo de regras: cada regra com motivo e com linha no mapa das barreiras, caminhos citados que existem e o índice das skills igual ao instalado. `test_docs_indices.py` confere os índices dos documentos, as decisões seguidas, a pesquisa com data e os handoffs com hashes que existem. `test_fins_de_linha.py` confere LF no git.
 
@@ -85,6 +88,6 @@ O procedimento P3 da parte 03 liga o mínimo: copiar, dar a marca de executável
 2. **A lista negra.** Guarde-a fora do repositório, um termo por linha, e aponte para ela com a configuração `morg.listaNegra` do git. A pasta que o molde usa já está no `deny` e no `bloquear_segredos.py`; se usar outra, ajuste os dois.
 3. **O ajuste ao projeto.** Defina `COMANDO_DOS_TESTES` no `pre-commit`, `TESTE` e `PUBLICADO` no `mensagem_commit.py` e o bloco “Ajuste ao projeto” no início de cada teste. Uma parte cuja pasta não existe é pulada, e não falha.
 4. **Um projeto em TypeScript.** Copie `modelos/testes-ts/` para `tests/catracas/`, instale o `vitest` e o `typescript` com as versões fixadas no `package-lock.json`, fixe o Node num `.nvmrc` e ponha `npx vitest run` no comando único.
-5. **O Python dos hooks.** Os hooks usam a variável `MORG_PY`, ou `py` no Windows, ou `python3`, sempre com `-I`. Os hooks do agente só travam se falharem com o Claude Code na versão 2.1.295 ou mais nova; numa versão antiga o campo `onFailure` é ignorado, e um hook que não inicia deixa passar.
+5. **O Python dos hooks.** Os hooks usam a variável `MORG_PY`, ou `py` no Windows, ou `python3`, sempre com `-I`. Os hooks do `PreToolUse` só travam se falharem com o Claude Code na versão 2.1.295 ou mais nova; numa versão antiga o campo `onFailure` é ignorado, e um hook que não inicia deixa passar.
 6. **Só sessões, sem sub-agentes (opção).** Acrescente `"Agent"` ao `deny` do `.claude/settings.json` e ponha `SO_SESSOES = True` no `test_permissoes.py`. O nome da ferramenta sozinho a tira do contexto do agente. O molde vem sem esta linha, porque é uma escolha.
 7. **Pedir uma sonda.** Antes de confiar numa barreira, peça ao agente uma ação que ela deve recusar, como um commit com `--no-verify`, e veja a recusa. O método está na seção 8 da skill [`auditoria-de-seguranca`](https://github.com/Carlobks/Morg-laws/blob/main/skills/auditoria-de-seguranca/SKILL.md).

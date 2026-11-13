@@ -101,7 +101,7 @@ O que costuma dar errado:
 
 Um `AGENTS.md` é orientação, não barreira: o agente pode esquecê-lo ou escolher outro caminho. Por isso o que tem de ser cumprido vira hook, teste ou CI. No Claude Code, um hook `PreToolUse` que sai com 2 bloqueia a chamada e mostra o motivo ao agente, e o campo `onFailure` com o valor `block` faz um hook que falha também bloquear, desde a versão 2.1.295 (o `claude --version` mostra a sua; [documentação de hooks](https://code.claude.com/docs/en/hooks)). Numa versão mais antiga o campo é ignorado, e um hook que não inicia deixa passar. O código 2 é o número com que o hook diz “recusei”.
 
-Há duas camadas, e uma cobre a outra. Os hooks do agente (`modelos/claude/`) olham o que o agente tenta fazer, como o `--no-verify` acima. Os hooks do git (`.githooks/`) rodam em todo commit, do agente ou feito à mão; o `git add --chmod=+x .githooks/*` grava a marca de executável também no git, para quem clonar depois. As duas se somam às permissões do agente, que a [documentação de permissões](https://code.claude.com/docs/en/permissions) descreve.
+Há duas camadas, e uma cobre a outra. Os hooks do agente (`modelos/claude/`) olham o que o agente tenta fazer, como o `--no-verify` acima, a compactação e a mensagem do usuário. Os hooks do git (`.githooks/`) rodam em todo commit, do agente ou feito à mão; o `git add --chmod=+x .githooks/*` grava a marca de executável também no git, para quem clonar depois. As duas se somam às permissões do agente, que a [documentação de permissões](https://code.claude.com/docs/en/permissions) descreve.
 
 Na dúvida de por onde começar, o mínimo recomendado é a guarda do git, o hook de segredos e o que pergunta antes do push, mais o `pre-commit` e o `test_regras.py`. O resto vem quando você sentir falta.
 
