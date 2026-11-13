@@ -89,7 +89,7 @@ antes de uma pausa de mais de uma hora e no fim do dia. Assim, quem
 retoma em outra máquina ou em outra sessão o encontra, e o histórico mostra como o estado mudou.
 
 ```
-git check-ignore -q .context/HANDOFF-<assunto>.md   # sai com 0 se o arquivo estiver ignorado
+git check-ignore -q .context/HANDOFF-<assunto>.md   # sai com 0 se o arquivo estiver ignorado; um arquivo já rastreado nunca conta como ignorado
 git add -- .context/HANDOFF-<assunto>.md
 git commit -F <arquivo-da-mensagem> -- .context/HANDOFF-<assunto>.md
 ```
@@ -195,7 +195,8 @@ novos e leva o conteúdo. Até lá, o
 projeto o tiver, acusa a falta dessas duas seções.
 
 No Claude Code, o handoff pode voltar sozinho depois de compactar (voltam até cinco arquivos lidos ou editados, e só
-os pequenos inteiros), mas não conte com isso: leia-o.
+os pequenos inteiros), mas não conte com isso: leia-o. Com os hooks dos moldes, a ferramenta lembra de ler o handoff
+depois de compactar; leia-o mesmo assim.
 
 ## Fontes
 
