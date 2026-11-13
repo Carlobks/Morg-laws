@@ -21,11 +21,11 @@ Toda decisão tomada no meio do caminho foi ao autor, com a opção recomendada 
 
 ## O verificador
 
-O texto passa por um verificador automático. Ele confere os tetos de palavras de cada parte, as fontes em cada seção, a língua do texto e a paridade das páginas, isto é, que “Na prática” comece numa página par e “Por quê e fonte” na ímpar seguinte. O [verificador do manual](https://github.com/Carlobks/Morg-laws/blob/main/tests/verificador_do_manual.py) roda na suíte de testes, como qualquer outra regra do repositório, e a parte `08` conta como essas barreiras funcionam. Quando um detector acusa o texto, quem muda é o texto, e o detector fica como está.
+O texto passa por um verificador automático. Ele confere os tetos de palavras de cada parte, as fontes em cada seção, a língua do texto. A paridade das páginas, isto é, que “Na prática” comece numa página par e “Por quê e fonte” na ímpar seguinte, quem confere é o molde do PDF, que para a geração se um par sair do lugar. O [verificador do manual](https://github.com/Carlobks/Morg-laws/blob/main/tests/verificador_do_manual.py) roda na suíte de testes, como qualquer outra regra do repositório, e a parte `08` conta como essas barreiras funcionam. Quando um detector acusa o texto, quem muda é o texto, e o detector fica como está.
 
 ## O que os leitores simulados apontaram
 
-Antes de o texto ir para o autor, três personas o leram, cada uma numa sessão do agente:
+Com as partes já escritas e auditadas, três personas as leram, cada uma numa sessão do agente:
 
 - a Bia, que nunca usou um agente nem o git;
 - o Davi, programador cético, que procura frase maior que a fonte;
@@ -34,11 +34,11 @@ Antes de o texto ir para o autor, três personas o leram, cada uma numa sessão 
 Os números abaixo são o que elas apontaram:
 
 - **Primeira ronda:** 84 achados, 35 da Bia, 26 do Davi e 23 da Lena.
-- **Segunda ronda:** dos 83 achados relidos, 34 ficaram resolvidos, 17 em parte e 7 não resolvidos, e 25 ficaram fora pela triagem. Houve 32 achados novos: 24 da Bia, 5 do Davi e 3 da Lena.
+- **Segunda ronda:** dos 83 achados relidos (um da Lena ficou sem releitura), 34 ficaram resolvidos, 17 em parte e 7 não resolvidos, e 25 ficaram fora pela triagem. Houve 32 achados novos: 24 da Bia, 5 do Davi e 3 da Lena.
 - **A Bia, do zero:** ela listou 30 coisas de que precisaria antes do primeiro procedimento. O manual dizia 2 por inteiro, 13 em parte e 15 não dizia. Daí nasceu a parte `02`.
 - **A Bia relendo a parte `02`:** dos 23 itens dela, 19 ficaram resolvidos e 4 em parte. Houve 13 achados novos.
 
-A triagem seguiu uma regra simples. A falha de lógica, conferida na fonte, corrige-se sempre. A clareza entra se dois leitores a levantarem. O gosto de um só fica de fora. Os [modelos de issue](https://github.com/Carlobks/Morg-laws/tree/main/.github/ISSUE_TEMPLATE) do repositório seguem a mesma ideia: pedem a prova antes da opinião.
+A triagem seguiu uma regra simples. A falha de lógica, conferida na fonte, corrige-se sempre. A clareza entra se dois leitores a levantarem. O gosto de um só fica de fora. Os [modelos de issue](https://github.com/Carlobks/Morg-laws/tree/main/.github/ISSUE_TEMPLATE) do repositório seguem a mesma ideia: três dos quatro pedem a prova, num campo obrigatório.
 
 ## O que estes números não são
 
@@ -50,4 +50,4 @@ Um leitor simulado numa sessão do Claude não sabe o que o Codex faz: a Lena s�
 
 ## O que é do autor e o que é do agente
 
-É do autor tudo o que é decisão: as escolhas marcadas como dele, o “Quem escreveu isto” da parte `00` e a leitura final de cada parte. É do agente a escrita do texto, as auditorias, as conferências e os leitores, sempre conferidos e aprovados pelo autor. A divisão está à vista de propósito, para que você saiba em quem confiar para quê, e qualquer erro que você achar nele se conta pelo mesmo caminho das [issues](https://github.com/Carlobks/Morg-laws/issues).
+É do autor tudo o que é decisão: as escolhas marcadas como dele, o “Quem escreveu isto” da parte `00` e a aprovação de cada fase. É do agente a escrita do texto, as auditorias, as conferências e os leitores, sempre conferidos e aprovados pelo autor. A divisão está à vista de propósito, para que você saiba em quem confiar para quê, e qualquer erro que você achar nele se conta pelo mesmo caminho das [issues](https://github.com/Carlobks/Morg-laws/issues).
