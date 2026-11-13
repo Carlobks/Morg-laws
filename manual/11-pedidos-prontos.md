@@ -70,6 +70,7 @@ Use quando um passo do plano é trabalho de verdade e merece uma sessão só del
 
 ```
 Título: ATIVO | LISTA · implementação do passo 2
+Modelo: o médio (Sonnet)
 
 Implemente o passo 2 do plano em <caminho do plano>. Você trabalha na pasta do projeto, em commits locais, sem push.
 Antes de começar, confira que a árvore está limpa e que o último commit é <o combinado>.

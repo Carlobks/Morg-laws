@@ -9,6 +9,7 @@ em Markdown nesta pasta e feito para ser lido como PDF.
 |---|---|
 | `00-antes-de-comecar.md` | Quem escreveu, e como ler o manual |
 | `01-o-que-e-o-morg-laws.md` | O que é, para que serve, o que tem cada pasta |
+| `02-preparar-o-computador.md` | O terminal, o Claude Code, o git, o Node, o Python, a conta no GitHub e a primeira pasta |
 | `03-instalar.md` | Instalar as skills, pôr as regras, ligar as barreiras |
 | `04-pedir.md` | Como pedir: as quatro partes, o oráculo, a tarefa pequena, pôr o plano à prova |
 | `05-sessoes.md` | Continuar, compactar, abrir uma sessão filha, várias sessões na mesma pasta |
@@ -19,8 +20,6 @@ em Markdown nesta pasta e feito para ser lido como PDF.
 | `10-glossario.md` | Cada termo numa frase, com a parte que o explica |
 | `11-pedidos-prontos.md` | Os pedidos que se copiam |
 | `12-como-este-manual-foi-feito.md` | O posfácio |
-
-Por enquanto só as partes `00-antes-de-comecar.md`, `01-o-que-e-o-morg-laws.md`, `03-instalar.md`, `04-pedir.md`, `05-sessoes.md`, `06-o-ciclo-de-uma-mudanca.md`, `07-as-regras.md`, `08-como-se-garante.md`, `09-quando-da-errado.md`, `10-glossario.md` e `11-pedidos-prontos.md` existem. Falta só a `12-como-este-manual-foi-feito.md`, que vem por último.
 
 Os procedimentos (P1 a P24) vão em páginas duplas: na página par, **Na prática**; na ímpar, **Por quê e fonte**.
 

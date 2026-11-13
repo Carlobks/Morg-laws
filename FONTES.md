@@ -20,7 +20,7 @@ Fonte secundária leva a marca *(secundária)* até ser conferida na original.
 - **AAIF — Measuring AGENTS.md: what five runs show** — https://aaif.io/blog/measuring-agents-md-what-five-runs-show-that-one-doesn-t — lido em 2026-10-29.
   Sustenta: o AGENTS.md é orientação, não barreira. Com um AGENTS.md curto (12 linhas), o agente foi mais rápido e gastou menos (um repositório, um agente, 2 tarefas, 5 corridas com e sem). O estudo **não** compara arquivos curtos com longos, e o autor chama-lhe «one data point». Conferido de novo em 2026-10-30.
 - **Towards Understanding Sycophancy in Language Models (arXiv 2310.13548)** — https://arxiv.org/abs/2310.13548 — resumo lido em 2026-11-11.
-  Sustenta: o reforço por preferência humana pode levar a respostas que acompanham a crença de quem pergunta em vez da verdadeira («sycophancy»); cinco assistentes o mostraram em quatro tarefas. Usado no P15 (`manual/04-sessoes.md`).
+  Sustenta: o reforço por preferência humana pode levar a respostas que acompanham a crença de quem pergunta em vez da verdadeira («sycophancy»); cinco assistentes o mostraram em quatro tarefas. Usado no P15 (`manual/05-sessoes.md`).
 - **Evaluating AGENTS.md (arXiv 2602.11988)** — https://arxiv.org/abs/2602.11988 — resumo lido em 2026-10-30.
   Sustenta: os arquivos de contexto «do not generally improve task success rates» e sobem o custo de inferência em mais de 20%, em média. O resumo não fala do tamanho dos arquivos, e a página não mostra a afiliação dos autores.
 - **agents.md** — https://agents.md — lido em 2026-10-30 (numa auditoria independente). Sustenta: o formato é mantido pela Agentic AI Foundation, sob a Linux Foundation, e a página lista 23 ferramentas que o leem.
@@ -326,7 +326,7 @@ Lidas em 2026-11-07 para o workflow `links` (`.github/workflows/links.yml`) e o 
 - **GitHub Docs — eventos que disparam workflows** — https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows — Sustenta: os agendados correm no último commit da `main`, podem atrasar no começo de cada hora e desligam-se num repositório público ao fim de 60 dias sem atividade; o aviso a quem mexeu por último no `cron`; o `GITHUB_TOKEN` só lê nas PRs vindas de forks.
 - **GitHub Docs — cache de dependências** — https://docs.github.com/en/actions/reference/workflows-and-actions/dependency-caching — Sustenta: uma cache não se reescreve; o `restore-keys`; uma PR lê a cache da base e a que cria fica só para ela; a remoção ao fim de 7 dias sem uso; o limite de 10 GB.
 - **GitHub Docs — workflows** — https://docs.github.com/en/actions/concepts/workflows-and-actions/workflows — lido em 2026-11-11.
-  Sustenta: cada execução usa a versão do workflow que está no commit (ou na referência) do evento; usado na parte 07.
+  Sustenta: cada execução usa a versão do workflow que está no commit (ou na referência) do evento; usado na parte 08.
 
 ## Modelos de issue e de PR (GitHub)
 
