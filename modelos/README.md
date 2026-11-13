@@ -67,7 +67,7 @@ Os testes prontos de `testes-ts/` são a exceção: TypeScript, com o `vitest` e
    `git add` (skill `codigo-legivel`).
 6. Python: os hooks usam `MORG_PY`, ou `py` (Windows), ou `python3`, sempre com `-I`.
    Os hooks do `PreToolUse` travam se falharem (`"onFailure": "block"`), o que exige o Claude Code v2.1.295 ou mais
-   novo; numa versão antiga o campo é ignorado e um hook que não arranca deixa passar. Os três dos outros eventos
+   novo; numa versão antiga o campo é ignorado e um hook que não inicia deixa passar. Os três dos outros eventos
    (`lembrar_o_handoff.py`, `retomar_pelo_handoff.py` e `aviso_da_pausa.py`) vêm com `"onFailure": "continue"`: um hook quebrado ou em falta (o comando confere o
    arquivo e sai com 1, com a mensagem «Hook em falta») não para a compactação nem a sessão; a parada de propósito
    do `lembrar_o_handoff.py` sai com 2, que não é falha, e segue parando.
@@ -86,7 +86,7 @@ projeto. As fontes estão no `FONTES.md` (os comandos e a referência das config
 
 - **A janela da compactação automática:** quem quiser uma janela menor a põe nas próprias configurações com
   `/autocompact 150k`, que grava por modelo nas configurações do usuário. A automática compacta sem handoff; uma
-  janela pequena faz que ela chegue antes do `/compact` manual com handoff.
+  janela pequena faz com que ela chegue antes do `/compact` manual com handoff.
 - **A compactação por inatividade** (`idleCompaction`, ligada por padrão): compacta a conversa grande (a partir de
   200 mil tokens; o limiar muda com a variável `CLAUDE_CODE_IDLE_COMPACT_MIN_TOKENS`) parada há cerca de uma hora,
   justamente a que a skill `passando-o-trabalho` manda deixar por uma sessão nova. Para desligar:
