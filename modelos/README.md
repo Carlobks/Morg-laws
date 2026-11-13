@@ -9,13 +9,14 @@ Os testes prontos de `testes-ts/` são a exceção: TypeScript, com o `vitest` e
 
 | Arquivo | Vai para | O que faz |
 |---|---|---|
-| `claude/settings.json` | `.claude/settings.json` | Permissões em três colunas (deny, ask, allow), `disableBypassPermissionsMode` e os hooks abaixo ligados: os do `PreToolUse` com `onFailure: block`, os da compactação com `onFailure: continue`; sem o `deny` da ferramenta `Agent`, que é opção (passo 8) |
+| `claude/settings.json` | `.claude/settings.json` | Permissões em três colunas (deny, ask, allow), `disableBypassPermissionsMode` e os hooks abaixo ligados: os do `PreToolUse` com `onFailure: block`, os da compactação e o do aviso da pausa com `onFailure: continue`; sem o `deny` da ferramenta `Agent`, que é opção (passo 8) |
 | `claude/hooks/guarda_do_git.py` | `.claude/hooks/` | Recusa `--no-verify`, mudar o `core.hooksPath`, `git add -A`, `commit -a`, commit sem caminhos, `-m` com várias linhas e `git stash` |
 | `claude/hooks/bloquear_segredos.py` | `.claude/hooks/` | Recusa ler segredos pela shell (o `deny` só cobre a ferramenta Read) e `curl … \| sh` |
 | `claude/hooks/perguntar_antes.py` | `.claude/hooks/` | Pergunta antes de push, de tudo o que escreve no GitHub (PR, issue, comentário, versão, `gh api` de escrita), instalações e mudanças às regras do agente, também no modo automático (onde as regras `ask` não perguntam) |
 | `claude/hooks/limite_de_linhas.py` | `.claude/hooks/` | Recusa que um arquivo de código passe de 500 linhas e cresça |
 | `claude/hooks/lembrar_o_handoff.py` | `.claude/hooks/` | No `PreCompact` (só o `/compact` manual): para se o texto não cita um `.context/HANDOFF-<assunto>.md` que existe e está commitado (sem git, ou com a pasta ignorada, basta existir); a marca «sem handoff» deixa compactar; o texto diz a quem vai parar que não compacte |
 | `claude/hooks/retomar_pelo_handoff.py` | `.claude/hooks/` | No `SessionStart` depois de compactar (manual ou automática): manda o agente ler o handoff do assunto, lista os que existem com a data de cada e manda perguntar se não souber qual; sem handoff, não diz nada; nunca bloqueia |
+| `claude/hooks/aviso_da_pausa.py` | `.claude/hooks/` | No `UserPromptSubmit`: se a última resposta do assistente tem mais de 60 minutos, avisa o agente (a cache expirou) para dizer ao usuário que grave o handoff e abra uma sessão nova, sem compactar; só avisa, não para a mensagem. A hora vem do próprio registro da conversa, nada se grava. Limites: o formato do registro não é documentado, e se mudar o aviso some calado; num turno que o dono não escreveu (um `/loop`, uma tarefa agendada, a mensagem de outra sessão) avisa assim mesmo, e num `/loop` de intervalo longo repete-se: ignore o aviso ou desligue o hook |
 | `git/hooks/pre-commit` | `.githooks/` | Identidade, lista negra e o comando único de testes (defina `COMANDO_DOS_TESTES`) |
 | `git/hooks/commit-msg` | `.githooks/` | Formato da mensagem e lista negra |
 | `git/hooks/pre-push` | `.githooks/` | Mostra o que sai, gitleaks e `npm audit` com linha de base em cada pasta com `package-lock.json` |
@@ -66,8 +67,8 @@ Os testes prontos de `testes-ts/` são a exceção: TypeScript, com o `vitest` e
    `git add` (skill `codigo-legivel`).
 6. Python: os hooks usam `MORG_PY`, ou `py` (Windows), ou `python3`, sempre com `-I`.
    Os hooks do `PreToolUse` travam se falharem (`"onFailure": "block"`), o que exige o Claude Code v2.1.295 ou mais
-   novo; numa versão antiga o campo é ignorado e um hook que não arranca deixa passar. Os dois da compactação
-   (`lembrar_o_handoff.py` e `retomar_pelo_handoff.py`) vêm com `"onFailure": "continue"`: um hook quebrado (sai
+   novo; numa versão antiga o campo é ignorado e um hook que não arranca deixa passar. Os três dos outros eventos
+   (`lembrar_o_handoff.py`, `retomar_pelo_handoff.py` e `aviso_da_pausa.py`) vêm com `"onFailure": "continue"`: um hook quebrado (sai
    com 1) não para a compactação nem a sessão; a parada de propósito do `lembrar_o_handoff.py` sai com 2, que não é
    falha, e segue parando.
    **O `test_permissoes.py` mudou:** antes exigia `onFailure: block` em todos os hooks; agora exige `block` só nos
