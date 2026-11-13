@@ -33,7 +33,7 @@ def git_da_retomada(pasta, *argumentos):
 
 def quando_mudou(caminho, raiz):
     """A data do último commit do arquivo, ou a hora do arquivo se ele não tem commit."""
-    commit = git_da_retomada(raiz, "log", "-1", "--format=%cd", "--date=format:%Y-%m-%d %H:%M", "--", caminho.name)
+    commit = git_da_retomada(raiz, "log", "-1", "--format=%cd", "--date=format-local:%Y-%m-%d %H:%M", "--", caminho.name)
     if commit:
         return f"último commit {commit}"
     return "sem commit; arquivo de " + datetime.fromtimestamp(caminho.stat().st_mtime).strftime("%Y-%m-%d %H:%M")

@@ -51,6 +51,14 @@ class Retomada(unittest.TestCase):
         self.assertIn("pergunte", texto)
         self.assertNotIn("continue", texto.lower())
 
+    def test_a_data_do_commit_vem_no_fuso_da_maquina(self):
+        # Um commit de quem está em -03:00 (10:00 lá) aparece às 13:00 numa máquina em UTC, como a hora do arquivo.
+        gravar_texto(self.pasta / ".context" / "HANDOFF-caixa.md")
+        with mock.patch.dict(os.environ, {"GIT_COMMITTER_DATE": "2026-11-13T10:00:00-03:00", "TZ": "UTC"}):
+            commitar_sem_hooks(self.pasta)
+            texto = contexto_do_agente(comecar_sessao(self.pasta)[1])
+        self.assertIn(".context/HANDOFF-caixa.md (último commit 2026-11-13 13:00)", texto)
+
     def test_na_pasta_ignorada_sem_commit_traz_a_hora_do_arquivo(self):
         gravar_texto(self.pasta / ".gitignore", ".context/\n")
         gravar_texto(self.pasta / ".context" / "HANDOFF-caixa.md")
