@@ -48,7 +48,7 @@ Onde vive no Morg-laws: a skill `passando-o-trabalho`, com a pergunta “compact
 
 ### Na prática
 
-Uma sessão filha é uma sessão nova que recebe um pedido escrito e devolve um resultado. Você a abre à mão, como qualquer sessão nova, e cola o pedido. E a vê trabalhar: pode lê-la e corrigi-la no meio do trabalho.
+Uma sessão filha é uma sessão nova que recebe um pedido escrito e devolve um resultado. Você a abre à mão, como qualquer sessão nova, e cola o pedido. Na app de desktop do Claude Code, quando o agente nota um trabalho fora da tarefa, ele o sugere como tarefa, e o botão “Start” a começa numa sessão nova. E a vê trabalhar: pode lê-la e corrigi-la no meio do trabalho.
 
 O pedido leva o objetivo, os arquivos, o que já se descartou, como se prova e o modelo (P12). Um pedido de implementação, assim:
 
@@ -81,6 +81,8 @@ A filha nasce com o contexto limpo: só o que o pedido diz. Por isso o pedido ca
 Prefira sessões novas a sub-agentes quando você quer ver e corrigir cada passo: um sub-agente não pode ser visto nem corrigido, e o erro volta no mesmo tom confiante dos acertos. Sub-agentes servem para buscas amplas e tarefas independentes, com o resultado conferido depois. Um agente gasta cerca de 4 vezes os tokens de uma conversa, e um sistema com vários agentes cerca de 15 vezes; só compensa quando a tarefa vale esse custo, e o conselho é começar pelo mais simples. O custo vale também para as sessões filhas, que com a orquestradora são um sistema de vários agentes: o que as separa dos sub-agentes é poder vê-las e corrigi-las, não o preço (dois artigos da Anthropic sobre agentes, com a data de leitura, na [seção “Uso e custo de agentes” do `FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md#uso-e-custo-de-agentes)).
 
 O livro de Fabio Akita recomenda a orquestra de agentes só para lotes independentes (pp. 49, 153–155, 210).
+
+A sugestão de tarefa na app de desktop vem da [documentação da app de desktop do Claude Code](https://code.claude.com/docs/en/desktop), que diz que o Claude, ao notar algo fora da tarefa, o sugere como tarefa, e que o “Start” a começa em outra sessão.
 
 Onde vive no Morg-laws: a skill `orquestrando-sessoes`, seções “Sub-agentes ou sessões novas” e “Leitura independente”. O exemplo acima é o esqueleto de um pedido de implementação real, reescrito sem nomes, caminhos nem números.
 
