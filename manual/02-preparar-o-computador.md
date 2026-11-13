@@ -141,7 +141,7 @@ No macOS e no Linux:
 
 ```
 echo "arquivo de teste" > teste.txt
-echo "primeiro commit" > msg
+echo "test: primeiro commit" > msg
 git add -- teste.txt
 git commit -F msg -- teste.txt
 ```
@@ -150,7 +150,7 @@ No PowerShell:
 
 ```
 Set-Content teste.txt "arquivo de teste"
-Set-Content msg "primeiro commit"
+Set-Content msg "test: primeiro commit"
 git add -- teste.txt
 git commit -F msg -- teste.txt
 ```
@@ -161,7 +161,7 @@ O `-F msg` lê a mensagem do arquivo `msg`, e o `-- teste.txt` diz que o commit 
 git log --oneline
 ```
 
-Aparece uma linha com o código curto do commit e a mensagem “primeiro commit”. Se o git responder que não sabe quem você é, volte à seção do nome e do e-mail. O arquivo `msg` fica de fora do commit, de propósito, e pode ser apagado quando quiser. No passo 6 do P3, repita-o com outro arquivo, já com os hooks ligados.
+Aparece uma linha com o código curto do commit e a mensagem “test: primeiro commit”. Se o git responder que não sabe quem você é, volte à seção do nome e do e-mail. O arquivo `msg` fica de fora do commit, de propósito, e pode ser apagado quando quiser. No passo 6 do P3, repita-o com outro arquivo, já com os hooks ligados.
 
 ## A cópia do Morg-laws
 

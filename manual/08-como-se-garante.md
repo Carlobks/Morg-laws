@@ -79,7 +79,7 @@ O Morg-laws é público, por isso a lista negra é o que mais pesa nele. Ela fic
 
 ## Os passos técnicos
 
-O procedimento P3 da parte 03 liga o mínimo: copiar, dar a marca de executável, ligar o `core.hooksPath` e definir o comando de testes. O “Como instalar” de [`modelos/README.md`](https://github.com/Carlobks/Morg-laws/blob/main/modelos/README.md) manda mais algumas coisas, e é nelas que um projeto real costuma tropeçar.
+O procedimento P3 da parte 03 liga o mínimo: copiar, dar a marca de executável e ligar o `core.hooksPath`; o comando de testes fica para o ajuste abaixo. O “Como instalar” de [`modelos/README.md`](https://github.com/Carlobks/Morg-laws/blob/main/modelos/README.md) manda mais algumas coisas, e é nelas que um projeto real costuma tropeçar.
 
 1. **A identidade.** Use um e-mail só deste repositório, no formato `noreply` do GitHub, com `git config --local`, para o seu e-mail pessoal não ficar público em cada commit.
 2. **A lista negra.** Guarde-a fora do repositório, um termo por linha, e aponte para ela com a configuração `morg.listaNegra` do git. A pasta que o molde usa já está no `deny` e no `bloquear_segredos.py`; se usar outra, ajuste os dois.

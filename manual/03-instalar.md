@@ -78,11 +78,11 @@ Onde vive no Morg-laws: o molde é `modelos/documentos/AGENTS.md`, e o teste `mo
 Texto é conselho. Para as regras serem cumpridas, copie as barreiras do Morg-laws:
 
 1. Copie `modelos/claude/` para `.claude/` do seu projeto: são os hooks do agente e o `settings.json` do Claude Code.
-2. Copie `modelos/git/hooks/` para `.githooks/` e `modelos/git/portoes/` para `scripts/portoes/`: os hooks do git chamam esses scripts, e sem eles todo commit é recusado. Confira a marca de executável no disco com `ls -l .githooks` (no Linux e no macOS, `chmod +x .githooks/*` se faltar o `x`). O `git add --chmod=+x .githooks/*` grava a marca também no git, para quem clonar depois.
+2. Copie `modelos/git/hooks/` para `.githooks/` e `modelos/git/portoes/` para `scripts/portoes/`: os hooks do git chamam esses scripts, e sem eles todo commit é recusado. No Linux e no macOS, confira a marca de executável no disco com `ls -l .githooks`, e `chmod +x .githooks/*` se faltar o `x`.
 3. Ligue os hooks do git: `git config core.hooksPath .githooks`.
-4. Defina `COMANDO_DOS_TESTES` no `pre-commit`: o comando que roda os testes do seu projeto. Para começar, copie `modelos/testes/test_regras.py` para `tests/`.
+4. Copie `modelos/testes/test_regras.py` e o `carregar_por_caminho.py` para `tests/`. O `COMANDO_DOS_TESTES`, no `pre-commit`, fica vazio até o ajuste da parte `08`.
 5. Prove: peça ao agente um commit com `--no-verify` e veja a recusa.
-6. Prove também o hook do git: faça você um commit de teste, como o da parte `02`, e veja o `pre-commit` rodar os testes. Se a do 5 não recusar, confira o `.claude/settings.json`; se a do 6 não rodar, o `core.hooksPath` e a marca de executável.
+6. Prove também o hook do git: faça você um commit de teste, como o da parte `02`. O `pre-commit` o recusa, pedindo o `COMANDO_DOS_TESTES`, e a recusa prova que ele rodou. Se a do 5 não recusar, confira o `.claude/settings.json`; se o 6 passar, o `core.hooksPath` e a marca de executável.
 
 O que o hook do agente responde, de verdade, a esse pedido (o resto da frase diz o que a opção faz):
 
@@ -101,7 +101,7 @@ O que costuma dar errado:
 
 Um `AGENTS.md` é orientação, não barreira: o agente pode esquecê-lo ou escolher outro caminho. Por isso o que tem de ser cumprido vira hook, teste ou CI. No Claude Code, um hook `PreToolUse` que sai com 2 bloqueia a chamada e mostra o motivo ao agente, e o campo `onFailure` com o valor `block` faz um hook que falha também bloquear, desde a versão 2.1.295 (o `claude --version` mostra a sua; [documentação de hooks](https://code.claude.com/docs/en/hooks)). Numa versão mais antiga o campo é ignorado, e um hook que não inicia deixa passar. O código 2 é o número com que o hook diz “recusei”.
 
-Há duas camadas, e uma cobre a outra. Os hooks do agente (`modelos/claude/`) olham o que o agente tenta fazer, como o `--no-verify` acima. Os hooks do git (`.githooks/`) rodam em todo commit, do agente ou feito à mão. As duas se somam às permissões do agente, que a [documentação de permissões](https://code.claude.com/docs/en/permissions) descreve.
+Há duas camadas, e uma cobre a outra. Os hooks do agente (`modelos/claude/`) olham o que o agente tenta fazer, como o `--no-verify` acima. Os hooks do git (`.githooks/`) rodam em todo commit, do agente ou feito à mão; o `git add --chmod=+x .githooks/*` grava a marca de executável também no git, para quem clonar depois. As duas se somam às permissões do agente, que a [documentação de permissões](https://code.claude.com/docs/en/permissions) descreve.
 
 Na dúvida de por onde começar, o mínimo recomendado é a guarda do git, o hook de segredos e o que pergunta antes do push, mais o `pre-commit` e o `test_regras.py`. O resto vem quando você sentir falta.
 
