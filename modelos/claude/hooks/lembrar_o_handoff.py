@@ -2,6 +2,7 @@
 
 Passa se o texto do /compact cita um `.context/HANDOFF-<assunto>.md` que existe e está commitado, ou se traz a marca
 de saída «sem handoff» (a compactação de uma conversa curta, de propósito). A compactação automática passa sempre.
+Com mais de um handoff citado, basta um deles estar gravado: os outros não são conferidos.
 Sem git, ou com a pasta ignorada, basta o arquivo existir; um handoff já rastreado conta como rastreado mesmo numa
 pasta ignorada, logo tem de estar commitado. O caminho relativo resolve contra a raiz do git, não contra o `cwd`.
 Sai com 2 para parar (o motivo no stderr, para o usuário); com 0 nos outros casos. Um hook quebrado sai com 1, e o
