@@ -41,7 +41,7 @@ def termos_encontrados(texto, termos):
 def verificar(texto, rotulo, caminho):
     """(código de saída, mensagem) para o texto; `rotulo` diz o que é (ex.: "a mensagem do commit")."""
     if caminho is None:
-        return 0, f"AVISO: sem lista negra (git config morg.listaNegra): {rotulo} não foi verificado."
+        return 0, f"AVISO: sem lista negra (git config morg.listaNegra): nada foi conferido sobre {rotulo}."
     if not caminho.is_file():
         return 1, f"ERRO: a lista negra configurada ({caminho}) não existe. Corrija o git config morg.listaNegra."
     achados = termos_encontrados(texto, ler_termos(caminho))

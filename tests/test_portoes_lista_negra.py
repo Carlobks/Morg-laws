@@ -66,6 +66,14 @@ class Verificar(ListaEmArquivo):
         self.assertEqual(codigo, 0)
         self.assertIn("AVISO", mensagem)
 
+    def test_sem_lista_o_aviso_vale_para_rotulo_no_plural_ou_no_feminino(self):
+        for rotulo in ("os arquivos do commit", "a mensagem do commit"):
+            _, mensagem = lista_negra.verificar("texto", rotulo, None)
+            self.assertEqual(
+                mensagem,
+                f"AVISO: sem lista negra (git config morg.listaNegra): nada foi conferido sobre {rotulo}.",
+            )
+
     def test_lista_configurada_mas_em_falta_recusa(self):
         codigo, mensagem = lista_negra.verificar("texto", "a mensagem", self.lista.with_name("nao-existe.txt"))
         self.assertEqual(codigo, 1)

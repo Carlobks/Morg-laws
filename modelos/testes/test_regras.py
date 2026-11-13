@@ -9,7 +9,7 @@
 - As skills do índice estão instaladas, e as instaladas estão no índice (e no skills-lock.json, se houver).
 - O CLAUDE.md, se existir ao lado, importa o arquivo de regras (`@AGENTS.md`): sem a linha, o Claude Code não lê regra
   nenhuma. O Claude Code carrega os dois juntos: a soma das linhas fica no limite e os caminhos dele também existem.
-Instalar: copiar para `tests/` do projeto e ajustar o bloco abaixo.
+Instalar: copiar para `tests/` do projeto, ao lado do `carregar_por_caminho.py`, e ajustar o bloco abaixo.
 """
 
 import json
