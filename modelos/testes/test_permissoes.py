@@ -68,12 +68,19 @@ class TresColunas(unittest.TestCase):
         self.assertEqual(permissoes("settings.json").get("disableBypassPermissionsMode"), "disable")
 
     def test_os_hooks_estao_ligados_e_travam_se_falharem(self):
-        comandos = json.dumps(configuracao("settings.json").get("hooks", {}))
+        eventos = configuracao("settings.json").get("hooks", {})
+        comandos = json.dumps(eventos)
         for hook in HOOKS_OBRIGATORIOS:
             with self.subTest(hook=hook):
                 self.assertIn(hook, comandos)
-        # Um hook que quebra e deixa passar é uma barreira que some sem ninguém ver.
-        self.assertEqual(comandos.count('"type": "command"'), comandos.count('"onFailure": "block"'))
+        for evento, grupos in eventos.items():
+            for hook in (hook for grupo in grupos for hook in grupo["hooks"] if hook.get("type") == "command"):
+                with self.subTest(evento=evento, comando=hook["command"][-60:]):
+                    # No PreToolUse, um hook que quebra e deixa passar é uma barreira que some sem ninguém ver.
+                    # Nos outros eventos (a compactação, por exemplo), um hook quebrado não pode parar o trabalho;
+                    # mas a escolha fica escrita.
+                    permitidos = ("block",) if evento == "PreToolUse" else ("block", "continue")
+                    self.assertIn(hook.get("onFailure"), permitidos)
 
     def test_segredos_tambem_fora_do_git(self):
         ignorados = (RAIZ / ".gitignore").read_text(encoding="utf-8").splitlines()

@@ -84,6 +84,20 @@
           }
         ]
       }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "manual",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "p=\"${MORG_PY:-$(command -v py || command -v python3)}\"; r=\"$CLAUDE_PROJECT_DIR\"; [ -f \"$r/.claude/hooks/lembrar_o_handoff.py\" ] || r=\"$(git rev-parse --show-toplevel)\"; \"$p\" -I \"$r/.claude/hooks/lembrar_o_handoff.py\"",
+            "timeout": 15,
+            "onFailure": "continue",
+            "statusMessage": "Conferindo o handoff antes de compactar"
+          }
+        ]
+      }
     ]
   }
 }
