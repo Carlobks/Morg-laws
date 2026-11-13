@@ -68,14 +68,14 @@ Confira:
 git --version
 ```
 
-**Node.** Na [página de download do Node](https://nodejs.org/en/download) escolha a versão marcada como LTS, a recomendada, e o instalador do seu sistema. Confira:
+**Node.** Na [página de download do Node](https://nodejs.org/en/download) escolha a versão marcada como LTS e o download do seu sistema. Confira:
 
 ```
 node --version
 npm --version
 ```
 
-No Windows, se o PowerShell recusar o `npm` com “running scripts is disabled on this system”, rode uma vez `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`: libera os scripts só para o seu usuário, sem administrador, segundo a [documentação da Microsoft](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-5.1).
+No Windows, se o PowerShell recusar o `npm` com “running scripts is disabled on this system”, rode uma vez `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`: libera os scripts só para o seu usuário; a [documentação da Microsoft](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-5.1) só pede administrador para mudar a da máquina inteira.
 
 **Python 3.** Sirva-se da [página de downloads do Python](https://www.python.org/downloads/).
 
@@ -106,9 +106,9 @@ Feche o PowerShell e abra outro. No Windows, com o Python há mais um caso, desc
 
 ## A conta no GitHub
 
-O GitHub é o site onde o código fica guardado e onde o Morg-laws mora. Para este manual você só precisa da conta, que serve para a próxima seção e para o P4. Crie-a pela página de cadastro que a documentação indica: a [página oficial](https://docs.github.com/en/get-started/start-your-journey/creating-an-account-on-github) pede um e-mail e a verificação dele, que o GitHub faz por uma mensagem que você recebe.
+O GitHub é o site onde o código fica guardado e onde o Morg-laws mora. Para este manual você só precisa da conta, que serve para a próxima seção e para o P4. Crie-a pela página de cadastro que a documentação indica: a [página oficial](https://docs.github.com/en/get-started/start-your-journey/creating-an-account-on-github) pede um e-mail e a verificação dele.
 
-Depois de criar a conta, a [página do e-mail de commit](https://docs.github.com/en/account-and-profile/how-tos/setting-up-and-managing-your-personal-account-on-github/managing-email-preferences/setting-your-commit-email-address) mostra onde ligar a opção “Keep my email addresses private”: no site, na sua foto, Settings e Emails. Com ela ligada, os commits passam a usar um endereço noreply. Anote esse endereço: é o e-mail da próxima seção e o que o P4 pede. Ele começa pelo número da conta, um `+` e o nome dela, segundo a [referência de e-mails do GitHub](https://docs.github.com/en/account-and-profile/reference/email-addresses-reference).
+Depois de criar a conta, a [página do e-mail de commit](https://docs.github.com/en/account-and-profile/how-tos/setting-up-and-managing-your-personal-account-on-github/managing-email-preferences/setting-your-commit-email-address) mostra onde ligar a opção “Keep my email addresses private”: no site, na sua foto, Settings e Emails. Com ela ligada, o que você fizer no site sai com um endereço noreply; no terminal, quem decide é o git, na próxima seção. Anote esse endereço: é o e-mail da próxima seção e o que o P4 pede. Ele começa pelo número da conta, um `+` e o nome dela, segundo a [referência de e-mails do GitHub](https://docs.github.com/en/account-and-profile/reference/email-addresses-reference).
 
 ## Seu nome e e-mail no git
 
@@ -191,7 +191,7 @@ Na primeira vez numa pasta, o Claude Code pergunta se você confia nela ([segura
 
 ## Ver arquivos ocultos
 
-Os nomes que começam por ponto, como `.git`, `.claude` e `.githooks`, são ocultos: os programas não os mostram a menos que você peça. O P1 cria a `.claude/skills/`, e quem não vê arquivos ocultos acha que o comando falhou.
+No macOS e no Linux, os nomes que começam por ponto, como `.git`, `.claude` e `.githooks`, são ocultos: os programas não os mostram a menos que você peça. O P1 cria a `.claude/skills/`, e quem não vê arquivos ocultos acha que o comando falhou.
 
 - Windows: no explorador de arquivos, em Windows 11 clique em Exibir, depois em Mostrar, e marque Itens ocultos; em Windows 10, clique em Exibir, Opções, a aba Exibir, e marque “Mostrar arquivos, pastas e unidades ocultos”, segundo a [página da Microsoft](https://support.microsoft.com/en-us/windows/view-hidden-files-and-folders-in-windows-97fbc472-c603-9d90-91d0-1166d1d9f4b5).
 - macOS e Linux: no terminal, `ls -a` lista tudo, ocultos incluídos. O autor usa assim no Linux.
