@@ -91,7 +91,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "p=\"${MORG_PY:-$(command -v py || command -v python3)}\"; r=\"$CLAUDE_PROJECT_DIR\"; [ -f \"$r/.claude/hooks/lembrar_o_handoff.py\" ] || r=\"$(git rev-parse --show-toplevel)\"; \"$p\" -I \"$r/.claude/hooks/lembrar_o_handoff.py\"",
+            "command": "p=\"${MORG_PY:-$(command -v py || command -v python3)}\"; r=\"$CLAUDE_PROJECT_DIR\"; [ -f \"$r/.claude/hooks/lembrar_o_handoff.py\" ] || r=\"$(git rev-parse --show-toplevel)\"; [ -f \"$r/.claude/hooks/lembrar_o_handoff.py\" ] || { echo \"Hook em falta: .claude/hooks/lembrar_o_handoff.py\" >&2; exit 1; }; \"$p\" -I \"$r/.claude/hooks/lembrar_o_handoff.py\"",
             "timeout": 15,
             "onFailure": "continue",
             "statusMessage": "Conferindo o handoff antes de compactar"
@@ -105,7 +105,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "p=\"${MORG_PY:-$(command -v py || command -v python3)}\"; r=\"$CLAUDE_PROJECT_DIR\"; [ -f \"$r/.claude/hooks/retomar_pelo_handoff.py\" ] || r=\"$(git rev-parse --show-toplevel)\"; \"$p\" -I \"$r/.claude/hooks/retomar_pelo_handoff.py\"",
+            "command": "p=\"${MORG_PY:-$(command -v py || command -v python3)}\"; r=\"$CLAUDE_PROJECT_DIR\"; [ -f \"$r/.claude/hooks/retomar_pelo_handoff.py\" ] || r=\"$(git rev-parse --show-toplevel)\"; [ -f \"$r/.claude/hooks/retomar_pelo_handoff.py\" ] || { echo \"Hook em falta: .claude/hooks/retomar_pelo_handoff.py\" >&2; exit 1; }; \"$p\" -I \"$r/.claude/hooks/retomar_pelo_handoff.py\"",
             "timeout": 15,
             "onFailure": "continue",
             "statusMessage": "Procurando o handoff depois de compactar"
@@ -118,7 +118,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "p=\"${MORG_PY:-$(command -v py || command -v python3)}\"; r=\"$CLAUDE_PROJECT_DIR\"; [ -f \"$r/.claude/hooks/aviso_da_pausa.py\" ] || r=\"$(git rev-parse --show-toplevel)\"; \"$p\" -I \"$r/.claude/hooks/aviso_da_pausa.py\"",
+            "command": "p=\"${MORG_PY:-$(command -v py || command -v python3)}\"; r=\"$CLAUDE_PROJECT_DIR\"; [ -f \"$r/.claude/hooks/aviso_da_pausa.py\" ] || r=\"$(git rev-parse --show-toplevel)\"; [ -f \"$r/.claude/hooks/aviso_da_pausa.py\" ] || { echo \"Hook em falta: .claude/hooks/aviso_da_pausa.py\" >&2; exit 1; }; \"$p\" -I \"$r/.claude/hooks/aviso_da_pausa.py\"",
             "timeout": 15,
             "onFailure": "continue",
             "statusMessage": "Vendo se a conversa ficou parada"

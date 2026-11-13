@@ -68,9 +68,9 @@ Os testes prontos de `testes-ts/` são a exceção: TypeScript, com o `vitest` e
 6. Python: os hooks usam `MORG_PY`, ou `py` (Windows), ou `python3`, sempre com `-I`.
    Os hooks do `PreToolUse` travam se falharem (`"onFailure": "block"`), o que exige o Claude Code v2.1.295 ou mais
    novo; numa versão antiga o campo é ignorado e um hook que não arranca deixa passar. Os três dos outros eventos
-   (`lembrar_o_handoff.py`, `retomar_pelo_handoff.py` e `aviso_da_pausa.py`) vêm com `"onFailure": "continue"`: um hook quebrado (sai
-   com 1) não para a compactação nem a sessão; a parada de propósito do `lembrar_o_handoff.py` sai com 2, que não é
-   falha, e segue parando.
+   (`lembrar_o_handoff.py`, `retomar_pelo_handoff.py` e `aviso_da_pausa.py`) vêm com `"onFailure": "continue"`: um hook quebrado ou em falta (o comando confere o
+   arquivo e sai com 1, com a mensagem «Hook em falta») não para a compactação nem a sessão; a parada de propósito
+   do `lembrar_o_handoff.py` sai com 2, que não é falha, e segue parando.
    **O `test_permissoes.py` mudou:** antes exigia `onFailure: block` em todos os hooks; agora exige `block` só nos
    do `PreToolUse` e um `onFailure` escrito nos outros. Quem já tem o molde e copia o teste novo sem o
    `settings.json` novo continua verde; quem copia o `settings.json` novo sem o teste novo vê o teste antigo falhar.

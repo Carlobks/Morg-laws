@@ -1,7 +1,12 @@
 """O settings.json modelo liga cada hook do agente: os que vigiam o agente travam se falharem, os outros não param nada."""
 
 import json
+import os
 import re
+import shutil
+import subprocess
+import sys
+import tempfile
 import unittest
 
 from carregar_modelos import MODELOS, PASTA_HOOKS
@@ -30,6 +35,21 @@ class LigacaoNoSettings(unittest.TestCase):
             with self.subTest(hook=nome_do_hook(hook)):
                 self.assertTrue((PASTA_HOOKS / nome_do_hook(hook)).is_file())
                 self.assertIn('-I "$r/.claude/hooks/', hook["command"], "Python sempre isolado")
+
+    def test_um_hook_em_falta_nos_outros_eventos_sai_com_1(self):
+        # Com o arquivo em falta o python sai com 2, e o 2 bloqueia o /compact e cada mensagem do usuário
+        # (o onFailure: continue só cobre as outras falhas). O 1 é falha: o continue a deixa passar.
+        if shutil.which("sh") is None:
+            self.skipTest("sem sh nesta máquina, não há como rodar o comando do settings.json")
+        for evento, _, hook in hooks_ligados():
+            if evento == "PreToolUse":
+                continue
+            with self.subTest(hook=nome_do_hook(hook)), tempfile.TemporaryDirectory() as projeto:
+                ambiente = {**os.environ, "CLAUDE_PROJECT_DIR": projeto, "MORG_PY": sys.executable}
+                feito = subprocess.run(["sh", "-c", hook["command"]], check=False, cwd=projeto, env=ambiente,
+                                       capture_output=True, text=True, input="{}", timeout=30)
+                self.assertEqual(feito.returncode, 1, feito.stderr)
+                self.assertIn("Hook em falta", feito.stderr)
 
     def test_os_que_vigiam_o_agente_travam_se_falharem(self):
         for evento, _, hook in hooks_ligados():
