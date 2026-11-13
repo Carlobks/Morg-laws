@@ -144,7 +144,7 @@ Ponha em “Descartado” o que já falhou e não se repete. Commite só esse ar
 Depois, me dê o comando de compactar pronto para colar.
 ```
 
-A fonte são as seções 1 a 4 da skill [`passando-o-trabalho`](https://github.com/Carlobks/Morg-laws/blob/main/skills/passando-o-trabalho/SKILL.md): conferir o estado, gravar o handoff, commitá-lo sozinho e compactar. A [`orquestrando-sessoes`](https://github.com/Carlobks/Morg-laws/blob/main/skills/orquestrando-sessoes/SKILL.md) manda essa tarefa para ela.
+A fonte são as seções 1 a 4 da skill [`passando-o-trabalho`](https://github.com/Carlobks/Morg-laws/blob/main/skills/passando-o-trabalho/SKILL.md): conferir o estado, gravar o handoff, commitá-lo sozinho e parar ou compactar. A [`orquestrando-sessoes`](https://github.com/Carlobks/Morg-laws/blob/main/skills/orquestrando-sessoes/SKILL.md) manda essa tarefa para ela.
 
 ## Ao retomar
 

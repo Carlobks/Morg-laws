@@ -75,4 +75,4 @@ A documentação do Claude Code confirma o risco: a compactação automática, p
 
 O porquê do handoff no git e do “Descartado” está no P16, e o do momento de compactar, no P10: não se repete aqui.
 
-Onde vive no Morg-laws: a skill `passando-o-trabalho`, seções “Compactar” e “Retomar”, com o comando de compactação e a mensagem de retomada prontos.
+Onde vive no Morg-laws: a skill `passando-o-trabalho`, seções “Parar ou compactar” e “Retomar”, com o comando de compactação e a mensagem de retomada prontos.
