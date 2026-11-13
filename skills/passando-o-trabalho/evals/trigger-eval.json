@@ -1,6 +1,6 @@
 [
   {"query": "a conversa já está enorme, prepara tudo para eu compactar", "should_trigger": true},
-  {"query": "vou continuar amanhã noutra sessão, deixa o trabalho preparado", "should_trigger": true},
+  {"query": "vou continuar amanhã em outra sessão, deixa o trabalho preparado", "should_trigger": true},
   {"query": "acabei de compactar, lê o handoff e continua de onde paramos", "should_trigger": true},
   {"query": "a conversa está enorme: compacto ou abro uma sessão nova?", "should_trigger": true},
   {"query": "estou no Codex e a janela está quase cheia, o que faço antes de compactar?", "should_trigger": true},

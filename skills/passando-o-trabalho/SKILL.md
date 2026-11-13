@@ -1,6 +1,6 @@
 ---
 name: passando-o-trabalho
-description: Guarda o trabalho em curso (estado, decisões, o que já falhou e não se repete) num handoff por assunto em .context/, commita só esse arquivo e conduz os dois fins. Parar (fim do dia ou pausa de mais de uma hora) é gravar, commitar e parar, sem compactar; uma sessão nova lê o handoff depois. Compactar (a conversa cresceu e o mesmo trabalho continua) entrega o /compact pronto, para Claude Code ou Codex. Conduz também a retomada («lê o handoff»). Usar no fim do dia, numa pausa de mais de uma hora, quando a conversa está longa e vai ser compactada, na dúvida entre compactar e abrir uma sessão nova, ou ao retomar. Não usar para dividir trabalho entre sessões ou pedir uma auditoria independente (é a orquestrando-sessoes), para commits ou push do dia a dia (é a git-e-commits) nem para resumir documentos ou escrever changelog.
+description: Guarda o trabalho em curso (estado, decisões, o que já falhou) num handoff por assunto em .context/ e commita só esse arquivo. Fim do dia ou pausa de mais de uma hora; grava, commita e para, sem compactar; uma sessão nova lê o handoff. Conversa longa e o mesmo trabalho continua; entrega o /compact pronto (Claude Code ou Codex). Conduz a retomada («lê o handoff»). Usar também na dúvida entre compactar e abrir uma sessão nova. Não usar para dividir trabalho entre sessões ou pedir uma auditoria independente (é a orquestrando-sessoes), para commits ou push do dia a dia (é a git-e-commits) nem para resumir documentos ou escrever changelog.
 ---
 
 # Passando o trabalho
@@ -15,7 +15,9 @@ O essencial, se esta skill chegar cortada:
 **Primeiro: parar ou compactar?**
 
 - **Parar** (fim do dia, ou pausa de mais de uma hora): gravar o handoff, commitá-lo e parar. **Não compactar.** A
-  resposta entrega a mensagem para colar na sessão nova, que retoma.
+  resposta entrega a mensagem para colar na sessão nova, que retoma. Vale mesmo com a conversa longa.
+- **Pausa de menos de uma hora:** gravar e commitar o handoff, sem compactar e sem sessão nova; ao voltar, continuar na
+  mesma conversa.
 - **Compactar** (a conversa cresceu e o mesmo trabalho continua agora): gravar o handoff, commitá-lo, entregar o
   `/compact` e a mensagem de retomada.
 
@@ -101,7 +103,7 @@ git commit -F <arquivo-da-mensagem> -- .context/HANDOFF-<assunto>.md
     ignorada. Um projeto pode ignorá-la, por exemplo, porque uma ferramenta lê tudo o que o git não ignora e um
     handoff a quebra. Não pergunte nada: o handoff fica só no disco, e a resposta diz isso numa linha.
   - **Sem motivo:** procure a resposta nas «Decisões e porquê» dos `HANDOFF-*.md` da pasta e, se ela estiver lá,
-    siga-a. Se não estiver, pergunte ao dono se tira a pasta do `.gitignore`, uma única vez por projeto, e registe a
+    siga-a. Se não estiver, pergunte ao dono se tira a pasta do `.gitignore`, uma única vez por projeto, e registre a
     resposta nas Decisões deste handoff. Com um «não», o handoff fica só no disco, e a resposta diz isso.
 
 ## 4. Parar ou compactar
@@ -129,6 +131,9 @@ português do Brasil só como modelo):
 Retomando um trabalho que parou. O estado está em .context/HANDOFF-<assunto>.md; os outros HANDOFF-*.md dessa pasta são de outros assuntos e não se tocam. Leia esse arquivo inteiro, rode git status -s e diga o que mudou em relação à tabela, releia o «Descartado» e não proponha nada dele. Diga numa frase onde estávamos e siga o passo 1 dos próximos passos ([resumo do passo]). Se ele pedir uma decisão minha, pergunte antes.
 ```
 
+**Pausa de menos de uma hora:** grave e commite o handoff, sem compactar e sem sessão nova. Ao voltar, continue na
+mesma conversa: a cache ainda vale, e o handoff protege contra o imprevisto.
+
 ### Compactar: a conversa cresceu e o mesmo trabalho continua
 
 **Compactar ou abrir uma sessão nova?** Quando a conversa cresceu, a pergunta é desta skill. Para continuar o mesmo
@@ -139,14 +144,14 @@ nova: ela não precisa do histórico desta. Dividir o trabalho em várias sessõ
 **O número é uma escolha do autor do Morg-laws, feita depois de medir o próprio uso**, em que reler a conversa era
 64% do custo
 ([linha de base do uso](https://github.com/Carlobks/Morg-laws/blob/main/pesquisas/2026-11-05-linha-de-base-do-uso.md)):
-nem o livro abaixo nem a documentação oficial dão um limiar. O limiar conta-se em tokens, e não em percentagem da
+nem o livro abaixo nem a documentação oficial dão um limiar. O limiar se conta em tokens, e não em porcentagem da
 janela: numa janela de 1 milhão, metade são 500 mil, e cada mensagem relê tudo isso; e a automática, no Claude Code,
 só dispara perto do limite do modelo. O porquê de compactar cedo vem do livro *Competente o Suficiente*: a janela
 cheia custa dinheiro, porque é relida a cada mensagem, custa tempo e torna mais difícil achar o que importa (p. 31);
 a atenção cai à medida que ela enche (p. 124); e uma sessão longa fica cheia de tentativas antigas (p. 411). No
 Claude Code, o `/context` mostra o que ocupa a janela.
 
-**A língua:** o comando de compactação e a mensagem de retomada escrevem-se na língua do usuário, a mesma em que ele
+**A língua:** o comando de compactação e a mensagem de retomada se escrevem na língua do usuário, a mesma em que ele
 escreve na conversa. Os blocos abaixo estão em português do Brasil só como modelo do conteúdo.
 
 **Claude Code:** o `/compact` aceita instruções de foco. Entregue-o numa linha só, com os colchetes preenchidos:
@@ -169,7 +174,7 @@ para colar logo depois:
 A conversa acabou de ser compactada. Objetivo: [uma linha]. Arquivos ativos: [lista]. Não repetir: [o essencial do Descartado]. Erro atual: [literal, ou "nenhum"]. O estado completo está em .context/HANDOFF-<assunto>.md; os outros HANDOFF-*.md dessa pasta são de outros assuntos e não se tocam. Leia esse arquivo inteiro, rode git status -s e diga o que mudou em relação à tabela, releia o «Descartado» e não proponha nada dele. Diga numa frase onde estávamos e siga o passo 1 dos próximos passos ([resumo do passo]). Se ele pedir uma decisão minha, pergunte antes.
 ```
 
-Nos dois, o comando sai no fim da resposta, depois de uma linha com o caminho do handoff e o hash do commit (ou «só no
+No Claude Code e no Codex, o comando sai no fim da resposta, depois de uma linha com o caminho do handoff e o hash do commit (ou «só no
 disco», se a pasta estiver ignorada).
 
 ## 5. Retomar
