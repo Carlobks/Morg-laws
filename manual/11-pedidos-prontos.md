@@ -132,16 +132,18 @@ No fim, a lista do que você não conseguiu conferir.
 
 A fonte é a mesma seção 2 da skill [`orquestrando-sessoes`](https://github.com/Carlobks/Morg-laws/blob/main/skills/orquestrando-sessoes/SKILL.md): antes de levar um achado ao dono, uma sessão só de conferência o confere na fonte.
 
-## Passar o trabalho antes de compactar
+## Passar o trabalho: parar ou compactar
 
-Use quando a conversa está longa e vai ser compactada, ou quando o trabalho vai parar por mais de uma hora. Explicado no procedimento P16, na parte 05.
+Use no fim do dia, numa pausa de mais de uma hora, ou quando a conversa está longa e vai ser compactada. Explicado no procedimento P16, na parte 05.
 
 ```
-Antes de compactar, grave o handoff deste assunto em .context/HANDOFF-<assunto>.md, no molde de seis seções:
-objetivo, estado verificado, decisões e porquê, descartado, próximos passos e cuidados.
+Grave o handoff deste assunto em .context/HANDOFF-<assunto>.md, no molde de cinco seções:
+objetivo, estado verificado, decisões e porquê, descartado e próximos passos.
 O estado verificado vem do git (status, log e o resultado dos testes), e não da sua memória.
 Ponha em “Descartado” o que já falhou e não se repete. Commite só esse arquivo, pelo caminho.
-Depois, me dê o comando de compactar pronto para colar.
+Depois: se vou parar (fim do dia ou pausa longa), não compacte; me dê a mensagem para colar na sessão nova.
+Se a pausa é de menos de uma hora, não compacte nem abra sessão nova: continuamos nesta conversa.
+Se vamos continuar agora, me dê o comando de compactar pronto para colar.
 ```
 
 A fonte são as seções 1 a 4 da skill [`passando-o-trabalho`](https://github.com/Carlobks/Morg-laws/blob/main/skills/passando-o-trabalho/SKILL.md): conferir o estado, gravar o handoff, commitá-lo sozinho e parar ou compactar. A [`orquestrando-sessoes`](https://github.com/Carlobks/Morg-laws/blob/main/skills/orquestrando-sessoes/SKILL.md) manda essa tarefa para ela.

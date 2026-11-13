@@ -42,7 +42,7 @@ Decisão de Carlobks (2026-11-06): o número é por volta de 150 mil tokens. Por
 
 Os comandos estão na [documentação do Claude Code](https://code.claude.com/docs/en/commands): `/compact`, que aceita instruções de foco, e `/context`, que mostra o que ocupa a janela.
 
-Onde vive no Morg-laws: a skill `passando-o-trabalho`, com a pergunta “compactar ou sessão nova?” e o comando pronto.
+Onde vive no Morg-laws: a skill `passando-o-trabalho`, com a pergunta “parar ou compactar?”, o comando de compactação e a mensagem para a sessão nova prontos.
 
 ## P11 · Abrir uma sessão filha
 
