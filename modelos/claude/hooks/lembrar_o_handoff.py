@@ -16,7 +16,7 @@ import sys
 from pathlib import Path
 
 MARCA_DE_SAIDA = "sem handoff"
-CITACAO_DE_HANDOFF = re.compile(r"[^\s`'\"«»()<>]*HANDOFF-[^\s`'\"«»()<>/]+\.md")
+CITACAO_DE_HANDOFF = re.compile(r"[^\s`'\"«»()<>\[\]]*HANDOFF-[^\s`'\"«»()<>/]+\.md")
 TEXTO_DA_PARADA = (
     "Compactação parada (Morg-laws): o /compact não aponta para um .context/HANDOFF-<assunto>.md gravado e "
     "commitado.\nGrave o handoff com a skill passando-o-trabalho e use o /compact que ela entrega. Se vai parar (fim "

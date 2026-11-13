@@ -82,6 +82,18 @@ class NoRepositorio(unittest.TestCase):
                 self.assertEqual((codigo, saida), (2, ""))
                 self.assertIn("não compacte", erro)
 
+    def test_a_citacao_entre_colchetes_vale(self):
+        # O modelo da skill põe os caminhos numa lista entre colchetes: o primeiro não pode sair com o «[» colado.
+        segundo = ".context/HANDOFF-outro.md"
+        for texto in (f"arquivos ativos: [{HANDOFF}, {segundo}]", f"[{HANDOFF}].", f"([{HANDOFF}])"):
+            with self.subTest(texto=texto):
+                self.assertEqual(compactar(self.pasta, texto), (0, "", ""))
+
+    def test_a_marca_de_saida_nao_depende_de_maiusculas(self):
+        for texto in ("Sem Handoff, só resumir", "SEM HANDOFF"):
+            with self.subTest(texto=texto):
+                self.assertEqual(compactar(self.pasta, texto), (0, "", ""))
+
     def test_para_com_mudancas_por_commitar(self):
         gravar_texto(self.pasta / HANDOFF, "# Handoff\n\nMudou.\n")
         self.assertEqual(compactar(self.pasta, f"Leia o {HANDOFF}")[0], 2)
