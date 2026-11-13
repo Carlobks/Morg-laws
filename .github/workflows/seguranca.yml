@@ -13,7 +13,8 @@ permissions:
 
 jobs:
   gitleaks:
-    runs-on: ubuntu-latest
+    # O sistema também se fixa, como o Python e as ferramentas: o ubuntu-latest muda sozinho (em 2026-11 passou a 26.04, sem o Python fixado).
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -28,7 +29,7 @@ jobs:
           ./gitleaks git --redact --no-banner .
 
   agents-md-curto:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -41,7 +42,7 @@ jobs:
           test "$linhas" -le 60
 
   testar:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
       # Todo o histórico: o «só encolhe» das linhas de base compara com a base do ramo de destino.
