@@ -11,9 +11,11 @@ Instalar: copiar para `.claude/hooks/` do projeto e ligar no `.claude/settings.j
 
 import json
 import sys
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
+# O `datetime.UTC` é do Python 3.11 e os moldes pedem só o 3.9: o fuso se faz com o `timezone`.
+FUSO_UTC = timezone(timedelta(0))
 LIMITE_DA_PAUSA = timedelta(minutes=60)
 BYTES_DO_FIM = 1_000_000
 TEXTO_DO_AVISO = (
@@ -40,10 +42,12 @@ def hora_da_entrada(linha):
         entrada = json.loads(linha)
         if entrada["type"] != "assistant":
             return None
-        hora = datetime.fromisoformat(entrada["timestamp"])
+        # O `fromisoformat` do 3.9 e do 3.10 não lê o «Z» final, por isso o `replace`.
+        texto_da_hora = entrada["timestamp"].replace("Z", "+00:00")
+        hora = datetime.fromisoformat(texto_da_hora)
     except (ValueError, KeyError, TypeError, AttributeError):
         return None
-    return hora if hora.tzinfo else hora.replace(tzinfo=UTC)
+    return hora if hora.tzinfo else hora.replace(tzinfo=FUSO_UTC)
 
 
 def ultima_resposta(caminho):
@@ -65,7 +69,7 @@ def main():
     # Bytes em UTF-8: no Windows o stdin de texto usaria a página de código local e estragaria os acentos.
     pedido = json.loads(sys.stdin.buffer.read().decode("utf-8"))
     caminho = pedido.get("transcript_path")
-    if caminho and passou_da_pausa(Path(caminho), datetime.now(UTC)):
+    if caminho and passou_da_pausa(Path(caminho), datetime.now(FUSO_UTC)):
         saida = {"hookSpecificOutput": {"hookEventName": "UserPromptSubmit", "additionalContext": TEXTO_DO_AVISO}}
         sys.stdout.reconfigure(encoding="utf-8")
         sys.stdout.write(json.dumps(saida, ensure_ascii=False) + "\n")

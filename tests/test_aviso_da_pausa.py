@@ -141,6 +141,22 @@ class OAvisoQueSomeCalado(CasoComRegistro):
         self.assertEqual(correr_como_script(HOOK_DA_PAUSA, json.dumps(pedido).encode("utf-8")), (0, "", ""))
 
 
+class OAvisoNoPythonAntigo(CasoComRegistro):
+    """Os moldes só pedem «Python 3»: o `datetime.UTC` é do 3.11, e o Ubuntu 22.04 traz o 3.10."""
+
+    def test_roda_sem_o_datetime_utc(self):
+        # Simula o 3.9 e o 3.10: tira o `UTC` do módulo e roda o hook como script, de verdade.
+        simulacao = ("import datetime, runpy, sys; del datetime.UTC; "
+                     "runpy.run_path(sys.argv[1], run_name='__main__')")
+        self.gravar(entrada("assistant", 120))
+        pedido = {"hook_event_name": "UserPromptSubmit", "transcript_path": str(self.registro)}
+        feito = subprocess.run([sys.executable, "-I", "-c", simulacao, str(HOOK_DA_PAUSA)],
+                               input=json.dumps(pedido).encode("utf-8"), capture_output=True, check=False,
+                               timeout=30)
+        self.assertEqual((feito.returncode, feito.stderr.decode("utf-8")), (0, ""))
+        self.assertIn("sessão nova", feito.stdout.decode("utf-8"))
+
+
 class HookQuebrado(unittest.TestCase):
 
     def test_no_python_isolado_de_verdade_a_entrada_ruim_sai_com_falha(self):
