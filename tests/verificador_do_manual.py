@@ -44,7 +44,7 @@ PAGINA_POR_EXTENSO = re.compile(r"\b(?:páginas?|págs?\.)\s*\d", re.IGNORECASE)
 PAR_DE_PROCEDIMENTO = re.compile(r"P\d+\b")
 CITACAO_DE_PAGINA = re.compile(r"(?<![\w.])pp?\. ?(\d+(?:\s?[–-]\s?\d+)?(?:(?:,\s?| e )\d+(?:\s?[–-]\s?\d+)?)*)")
 ITEM_DE_PAGINA = re.compile(r"\d+(?:\s?[–-]\s?\d+)?")
-DECISAO_DO_PO = re.compile(r"vozes da cabeça de Carlobks \(decisão de \d{4}-\d\d-\d\d\)")
+DECISAO_DO_PO = re.compile(r"(?:vozes da cabeça de Carlobks \(decisão de |\b[Dd]ecisão de Carlobks \()\d{4}-\d\d-\d\d\)")
 SENTENCA = re.compile(r"(?<=[.!?])(?<!\bp\.)(?<!\bpp\.)\s+")
 ABRE_BLOCO = re.compile(r"\s*(?:[-*+]\s|\d+[.)]\s|\||#)")
 DE_CITACAO = re.compile(r"^\s*(?:>\s*)+")
@@ -172,7 +172,8 @@ def secoes_sem_fonte(nome, texto):
 
 
 def decisoes_sem_porque(nome, texto):
-    """«as vozes da cabeça de Carlobks (decisão de AAAA-MM-DD)» seguida de «Porquê:» no mesmo parágrafo."""
+    """«as vozes da cabeça de Carlobks (decisão de AAAA-MM-DD)» ou «Decisão de Carlobks (AAAA-MM-DD)», seguida de
+    «Porquê:» no mesmo parágrafo."""
     achados = [(p, DECISAO_DO_PO.search(p)) for p in paragrafos(texto)]
     return [f"{nome}: decisão sem «Porquê:» no mesmo parágrafo — «{p.strip()[:40]}…»"
             for p, achado in achados if achado and "Porquê:" not in p[achado.end():]]

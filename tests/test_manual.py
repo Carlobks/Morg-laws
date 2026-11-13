@@ -70,6 +70,11 @@ class PorTexto(ManualTemporario):
         self.assertEqual(self.erros(NOME, "Explica “as vozes da cabeça de Carlobks” numa linha.\n"), [])
         self.assertEqual(len(self.erros(NOME, f"Porquê: antes.\n\n{sem}")), 1)
 
+    def test_decisao_na_forma_curta_sem_porque_reprova(self):
+        curta = "Decisão de Carlobks (2026-11-06): o número é cinco.\n"
+        self.assertEqual(len(self.erros(NOME, curta)), 1)
+        self.assertEqual(self.erros(NOME, curta.replace("\n", " Porquê: cabe numa tela.\n")), [])
+
     def test_no_codex_sem_link_reprova_e_com_link_passa(self):
         self.assertEqual(len(self.erros(NOME, "No Codex o arquivo se chama AGENTS.\n")), 1)
         com = "No Codex vale o mesmo ([documentação](https://example.com/codex/agents)).\n"
