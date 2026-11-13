@@ -11,8 +11,9 @@ import unittest
 from carregar_modelos import carregar_hook
 
 # O hook e as constantes com o texto que ele mostra (ao usuário ou ao agente).
-TEXTOS_POR_HOOK = {"lembrar_o_handoff": ("TEXTO_DA_PARADA",)}
+TEXTOS_POR_HOOK = {"lembrar_o_handoff": ("TEXTO_DA_PARADA",), "retomar_pelo_handoff": ("TEXTO_DA_RETOMADA",)}
 FRASES_COM_COMPACT = {
+    "A conversa foi compactada.",
     "Compactação parada (Morg-laws): o /compact não aponta para um .context/HANDOFF-<assunto>.md gravado e commitado.",
     "Grave o handoff com a skill passando-o-trabalho e use o /compact que ela entrega.",
     "Se vai parar (fim do dia ou pausa de mais de uma hora), não compacte: grave o handoff e pare.",
@@ -43,6 +44,11 @@ class FimDoDia(unittest.TestCase):
 
     def test_a_parada_diz_para_nao_compactar(self):
         self.assertIn("não compacte", carregar_hook("lembrar_o_handoff").TEXTO_DA_PARADA)
+
+    def test_a_retomada_manda_ler_e_nao_continuar(self):
+        texto = carregar_hook("retomar_pelo_handoff").TEXTO_DA_RETOMADA
+        self.assertIn("leia o", texto)
+        self.assertNotIn("continu", texto.lower())
 
 
 if __name__ == "__main__":

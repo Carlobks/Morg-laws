@@ -98,6 +98,20 @@
           }
         ]
       }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "p=\"${MORG_PY:-$(command -v py || command -v python3)}\"; r=\"$CLAUDE_PROJECT_DIR\"; [ -f \"$r/.claude/hooks/retomar_pelo_handoff.py\" ] || r=\"$(git rev-parse --show-toplevel)\"; \"$p\" -I \"$r/.claude/hooks/retomar_pelo_handoff.py\"",
+            "timeout": 15,
+            "onFailure": "continue",
+            "statusMessage": "Procurando o handoff depois de compactar"
+          }
+        ]
+      }
     ]
   }
 }
