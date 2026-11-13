@@ -21,7 +21,7 @@ O essencial, se esta skill chegar cortada:
 - **Compactar** (a conversa cresceu e o mesmo trabalho continua agora): gravar o handoff, commitá-lo, entregar o
   `/compact` e a mensagem de retomada.
 
-Nos dois casos:
+Em todos os casos:
 
 1. Conferir o estado no git, sem despejar diffs na conversa.
 2. Gravar `.context/HANDOFF-<assunto>.md` com Objetivo, Estado verificado, Decisões, Descartado e Próximos passos.
