@@ -15,7 +15,7 @@ Se você nunca usou um agente nem o git, estas seis palavras bastam para entrar.
 - **Sessão.** No Claude Code, uma sessão é uma conversa com o agente, com a memória do que ficou dito nela. Uma sessão nova começa sem essa memória (P10, um dos procedimentos numerados).
 - **Terminal.** É a janela onde se digitam os comandos, como os que este manual mostra.
 - **Repositório.** É a pasta do projeto que o git acompanha.
-- **O git e porque se usa.** O git guarda cada versão do trabalho: dá para ver o que o agente mudou, voltar atrás e não perder nada ([o que é o Git, no livro oficial](https://git-scm.com/book/en/v2/Getting-Started-What-is-Git%3F)).
+- **O git e por que se usa.** O git guarda cada versão do trabalho: dá para ver o que o agente mudou, voltar atrás e não perder nada ([o controle de versões, no livro oficial](https://git-scm.com/book/en/v2/Getting-Started-About-Version-Control)).
 - **Commit.** É um pacote de mudanças gravado no histórico do git, com uma mensagem que diz o que mudou e por quê (P19).
 - **Push.** Envia os commits para o repositório remoto, no GitHub, onde os outros os veem. É o momento em que se publica, e aqui só sai com o seu “sim” (P22).
 
@@ -33,7 +33,7 @@ Uma última combinação sobre a escrita: as páginas do livro que o manual cita
 
 ## Para qual ferramenta é
 
-O manual é sobre o Claude Code, que o autor usa quase todo dia. O Claude Code é pago: precisa de uma conta paga (parte `02`). Ele deve servir também para o Codex, que segue o mesmo padrão de skills, como diz a [documentação de skills do Codex](https://developers.openai.com/codex/skills). Mas o autor ainda não usou o Codex: onde o manual diz como algo funciona nele, vem da documentação, não da prática. Os passos que dependem do Claude Code dizem isso no lugar: os hooks do agente e o `settings.json` (P3), as sessões filhas, os títulos e os avisos entre sessões (P11, P12, P14) e a compactação (P10). Os hooks do git, os testes e o CI não dependem do agente. Se você usa o Codex e algo não bater, abra uma issue (a parte `01-o-que-e-o-morg-laws.md` mostra como).
+O manual é sobre o Claude Code, que o autor usa quase todo dia. O Claude Code exige uma conta paga (parte `02`). Ele deve servir também para o Codex, que segue o mesmo padrão de skills, como diz a [documentação de skills do Codex](https://developers.openai.com/codex/skills). Mas o autor ainda não usou o Codex: onde o manual diz como algo funciona nele, vem da documentação, não da prática. Os passos que dependem do Claude Code dizem isso no lugar: os hooks do agente e o `settings.json` (P3), as sessões filhas, os títulos e os avisos entre sessões (P11, P12, P14) e a compactação (P10). Os hooks do git, os testes e o CI não dependem do agente. Se você usa o Codex e algo não bater, abra uma issue (a parte `01-o-que-e-o-morg-laws.md` mostra como).
 
 ## O que este manual não promete
 
