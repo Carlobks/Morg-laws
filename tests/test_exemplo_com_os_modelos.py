@@ -369,7 +369,7 @@ class ProjetoDeExemplo(unittest.TestCase):
         self.so_com_as_gerais(indice_inteiro=True)
         self.assertFalhaEm("test_skills_do_indice_instaladas", "test_regras.py")
 
-    def test_pasta_apagada_a_mao_com_a_trava_a_citala_reprova(self):
+    def test_pasta_apagada_a_mao_com_a_trava_ainda_citando_reprova(self):
         self.so_com_as_gerais(trava=(*gerais(RAIZ), "supabase"))
         self.assertFalhaEm("test_skills_do_indice_instaladas", "test_regras.py")
 
