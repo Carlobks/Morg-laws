@@ -32,7 +32,7 @@ Atenção: num arquivo `'use server'`, reexportar parte o build (ver a skill `ne
 
 ## Organização por tipo (exemplo)
 
-Tipos partilhados numa pasta própria (`lib/types/`) e Server Actions numa pasta própria (`app/actions/`), em vez de espalhados pelas pastas de cada funcionalidade. Facilita achar e evita importações circulares. É uma escolha, não lei.
+Tipos compartilhados numa pasta própria (`lib/types/`) e Server Actions numa pasta própria (`app/actions/`), em vez de espalhados pelas pastas de cada funcionalidade. Facilita achar e evita importações circulares. É uma escolha, não lei.
 
 ## Operações independentes em paralelo
 

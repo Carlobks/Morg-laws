@@ -19,7 +19,7 @@
 ## Um hook roda antes do comando inteiro
 
 **O que aconteceu:** num único comando "criar arquivo e depois commitar", o hook de testes rodou sem o arquivo novo, e um teste falhado entrou no commit.
-**Como fazer:** crie ou mude arquivos num comando e commite noutro. Os testes que têm de valer sempre vão no hook do **git** (`pre-commit`), que roda na hora do commit e também à mão.
+**Como fazer:** crie ou mude arquivos num comando e commite em outro. Os testes que têm de valer sempre vão no hook do **git** (`pre-commit`), que roda na hora do commit e também à mão.
 
 ## Um hook que lê o comando como texto dá falsos alarmes
 

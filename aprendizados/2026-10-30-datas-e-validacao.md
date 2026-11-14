@@ -26,7 +26,7 @@ Formate datas e números com o locale do projeto escrito no código (`toLocaleDa
 **Por que:** os campos que faltavam chegaram como `undefined`, viraram `null` e sobrescreveram os valores guardados.
 **Como fazer:** envie só os campos que mudaram e trate a escrita como PATCH.
 
-## O valor por omissão escreve-se no código
+## O valor por padrão escreve-se no código
 
 **Regra de origem:** todo documento novo entra como oculto, com o valor escrito explicitamente pelo código.
 **Como fazer:** a aplicação grava o valor seguro (por exemplo, `visivel: false`) em vez de contar com o padrão da coluna. Um padrão no banco muda com uma migração, sem ninguém rever o código que dependia dele.

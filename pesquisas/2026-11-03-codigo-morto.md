@@ -66,7 +66,7 @@ em 2026-11-06 diz de cada uma:
 |---|---|---|
 | Um `export default` que ficou sem chamador | 5.88.1, ao apagar código de verdade | Nada: as páginas da configuração e dos achados não falam de `export default`. Não se sabe se é um limite geral ou do caso. |
 | Um ramo morto dentro de um arquivo vivo (um `if` que já não se toma) | 5.88.1 | Nada sobre ramos: a página inicial fala de arquivos, exports e dependências. Tira-se à mão, lendo o código. |
-| Uma rota HTTP (`route.ts`) que ninguém chama | 5.88.1 | O plugin do Next.js põe `app/**/route` entre as entradas, e por omissão os exports das entradas não se acusam, nem com o `includeEntryExports` ligado, porque é uma entrada do plugin. Uma rota sem chamador acha-se pelo endereço dela, com `git grep`. |
+| Uma rota HTTP (`route.ts`) que ninguém chama | 5.88.1 | O plugin do Next.js põe `app/**/route` entre as entradas, e por padrão os exports das entradas não se acusam, nem com o `includeEntryExports` ligado, porque é uma entrada do plugin. Uma rota sem chamador acha-se pelo endereço dela, com `git grep`. |
 | Um import montado a partir de texto (o caminho numa variável) | não procurado (knip 5.88.1) | A página dos achados diz que o caminho calculado de um `import()` não se resolve e que o montado com *template string* pode ser ignorado. O efeito é o contrário de um ponto cego: um arquivo vivo acusado de morto. Declara-se como entrada. |
 
 **A simulação numa cópia.** Para saber o que morre em cadeia ao apagar um ramo antigo, sem tocar no projeto:

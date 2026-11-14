@@ -38,7 +38,7 @@ Os testes prontos de `testes-ts/` são a exceção: TypeScript, com o `vitest` e
 | `testes/test_dados_pessoais.py` | `tests/` | Sem caminhos de pastas pessoais, e-mails pessoais, termos da lista negra nem os números de documento que o projeto ligar |
 | `testes/test_tamanho_das_funcoes.py` | `tests/` | Funções Python até 20 linhas (decisão do dono), contadas como no TypeScript, com linha de base por arquivo |
 | `testes/test_fins_de_linha.py` | `tests/` | LF no git; CRLF no disco só no que o Windows roda |
-| `testes/test_permissoes.py` | `tests/` | As três colunas, o modo que salta as permissões desligado, os hooks ligados: `onFailure: block` nos do `PreToolUse` e um `onFailure` escrito nos dos outros eventos |
+| `testes/test_permissoes.py` | `tests/` | As três colunas, o modo que pula as permissões desligado, os hooks ligados: `onFailure: block` nos do `PreToolUse` e um `onFailure` escrito nos dos outros eventos |
 | `testes/test_ci.py` | `tests/` | Actions fixadas por SHA, token só de leitura, nada baixado direto para uma shell |
 | `testes/carregar_por_caminho.py` | `tests/` | Carrega os scripts pelo caminho e roda-os como `__main__` no processo, para contarem na cobertura |
 | `documentos/AGENTS.md` | `AGENTS.md` | Arquivo de regras no formato que o `test_regras.py` confere (`- **TÍTULO:** regra. · *motivo*`): a Regra n.º 1 por preencher, o núcleo e o "Nunca" (iguais aos do `AGENTS.md` do Morg-laws, um teste confere) e o índice das skills |

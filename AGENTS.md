@@ -7,7 +7,7 @@ Lido inteiro em todo turno: por isso fica curto (máximo 60 linhas, o hook confe
 
 - **PLANO ANTES DE MEXER:** mudança com vários arquivos começa por um plano e pelo "sim" do dono do projeto.
   · *Cada palpite errado custa uma volta de retrabalho.*
-- **DECISÃO É DO DONO:** decisão a meio vai ao dono, explicada, com a opção recomendada marcada. · *Não se decide sozinho o que é dele.*
+- **DECISÃO É DO DONO:** decisão no meio do trabalho vai ao dono, explicada, com a opção recomendada marcada. · *Não se decide sozinho o que é dele.*
 - **COMMIT SEM PEDIDO, PUSH COM O SIM:** commitar não precisa de pedido; push e PR precisam, a cada vez. Commit atômico, por caminho; nunca `git add -A` ou `.`.
   · *O push publica no momento em que sai.*
 - **OS HOOKS SÃO A REDE:** nunca pular (`--no-verify`) nem desligar. Hook recusou: se corrige a causa. · *Pulado, deixa passar o erro.*

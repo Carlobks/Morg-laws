@@ -42,7 +42,7 @@ escolha sem porquê fica em «Perguntas em aberto»; o porquê nunca se inventa.
 
 ## Palavras do dono
 
-<O texto original do dono, como ele escreveu. Não se reescreve: qualquer arrumação vai noutra seção.>
+<O texto original do dono, como ele escreveu. Não se reescreve: qualquer arrumação vai em outra seção.>
 
 ## Perguntas em aberto
 
