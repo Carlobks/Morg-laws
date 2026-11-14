@@ -20,7 +20,7 @@ Instale as que servem a qualquer projeto. No PDF os comandos quebram em várias 
 npx skills add Carlobks/Morg-laws -a claude-code -y --skill auditoria-de-seguranca --skill codigo-legivel --skill comecando-um-projeto --skill escrevendo-regras-de-agente --skill git-e-commits --skill orquestrando-sessoes --skill passando-o-trabalho --skill pondo-o-plano-a-prova --skill testes-e-provas
 ```
 
-Depois, some só as da sua pilha, uma linha por vez:
+Depois, some as das tecnologias que o projeto usa, uma linha por vez:
 
 ```
 npx skills add Carlobks/Morg-laws -a claude-code -y --skill sql-postgres --skill supabase
@@ -30,9 +30,9 @@ npx skills add Carlobks/Morg-laws -a claude-code -y --skill nextjs-react
 npx skills add Carlobks/Morg-laws -a claude-code -y --skill desenhando-telas
 ```
 
-Quer todas? Tire todos os `--skill` do comando das que servem a qualquer projeto.
+Se o projeto usa Postgres sem o Supabase, tire o `--skill supabase` do comando do Postgres.
 
-Esses comandos foram testados na versão 1.8.1 do pacote, em 2026-11-14. Eles copiam as skills escolhidas para a pasta do agente e criam um arquivo com a origem de cada uma:
+O das gerais e o do Postgres foram testados na versão 1.8.1 do pacote, em 2026-11-14; os outros dois têm a mesma forma. Eles copiam as skills escolhidas para a pasta do agente e criam um arquivo com a origem de cada uma:
 
 ```
 .claude/skills/<nome-da-skill>/
@@ -54,7 +54,7 @@ O `npx skills add` procura a pasta `skills/` do repositório, e só ela. O `AGEN
 
 A primeira linha de tecnologia é para quem usa Postgres; quem não usa o Supabase tira o `--skill supabase`, mas o Supabase não vem sem a de SQL. A segunda é para Next.js ou React; a terceira, para sistemas com muitas telas e dados, como painéis.
 
-Com `-y` e sem `--skill`, a ferramenta instala todas, e dentro de um agente ela liga o `-y` sozinha (pela leitura do código dela, na [pesquisa](https://github.com/Carlobks/Morg-laws/blob/main/pesquisas/2026-11-14-instalar-so-algumas-skills.md)): por isso cada comando leva os nomes. A ferramenta guarda no `skills-lock.json` só o que se instalou, e o `npx skills update` atualiza só essas: uma skill que você não trouxe, ou uma nova do Morg-laws, só chega com um `add` dela. Para atualizar, use `npx skills update`; o `add` sem `--skill` traz todas de volta. A do Supabase manda usar junto a de SQL; as outras se citam só para apontar o caminho, e nenhuma para de funcionar sem outra.
+Com `-y` e sem `--skill`, a ferramenta instala todas, e dentro de um agente ela liga o `-y` sozinha (pela leitura do código dela, na [pesquisa](https://github.com/Carlobks/Morg-laws/blob/main/pesquisas/2026-11-14-instalar-so-algumas-skills.md)): por isso cada comando leva os nomes. A ferramenta guarda no `skills-lock.json` só o que se instalou, e o `npx skills update` atualiza só essas: uma skill que você não trouxe, ou uma nova do Morg-laws, só chega com um `add` dela. Para atualizar, use `npx skills update -p -y`. Quer todas? Tire todos os `--skill` do comando das que servem a qualquer projeto. A do Supabase manda usar junto a de SQL; as outras se citam só para apontar o caminho, e nenhuma para de funcionar sem outra.
 
 A ferramenta, o [skills da Vercel](https://github.com/vercel-labs/skills), instala para o Claude Code em `.claude/skills/` e para o Codex em `.agents/skills/`, e o Codex procura as suas skills nessa pasta, segundo a [documentação de skills do Codex](https://developers.openai.com/codex/skills). Só a descrição de cada skill entra no começo da conversa; o corpo abre quando ela é usada, como diz a [documentação de skills do Claude Code](https://code.claude.com/docs/en/skills). Por isso instalar muitas skills é barato, e ainda assim cada uma que você não usa é leitura a mais.
 
