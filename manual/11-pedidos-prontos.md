@@ -105,13 +105,13 @@ A fonte é a seção 4 da skill [`orquestrando-sessoes`](https://github.com/Carl
 
 ## Uma auditoria a frio
 
-Use quando um trabalho está pronto e você quer uma leitura independente, antes de levá-lo adiante. Explicado no procedimento P15, na parte 05. Abra uma sessão nova, no maior modelo, e não conte a ela o que você acha do trabalho: um auditor que recebe a conclusão tende a confirmá-la.
+Use quando um trabalho está pronto e você quer uma leitura independente, antes de levá-lo adiante. Explicado no procedimento P15, na parte 05 (a leitura em partes, no P11). Abra uma sessão nova, no maior modelo, e não conte a ela o que você acha do trabalho: um auditor que recebe a conclusão tende a confirmá-la.
 
 ```
 Audite, só lendo, o trabalho em <pasta ou arquivos>. Você não escreve nada no projeto.
 Objetivo do trabalho: <uma frase>.
 Confira o trabalho contra estas fontes: <o plano, as regras do projeto, os testes>.
-Leia uma parte de cada vez: escreva a seção dela no relatório, grave, e só então abra a seguinte.
+Leia uma parte de cada vez (<as partes, na ordem>): escreva a seção dela no relatório, grave, e só então abra a seguinte.
 Entregue o relatório em <arquivo do relatório>, com um veredito no topo (“aprovado”, “aprovado com correções” ou “refazer”),
 cada achado com o arquivo e a linha da fonte onde se vê, e no fim a lista do que você não verificou.
 Marque à parte o que é juízo, e não medida.

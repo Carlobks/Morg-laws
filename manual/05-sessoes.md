@@ -73,7 +73,7 @@ O que costuma dar errado:
 - Deixar o que não se faz de fora. A filha faz a mais.
 - Pedir uma auditoria dizendo a sua conclusão. Ela tende a confirmá-la (a fonte está no P15).
 - Esquecer o que já falhou: a filha repete.
-- Mandar ler um texto longo de uma vez, com o relatório só no fim. A filha pode se perder na própria contagem. Peça uma parte de cada vez, com a nota de cada uma gravada antes de abrir a seguinte.
+- Mandar ler um texto longo de uma vez, com o relatório só no fim. A filha pode se perder na própria contagem. Peça uma parte de cada vez, com a nota de cada uma gravada antes de abrir a seguinte. No fim, a opinião geral sai só dessas notas.
 
 ### Por quê e fonte
 
