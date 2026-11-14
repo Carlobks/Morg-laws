@@ -3,9 +3,12 @@ precisa, conferido sem rede e sobre o texto:
 
 - tem as dez seções, na ordem: O que é, Para quem, Por que começar, O que já existe, O que faz, O que não faz,
   Restrições, Arquitetura, Palavras do dono e Perguntas em aberto;
+- leva a marca «ronda dispensada pelo dono» em «Por que começar»;
 - não leva palavras nem construções do português de Portugal.
 E a skill `comecando-um-projeto`:
-- tem as seções do plano, na ordem, e os sete destinos do que escreve no projeto na tabela da seção 4;
+- tem as seções do plano, na ordem; as nove rondas da tabela da seção 3, na ordem, e nela a marca «ronda dispensada
+  pelo dono»; os sete destinos do que escreve no projeto na tabela da seção 4; e, em «Procurar o que já existe», as
+  frases «sem baixar, instalar nem rodar nada» e «Nunca invente um candidato»;
 - cada cópia de `assets/` é igual, byte a byte, ao seu molde; nenhum arquivo de `assets/` fica fora do mapa; nenhum
   arquivo de `skills/` se chama `AGENTS.md`, `CLAUDE.md` nem `CLAUDE.local.md` (a ferramenta o carregaria como regra);
 - o `SKILL.md` e o `evals/` não levam palavras nem construções do português de Portugal (as cópias de `assets/` ficam
@@ -37,6 +40,7 @@ RONDAS_DA_SKILL = ("0. Ler", "1. O que é e para quem", "2. Vale a pena começar
                    "4. Restrições", "5. Arquitetura", "6. Regras", "7. Confirmar e escrever", "8. Primeiro plano")
 SECAO_DAS_RONDAS = "## 3. As rondas"
 SECAO_DA_BUSCA = "## 8. Procurar o que já existe"
+MARCA_DA_DISPENSA = "ronda dispensada pelo dono"
 FRASES_DA_BUSCA = ("sem baixar, instalar nem rodar nada", "Nunca invente um candidato")
 DESTINOS_DA_SKILL = ("docs/projeto.md", "docs/README.md", "AGENTS.md", "CLAUDE.md", "docs/regras-e-barreiras.md",
                      "docs/planos/", "docs/decisoes/")
@@ -66,11 +70,14 @@ def erros_do_molde(texto):
     ordem = [titulo for titulo in achadas if titulo in SECOES_DO_PROJETO]
     if not erros and ordem != list(SECOES_DO_PROJETO):
         erros.append(f"as seções estão fora da ordem: {ordem}")
+    if MARCA_DA_DISPENSA not in texto:
+        erros.append(f"falta no molde a frase «{MARCA_DA_DISPENSA}»")
     return erros
 
 
 def erros_da_skill(texto):
-    """As seções fora da ordem ou em falta e os destinos que o corpo da skill não cita."""
+    """As seções, as rondas e as frases de «Procurar o que já existe» em falta ou fora da ordem, e os destinos que o
+    corpo da skill não cita."""
     achadas = re.findall(r"^#{1,2} (.+?)\s*$", texto, re.MULTILINE)
     erros = [f"falta a seção «{titulo}»" for titulo in SECOES_DA_SKILL if titulo not in achadas]
     ordem = [titulo for titulo in achadas if titulo in SECOES_DA_SKILL]
@@ -83,12 +90,15 @@ def erros_da_skill(texto):
 
 
 def erros_das_rondas(texto):
-    """As rondas da tabela da seção 3 em falta ou fora da ordem."""
-    achadas = re.findall(r"^\| (\d\. [^|]+?) \|", secao_de(texto, SECAO_DAS_RONDAS), re.MULTILINE)
+    """As rondas da tabela da seção 3 em falta ou fora da ordem, e a marca da dispensa que a seção tem de guardar."""
+    secao = secao_de(texto, SECAO_DAS_RONDAS)
+    achadas = re.findall(r"^\| (\d\. [^|]+?) \|", secao, re.MULTILINE)
     erros = [f"falta a ronda «{nome}»" for nome in RONDAS_DA_SKILL if nome not in achadas]
     ordem = [nome for nome in achadas if nome in RONDAS_DA_SKILL]
     if not erros and ordem != list(RONDAS_DA_SKILL):
         erros.append(f"as rondas estão fora da ordem: {ordem}")
+    if MARCA_DA_DISPENSA not in secao:
+        erros.append(f"falta no §3 da skill a frase «{MARCA_DA_DISPENSA}»")
     return erros
 
 
@@ -243,6 +253,14 @@ class SkillComecandoUmProjeto(unittest.TestCase):
         for frase, outra in trocas.items():
             with self.subTest(frase=frase):
                 self.assertIn(f"falta no §8 a frase «{frase}»", erros_da_skill(self.texto.replace(frase, outra)))
+
+    def test_sem_a_marca_da_dispensa_reprova(self):
+        molde = ler(MOLDE_DO_PROJETO)
+        casos = {"na skill": (erros_da_skill(self.texto.replace(MARCA_DA_DISPENSA, "outra marca")), "no §3 da skill"),
+                 "no molde": (erros_do_molde(molde.replace(MARCA_DA_DISPENSA, "outra marca")), "no molde")}
+        for nome, (erros, onde) in casos.items():
+            with self.subTest(caso=nome):
+                self.assertTrue(any(f"falta {onde}" in erro and MARCA_DA_DISPENSA in erro for erro in erros), erros)
 
     def test_sem_um_destino_reprova(self):
         erros = erros_da_skill(self.texto.replace("docs/decisoes/", "docs/outra/"))
