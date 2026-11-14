@@ -51,6 +51,7 @@ PEDACOS_DA_LEITURA = (
     "escolha do projeto, não de uma fonte",
     "O plano diz o método",
     "e não só o que se lê",
+    "as leituras vêm em fatias",
 )
 
 
@@ -149,6 +150,29 @@ class OrquestrandoSessoes(unittest.TestCase):
 
     def test_a_subsecao_da_leitura_passa(self):
         self.assertEqual([], erros_da_leitura(self.texto))
+
+    def test_sem_o_gravado_em_disco_reprova(self):
+        self.assertErroDaLeitura(
+            self.texto.replace("no relatório, gravado em disco, e só então", "no relatório e só então"),
+            "no relatório, gravado em disco, e só então")
+
+    def test_sem_o_nao_a_parte_anterior_reprova(self):
+        self.assertErroDaLeitura(self.texto.replace("** e não a parte anterior.", "**"), "e não a parte anterior")
+
+    def test_sem_o_uma_parte_de_cada_vez_reprova(self):
+        self.assertErroDaLeitura(self.texto.replace("- **Uma parte de cada vez:**", "- **Ler:**"),
+                                 "Uma parte de cada vez")
+
+    def test_sem_o_escrever_logo_reprova(self):
+        self.assertErroDaLeitura(
+            self.texto.replace("escrever logo a seção dela no relatório", "escrever no fim a seção dela no relatório"),
+            "escrever logo a seção dela no relatório")
+
+    def test_sem_o_nao_so_o_que_se_le_reprova(self):
+        self.assertErroDaLeitura(self.texto.replace(", e não só o que se lê.", "."), "e não só o que se lê")
+
+    def test_sem_as_leituras_em_fatias_reprova(self):
+        self.assertErroDaLeitura(self.texto.replace("as leituras vêm em fatias e ", ""), "as leituras vêm em fatias")
 
     def test_sem_o_so_entao_a_seguinte_reprova(self):
         self.assertErroDaLeitura(self.texto.replace("só então abrir a seguinte", "depois abrir as outras"),
