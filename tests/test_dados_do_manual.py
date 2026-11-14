@@ -104,7 +104,12 @@ class DadosDoTexto(unittest.TestCase):
                                ("```text\nescreva a fulano@empresa-real.pt\n```\n", 2), ("O arquivo test_x.py roda.\n", 1),
                                ("```\nabra a\n\nDepois empresa.digital aqui.\n", 1),
                                ("````text\n```\nx\n```\nDepois empresa.digital aqui.\n", 1),
-                               ("```text\nFalei com Maria Souza ontem.\n```\n", 1)):
+                               ("```text\nFalei com Maria Souza ontem.\n```\n", 1),
+                               ("```text\nabra empresa.digital\n````\nDepois empresa.digital aqui.\n", 1),
+                               ("```text\nabra empresa.digital\n```  \nDepois empresa.digital aqui.\n", 1),
+                               ("```text\nabra empresa.digital\n``` x\nDepois empresa.digital aqui.\n", 2),
+                               ("``` `x`\nabra empresa.digital\n```\n", 1),
+                               ("    ```\n    abra empresa.digital\n    ```\n", 1)):
             with self.subTest(texto=texto):
                 self.assertEqual(len(tipos(texto)), quantos)
         achados = manual.dados_do_manual(f"limpo\n```text\nSem tests/a.py\n```\nnúmero {NUMERO}\n", ACEITOS, DOMINIOS)
@@ -165,12 +170,21 @@ class SituacaoDoManual(base.RepositorioTemporario):
                 self.assertEqual(self.nomes({"MORG_LER_DO_INDICE": "1"}), [ARQUIVO])
                 self.git("commit", "-q", "-m", "docs(x): lista", "--no-verify")
 
-    def test_a_situacao_junta_as_tres_listas_e_as_comuns(self):
+    def test_a_situacao_junta_as_quatro_listas_e_as_comuns(self):
         self.preparar("Claude Code\n", manual.NOMES_CITAVEIS)
         self.preparar("# nota\nLeia\n", manual.PALAVRAS_QUE_ABREM)
-        _, (aceitos, _, abrem, _) = manual.situacao_do_manual(self.pasta, {})
+        _, (aceitos, _, abrem, citaveis) = manual.situacao_do_manual(self.pasta, {})
         self.assertLessEqual({"Fabio Akita", "Claude Code"}, aceitos)
         self.assertLessEqual({"leia"}, abrem)
+        self.assertEqual(citaveis, {"Fabio Akita"})
+
+    def test_o_citavel_da_lista_isenta_o_assunto_no_manual_lido_do_disco(self):
+        """«Escolha de Carlobks» tem duas palavras contadas: sem os citáveis, é acusada (com três, a primeira já sai)."""
+        self.preparar("Fabio Akita\nCarlobks\n", manual.PESSOAS)
+        base.escrever(self.pasta / "manual" / "nova.md", "Escolha de Carlobks: a curta.\nNota de Maria Souza.\n")
+        conteudos, situacao = manual.situacao_do_manual(self.pasta, {})
+        self.assertEqual(manual.problemas_do_manual(conteudos, situacao, [], {"CI": "true"}),
+                         ["manual/nova.md:2: nome de pessoa"])
 
     def test_o_disco_le_a_arvore_com_os_arquivos_novos_e_so_os_md(self):
         self.preparar("x\n", "manual/fontes/licenca.txt")
