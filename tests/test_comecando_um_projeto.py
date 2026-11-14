@@ -42,6 +42,7 @@ SECAO_DAS_RONDAS = "## 3. As rondas"
 SECAO_DA_BUSCA = "## 8. Procurar o que já existe"
 MARCA_DA_DISPENSA = "ronda dispensada pelo dono"
 FRASE_DO_INDICE = "o índice só com as skills instaladas"
+FRASE_DA_RONDA_0 = "o teste do índice do molde dá erro"
 FRASES_DA_BUSCA = ("sem baixar, instalar nem rodar nada", "Nunca invente um candidato")
 DESTINOS_DA_SKILL = ("docs/projeto.md", "docs/README.md", "AGENTS.md", "CLAUDE.md", "docs/regras-e-barreiras.md",
                      "docs/planos/", "docs/decisoes/")
@@ -101,6 +102,9 @@ def erros_das_rondas(texto):
         erros.append(f"as rondas estão fora da ordem: {ordem}")
     if MARCA_DA_DISPENSA not in secao:
         erros.append(f"falta no §3 da skill a frase «{MARCA_DA_DISPENSA}»")
+    ronda_0 = next((linha for linha in secao.splitlines() if linha.startswith("| 0. Ler")), "")
+    if FRASE_DA_RONDA_0 not in ronda_0:
+        erros.append(f"falta na ronda «0. Ler» a frase «{FRASE_DA_RONDA_0}»")
     return erros
 
 
@@ -259,6 +263,10 @@ class SkillComecandoUmProjeto(unittest.TestCase):
     def test_sem_a_frase_do_indice_so_com_as_instaladas_reprova(self):
         erros = erros_da_skill(self.texto.replace(FRASE_DO_INDICE, "o índice inteiro"))
         self.assertIn(f"falta na tabela da seção 4 a frase «{FRASE_DO_INDICE}»", erros)
+
+    def test_sem_o_aviso_do_teste_do_indice_na_ronda_zero_reprova(self):
+        erros = erros_da_skill(self.texto.replace(FRASE_DA_RONDA_0, "o teste passa"))
+        self.assertIn(f"falta na ronda «0. Ler» a frase «{FRASE_DA_RONDA_0}»", erros)
 
     def test_sem_a_marca_da_dispensa_reprova(self):
         molde = ler(MOLDE_DO_PROJETO)
