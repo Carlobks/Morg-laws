@@ -73,6 +73,7 @@ O que costuma dar errado:
 - Deixar o que não se faz de fora. A filha faz a mais.
 - Pedir uma auditoria dizendo a sua conclusão. Ela tende a confirmá-la (a fonte está no P15).
 - Esquecer o que já falhou: a filha repete.
+- Mandar ler um texto longo de uma vez, com o relatório só no fim. A filha pode se perder na própria contagem. Peça uma parte de cada vez, com a nota de cada uma gravada antes de abrir a seguinte.
 
 ### Por quê e fonte
 
@@ -80,11 +81,13 @@ A filha nasce com o contexto limpo: só o que o pedido diz. Por isso o pedido ca
 
 Prefira sessões novas a sub-agentes quando você quer ver e corrigir cada passo: um sub-agente não pode ser visto nem corrigido, e o erro volta no mesmo tom confiante dos acertos. Sub-agentes servem para buscas amplas e tarefas independentes, com o resultado conferido depois. Um agente gasta cerca de 4 vezes os tokens de uma conversa, e um sistema com vários agentes cerca de 15 vezes; só compensa quando a tarefa vale esse custo, e o conselho é começar pelo mais simples. O custo vale também para as sessões filhas, que com a orquestradora são um sistema de vários agentes: o que as separa dos sub-agentes é poder vê-las e corrigi-las, não o preço (dois artigos da Anthropic sobre agentes, com a data de leitura, na [seção “Uso e custo de agentes” do `FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md#uso-e-custo-de-agentes)).
 
+Numa leitura longa, a nota de cada parte vai para o disco antes da seguinte, e a opinião geral sai só das notas. O livro de Fabio Akita lembra que o agente pode ter lido só um pedaço de um arquivo, porque a ferramenta entrega os arquivos longos em pedaços e corta sem aviso o que um comando imprime demais, e responder como se tivesse lido tudo (pp. 33, 124). Numa conversa longa, a compactação pode perder instruções do começo ([como o Claude Code funciona](https://code.claude.com/docs/en/how-claude-code-works)). Já o que está gravado em disco não muda com a compactação, e se relê.
+
 O livro de Fabio Akita recomenda a orquestra de agentes só para lotes independentes (pp. 49, 153–155, 210).
 
 A sugestão de tarefa na app de desktop vem da [documentação da app de desktop do Claude Code](https://code.claude.com/docs/en/desktop), que diz que o Claude, ao notar algo fora da tarefa, o sugere como tarefa, e que o “Start” a começa em outra sessão.
 
-Onde vive no Morg-laws: a skill `orquestrando-sessoes`, seções “Sub-agentes ou sessões novas” e “Leitura independente”. O exemplo acima é o esqueleto de um pedido de implementação real, reescrito sem nomes, caminhos nem números.
+Onde vive no Morg-laws: a skill `orquestrando-sessoes`, seções “Sub-agentes ou sessões novas” e “Leitura independente” (com a subseção “Uma leitura longa”). O exemplo acima é o esqueleto de um pedido de implementação real, reescrito sem nomes, caminhos nem números.
 
 ## P12 · O modelo da filha
 

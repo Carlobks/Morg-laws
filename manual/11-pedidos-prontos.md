@@ -111,6 +111,7 @@ Use quando um trabalho está pronto e você quer uma leitura independente, antes
 Audite, só lendo, o trabalho em <pasta ou arquivos>. Você não escreve nada no projeto.
 Objetivo do trabalho: <uma frase>.
 Confira o trabalho contra estas fontes: <o plano, as regras do projeto, os testes>.
+Leia uma parte de cada vez: escreva a seção dela no relatório, grave, e só então abra a seguinte.
 Entregue o relatório em <arquivo do relatório>, com um veredito no topo (“aprovado”, “aprovado com correções” ou “refazer”),
 cada achado com o arquivo e a linha da fonte onde se vê, e no fim a lista do que você não verificou.
 Marque à parte o que é juízo, e não medida.
