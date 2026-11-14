@@ -81,7 +81,7 @@ Quando várias sessões (ou pessoas) trabalham na mesma pasta, o índice do git 
 - **Nada que estrague o disco compartilhado:** um script que troca arquivos por um tempo (testes de mutação, geradores) roda num `git worktree` à parte. Outra sessão que rode os testes ao mesmo tempo os vê falhar sem bug, e pode commitar o arquivo trocado.
 - **Confirme o HEAD antes de pedir um reteste:** outra sessão pode ter mudado a branch, e o sintoma parece "a correção não funcionou".
 - **`index.lock`:** o de outra sessão a commitar espera-se que saia, e nunca se apaga. Antes de culpar outro processo, veja **em que repositório** ele corre. Um lock seu, deixado por um comando interrompido, prova-se velho por três coisas: nenhum processo do git a correr, a hora do lock bate com a interrupção e o conteúdo do lock é o seu. Mesmo assim, renomeie-o em vez de o apagar.
-- **Não lance um commit com hooks longos** enquanto a conversa está a pedir decisões ao dono: um "parar" no meio deixa o lock para trás.
+- **Não lance um commit com hooks longos** enquanto a conversa está pedindo decisões ao dono: um "parar" no meio deixa o lock para trás.
 
 ## 7. Uma só branch: quando escolher
 

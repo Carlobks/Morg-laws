@@ -64,7 +64,7 @@ pelos dois moldes de cada regra e exige o mesmo veredito.
 - **TypeScript:** copie a pasta [`modelos/testes-ts`](https://github.com/Carlobks/Morg-laws/tree/main/modelos/testes-ts)
   para `tests/catracas/` do projeto. Precisam do `vitest` e do `typescript` (para ler o código pela árvore) e rodam
   com `npx vitest run`.
-- Os testes leem o **índice do git**: um arquivo novo conta depois do `git add`, e o trabalho no meio de outra
+- Os testes leem o **índice do git**: um arquivo novo conta depois do `git add`, e o trabalho em andamento de outra
   sessão na mesma pasta não trava o commit desta.
 - Ligue-os ao comando único de testes, que o hook do commit e o CI chamam. No CI de um projeto TypeScript, o
   [molde de CI](https://github.com/Carlobks/Morg-laws/blob/main/modelos/github/workflows/ci.yml) fixa o Node pelo
