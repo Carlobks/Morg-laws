@@ -8,6 +8,7 @@ Teste feito numa pasta vazia, com o repositório já publicado.
 **Por que:** a ferramenta procura a pasta `skills/` do repositório, e só essa. O `AGENTS.md` e o `CLAUDE.md` da raiz não fazem parte de nenhuma skill, por isso ficam de fora.
 **Como fazer:** depois do `npx skills add`, copie à mão o `AGENTS.md` para a raiz do projeto. Se a ferramenta for o Claude Code, junte um `CLAUDE.md` com a linha `@AGENTS.md`. Sem o AGENTS.md, o projeto fica sem o núcleo e sem o índice de «quando ler o quê». As skills continuam a abrir pela descrição.
 **Desde 2026-11-03:** copia-se o molde [modelos/documentos/AGENTS.md](../modelos/documentos/AGENTS.md), e não o `AGENTS.md` da raiz, que leva também as regras de quem trabalha no próprio Morg-laws.
+**Desde 2026-11-14:** a escolha de uma parte das skills, na 1.8.1, está em [2026-11-14-instalar-so-algumas-skills.md](2026-11-14-instalar-so-algumas-skills.md).
 **Versão:** pacote `skills` 1.7.4, testado em 2026-10-30.
 
 ## A instalação traz o aviso certo

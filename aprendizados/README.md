@@ -36,3 +36,4 @@ Nome: `AAAA-MM-DD-assunto.md`, com a data em que a nota entrou aqui. Uma nota po
 | [2026-11-01-testes.md](2026-11-01-testes.md) | Ciclo de hooks, corrida vermelha segura, `patch.dict`, cobertura do Node, Pester 6, mutação |
 | [2026-11-01-hooks-do-claude-code.md](2026-11-01-hooks-do-claude-code.md) | `ask` no modo automático, `deny` só no Read, hook em falta, sondas |
 | [2026-11-01-git.md](2026-11-01-git.md) | Identidade local, marca de executável, `checkout` que apaga, objetos só de leitura, `grep -P` |
+| [2026-11-14-instalar-so-algumas-skills.md](2026-11-14-instalar-so-algumas-skills.md) | `npx skills add --skill`: instalar só algumas, somar, atualizar, remover |
