@@ -64,6 +64,10 @@ class OTextoPublicoEmPortuguesDoBrasil(unittest.TestCase):
         self.assertGreater(len(arquivos), 100)
         self.assertIn("AGENTS.md", arquivos)
         self.assertIn("skills/orquestrando-sessoes/SKILL.md", arquivos)
+        um_de_cada_lugar_e_extensao = {"FONTES.md", "projetos/erp-de-servicos/o-que-se-mediu.md", "biblia-akita/leituras.md",
+                                       "skills/nextjs-react/evals/trigger-eval.json", "manual/pessoas-citaveis.txt",
+                                       ".github/ISSUE_TEMPLATE/2-sugestao.yml"}
+        self.assertLessEqual(um_de_cada_lugar_e_extensao, set(arquivos))
         self.assertFalse([nome for nome in arquivos if nome.startswith(FORA)])
 
     def test_nenhum_texto_publico_tem_forma_de_portugal(self):
