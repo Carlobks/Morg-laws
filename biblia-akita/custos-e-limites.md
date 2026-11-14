@@ -19,5 +19,5 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A pági
 ## 3. Reaproveitar e decidir
 
 - Reaproveite os resultados caros, guardando junto o registro do que os gerou. Nos testes de integração, grave as respostas do modelo para não pagar de novo a cada execução. (pp. 409, 426) · **máquina** (respostas gravadas nos testes) · onde aplicar: ainda nenhuma
-- Entre manter uma cópia própria de um projeto ou acrescentar módulos por fora, lembre que, no caso contado, trocar de estratégia a meio caminho saiu barato com o agente. (p. 142) · **texto** · onde aplicar: ainda nenhuma
+- Entre manter uma cópia própria de um projeto ou acrescentar módulos por fora, lembre que, no caso contado, trocar de estratégia a meio caminho saiu barato com o agente. (p. 142) · **texto** · onde aplicar: `comecando-um-projeto`
 - Troque de fornecedor de modelo sempre que outro passar à frente, mas guarde consigo a memória, o processo e o que aprendeu. (p. 324) · **texto** · onde aplicar: `passando-o-trabalho`

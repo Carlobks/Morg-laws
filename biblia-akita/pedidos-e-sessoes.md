@@ -10,7 +10,7 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A pági
 - Fora da programação, use as mesmas quatro partes e peça, no fim, a lista de cada afirmação de fato para conferir. (p. 121) · **texto** · onde aplicar: ainda nenhuma
 - Mande citar só o que está no material dado e marcar o resto como impossível de verificar. Peça os pontos fortes e fracos em vez de um veredito, e pergunte o que ficou de fora. (pp. 56, 58) · **texto** · onde aplicar: `orquestrando-sessoes`
 - Para começar um sistema para outra pessoa, parta das palavras dela. (pp. 96–97) · **texto** · onde aplicar: `pondo-o-plano-a-prova`, `comecando-um-projeto`
-- Antes de construir do zero, procure no primeiro dia se já existe uma solução pronta, um modelo treinado ou uma biblioteca, e escolha uma base bem mantida. (pp. 67, 106–107, 218) · **texto** · onde aplicar: `comecando-um-projeto`
+- Antes de construir do zero, procure no primeiro dia se já existe uma solução pronta, um modelo treinado ou uma biblioteca, e escolha uma base bem mantida. (pp. 67, 106–107, 115, 218) · **texto** · onde aplicar: `comecando-um-projeto`
 - Quando concluir que um modelo «não serve», releia primeiro o que lhe pediu. (p. 116) · **texto** · onde aplicar: ainda nenhuma
 
 ## 2. Conduzir o trabalho

@@ -158,7 +158,7 @@ No Claude Code:
 
 No Codex, o mesmo texto, com `$` no lugar da barra ([documentação do Codex](https://developers.openai.com/codex/skills)).
 
-O agente vai perguntar. Responda por rondas, e leia o que ele escreveu antes de aceitar.
+O agente vai perguntar. Logo depois de saber o que é o projeto, ele pergunta se vale a pena começar e procura o que já existe pronto; se você já decidiu, diga, e ele segue. Responda por rondas, e leia o que ele escreveu antes de aceitar.
 
 O que costuma dar errado:
 
