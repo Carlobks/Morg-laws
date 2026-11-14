@@ -13,6 +13,9 @@ import sys
 import unittest
 from unittest import mock
 
+from carregar_modelos import MODELOS, RAIZ
+from conjuntos_de_skills import gerais
+from leitura_do_repositorio import ler
 from projeto_de_exemplo import apagar, escrever, git, montar, rodar_testes
 
 FUNCAO_COM_COMENTARIOS_NO_FIM = ("def com_notas():\n" + "".join(f"    passo_{i} = {i}\n" for i in range(19))
@@ -348,6 +351,27 @@ class ProjetoDeExemplo(unittest.TestCase):
     def test_deny_da_ferramenta_agent_sem_a_escolha_escrita(self):
         self.escolher_so_sessoes("False", deny_agent=True)
         self.assertFalhaEm("test_sub_agentes_conforme_a_escolha", "test_permissoes.py")
+
+    def so_com_as_gerais(self, indice_inteiro=False, trava=()):
+        """Troca o projeto por um só com as skills gerais; opcionalmente com o índice do molde inteiro e uma trava."""
+        self.pasta = montar(gerais(RAIZ))
+        self.addCleanup(apagar, self.pasta)
+        if indice_inteiro:
+            escrever(self.pasta / "AGENTS.md", ler(MODELOS / "documentos" / "AGENTS.md"))
+        if trava:
+            escrever(self.pasta / "skills-lock.json", json.dumps({"version": 2, "skills": {nome: {} for nome in trava}}))
+
+    def test_so_as_gerais_com_o_indice_aparado_passa(self):
+        self.so_com_as_gerais(trava=gerais(RAIZ))
+        self.assertPassa("test_regras.py")
+
+    def test_so_as_gerais_com_o_indice_inteiro_reprova(self):
+        self.so_com_as_gerais(indice_inteiro=True)
+        self.assertFalhaEm("test_skills_do_indice_instaladas", "test_regras.py")
+
+    def test_pasta_apagada_a_mao_com_a_trava_a_citala_reprova(self):
+        self.so_com_as_gerais(trava=(*gerais(RAIZ), "supabase"))
+        self.assertFalhaEm("test_skills_do_indice_instaladas", "test_regras.py")
 
 
 if __name__ == "__main__":

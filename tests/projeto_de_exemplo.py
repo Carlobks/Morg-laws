@@ -2,6 +2,7 @@
 portões, testes e skills), num repositório git com identidade fictícia. Usado pelos testes de ponta a ponta."""
 
 import os
+import re
 import shutil
 import stat
 import subprocess
@@ -10,6 +11,7 @@ import tempfile
 from pathlib import Path
 
 from carregar_modelos import MODELOS, RAIZ
+from leitura_do_repositorio import ler
 
 # Todas, como instala o `npx skills add`: o índice do molde AGENTS.md cita todas.
 SKILLS = tuple(sorted(pasta.name for pasta in (RAIZ / "skills").iterdir() if (pasta / "SKILL.md").is_file()))
@@ -54,19 +56,43 @@ def apagar(pasta):
     shutil.rmtree(pasta, onerror=_liberar)
 
 
-def copiar_modelos(pasta):
+def indice_so_com(texto, skills):
+    """O molde AGENTS.md com o índice só das `skills`: tira o nome das outras e a linha que ficar sem nenhuma."""
+    antes, marca, depois = texto.partition("## Índice: quando ler o quê")
+    cabeca, fim = depois.split("\n## ", 1) if "\n## " in depois else (depois, None)
+    linhas = []
+    for linha in cabeca.splitlines():
+        if linha.startswith("| ") and "`" in linha:
+            linha_nova = _linha_so_com(linha, skills)
+            linhas += [linha_nova] if linha_nova else []
+        else:
+            linhas.append(linha)
+    return antes + marca + "\n".join(linhas) + ("\n\n## " + fim if fim is not None else "\n")
+
+
+def _linha_so_com(linha, skills):
+    """A linha da tabela só com os nomes de `skills` (None se não sobra nenhum)."""
+    situacao, _, nomes = linha.rstrip(" |").rpartition(" | ")
+    ficam = [nome for nome in re.findall(r"`([a-z0-9-]+)`", nomes) if nome in skills]
+    return f"{situacao} | {', '.join(f'`{nome}`' for nome in ficam)} |" if ficam else None
+
+
+def copiar_modelos(pasta, skills):
     for origem, destino in COPIAS.items():
         alvo = pasta / destino
         alvo.parent.mkdir(parents=True, exist_ok=True)
         (shutil.copytree if (MODELOS / origem).is_dir() else shutil.copy2)(MODELOS / origem, alvo)
-    for skill in SKILLS:
+    for skill in skills:
         shutil.copytree(RAIZ / "skills" / skill, pasta / ".claude" / "skills" / skill)
 
 
-def montar():
-    """Cria o projeto de exemplo e devolve a pasta (apague-a com `apagar`)."""
+def montar(skills=None):
+    """Cria o projeto de exemplo e devolve a pasta (apague-a com `apagar`). Sem `skills`, instala todas e deixa o
+    índice do molde como está; com uma parte delas, o índice leva só as instaladas."""
     pasta = Path(tempfile.mkdtemp(prefix="morg-exemplo-"))
-    copiar_modelos(pasta)
+    copiar_modelos(pasta, SKILLS if skills is None else skills)
+    if skills is not None:
+        escrever(pasta / "AGENTS.md", indice_so_com(ler(MODELOS / "documentos" / "AGENTS.md"), skills))
     escrever(pasta / "docs" / "README.md", INDICE_DOS_DOCS)
     escrever(pasta / ".gitignore", "\n".join(IGNORADOS) + "\n")
     escrever(pasta / ".gitattributes", "* text=auto eol=lf\n*.ps1 text eol=crlf\n")
