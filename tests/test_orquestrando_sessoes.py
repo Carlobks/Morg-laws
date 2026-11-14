@@ -5,6 +5,10 @@ conferida sem rede e sobre o texto:
   estados (`ATIVO`, `ESPERA`, `OK`, `OFF`);
 - o item diz que quem orquestra troca o título da filha e que o terminal renomeia com `/rename`;
 - só o item não leva palavras nem construções do português de Portugal (o resto da skill ainda leva).
+- a seção «Leitura independente» traz a subseção «Uma leitura longa: uma parte de cada vez», com o método (uma
+  parte, a seção gravada, só então a seguinte; reler o próprio relatório; a opinião geral das seções; a segunda
+  sessão pelo relatório da primeira; os números como escolha do projeto; o plano diz o método) e sem formas de
+  Portugal; e a `description` fala da leitura longa.
 As funções recebem o texto, para os casos de erro serem provados sem tocar na skill.
 """
 
@@ -32,6 +36,22 @@ PEDACOS = (
     "a página do CLI não diz como se faz",
     "Onde a ferramenta não tiver nenhuma forma",
 )
+SECAO_DA_LEITURA = "Leitura independente"
+SUBSECAO_DA_LEITURA = "### Uma leitura longa: uma parte de cada vez"
+PEDACOS_DA_LEITURA = (
+    "Uma parte de cada vez",
+    "escrever logo a seção dela no relatório",
+    "no relatório, gravado em disco, e só então",  # só existe no item (o «Por quê» também diz «gravado em disco»)
+    "só então abrir a seguinte",
+    "Nunca duas partes antes de escrever",
+    "reler o próprio relatório",
+    "e não a parte anterior",
+    "A opinião geral sai só das seções",
+    "a segunda começa pelo relatório da primeira",
+    "escolha do projeto, não de uma fonte",
+    "O plano diz o método",
+    "e não só o que se lê",
+)
 
 
 def item_do_titulo(texto):
@@ -50,12 +70,39 @@ def erros_do_titulo(texto):
     return erros + erros_de_lingua("o item do título", item)
 
 
+def subsecao_da_leitura(texto):
+    """A subseção da leitura longa dentro da seção «Leitura independente»; vazia se ela não estiver lá."""
+    achado = re.search(rf"^## [^\n]*{SECAO_DA_LEITURA}[^\n]*\n(.*?)(?=^## |\Z)", texto, re.MULTILINE | re.DOTALL)
+    secao = achado.group(1) if achado else ""
+    sub = re.search(rf"^{re.escape(SUBSECAO_DA_LEITURA)}.*?(?=^### |\Z)", secao, re.MULTILINE | re.DOTALL)
+    return sub.group().strip() if sub else ""
+
+
+def erros_da_leitura(texto):
+    sub = subsecao_da_leitura(texto)
+    if not sub:
+        return [f"falta a subseção «Uma leitura longa» na seção «{SECAO_DA_LEITURA}»"]
+    erros = [f"a subseção da leitura não traz {pedaco}" for pedaco in PEDACOS_DA_LEITURA if pedaco not in sub]
+    return erros + erros_de_lingua("a subseção da leitura", sub)
+
+
+def erros_da_descricao_da_leitura(texto):
+    linha = re.search(r"^description:[^\n]*", texto, re.MULTILINE)
+    if linha and "leitura longa" in linha.group():
+        return []
+    return ["a description não fala da leitura longa"]
+
+
 class OrquestrandoSessoes(unittest.TestCase):
     def setUp(self):
         self.texto = ler(SKILL)
 
     def assertErro(self, texto, trecho):
         erros = erros_do_titulo(texto)
+        self.assertTrue(any(trecho in erro for erro in erros), f"esperava «{trecho}» em {erros}")
+
+    def assertErroDaLeitura(self, texto, trecho):
+        erros = erros_da_leitura(texto)
         self.assertTrue(any(trecho in erro for erro in erros), f"esperava «{trecho}» em {erros}")
 
     def test_o_texto_da_skill_passa(self):
@@ -99,6 +146,54 @@ class OrquestrandoSessoes(unittest.TestCase):
 
     def test_palavra_de_portugal_fora_do_item_passa(self):
         self.assertEqual([], erros_do_titulo(self.texto + "\nO ficheiro fica partilhado.\n"))
+
+    def test_a_subsecao_da_leitura_passa(self):
+        self.assertEqual([], erros_da_leitura(self.texto))
+
+    def test_sem_o_so_entao_a_seguinte_reprova(self):
+        self.assertErroDaLeitura(self.texto.replace("só então abrir a seguinte", "depois abrir as outras"),
+                                 "só então abrir a seguinte")
+
+    def test_sem_o_nunca_duas_partes_reprova(self):
+        self.assertErroDaLeitura(self.texto.replace("Nunca duas partes antes de escrever.", ""),
+                                 "Nunca duas partes antes de escrever")
+
+    def test_sem_reler_o_proprio_relatorio_reprova(self):
+        self.assertErroDaLeitura(self.texto.replace("reler o próprio relatório", "reler a parte"),
+                                 "reler o próprio relatório")
+
+    def test_sem_a_opiniao_geral_das_secoes_reprova(self):
+        self.assertErroDaLeitura(
+            self.texto.replace("A opinião geral sai só das seções", "A opinião geral sai da memória"),
+            "A opinião geral sai só das seções")
+
+    def test_a_segunda_sessao_sem_o_relatorio_da_primeira_reprova(self):
+        self.assertErroDaLeitura(
+            self.texto.replace("a segunda começa pelo relatório da primeira", "a segunda começa do zero"),
+            "a segunda começa pelo relatório da primeira")
+
+    def test_os_numeros_sem_dizer_que_sao_escolha_reprova(self):
+        self.assertErroDaLeitura(
+            self.texto.replace("escolha do projeto, não de uma fonte", "o que a pesquisa achou"),
+            "escolha do projeto, não de uma fonte")
+
+    def test_sem_o_plano_diz_o_metodo_reprova(self):
+        self.assertErroDaLeitura(self.texto.replace("O plano diz o método", "O plano diz as partes"),
+                                 "O plano diz o método")
+
+    def test_a_subsecao_fora_da_leitura_independente_reprova(self):
+        self.assertErroDaLeitura(self.texto.replace("## 2. Leitura independente", "## 2. Outra seção"),
+                                 "falta a subseção")
+
+    def test_palavra_de_portugal_na_subsecao_reprova(self):
+        self.assertErroDaLeitura(self.texto.replace("ler a parte inteira", "ler o ficheiro inteiro"), "ficheiro")
+
+    def test_a_description_fala_da_leitura_longa(self):
+        self.assertEqual([], erros_da_descricao_da_leitura(self.texto))
+
+    def test_a_description_sem_a_leitura_longa_reprova(self):
+        self.assertEqual(["a description não fala da leitura longa"],
+                         erros_da_descricao_da_leitura(self.texto.replace("uma leitura longa em partes", "uma coisa")))
 
 
 if __name__ == "__main__":

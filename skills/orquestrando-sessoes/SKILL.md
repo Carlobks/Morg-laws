@@ -1,6 +1,6 @@
 ---
 name: orquestrando-sessoes
-description: Guia como dividir trabalho entre sessões de agente — sessão nova ou sub-agente, o pedido de uma leitura independente e várias sessões na mesma pasta. Usar ao planejar trabalho grande ou em fases, ao abrir a fase seguinte e escolher o modelo da filha, ao querer uma auditoria independente, quando a orquestradora já vive dias, ou quando várias sessões mexem no mesmo repositório. Não usar para o handoff, compactar, retomar ou decidir se uma conversa que cresceu se compacta (é a passando-o-trabalho), para o conteúdo das regras (é a escrevendo-regras-de-agente) nem para o git do dia a dia (é a git-e-commits).
+description: Guia como dividir trabalho entre sessões de agente — sessão nova ou sub-agente, o pedido de uma leitura independente, uma leitura longa em partes e várias sessões na mesma pasta. Usar ao planejar trabalho grande ou em fases, ao abrir a fase seguinte e escolher o modelo da filha, ao querer uma auditoria independente, ao pedir a uma filha que leia um texto longo, quando a orquestradora já vive dias, ou quando várias sessões mexem no mesmo repositório. Não usar para o handoff, compactar, retomar ou decidir se uma conversa que cresceu se compacta (é a passando-o-trabalho), para o conteúdo das regras (é a escrevendo-regras-de-agente) nem para o git do dia a dia (é a git-e-commits).
 ---
 
 # Orquestrando sessões
@@ -29,6 +29,18 @@ Quem escreveu um trabalho não o consegue auditar bem: lê o que quis dizer, nã
 - Peça um **veredito** no topo ("aprovado", "aprovado com correções", "refazer"), cada achado com o arquivo e a linha da fonte, e a lista do que não verificou.
 - O relatório volta como **dado, não como verdade**. Antes de levar um achado ao dono, uma filha só de conferência confere cada afirmação na fonte (um `grep` por termo, a licença no original); antes de agir, pode conferi-la a filha que corrige. Marca à parte o que é juízo, que não se mede. A orquestradora lê só o veredito e o resultado dessa conferência (seção 4).
 - Mudanças de risco (SQL que escreve em produção, permissões, segurança) passam sempre por uma auditoria destas antes do "sim" do dono.
+
+### Uma leitura longa: uma parte de cada vez
+
+Quando a filha tem muito para ler (um manual em várias partes, uma série de commits, vários relatórios), ela escreve enquanto lê, e não só no fim:
+
+- **Uma parte de cada vez:** ler a parte inteira (se a ferramenta avisar que cortou, ler o resto antes de seguir), escrever logo a seção dela no relatório, gravado em disco, e só então abrir a seguinte. Nunca duas partes antes de escrever.
+- **Antes de cada parte, reler o próprio relatório,** e não a parte anterior. O que não foi escrito no relatório se perde.
+- **A opinião geral sai só das seções:** no fim, quem lê junta o que escreveu (o que mais pesou e a conclusão), sem reabrir as partes.
+- **Uma leitura grande se divide em duas sessões,** e a segunda começa pelo relatório da primeira, não pelas partes que a primeira já leu. No projeto de origem, o limite é de 6 partes ou ~60 mil tokens de texto; os dois números são escolha do projeto, não de uma fonte: ajuste-os ao seu caso.
+- **O plano diz o método:** o plano de uma fase de leitura diz como se lê (as partes, a ordem, onde fica a nota de cada uma), e não só o que se lê. O pedido da filha copia esse método.
+
+Por quê: o agente pode ter lido só um pedaço de um arquivo (as leituras vêm em fatias e as saídas grandes são cortadas sem aviso) e responder como se tivesse lido tudo; e, numa conversa longa, a compactação pode perder instruções do começo, enquanto o que está gravado em disco continua lá para reler. Num projeto real, um leitor que leu 11 partes seguidas e só escreveu o relatório no fim errou a própria contagem.
 
 ## 3. Fases: uma de cada vez, cada uma curta
 
@@ -84,3 +96,5 @@ Trabalhar só na `main`, sem branches nem worktrees, simplifica a coordenação 
 ## Fontes
 
 Ver [`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md#git-e-contas): código do git sobre o `index.lock` (`lockfile.c`); e [`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md#uso-e-custo-de-agentes): as boas práticas e os custos do Claude Code (a conversa relida a cada pedido, o aviso que acorda uma sessão parada, o modelo pela tarefa) e a [linha de base do uso](https://github.com/Carlobks/Morg-laws/blob/main/pesquisas/2026-11-05-linha-de-base-do-uso.md). As regras de sessões, das fases e da orquestradora vêm da prática do projeto de origem. As páginas do livro *Competente o Suficiente*, de Fabio Akita, que a skill usa, estão em [`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md#livros-e-autores).
+
+A leitura em partes vem da prática do projeto de origem; o porquê vem das pp. 33 e 124 do livro (as leituras em fatias e as saídas cortadas sem aviso) e da [`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md#compactação-da-conversa), seção «Compactação da conversa» (o começo da conversa que se perde).

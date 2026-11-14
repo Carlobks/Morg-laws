@@ -7,8 +7,11 @@
   {"query": "outra sessão diz que encontrou 12 problemas, posso confiar?", "should_trigger": true},
   {"query": "abre a fase seguinte e escolhe o modelo da filha", "should_trigger": true},
   {"query": "a sessão que orquestra já vive há três dias, como a mantenho barata?", "should_trigger": true},
+  {"query": "a auditora vai ler as 11 partes do manual; como escrevo o pedido para ela não se perder na contagem?", "should_trigger": true},
+  {"query": "vou abrir as filhas que leem o manual; o que o pedido delas diz sobre como ler?", "should_trigger": true},
   {"query": "faz o commit só dos meus arquivos", "should_trigger": false},
   {"query": "escreve a regra sobre sub-agentes no CLAUDE.md", "should_trigger": false},
   {"query": "abre o arquivo de sessão do usuário no Supabase", "should_trigger": false},
-  {"query": "a conversa está enorme, prepara tudo para eu compactar", "should_trigger": false}
+  {"query": "a conversa está enorme, prepara tudo para eu compactar", "should_trigger": false},
+  {"query": "resume este capítulo do manual em três frases", "should_trigger": false}
 ]
