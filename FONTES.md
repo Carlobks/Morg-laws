@@ -224,6 +224,7 @@ Lidas em 2026-11-06; as primeiras entradas para `pesquisas/2026-11-05-linha-de-b
   - pp. 31–33: na compactação, o início da conversa encolhe e o motivo de uma decisão antiga se perde (usado em `passando-o-trabalho`).
   - p. 32: não aceitar a explicação do agente sobre uma decisão passada sem a fonte (usado em `testes-e-provas` (em parte) e `comecando-um-projeto`).
   - pp. 32–33, 36: decisão importante não fica só na conversa: vai para um arquivo de decisões (usado em `passando-o-trabalho`).
+  - pp. 33, 124: as leituras vêm em fatias e as saídas grandes são cortadas sem aviso; o agente pode responder como se tivesse lido tudo (usado em `orquestrando-sessoes`).
   - p. 35: não transformar cada falha numa regra; muitas são passageiras (usado em `escrevendo-regras-de-agente`).
   - pp. 36, 323–324, 392–397: a memória em arquivos seus, num formato aberto, e um documento de estado para mudar de agente (usado em `passando-o-trabalho`).
   - pp. 36–37: os documentos numa pasta, em arquivos curtos, um por assunto (usado em `comecando-um-projeto`).

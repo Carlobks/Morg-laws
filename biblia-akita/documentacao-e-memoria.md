@@ -7,7 +7,7 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A pági
 - O modelo é um arquivo fechado: nada da conversa fica nele. O que precisa ser lembrado guarda-se fora, e deixar o agente trabalhando sozinho não o faz aprender o seu domínio. (pp. 19, 319) · **texto** · onde aplicar: `passando-o-trabalho`
 - A cada mensagem, o modelo volta a ler o contexto inteiro. Esse espaço tem tamanho fixo, e enchê-lo custa dinheiro, tempo e precisão: o meio é o que mais se perde. (pp. 19, 29–31) · **texto** · onde aplicar: `passando-o-trabalho`
 - Na compactação, o início da conversa encolhe para quase nada: perguntado sobre o motivo de uma decisão antiga, o agente já não o tem e pode inventar um que soa certo. (pp. 31–33) · **texto** · onde aplicar: `passando-o-trabalho`
-- O agente pode ter lido só uma parte de um arquivo (as leituras vêm em fatias e as saídas grandes são cortadas sem aviso) e responder como se tivesse lido tudo. (pp. 33, 124) · **texto** · onde aplicar: ainda nenhuma
+- O agente pode ter lido só uma parte de um arquivo (as leituras vêm em fatias e as saídas grandes são cortadas sem aviso) e responder como se tivesse lido tudo. (pp. 33, 124) · **texto** · onde aplicar: `orquestrando-sessoes`
 
 ## 2. Onde guardar
 
