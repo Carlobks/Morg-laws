@@ -34,13 +34,13 @@ Esta skill **não repete** o método de perguntar: as regras das rondas (até 4 
 
 ## 3. As rondas
 
-Cada ronda fecha com um resumo curto que o dono confirma antes da seguinte. **Nada se escreve no projeto antes da ronda 7, fora o `docs/projeto.md` de quem desiste na ronda 2, com o «sim» do dono, e commitado por caminho.** Quem já decidiu começar pode dispensar as quatro perguntas da ronda 2: não insista, escreva «ronda dispensada pelo dono, AAAA-MM-DD» em «Por que começar» e siga. A busca continua, a menos que ele a dispense também.
+Cada ronda fecha com um resumo curto que o dono confirma antes da seguinte. **Nada se escreve no projeto antes da ronda 7, fora o `docs/projeto.md` de quem desiste na ronda 2, com o «sim» do dono, e commitado por caminho.** Quem já decidiu começar pode dispensar as quatro perguntas da ronda 2: não insista, guarde no resumo da ronda «ronda dispensada pelo dono, AAAA-MM-DD», que vai para «Por que começar» na ronda 7, e siga. A busca continua, a menos que ele a dispense também.
 
 | Ronda | O que se pergunta |
 |---|---|
 | 0. Ler | Projeto que já existe: o README, os manifestos de dependências, a árvore, os testes, o CI e o `git log`; o que achou vai ao dono como «o que encontrei». Veja também que barreiras já existem (hooks em `.claude/hooks/` e `.githooks/`, testes, CI), para o mapa da seção 4. Projeto novo: só a pasta. |
 | 1. O que é e para quem | O que o projeto é numa frase, sem jargão; quem usa, em que situação, e o que essa pessoa já fez, de fato, para resolver isso (o que aconteceu, não o que acha). O texto do dono guarda-se como ele escreveu. |
-| 2. Vale a pena começar? | Quatro perguntas, nesta ordem: «Você conhece algo pronto que já resolva isso, ou que dê para adaptar?»; «Quanto tempo você aceita gastar nisso antes de ver se serve?»; «Imagine que, daqui a três meses, deu errado: por quê?» (os motivos viram restrições na ronda 4); «O que faria você parar, e até quando dá para ver isso?». Com as respostas, faça a busca de «Procurar o que já existe» e mostre a tabela. Fecha com a decisão do dono, escrita: seguir, encolher, adaptar o que já existe ou desistir. Desistir encerra a skill: só se escreve o `docs/projeto.md`, se ele quiser guardar o motivo. |
+| 2. Vale a pena começar? | Quatro perguntas, nesta ordem: «Você conhece algo pronto que já resolva isso, ou que dê para adaptar?»; «Quanto tempo você aceita gastar nisso antes de ver se serve?»; «Imagine que, daqui a três meses, deu errado: por quê?» (os motivos viram restrições na ronda 4); «O que faria você parar, e até quando dá para ver isso?». Com as respostas, faça a busca de «Procurar o que já existe» e mostre a tabela. Fecha com a decisão do dono, escrita no resumo da ronda (vai para «Por que começar»): seguir, encolher, adaptar o que já existe ou desistir. Desistir encerra a skill: só se escreve o `docs/projeto.md`, se ele quiser guardar o motivo. |
 | 3. O que faz e não faz | A primeira versão: o que entra, o que fica de fora, e por quê. |
 | 4. Restrições | Prazo, custo, onde roda, quem mantém, dados pessoais, o que não tem volta. |
 | 5. Arquitetura | Pilha, banco, onde se publica, e o porquê de cada escolha; se a ronda 2 escolheu adaptar, parta do candidato escolhido. Cada escolha grande (seção 5) vira ADR proposta. |
@@ -107,7 +107,7 @@ Antes de construir, procure o que já resolve o problema, inteiro ou em parte: o
 2. Procure na busca de repositórios do GitHub (com `pushed:>=` de um ano para trás, `archived:false` e `license:`), no registro de pacotes da pilha (`npm search`; o deps.dev para os outros), na lista «awesome» do tema e, na web, nos produtos e serviços prontos.
 3. Para cada candidato, leia na página dele: a data do último commit e da última versão; as issues abertas e se alguém responde; quantas pessoas fazem metade do trabalho; a nota do OpenSSF Scorecard, quando houver; a licença, pelo nome curto (`MIT`, `Apache-2.0`, `GPL-3.0`). O que a página não mostrar fica «não conferido» (a página de contribuidores do GitHub, por exemplo, monta o gráfico no navegador e, lida sem JavaScript, vem vazia).
 4. Separe em três: serve como está; serve com adaptação (uma cópia própria ou um módulo por fora, e quem mantém); não serve, e por quê.
-5. Mostre ao dono a tabela e a recomendação, e escreva em «O que já existe» do `docs/projeto.md` o que se procurou, onde, em que data e por que não serviu.
+5. Mostre ao dono a tabela e a recomendação, e guarde no resumo da ronda o que se procurou, onde, em que data e o veredito de cada candidato, com o porquê: vai para «O que já existe» do `docs/projeto.md` quando ele se escrever (na ronda 7, ou na ronda 2 se o dono desistir).
 
 Sem acesso à rede, diga isso ao dono e peça os nomes que ele conhece. **Nunca invente um candidato**, uma data ou uma licença: o que não se leu fica «não conferido».
 
