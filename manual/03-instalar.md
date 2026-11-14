@@ -8,13 +8,31 @@ Cada passo é um par de páginas. Se você só quer fazer, leia a da esquerda de
 
 ### Na prática
 
-Na raiz do seu projeto, rode:
+Na raiz do seu projeto, veja as skills do Morg-laws, cada uma com o que faz:
 
 ```
-npx skills add Carlobks/Morg-laws -a claude-code -y
+npx skills add Carlobks/Morg-laws --list
 ```
 
-Esse comando foi testado na versão 1.7.4 do pacote. Ele copia as skills do repositório para a pasta do agente e cria um arquivo com a origem de cada uma:
+Instale as que servem a qualquer projeto. No PDF os comandos quebram em várias linhas: copie do manual no GitHub.
+
+```
+npx skills add Carlobks/Morg-laws -a claude-code -y --skill auditoria-de-seguranca --skill codigo-legivel --skill comecando-um-projeto --skill escrevendo-regras-de-agente --skill git-e-commits --skill orquestrando-sessoes --skill passando-o-trabalho --skill pondo-o-plano-a-prova --skill testes-e-provas
+```
+
+Depois, some só as da sua pilha, uma linha por vez:
+
+```
+npx skills add Carlobks/Morg-laws -a claude-code -y --skill sql-postgres --skill supabase
+
+npx skills add Carlobks/Morg-laws -a claude-code -y --skill nextjs-react
+
+npx skills add Carlobks/Morg-laws -a claude-code -y --skill desenhando-telas
+```
+
+Quer todas? Tire todos os `--skill` do comando das que servem a qualquer projeto.
+
+Esses comandos foram testados na versão 1.8.1 do pacote, em 2026-11-14. Eles copiam as skills escolhidas para a pasta do agente e criam um arquivo com a origem de cada uma:
 
 ```
 .claude/skills/<nome-da-skill>/
@@ -28,16 +46,21 @@ O que costuma dar errado:
 - Achar que acabou. O comando instala só as skills. O `AGENTS.md` não vem, e o passo seguinte existe por isso.
 - Instalar sem ler. A ferramenta avisa no fim que as skills rodam com todas as permissões do agente. Leia a que lhe interessa antes de confiar nela.
 - Rodar fora do projeto. Confira com `pwd` ou `cd` que a pasta é a raiz do repositório.
+- Apagar a pasta de uma skill para tirá-la. O arquivo de origem continua com ela e o teste das regras reprova. Tire com `npx skills remove <nome>`.
 
 ### Por quê e fonte
 
-O `npx skills add` procura a pasta `skills/` do repositório, e só ela. O `AGENTS.md` e o `CLAUDE.md` da raiz não fazem parte de nenhuma skill e ficam de fora: foi o que um teste numa pasta vazia mostrou, comparando arquivo a arquivo com o repositório, sem nenhuma diferença nas skills. Esse teste é de 2026-10-30, na versão 1.7.4 do pacote.
+O `npx skills add` procura a pasta `skills/` do repositório, e só ela. O `AGENTS.md` e o `CLAUDE.md` da raiz não fazem parte de nenhuma skill e ficam de fora: foi o que um teste numa pasta vazia mostrou, comparando arquivo a arquivo com o repositório, sem nenhuma diferença nas skills. Esse teste é de 2026-10-30, na versão 1.7.4 do pacote; o de 2026-11-14, na 1.8.1, comparou do mesmo jeito a instalação de uma parte e a de todas.
+
+A primeira linha de tecnologia é para quem usa Postgres; quem não usa o Supabase tira o `--skill supabase`, mas o Supabase não vem sem a de SQL. A segunda é para Next.js ou React; a terceira, para sistemas com muitas telas e dados, como painéis.
+
+Com `-y` e sem `--skill`, a ferramenta instala todas, e dentro de um agente ela liga o `-y` sozinha (pela leitura do código dela, na [pesquisa](https://github.com/Carlobks/Morg-laws/blob/main/pesquisas/2026-11-14-instalar-so-algumas-skills.md)): por isso cada comando leva os nomes. A ferramenta guarda no `skills-lock.json` só o que se instalou, e o `npx skills update` atualiza só essas: uma skill que você não trouxe, ou uma nova do Morg-laws, só chega com um `add` dela. Para atualizar, use `npx skills update`; o `add` sem `--skill` traz todas de volta. A do Supabase manda usar junto a de SQL; as outras se citam só para apontar o caminho, e nenhuma para de funcionar sem outra.
 
 A ferramenta, o [skills da Vercel](https://github.com/vercel-labs/skills), instala para o Claude Code em `.claude/skills/` e para o Codex em `.agents/skills/`, e o Codex procura as suas skills nessa pasta, segundo a [documentação de skills do Codex](https://developers.openai.com/codex/skills). Só a descrição de cada skill entra no começo da conversa; o corpo abre quando ela é usada, como diz a [documentação de skills do Claude Code](https://code.claude.com/docs/en/skills). Por isso instalar muitas skills é barato, e ainda assim cada uma que você não usa é leitura a mais.
 
 O aviso de ler antes é conselho do livro: skill de terceiros só com leitura completa e uma dor concreta que ela resolva (pp. 128–129 do livro *Competente o Suficiente*, de Fabio Akita). Trate-a como código que você roda.
 
-Onde vive no Morg-laws: o resultado do teste está em `aprendizados/2026-10-30-instalacao-das-skills.md`, e a linha do comando está no `README.md` da raiz.
+Onde vive no Morg-laws: o resultado do teste está em `aprendizados/2026-10-30-instalacao-das-skills.md` e em `aprendizados/2026-11-14-instalar-so-algumas-skills.md`, e a linha do comando está no `README.md` da raiz.
 
 ## P2 · Pôr as regras
 
@@ -48,6 +71,7 @@ As regras vêm de um molde, não do `AGENTS.md` da raiz do Morg-laws, que leva t
 1. Copie `modelos/documentos/AGENTS.md` para a raiz do seu projeto, com o mesmo nome.
 2. Copie `modelos/documentos/CLAUDE.md` para a raiz. Ele tem a linha `@AGENTS.md`, que manda o Claude Code ler o outro.
 3. No `AGENTS.md`, preencha o que está entre `<…>`: o nome, uma linha do que o projeto é e a **Regra n.º 1**, o perigo mais caro do seu projeto.
+4. Na tabela “Índice: quando ler o quê”, apague a linha de cada skill que você não instalou no P1, e só o nome dela onde a linha tiver mais de uma. Senão o teste das regras reprova.
 
 Uma Regra n.º 1 preenchida, para uma loja de bolos inventada:
 
