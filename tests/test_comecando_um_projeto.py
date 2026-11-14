@@ -41,6 +41,7 @@ RONDAS_DA_SKILL = ("0. Ler", "1. O que é e para quem", "2. Vale a pena começar
 SECAO_DAS_RONDAS = "## 3. As rondas"
 SECAO_DA_BUSCA = "## 8. Procurar o que já existe"
 MARCA_DA_DISPENSA = "ronda dispensada pelo dono"
+FRASE_DO_INDICE = "o índice só com as skills instaladas"
 FRASES_DA_BUSCA = ("sem baixar, instalar nem rodar nada", "Nunca invente um candidato")
 DESTINOS_DA_SKILL = ("docs/projeto.md", "docs/README.md", "AGENTS.md", "CLAUDE.md", "docs/regras-e-barreiras.md",
                      "docs/planos/", "docs/decisoes/")
@@ -86,6 +87,7 @@ def erros_da_skill(texto):
     tabela = secao_de(texto, SECAO_DOS_DESTINOS)
     erros += [f"falta o destino `{destino}` na tabela da seção 4" for destino in DESTINOS_DA_SKILL
               if not re.search(rf"^\| `{re.escape(destino)}", tabela, re.MULTILINE)]
+    erros += [f"falta na tabela da seção 4 a frase «{FRASE_DO_INDICE}»"] if FRASE_DO_INDICE not in tabela else []
     return erros + erros_das_rondas(texto) + erros_da_busca(texto)
 
 
@@ -254,6 +256,10 @@ class SkillComecandoUmProjeto(unittest.TestCase):
             with self.subTest(frase=frase):
                 self.assertIn(f"falta no §8 a frase «{frase}»", erros_da_skill(self.texto.replace(frase, outra)))
 
+    def test_sem_a_frase_do_indice_so_com_as_instaladas_reprova(self):
+        erros = erros_da_skill(self.texto.replace(FRASE_DO_INDICE, "o índice inteiro"))
+        self.assertIn(f"falta na tabela da seção 4 a frase «{FRASE_DO_INDICE}»", erros)
+
     def test_sem_a_marca_da_dispensa_reprova(self):
         molde = ler(MOLDE_DO_PROJETO)
         casos = {"na skill": (erros_da_skill(self.texto.replace(MARCA_DA_DISPENSA, "outra marca")), "no §3 da skill"),
@@ -268,7 +274,9 @@ class SkillComecandoUmProjeto(unittest.TestCase):
 
     def test_sem_a_linha_do_agents_na_tabela_reprova(self):
         sem_a_linha = "\n".join(linha for linha in self.texto.splitlines() if not linha.startswith("| `AGENTS.md`"))
-        self.assertEqual(["falta o destino `AGENTS.md` na tabela da seção 4"], erros_da_skill(sem_a_linha))
+        # A frase do índice vive na linha do AGENTS.md: sem a linha, falta também ela.
+        self.assertEqual(["falta o destino `AGENTS.md` na tabela da seção 4",
+                          f"falta na tabela da seção 4 a frase «{FRASE_DO_INDICE}»"], erros_da_skill(sem_a_linha))
 
     def test_as_copias_sao_iguais_aos_moldes(self):
         self.assertEqual([], erros_das_copias(RAIZ))
