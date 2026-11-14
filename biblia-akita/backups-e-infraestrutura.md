@@ -6,12 +6,12 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A pági
 
 - Tenha snapshots automáticos do disco, no mínimo a cada hora durante o dia, com um prazo de retenção definido, e aprenda a recuperar um antes de precisar. Antes de uma sessão arriscada, tire um à mão. No Windows, as cópias de sombra são fracas para isto. (pp. 223, 232–234, 382–383) · **máquina** (tarefa agendada) · onde aplicar: ainda nenhuma
 - O backup externo precisa de quatro coisas: rodar sozinho, guardar várias versões com uma regra de retenção (por exemplo, 7 diárias, 4 semanais, 6 mensais e 1 anual), estar cifrado e ser testado abrindo arquivos recuperados. E fica onde o agente que mexe no original não chega. (pp. 234, 384) · **máquina** · onde aplicar: ainda nenhuma
-- Guarde pelo menos uma cópia noutro lugar físico. Discos com paridade (RAID) salvam de um disco com defeito, não da perda do aparelho, e a reconstrução pode levar um segundo disco. (pp. 224–225, 234) · **texto** · onde aplicar: ainda nenhuma
+- Guarde pelo menos uma cópia em outro lugar físico. Discos com paridade (RAID) salvam de um disco com defeito, não da perda do aparelho, e a reconstrução pode levar um segundo disco. (pp. 224–225, 234) · **texto** · onde aplicar: ainda nenhuma
 - Confira o backup contra uma lista feita a partir da origem, nunca contra o relatório da própria ferramenta de cópia: ela pode pular pastas sem permissão ou arquivos que não reconhece e mesmo assim dizer que deu tudo certo. (pp. 225–226) · **máquina** · onde aplicar: ainda nenhuma
 - A conferência não pode usar os mesmos filtros da cópia: o que o filtro esconde da cópia também o esconde da conferência. (p. 226) · **máquina** · onde aplicar: ainda nenhuma
 - Que o arquivo exista não prova que está inteiro: compare o tamanho com o do original. (pp. 223–224) · **máquina** (hash) · onde aplicar: ainda nenhuma
 - Só desligue o sistema antigo depois de cada parte estar provada no novo. (pp. 226, 236) · **texto** · onde aplicar: ainda nenhuma
-- Hábitos para toda a equipe: fazer uma cópia noutro lugar antes de deixar um programa «arrumar» arquivos em massa, saber se o serviço guarda versões e por quanto tempo, e manter o backup longe do original. (pp. 235–236) · **texto** · onde aplicar: ainda nenhuma
+- Hábitos para toda a equipe: fazer uma cópia em outro lugar antes de deixar um programa «arrumar» arquivos em massa, saber se o serviço guarda versões e por quanto tempo, e manter o backup longe do original. (pp. 235–236) · **texto** · onde aplicar: ainda nenhuma
 - A produção pede backup testado, restauro ensaiado e monitorização. Nada vai para produção sem um caminho de volta conhecido. (p. 235) · **texto** · onde aplicar: ainda nenhuma
 
 ## 2. Operações destrutivas e tarefas automáticas

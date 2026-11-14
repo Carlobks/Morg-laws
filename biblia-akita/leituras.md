@@ -1,6 +1,6 @@
 # Leituras recomendadas pelo livro
 
-Artigos do blog do autor que *Competente o Suficiente*, de Fabio Akita, indica como as fontes originais dos seus capítulos (secção «Fontes», pp. 434–455). A data é a da publicação; o resumo é nosso, feito ao reler cada artigo em 2026-11-04, e cada um tem a sua entrada no [FONTES.md](../FONTES.md).
+Artigos do blog do autor que *Competente o Suficiente*, de Fabio Akita, indica como as fontes originais dos seus capítulos (seção «Fontes», pp. 434–455). A data é a da publicação; o resumo é nosso, feito ao reler cada artigo em 2026-11-04, e cada um tem a sua entrada no [FONTES.md](../FONTES.md).
 
 ## Por onde começar
 

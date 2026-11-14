@@ -249,7 +249,7 @@ Lidas em 2026-11-06; as primeiras entradas para `pesquisas/2026-11-05-linha-de-b
   - pp. 81, 156, 231–232, 239: duas auditorias independentes, a segunda sem ler a primeira (usado em `orquestrando-sessoes`).
   - pp. 89–90: auditorias com perguntas concretas, e não «revê a segurança» (usado em `auditoria-de-seguranca`).
   - pp. 90, 191–192, 304, 424: testar o objetivo final; o que só aparece na tela confere-se na tela (usado em `testes-e-provas`).
-  - p. 92: um plano só se aprova com as perguntas incômodas (e se parar a meio, se os dados corromperem) (usado em `pondo-o-plano-a-prova` (em parte)).
+  - p. 92: um plano só se aprova com as perguntas incômodas (e se parar no meio, se os dados corromperem) (usado em `pondo-o-plano-a-prova` (em parte)).
   - pp. 94, 99: juntar as regras repetidas num só lugar, porque duas instruções sobre o mesmo assunto se contradizem (usado em `escrevendo-regras-de-agente`).
   - pp. 96–97: para começar um sistema para outra pessoa, partir das palavras dela (usado em `pondo-o-plano-a-prova` (em parte) e `comecando-um-projeto`).
   - p. 99: perguntar se o «zero» de um relatório foi medido ou só não encontrado (usado em `testes-e-provas` (em parte)).
@@ -312,7 +312,7 @@ Lidas em 2026-11-06; as primeiras entradas para `pesquisas/2026-11-05-linha-de-b
 
 ## Artigos que o livro recomenda
 
-Lidas em 2026-11-04, para a `biblia-akita/leituras.md`. São as fontes originais que o livro aponta na secção «Fontes» (pp. 434–455). Cada entrada diz o título e o que o artigo sustenta, com palavras nossas.
+Lidas em 2026-11-04, para a `biblia-akita/leituras.md`. São as fontes originais que o livro aponta na seção «Fontes» (pp. 434–455). Cada entrada diz o título e o que o artigo sustenta, com palavras nossas.
 
 - **Por que as LLMs não te dão o resultado esperado** (2026-04-15) — https://akitaonrails.com/2026/04/15/como-falar-com-o-claude-code-efetivamente/ — Sustenta: o pedido em partes (objetivo, o que não se quer, como validar, contexto) e a conversa que continua durante o trabalho.
 - **Clean Code pra Agentes de IA** (2026-04-20) — https://akitaonrails.com/2026/04/20/clean-code-para-agentes-de-ia/ — Sustenta: arquivos e funções pequenos, nomes distintos, tipos explícitos, testes que o agente roda sozinho, e as regras no arquivo de instruções.

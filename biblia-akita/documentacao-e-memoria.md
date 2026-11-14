@@ -23,7 +23,7 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A pági
 ## 3. Como escrever
 
 - Escreva datas completas («em março de 2026») e nunca «recentemente»; ponha a data ao lado de cada número. (pp. 7, 9) · **texto** · onde aplicar: ainda nenhuma
-- Quando um documento estiver errado, marque-o como obsoleto no topo e mantenha-o; o caminho errado documenta-se como errado. Um erro corrigido pode continuar repetido noutros textos por meses. (pp. 5, 151, 414, 416) · **texto** · onde aplicar: ainda nenhuma
+- Quando um documento estiver errado, marque-o como obsoleto no topo e mantenha-o; o caminho errado documenta-se como errado. Um erro corrigido pode continuar repetido em outros textos por meses. (pp. 5, 151, 414, 416) · **texto** · onde aplicar: ainda nenhuma
 - Diga até onde vai o que provou (o alcance e os limites do teste) e as camadas de incerteza de uma análise feita com IA. Separe fato de opinião, com uma etiqueta em cada um. (pp. 172, 252, 276–277) · **texto** · onde aplicar: `testes-e-provas`
 - Escreva o que faria mudar a sua conclusão, em critérios que alguém de fora consiga medir. (pp. 322–323) · **texto** · onde aplicar: `pondo-o-plano-a-prova`
 - Feche cada projeto com um relatório (decisões, medidas, erros) e faça um boletim da estabilidade de cada sistema. Seja honesto sobre o que é de fato mantido. (pp. 132–133, 185, 338) · **texto** · onde aplicar: ainda nenhuma
