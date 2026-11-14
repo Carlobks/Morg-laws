@@ -32,7 +32,12 @@ MOLDE_DO_PROJETO = MODELOS / "documentos" / "projeto.md"
 PASTA_DA_SKILL = "skills/comecando-um-projeto"
 SECOES_DA_SKILL = ("Começando um projeto", "1. Quando usar e o que deixa", "2. Projeto novo ou projeto que já existe",
                    "3. As rondas", "4. O que se escreve", "5. Escolhas grandes viram ADR", "6. Mensagem inicial",
-                   "7. O que entregar no fim", "Fontes")
+                   "7. O que entregar no fim", "8. Procurar o que já existe", "Fontes")
+RONDAS_DA_SKILL = ("0. Ler", "1. O que é e para quem", "2. Vale a pena começar?", "3. O que faz e não faz",
+                   "4. Restrições", "5. Arquitetura", "6. Regras", "7. Confirmar e escrever", "8. Primeiro plano")
+SECAO_DAS_RONDAS = "## 3. As rondas"
+SECAO_DA_BUSCA = "## 8. Procurar o que já existe"
+FRASES_DA_BUSCA = ("sem baixar, instalar nem rodar nada", "Nunca invente um candidato")
 DESTINOS_DA_SKILL = ("docs/projeto.md", "docs/README.md", "AGENTS.md", "CLAUDE.md", "docs/regras-e-barreiras.md",
                      "docs/planos/", "docs/decisoes/")
 COPIAS_DOS_MOLDES = {f"assets/molde-{nome}.md": f"modelos/documentos/{nome}.md"
@@ -72,8 +77,25 @@ def erros_da_skill(texto):
     if not erros and ordem != list(SECOES_DA_SKILL):
         erros.append(f"as seções estão fora da ordem: {ordem}")
     tabela = secao_de(texto, SECAO_DOS_DESTINOS)
-    return erros + [f"falta o destino `{destino}` na tabela da seção 4" for destino in DESTINOS_DA_SKILL
-                    if not re.search(rf"^\| `{re.escape(destino)}", tabela, re.MULTILINE)]
+    erros += [f"falta o destino `{destino}` na tabela da seção 4" for destino in DESTINOS_DA_SKILL
+              if not re.search(rf"^\| `{re.escape(destino)}", tabela, re.MULTILINE)]
+    return erros + erros_das_rondas(texto) + erros_da_busca(texto)
+
+
+def erros_das_rondas(texto):
+    """As rondas da tabela da seção 3 em falta ou fora da ordem."""
+    achadas = re.findall(r"^\| (\d\. [^|]+?) \|", secao_de(texto, SECAO_DAS_RONDAS), re.MULTILINE)
+    erros = [f"falta a ronda «{nome}»" for nome in RONDAS_DA_SKILL if nome not in achadas]
+    ordem = [nome for nome in achadas if nome in RONDAS_DA_SKILL]
+    if not erros and ordem != list(RONDAS_DA_SKILL):
+        erros.append(f"as rondas estão fora da ordem: {ordem}")
+    return erros
+
+
+def erros_da_busca(texto):
+    """As frases de segurança que a seção 8 tem de guardar."""
+    busca = secao_de(texto, SECAO_DA_BUSCA)
+    return [f"falta no §8 a frase «{frase}»" for frase in FRASES_DA_BUSCA if frase not in busca]
 
 
 def erros_das_copias(raiz):
@@ -200,6 +222,27 @@ class SkillComecandoUmProjeto(unittest.TestCase):
                                                                                 "## 6. Mensagem inicial")
         erros = erros_da_skill(mutado.replace("## @@", "## 7. O que entregar no fim"))
         self.assertTrue(any("fora da ordem" in erro for erro in erros), erros)
+
+    def test_sem_a_secao_do_que_ja_existe_reprova(self):
+        mutado = self.texto.replace("## 8. Procurar o que já existe", "## 8. Outra")
+        self.assertIn("falta a seção «8. Procurar o que já existe»", erros_da_skill(mutado))
+
+    def test_sem_a_ronda_vale_a_pena_reprova(self):
+        linhas = self.texto.splitlines()
+        sem_a_ronda = "\n".join(linha for linha in linhas if not linha.startswith("| 2. Vale a pena começar?"))
+        trocada = [linha for linha in linhas if linha.startswith(("| 2. ", "| 3. "))]
+        fora_de_ordem = self.texto.replace(trocada[0], "@@").replace(trocada[1], trocada[0]).replace("@@", trocada[1])
+        casos = {"em falta": (sem_a_ronda, "falta a ronda «2. Vale a pena começar?»"),
+                 "fora de ordem": (fora_de_ordem, "as rondas estão fora da ordem")}
+        for nome, (mutado, trecho) in casos.items():
+            with self.subTest(caso=nome):
+                self.assertTrue(any(trecho in erro for erro in erros_da_skill(mutado)), erros_da_skill(mutado))
+
+    def test_sem_a_frase_de_seguranca_reprova(self):
+        trocas = {"Nunca invente um candidato": "Evite inventar", "sem baixar, instalar nem rodar nada": "sem pressa"}
+        for frase, outra in trocas.items():
+            with self.subTest(frase=frase):
+                self.assertIn(f"falta no §8 a frase «{frase}»", erros_da_skill(self.texto.replace(frase, outra)))
 
     def test_sem_um_destino_reprova(self):
         erros = erros_da_skill(self.texto.replace("docs/decisoes/", "docs/outra/"))

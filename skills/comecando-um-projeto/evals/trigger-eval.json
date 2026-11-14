@@ -5,8 +5,10 @@
   {"query": "este projeto tem código mas nenhum documento, escreve o AGENTS.md e o resto", "should_trigger": true},
   {"query": "/comecando-um-projeto Quero começar (ou organizar) este projeto com você", "should_trigger": true},
   {"query": "vou usar o Morg-laws neste projeto que já existe, por onde começo?", "should_trigger": true},
+  {"query": "quero começar um app de receitas, mas antes ver se já existe algo pronto", "should_trigger": true},
   {"query": "muda a cor do botão para verde", "should_trigger": false},
   {"query": "abre uma sessão para auditar o plano", "should_trigger": false},
   {"query": "quero mudar a tela de cadastro: hoje pede o CPF duas vezes", "should_trigger": false},
-  {"query": "acrescenta uma regra nova ao AGENTS.md que já existe", "should_trigger": false}
+  {"query": "acrescenta uma regra nova ao AGENTS.md que já existe", "should_trigger": false},
+  {"query": "procura uma biblioteca de datas para o projeto que já temos", "should_trigger": false}
 ]
