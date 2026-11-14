@@ -59,12 +59,23 @@ def palavras_do_nome(corrida, antes, abrem):
     return palavras[1:] if abre else palavras
 
 
-def nomes_de_pessoas(texto, aceitos, abrem=frozenset()):
+def e_assunto_de_um_citavel(corrida, antes, citaveis):
+    """True se a corrida começa a frase, a segunda palavra é uma partícula e todo o resto são pessoas de
+    `pessoas-citaveis.txt`: a primeira palavra é o assunto («Escolha de Carlobks»), não um nome. Só os citáveis contam,
+    não todo nome aceito («Ana do RH» continua acusada). Custo: «Ana de Carlobks» no início de frase também passa."""
+    palavras = corrida.split()
+    return (len(palavras) >= 3 and palavras[1] in PARTICULAS and catalogo._abre_frase(antes)
+            and not sem_o_aceito(" ".join(palavras[2:]), citaveis))
+
+
+def nomes_de_pessoas(texto, aceitos, abrem=frozenset(), citaveis=frozenset()):
     """[(linha, 'nome de pessoa', trecho)]: duas ou mais palavras com maiúscula, não aceitas (as partículas da, de, do,
     das e dos não contam), sem a palavra que abre a frase."""
     achados = []
     for numero, linha in enumerate(texto.splitlines(), 1):
         for corrida in SEQUENCIA.finditer(linha):
+            if e_assunto_de_um_citavel(corrida.group(0), linha[:corrida.start()], citaveis):
+                continue
             palavras = palavras_do_nome(corrida.group(0), linha[:corrida.start()], abrem)
             contadas = [palavra for palavra in palavras if palavra not in PARTICULAS]
             if len(contadas) >= 2 and [p for p in sem_o_aceito(" ".join(palavras), aceitos) if p not in PARTICULAS]:
@@ -72,21 +83,21 @@ def nomes_de_pessoas(texto, aceitos, abrem=frozenset()):
     return achados
 
 
-def dados_do_manual(texto, aceitos, dominios, abrem=frozenset()):
+def dados_do_manual(texto, aceitos, dominios, abrem=frozenset(), citaveis=frozenset()):
     """Todos os dados do texto por linha: o que o catálogo detecta, com o domínio dos arquivos explicado, e os nomes."""
     limpo = catalogo.ALVO_DE_LINK.sub("]", texto)
     fora_nomes = [(n, DICA_DE_ARQUIVO if tipo == "domínio" else tipo, t)
                   for n, tipo, t in catalogo.dados_fora_nomes(limpo, dominios)]
-    return sorted(fora_nomes + nomes_de_pessoas(limpo, aceitos, abrem), key=lambda achado: achado[0])
+    return sorted(fora_nomes + nomes_de_pessoas(limpo, aceitos, abrem, citaveis), key=lambda achado: achado[0])
 
 
 def problemas_do_manual(conteudos, situacao, termos, ambiente=os.environ):
     """As mensagens de tudo o que não pode estar no manual; vazia se estiver limpo."""
-    aceitos, dominios, abrem = situacao
+    aceitos, dominios, abrem, citaveis = situacao
     mensagens = [f"lista negra: o termo n.º {n} não compila em Python (classe POSIX ou sintaxe só do grep -E); reescreva-o"
                  for n in catalogo.termos_que_nao_compilam(termos)]
     for c in conteudos:
-        achados = dados_do_manual(c.texto, aceitos, dominios, abrem) + catalogo.termos_no_texto(c.texto, termos)
+        achados = dados_do_manual(c.texto, aceitos, dominios, abrem, citaveis) + catalogo.termos_no_texto(c.texto, termos)
         mensagens += [catalogo.mensagem(c.origem, achado, ambiente) for achado in achados]
     return list(dict.fromkeys(mensagens))
 
@@ -126,11 +137,12 @@ def md_do_disco(raiz):
 
 
 def situacao_do_manual(raiz, ambiente=os.environ):
-    """([ConteudoDoManual], (nomes aceitos, domínios aceitos, palavras que abrem frase)): o índice no pre-commit
+    """([ConteudoDoManual], (nomes aceitos, domínios aceitos, palavras que abrem frase, pessoas citáveis)): o índice no pre-commit
     (MORG_LER_DO_INDICE=1), o disco no resto."""
     ler, md = (ler_do_indice, md_do_indice) if ambiente.get("MORG_LER_DO_INDICE") == "1" else (ler_do_disco, md_do_disco)
     comuns, publicos, _ = catalogo.ler_palavras(ler(raiz, catalogo.PALAVRAS))
-    aceitos = pessoas_citaveis(ler(raiz, PESSOAS)) | pessoas_citaveis(ler(raiz, NOMES_CITAVEIS)) | publicos
+    citaveis = pessoas_citaveis(ler(raiz, PESSOAS))
+    aceitos = citaveis | pessoas_citaveis(ler(raiz, NOMES_CITAVEIS)) | publicos
     abrem = comuns | {palavra.lower() for palavra in pessoas_citaveis(ler(raiz, PALAVRAS_QUE_ABREM))}
     conteudos = [ConteudoDoManual(nome, ler(raiz, nome)) for nome in md(raiz)]
-    return conteudos, (aceitos, dominios_do_fontes(ler(raiz, FONTES)), abrem)
+    return conteudos, (aceitos, dominios_do_fontes(ler(raiz, FONTES)), abrem, citaveis)

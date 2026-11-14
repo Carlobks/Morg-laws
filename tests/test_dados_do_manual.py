@@ -9,15 +9,15 @@ import test_precommit_do_catalogo as base
 import verificador_do_manual as verificador
 
 NUMERO = "123" + "456" + "789"  # conhecido como falso
-CITAVEIS = frozenset({"Fabio Akita", "Matt Pocock", "Carlobks", "Claude Code"})
+CITAVEIS = frozenset({"Fabio Akita", "Matt Pocock", "Carlobks", "Claude Code", "Bia"})
 ABREM = frozenset({"veja", "leia", "depois", "disse"})
-ACEITOS = CITAVEIS | {"GitHub", "Markdown"}
+ACEITOS = CITAVEIS | {"GitHub", "Markdown", "RH", "Financeiro"}
 DOMINIOS = catalogo.DOMINIOS_ACEITOS | {"docs.github.com"}
 ARQUIVO = "manual/04-pedir.md"
 
 
 def tipos(texto, aceitos=ACEITOS, dominios=DOMINIOS):
-    return [tipo for _, tipo, _ in manual.dados_do_manual(texto, aceitos, dominios, ABREM)]
+    return [tipo for _, tipo, _ in manual.dados_do_manual(texto, aceitos, dominios, ABREM, CITAVEIS)]
 
 
 class NomesDoManual(unittest.TestCase):
@@ -77,6 +77,21 @@ class DadosDoTexto(unittest.TestCase):
     def test_tres_palavras_no_inicio_perdem_so_a_primeira(self):
         self.assertEqual(tipos("Maria Souza Costa foi.\n"), ["nome de pessoa"])
 
+    def test_assunto_com_particula_e_um_citavel_no_inicio_da_frase_nao_e_nome(self):
+        for texto in ("Escolha de Carlobks (2026-11-10): ficou assim.\n", "- Escolha de Carlobks: a curta.\n",
+                      "| Escolha de Carlobks | sim |\n", "Pergunta de Carlobks: e agora?\n", "Nota da Bia: ler antes.\n",
+                      "Nota de Fabio Akita: ler antes.\n", "Ana de Carlobks revisou.\n"):  # o último é o custo aceito
+            with self.subTest(texto=texto):
+                self.assertEqual(tipos(texto), [])
+
+    def test_so_o_citavel_depois_da_particula_e_o_inicio_da_frase_isentam_a_corrida(self):
+        for texto in ("Ana de Souza revisou.\n", "Pedro de Alcântara revisou.\n", "Rosa de Souza revisou.\n",
+                      "Ana do RH revisou o contrato.\n", "Maria do Financeiro pagou.\n", "- Paulo do Financeiro: aprovou.\n",
+                      "| Rita do RH | sim |\n", "e a Escolha de Carlobks no meio.\n", "Ana Souza Carlobks revisou.\n",
+                      "Maria Souza revisou.\n", "Ontem, Maria de Souza revisou.\n"):
+            with self.subTest(texto=texto):
+                self.assertEqual(tipos(texto), ["nome de pessoa"])
+
     def test_os_achados_saem_por_linha(self):
         achados = manual.dados_do_manual(f"limpo\nnúmero {NUMERO}\nOntem Maria Souza.\n", ACEITOS, DOMINIOS)
         self.assertEqual([linha for linha, _, _ in achados], [2, 3])
@@ -91,7 +106,7 @@ class DadosDoTexto(unittest.TestCase):
 
     def test_problemas_diz_onde_e_nunca_mostra_o_termo_da_lista_negra(self):
         conteudos = [manual.ConteudoDoManual("manual/a.md", f"número {NUMERO}\nFalei do zeca.\n")]
-        mensagens = manual.problemas_do_manual(conteudos, (ACEITOS, DOMINIOS, ABREM), ["zeca", "*" + "abc"], {"CI": "true"})
+        mensagens = manual.problemas_do_manual(conteudos, (ACEITOS, DOMINIOS, ABREM, CITAVEIS), ["zeca", "*" + "abc"], {"CI": "true"})
         nao_compila = "lista negra: o termo n.º 2 não compila em Python (classe POSIX ou sintaxe só do grep -E); reescreva-o"
         self.assertEqual(sorted(mensagens), [nao_compila, "manual/a.md:1: documento",
                                              "manual/a.md:2: lista negra — termo n.º 1"])
@@ -135,7 +150,7 @@ class SituacaoDoManual(base.RepositorioTemporario):
     def test_a_situacao_junta_as_tres_listas_e_as_comuns(self):
         self.preparar("Claude Code\n", manual.NOMES_CITAVEIS)
         self.preparar("# nota\nLeia\n", manual.PALAVRAS_QUE_ABREM)
-        _, (aceitos, _, abrem) = manual.situacao_do_manual(self.pasta, {})
+        _, (aceitos, _, abrem, _) = manual.situacao_do_manual(self.pasta, {})
         self.assertLessEqual({"Fabio Akita", "Claude Code"}, aceitos)
         self.assertLessEqual({"leia"}, abrem)
 
@@ -143,9 +158,9 @@ class SituacaoDoManual(base.RepositorioTemporario):
         self.preparar("x\n", "manual/fontes/licenca.txt")
         base.escrever(self.pasta / "manual" / "nova.md", f"número {NUMERO}\n")
         self.assertEqual(self.nomes({}), [ARQUIVO, "manual/nova.md"])
-        conteudos, (aceitos, _, _) = manual.situacao_do_manual(self.pasta, {})
+        conteudos, (aceitos, _, _, _) = manual.situacao_do_manual(self.pasta, {})
         self.assertIn("Fabio Akita", aceitos)
-        self.assertEqual(len(manual.problemas_do_manual(conteudos, (aceitos, DOMINIOS, ABREM), [])), 1)
+        self.assertEqual(len(manual.problemas_do_manual(conteudos, (aceitos, DOMINIOS, ABREM, CITAVEIS), [])), 1)
 
     def test_o_disco_sem_o_arquivo_le_vazio(self):
         self.assertEqual(manual.ler_do_disco(self.pasta, "nao/existe.md"), "")
