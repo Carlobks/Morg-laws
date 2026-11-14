@@ -34,7 +34,7 @@ Quem escreveu um trabalho não o consegue auditar bem: lê o que quis dizer, nã
 
 Quando a filha tem muito para ler (um manual em várias partes, uma série de commits, vários relatórios), ela escreve enquanto lê, e não só no fim:
 
-- **Uma parte de cada vez:** ler a parte inteira (se a ferramenta avisar que cortou, ler o resto antes de seguir), escrever logo a seção dela no relatório, gravado em disco, e só então abrir a seguinte. Nunca duas partes antes de escrever.
+- **Uma parte de cada vez:** ler a parte inteira (saber antes o tamanho dela e, se a leitura veio cortada, com aviso ou sem, ler o resto antes de seguir), escrever logo a seção dela no relatório, gravado em disco, e só então abrir a seguinte. Nunca duas partes antes de escrever.
 - **Antes de cada parte, reler o próprio relatório,** e não a parte anterior. O que não foi escrito no relatório se perde.
 - **A opinião geral sai só das seções:** no fim, quem lê junta o que escreveu (o que mais pesou e a conclusão), sem reabrir as partes.
 - **Uma leitura grande se divide em duas sessões,** e a segunda começa pelo relatório da primeira, não pelas partes que a primeira já leu. No projeto de origem, o limite é de 6 partes ou ~60 mil tokens de texto; os dois números são escolha do projeto, não de uma fonte: ajuste-os ao seu caso.
@@ -97,4 +97,4 @@ Trabalhar só na `main`, sem branches nem worktrees, simplifica a coordenação 
 
 Ver [`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md#git-e-contas): código do git sobre o `index.lock` (`lockfile.c`); e [`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md#uso-e-custo-de-agentes): as boas práticas e os custos do Claude Code (a conversa relida a cada pedido, o aviso que acorda uma sessão parada, o modelo pela tarefa) e a [linha de base do uso](https://github.com/Carlobks/Morg-laws/blob/main/pesquisas/2026-11-05-linha-de-base-do-uso.md). As regras de sessões, das fases e da orquestradora vêm da prática do projeto de origem. As páginas do livro *Competente o Suficiente*, de Fabio Akita, que a skill usa, estão em [`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md#livros-e-autores).
 
-A leitura em partes vem da prática do projeto de origem; o porquê vem das pp. 33 e 124 do livro (as leituras em fatias e as saídas cortadas sem aviso) e da [`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md#compactação-da-conversa), seção «Compactação da conversa» (o começo da conversa que se perde).
+A leitura em partes vem da prática do projeto de origem; o porquê vem das pp. 33 e 124 do livro (as leituras em fatias e as saídas cortadas sem aviso) e da [`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md#compactação-da-conversa), seção «Compactação da conversa» (as instruções do começo da conversa, que podem se perder).
