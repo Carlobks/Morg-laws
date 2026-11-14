@@ -1,9 +1,9 @@
 # Hooks e permissões do Claude Code
 
-## No modo automático, as regras `ask` não perguntam
+## No modo automático, a regra `ask` e o hook
 
-**O que aconteceu:** um `git push --dry-run` e a escrita de um hook rodaram sem pergunta, com `Bash(git push *)` e `Edit(.claude/hooks/**)` na coluna `ask` do `settings.json` (confirmado pelo dono).
-**Como fazer:** o que tem de pedir o "sim" passa por um hook `PreToolUse` que devolve `permissionDecision: "ask"`; esse pergunta em qualquer modo. As regras `ask` ficam, mas não são a barreira. Modelo: `modelos/claude/hooks/perguntar_antes.py`.
+**O que aconteceu:** um `git push --dry-run` e a escrita de um hook rodaram sem pergunta, com `Bash(git push *)` e `Edit(.claude/hooks/**)` na coluna `ask` do `settings.json` (confirmado pelo dono). Num reteste em 2026-11-14 (Claude Code 2.1.325, no terminal), a regra perguntou no modo automático; a causa do push antigo não se sabe.
+**Como fazer:** o que tem de pedir o "sim" passa por um hook `PreToolUse` que devolve `permissionDecision: "ask"`; esse pergunta também no modo automático e lê o comando inteiro. As regras `ask` ficam, como primeira barreira. Modelo: `modelos/claude/hooks/perguntar_antes.py`.
 
 ## O `deny` de leitura só cobre a ferramenta Read
 
