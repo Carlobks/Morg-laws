@@ -105,7 +105,7 @@ resumo) e o livro pela página impressa. Cada link tem a sua entrada no `FONTES.
 | 2 | Como isso se resolve hoje, e já existe algo pronto que resolva ou se adapte? | Heilmeier (2); Fowler; o livro (pp. 67, 106–107, 218) | **adaptar** ou usar pronto, em vez de construir |
 | 3 | Quem vai usar, e o que essa pessoa já fez de concreto para resolver isso? | Cagan (valor); o livro (pp. 133–134); o Mom Test (secundária) | sem ninguém que use, **desistir** ou rever para quem é |
 | 4 | Quanto tempo você aceita gastar nisso, antes de saber o custo? | o apetite do Shape Up; Heilmeier (6, 7) | **encolher** o escopo para caber no apetite |
-| 5 | Imagine que deu errado daqui a três meses: por quê? | o pre-mortem de Klein; Heilmeier (5); Cagan (viabilidade técnica e do negócio) | os motivos viram restrições da ronda 3, ou **desistir** se um não tem saída |
+| 5 | Imagine que deu errado daqui a três meses: por quê? | o pre-mortem de Klein; Heilmeier (5); Cagan (viabilidade técnica e do negócio) | os motivos viram restrições do projeto, ou **desistir** se um não tem saída |
 | 6 | O que faria você parar, e até quando se vê isso? | Annie Duke (critérios de desistência); Heilmeier (8) | se escreve o critério de parada; sem ele, **seguir** não tem fim marcado |
 
 **O passo a passo do «já existe»**, que um agente consegue seguir:

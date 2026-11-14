@@ -230,7 +230,7 @@ Lidas em 2026-11-06; as primeiras entradas para `pesquisas/2026-11-05-linha-de-b
   - pp. 57, 150–151: a fonte primária decide, não a maioria dos modelos (usado em `orquestrando-sessoes`).
   - pp. 64, 126: escrever o arquivo de regras no primeiro dia, com a arquitetura e as convenções (usado em `escrevendo-regras-de-agente` (em parte) e `comecando-um-projeto`).
   - pp. 67, 105, 411: para arejar, trocar de agente ou de sessão (usado em `passando-o-trabalho`).
-  - pp. 67, 106–107, 115, 142, 218: antes de construir do zero, procurar uma solução pronta e bem mantida (usado em `comecando-um-projeto` e na pesquisa `pesquisas/2026-11-14-antes-de-comecar-um-projeto.md`).
+  - pp. 67, 106–107, 115, 142, 218: antes de construir do zero, procurar uma solução pronta e bem mantida; entre manter uma cópia própria e acrescentar módulos por fora, trocar de estratégia no meio saiu barato com o agente (p. 142) (usado em `comecando-um-projeto` e na pesquisa `pesquisas/2026-11-14-antes-de-comecar-um-projeto.md`).
   - pp. 67, 108–110, 171–172, 410–411: ao depurar: reproduzir, achar o commit que estragou, uma variável de cada vez (usado em `testes-e-provas`).
   - pp. 69, 241, 248–249, 427–428: uma funcionalidade pequena por vez, com testes; migrações grandes devagar, uma parte de cada vez (usado em `git-e-commits` (em parte) e `testes-e-provas` (em parte)).
   - pp. 80–81: começar pelo teste, prender cada bug com um teste e só juntar com tudo verde (usado em `testes-e-provas` e `git-e-commits`).
