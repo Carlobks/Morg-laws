@@ -18,7 +18,7 @@ Passos rodados numa pasta temporária fora de qualquer repositório, sem `-g`, c
 
 ## O que a ferramenta grava fora do projeto
 
-**O que aconteceu:** com a pasta pessoal trocada por uma descartável, os 656 arquivos gravados fora do projeto estavam todos no cache do `npx`. Nada foi para as pastas de configuração, de dados, de estado ou de cache da ferramenta. Na pasta pessoal verdadeira, nada que citasse `skills` mudou, e a instalação pessoal ficou igual.
+**O que aconteceu:** com a pasta pessoal trocada por uma descartável, os 656 arquivos gravados nela estavam todos no cache do `npm`, que o `npx` usa; na pasta temporária ficou só um cache do próprio Node. Nada foi para as pastas de configuração, de dados, de estado ou de cache da ferramenta. Na pasta pessoal verdadeira, nada que citasse `skills` mudou, e a instalação pessoal ficou igual.
 **Por que:** sem `-g`, a ferramenta escreve só na pasta do projeto (e baixa o repositório numa pasta temporária que apaga).
 **Como fazer:** não use `-g` para um projeto: o teste das regras do molde lê as pastas do projeto e não veria skills instaladas na pasta pessoal.
 **Versão:** pacote `skills` 1.8.1.
@@ -26,4 +26,6 @@ Passos rodados numa pasta temporária fora de qualquer repositório, sem `-g`, c
 ## Para o Codex, o destino é outro
 
 **O que aconteceu:** com `-a codex`, a skill foi para `.agents/skills/` e nenhuma pasta `.claude/` nasceu.
-**Como fazer:** para o Codex, troque `claude-code` por `codex` no comando.**Versão:** pacote `skills` 1.8.1.
+**Por que:** para o Codex, a ferramenta grava em `.agents/skills/`, a pasta onde ele procura as skills.
+**Como fazer:** para o Codex, troque `claude-code` por `codex` no comando.
+**Versão:** pacote `skills` 1.8.1.
