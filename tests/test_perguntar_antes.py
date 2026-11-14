@@ -108,16 +108,19 @@ class FraseVelhaNaoVolta(unittest.TestCase):
     """A frase velha sobre a regra `ask` e o modo automático não volta a nenhum .md ou .py do repositório."""
 
     # Os colchetes impedem que este arquivo case consigo mesmo; assim ele também se lê a si mesmo.
+    # Lê linha a linha: uma frase quebrada entre duas linhas, ou com mais de 60 caracteres (40, na segunda
+    # forma) entre as partes, escapa.
     PADROES = (
-        re.compile(r"modo automático[^.\n]{0,60}\bnã[o] (?:pergunta|perguntam|bastam)\b"),
-        re.compile(r"\bnã[o] (?:pergunta|perguntam|bastam)\b[^.\n]{0,40}modo automático"),
-        re.compile(r"seja qual for o mod[o]|em qualquer mod[o]"),
+        re.compile(r"modo automático[^\n]{0,60}\bnã[o] (?:pergunta|perguntam|bastam)\b", re.IGNORECASE),
+        re.compile(r"\bnã[o] (?:pergunta|perguntam|bastam)\b[^\n]{0,40}modo automático", re.IGNORECASE),
+        re.compile(r"seja qual for o mod[o]|em qualquer mod[o]", re.IGNORECASE),
     )
 
     def test_nenhum_arquivo_traz_a_frase_velha(self):
         raiz = Path(__file__).resolve().parents[1]
         arquivos = subprocess.run(["git", "-C", str(raiz), "ls-files", "*.md", "*.py"], capture_output=True,
                                   text=True, check=True).stdout.split()
+        self.assertIn("tests/test_perguntar_antes.py", arquivos)
         achados = [f"{nome}:{n}" for nome in arquivos
                    for n, linha in enumerate((raiz / nome).read_text(encoding="utf-8").splitlines(), 1)
                    if any(p.search(linha) for p in self.PADROES)]
