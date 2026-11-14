@@ -5,7 +5,7 @@ dinheiro) e a lista negra local, sem mudar aquele módulo. Não usa a regra das 
 domínios os endereços do `FONTES.md`, não acusa palavra comum com maiúscula e acusa como possível nome de pessoa duas
 palavras seguidas com maiúscula, fora do início de frase, que não estejam em `manual/pessoas-citaveis.txt` nem na parte
 `nomes` de `tests/palavras-com-maiuscula.txt`. Um nome de uma palavra só fica com a lista negra. O alvo de um link
-`[texto](endereço)` não se confere aqui: o `FONTES.md` e o lychee já o conferem. Nomes de arquivo, sempre em crases.
+`[texto](endereço)` não se confere aqui: o `FONTES.md` e o lychee já o conferem. Nomes de arquivo, em crases ou dentro de um bloco de código.
 O CI não vê a lista negra, que vive fora do repositório: lá, a barreira do manual é só este detector."""
 
 import os
@@ -25,7 +25,8 @@ FONTES = "FONTES.md"
 ConteudoDoManual = namedtuple("ConteudoDoManual", "origem texto")
 PARTICULAS = frozenset({"da", "de", "do", "das", "dos"})
 SEQUENCIA = re.compile(r"(?<![\w-])[A-ZÀ-Ý][\wà-ÿ'’-]+(?:[  ]+(?:(?:da|de|do|das|dos)[  ]+)?[A-ZÀ-Ý][\wà-ÿ'’-]+)+")
-DICA_DE_ARQUIVO = "domínio (se for nome de arquivo, ponha em crases)"
+CERCA = re.compile(r" {0,3}(`{3,}(?=[^`]*$)|~{3,})")
+DICA_DE_ARQUIVO ="domínio (se for nome de arquivo, ponha em crases)"
 
 
 def pessoas_citaveis(texto):
@@ -83,9 +84,33 @@ def nomes_de_pessoas(texto, aceitos, abrem=frozenset(), citaveis=frozenset()):
     return achados
 
 
+def _fim_do_bloco(linhas, inicio):
+    """O índice da cerca que fecha o bloco aberto na linha `inicio`, ou None se ali não abre bloco ou ele não fecha."""
+    cerca = CERCA.match(linhas[inicio])
+    if not cerca:
+        return None
+    fecho = re.compile(rf" {{0,3}}{cerca.group(1)[0]}{{{len(cerca.group(1))},}}\s*")
+    return next((j for j in range(inicio + 1, len(linhas)) if fecho.fullmatch(linhas[j])), None)
+
+
+def blocos_de_codigo_em_crases(texto):
+    """O texto com cada linha de dentro de um bloco ``` ou ~~~ entre crases (as de dentro viram '), como o que o
+    detector já aceita na prosa: o nome de arquivo e o comando passam, o domínio, o e-mail e o nome de pessoa não. A
+    cerca fecha com a mesma letra, o mesmo tamanho ou mais, sem texto depois; uma cerca sem par não abre bloco (o resto
+    fica como prosa). Custo: dentro do bloco um domínio com final fora da lista (`.digital`) e o `$1500` também passam."""
+    linhas, i = texto.splitlines(), 0
+    while i < len(linhas):
+        fim = _fim_do_bloco(linhas, i)
+        if fim is not None:
+            linhas[i + 1:fim] = [f"`{linha.replace('`', chr(39))}`" if linha.strip() else linha for linha in linhas[i + 1:fim]]
+            i = fim
+        i += 1
+    return "\n".join(linhas)
+
+
 def dados_do_manual(texto, aceitos, dominios, abrem=frozenset(), citaveis=frozenset()):
     """Todos os dados do texto por linha: o que o catálogo detecta, com o domínio dos arquivos explicado, e os nomes."""
-    limpo = catalogo.ALVO_DE_LINK.sub("]", texto)
+    limpo = catalogo.ALVO_DE_LINK.sub("]", blocos_de_codigo_em_crases(texto))
     fora_nomes = [(n, DICA_DE_ARQUIVO if tipo == "domínio" else tipo, t)
                   for n, tipo, t in catalogo.dados_fora_nomes(limpo, dominios)]
     return sorted(fora_nomes + nomes_de_pessoas(limpo, aceitos, abrem, citaveis), key=lambda achado: achado[0])

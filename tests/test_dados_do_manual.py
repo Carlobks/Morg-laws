@@ -92,6 +92,24 @@ class DadosDoTexto(unittest.TestCase):
             with self.subTest(texto=texto):
                 self.assertEqual(tipos(texto), ["nome de pessoa"])
 
+    def test_nome_de_arquivo_e_comando_dentro_de_um_bloco_de_codigo_passam_como_entre_crases(self):
+        for texto in ("```text\nfix: o teste\n\nSem tests/test_x.py: motivo.\n```\n", "```sh\nrode scripts/testar.sh antes\n```\n",
+                      "```sh\necho $1\n```\n", "~~~text\nSem tests/c.py\n~~~\n", "````text\nfix: `a.py` e tests/b.py\n````\n",
+                      "```text\nabra empresa.digital\n```\n", "```text\nCusto: $1500 por mês\n```\n"):  # os dois últimos: o custo
+            with self.subTest(texto=texto):
+                self.assertEqual(tipos(texto), [])
+
+    def test_dado_de_verdade_num_bloco_continua_acusado_e_a_prosa_perto_dele_tambem(self):
+        for texto, quantos in (("```text\nabra empresa-real.pt no navegador\n```\n", 1), ("~~~\nabra empresa-real.com\n~~~\n", 1),
+                               ("```text\nescreva a fulano@empresa-real.pt\n```\n", 2), ("O arquivo test_x.py roda.\n", 1),
+                               ("```\nabra a\n\nDepois empresa.digital aqui.\n", 1),
+                               ("````text\n```\nx\n```\nDepois empresa.digital aqui.\n", 1),
+                               ("```text\nFalei com Maria Souza ontem.\n```\n", 1)):
+            with self.subTest(texto=texto):
+                self.assertEqual(len(tipos(texto)), quantos)
+        achados = manual.dados_do_manual(f"limpo\n```text\nSem tests/a.py\n```\nnúmero {NUMERO}\n", ACEITOS, DOMINIOS)
+        self.assertEqual([linha for linha, _, _ in achados], [5])
+
     def test_os_achados_saem_por_linha(self):
         achados = manual.dados_do_manual(f"limpo\nnúmero {NUMERO}\nOntem Maria Souza.\n", ACEITOS, DOMINIOS)
         self.assertEqual([linha for linha, _, _ in achados], [2, 3])
