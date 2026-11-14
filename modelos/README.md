@@ -44,7 +44,7 @@ Os testes prontos de `testes-ts/` são a exceção: TypeScript, com o `vitest` e
 | `documentos/AGENTS.md` | `AGENTS.md` | Arquivo de regras no formato que o `test_regras.py` confere (`- **TÍTULO:** regra. · *motivo*`): a Regra n.º 1 por preencher, o núcleo e o "Nunca" (iguais aos do `AGENTS.md` do Morg-laws, um teste confere) e o índice das skills |
 | `documentos/CLAUDE.md` | `CLAUDE.md` | A linha `@AGENTS.md` e o que vale só no Claude Code; não repete as regras |
 | `documentos/regras-e-barreiras.md` | `docs/` | O mapa: cada regra e a barreira que a obriga, ou o motivo de ficar em texto |
-| `documentos/projeto.md` | `docs/projeto.md` | O documento do projeto: o que é, para quem, o que faz e não faz, restrições, arquitetura com o porquê, as palavras do dono e as perguntas em aberto |
+| `documentos/projeto.md` | `docs/projeto.md` | O documento do projeto: o que é, para quem, por que começar, o que já existe, o que faz e não faz, restrições, arquitetura com o porquê, as palavras do dono e as perguntas em aberto |
 | `documentos/plano.md` | `docs/planos/` | Contexto, decisões do dono, fora do escopo, passos com caixas e prova |
 | `documentos/verificacao.md` | `docs/` | Verificação independente: contagens fechadas antes de ler a anterior |
 | `documentos/handoff.md` | `.context/HANDOFF-<assunto>.md` | Estado verificado, decisões do dono e técnicas, descartado, próximos passos |

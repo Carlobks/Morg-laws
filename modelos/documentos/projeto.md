@@ -12,6 +12,17 @@ muda. O que o dono disse com as próprias palavras guarda-se como ele escreveu, 
 
 <Quem usa, em que situação, e quem mantém.>
 
+## Por que começar
+
+<Projeto novo: a decisão (seguir, encolher, adaptar ou desistir) e a data; quanto tempo o dono aceita gastar; o que
+faria parar e até quando se vê isso. Se o dono dispensou as perguntas, diz-se «ronda dispensada pelo dono,
+AAAA-MM-DD». Projeto que já existia: «Projeto já em curso, AAAA-MM-DD» e, se o dono quis, o que faria parar.>
+
+## O que já existe
+
+<O que se procurou, onde e em que data; cada candidato com «serve», «serve com adaptação» ou «não serve», e o porquê.
+Serve para a sessão seguinte não refazer a busca.>
+
 ## O que faz
 
 <A primeira versão: o que entra, uma linha para cada coisa.>

@@ -1,8 +1,8 @@
 """O molde do documento do projeto (`modelos/documentos/projeto.md`) guarda o que a primeira conversa com um projeto
 precisa, conferido sem rede e sobre o texto:
 
-- tem as oito seções, na ordem: O que é, Para quem, O que faz, O que não faz, Restrições, Arquitetura, Palavras do
-  dono e Perguntas em aberto;
+- tem as dez seções, na ordem: O que é, Para quem, Por que começar, O que já existe, O que faz, O que não faz,
+  Restrições, Arquitetura, Palavras do dono e Perguntas em aberto;
 - não leva palavras nem construções do português de Portugal.
 E a skill `comecando-um-projeto`:
 - tem as seções do plano, na ordem, e os sete destinos do que escreve no projeto na tabela da seção 4;
@@ -46,8 +46,8 @@ ROTULOS_ESPERADOS = [("No Claude Code", "/"), ("No Codex", "$")]
 INSTALACAO = "npx skills add"
 PROXIMA_SECAO_DO_README = "## Para quem contribui"
 BLOCO_DE_TEXTO = re.compile(r"```text\n(.*?)\n```", re.DOTALL)
-SECOES_DO_PROJETO = ("O que é", "Para quem", "O que faz", "O que não faz", "Restrições", "Arquitetura",
-                     "Palavras do dono", "Perguntas em aberto")
+SECOES_DO_PROJETO = ("O que é", "Para quem", "Por que começar", "O que já existe", "O que faz", "O que não faz",
+                     "Restrições", "Arquitetura", "Palavras do dono", "Perguntas em aberto")
 
 
 def secoes_do_molde(texto):
@@ -160,6 +160,9 @@ class MoldeDoProjeto(unittest.TestCase):
 
     def test_sem_o_que_nao_faz_reprova(self):
         self.assertErro(self.texto.replace("## O que não faz", "## Outra coisa"), "falta a seção «O que não faz»")
+
+    def test_sem_o_que_ja_existe_reprova(self):
+        self.assertErro(self.texto.replace("## O que já existe", "## Outra"), "falta a seção «O que já existe»")
 
     def test_secoes_trocadas_de_ordem_reprovam(self):
         trocado = self.texto.replace("## O que faz\n", "## @@\n").replace("## O que não faz\n", "## O que faz\n")

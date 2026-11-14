@@ -52,7 +52,7 @@ As cópias estão em `assets/`, na pasta desta skill, ao lado deste `SKILL.md` (
 
 | Arquivo no projeto | Cópia na skill | Notas |
 |---|---|---|
-| `docs/projeto.md` | `assets/molde-projeto.md` | Seções na ordem: O que é; Para quem; O que faz; O que não faz; Restrições; Arquitetura (cada peça com o porquê e o link para a ADR); Palavras do dono (o texto original); Perguntas em aberto. |
+| `docs/projeto.md` | `assets/molde-projeto.md` | Seções na ordem: O que é; Para quem; Por que começar; O que já existe; O que faz; O que não faz; Restrições; Arquitetura (cada peça com o porquê e o link para a ADR); Palavras do dono (o texto original); Perguntas em aberto. |
 | `docs/README.md` | — | Uma tabela, sem molde: o índice de cada `.md` de `docs/`, com o `docs/projeto.md`. O `AGENTS.md` cita este índice. |
 | `AGENTS.md` | `assets/molde-AGENTS.md` | A Regra n.º 1 preenchida na ronda 5; o resto como está. |
 | `CLAUDE.md` | `assets/molde-CLAUDE.md` | Só no Claude Code: a linha `@AGENTS.md`. |
