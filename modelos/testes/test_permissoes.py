@@ -5,8 +5,8 @@
 - **ask** (pergunta antes): push, PR, instalar pacotes ou programas, mexer nas próprias regras de segurança;
 - **allow** (sem perguntar): só leitura e o comando de testes.
 As regras vivem em `.claude/settings.json` (vai no repositório, vale para quem o clonar). As de cada máquina ficam
-em `.claude/settings.local.json`, que só pode apertar. O `ask` sozinho não pergunta no modo automático: o hook
-`perguntar_antes.py` é que obriga (modelo em modelos/claude/ do Morg-laws).
+em `.claude/settings.local.json`, que só pode apertar. O `ask` casa só o comando escrito como na regra: o hook
+`perguntar_antes.py` pega as outras formas (modelo em modelos/claude/ do Morg-laws).
 Instalar: copiar para `tests/` do projeto e ajustar o bloco abaixo.
 """
 

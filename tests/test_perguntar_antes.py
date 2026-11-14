@@ -1,7 +1,8 @@
 """Hook perguntar_antes (modelos/claude/hooks/perguntar_antes.py): push, PR e instalações pedem sempre o "sim".
 
 Num projeto real, com a regra "ask" de `Bash(git push *)` no settings.json, um `git push --dry-run` rodou sem
-pergunta (modo automático). O hook devolve a decisão "ask" ao Claude Code, que pergunta seja qual for o modo.
+pergunta no modo automático. Uma regra "ask" casa só o comando escrito como nela; o hook lê o comando inteiro e
+devolve a decisão "ask", que pergunta também no modo automático.
 """
 
 import json

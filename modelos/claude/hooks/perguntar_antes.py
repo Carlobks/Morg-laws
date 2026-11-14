@@ -1,8 +1,8 @@
 """Hook PreToolUse: push, PR, instalações e mudanças às regras do agente pedem sempre o "sim" do dono.
 
-As regras "ask" do settings.json não bastam: no modo automático elas não perguntam (num projeto real, um
-`git push --dry-run` e a escrita de um hook rodaram sem pergunta). Este hook devolve ao Claude Code a decisão
-"ask", que pergunta seja qual for o modo. Pergunta antes de:
+As regras "ask" do settings.json perguntam também no modo automático, mas só para o comando escrito como na
+regra: `git -C pasta push` ou `git -c nome=valor push` não casam com `Bash(git push *)`. Este hook lê o comando
+inteiro e devolve ao Claude Code a decisão "ask", que pergunta também no modo automático. Pergunta antes de:
 - Bash/PowerShell: `git push` (também depois de opções globais como `--no-pager`); o que escreve no GitHub
   (`gh pr create|merge|comment|review|edit|close|ready|reopen`, `gh issue create|comment|edit|close|reopen`,
   `gh release create|upload|edit|delete` e `gh api` que não seja GET); instalar pacotes (npm install/i/ci/add,
