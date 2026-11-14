@@ -8,7 +8,7 @@ linha, e que cada caminho citado exista.
 - **hook:** um hook do Claude Code em `.claude/hooks/` (trava o agente; um commit feito à mão não passa por ele);
 - **git:** um hook do git em `.githooks/` (vale para o agente e para quem commita à mão);
 - **teste:** um teste do comando único de testes, que roda em cada commit;
-- **permissão:** uma regra em `.claude/settings.json` (o `ask` casa só o comando escrito como na regra; o hook pega as outras formas);
+- **permissão:** uma regra em `.claude/settings.json` (o `ask` só pergunta quando o comando vem escrito do jeito da regra; o hook pega os outros jeitos, como `git -C pasta push`);
 - **CI:** uma verificação no GitHub; vale também para quem desligou os hooks do git;
 - **texto:** só a regra escrita (não há máquina que a decida; o motivo está ao lado);
 - **por fazer (<fase>):** a barreira tem fase marcada no plano; o teste falha quando a fase fica feita.
