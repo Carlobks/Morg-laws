@@ -9,7 +9,7 @@ Hoje o `npx skills add Carlobks/Morg-laws` traz as 13 skills, e quem não usa um
 remover uma? O que o `skills-lock.json` guarda numa instalação parcial, e o que um `update` ou um segundo `add` fazem
 com as que ficaram de fora? Uma skill do Morg-laws depende de outra? O que no manual, no molde `AGENTS.md`, nos testes
 e na skill `comecando-um-projeto` fica errado quando a pessoa instala só uma parte? E como se prova o comando numa
-pasta temporária, como o dono pediu?
+pasta temporária?
 
 ## Fontes
 
@@ -85,7 +85,7 @@ são do tipo «para isso, é a outra skill», que só apontam o caminho. As que 
 
 Pela descrição de cada uma, quatro são de pilha: `supabase`, `sql-postgres` e `nextjs-react` (nomeiam a tecnologia) e
 `desenhando-telas` (sistemas com muitos dados, como ERPs e painéis). As outras nove servem a qualquer projeto. Um
-conjunto mínimo possível seria as nove gerais, com `supabase` sempre junto de `sql-postgres`; fica para a ronda.
+conjunto mínimo possível seria as nove gerais, com `supabase` sempre junto de `sql-postgres`.
 
 **3. O que fica errado com uma instalação parcial.**
 
@@ -95,13 +95,13 @@ conjunto mínimo possível seria as nove gerais, com `supabase` sempre junto de 
 | `manual/03-instalar.md:17` e `:34` | Testado na 1.7.4, em 2026-10-30. | A versão atual é a 1.8.1; o teste ficou velho. |
 | `manual/03-instalar.md:36` | Instalar muitas é barato, e cada uma não usada é leitura a mais. | Continua certo, mas não diz como evitar as de pilha. |
 | `README.md:27` e `:30` | O comando sem `-a` nem `--skill`. | Num terminal abre a lista; dentro de um agente traz as 13. |
-| `modelos/documentos/AGENTS.md:41-53` | O índice cita as 13; a linha `:53` junta as três de pilha numa linha só. | O projeto parcial tem de apagar linhas, e partir a `:53` se instalou só uma das três. |
+| `modelos/documentos/AGENTS.md:41-53` | O índice cita as 13; a linha `:53` junta as três de pilha numa linha só. | O projeto parcial tem de apagar linhas, e dividir a `:53` se instalou só uma das três. |
 | `skills/comecando-um-projeto/assets/molde-AGENTS.md:41` | Cópia igual do molde. | O mesmo. |
 | `skills/comecando-um-projeto/SKILL.md:59` | Escreve o `AGENTS.md` do molde, com o resto «como está». | Escreve o índice das 13, mesmo que só algumas estejam instaladas. |
 | `modelos/testes/test_regras.py:130-139` | O conjunto das skills entre crases no índice tem de ser igual ao das pastas em `.claude/skills/`, e as chaves do `skills-lock.json` iguais às pastas. | Passa com uma parte **se** o índice citar só as instaladas. Com o molde como está, reprova. Quem apaga uma pasta à mão (o jeito de hoje) também reprova na `:139`, porque a trava ainda a tem: o certo é remover com `skills remove`. |
 | `tests/projeto_de_exemplo.py:14-15` | Instala todas, porque o índice do molde cita todas. | Nenhum teste cobre um projeto com só uma parte. |
 | `aprendizados/2026-10-30-instalacao-das-skills.md:7` e `:11` | 10 skills, `skills@latest`, versão 1.7.4. | Fato do passado; não fala de `--skill`. |
-| `AGENTS.md:51` (o da raiz) e `prova/README.md:83` | Citam o comando ou a cópia inteira. | Só a citar, se o comando mudar. |
+| `AGENTS.md:51` (o da raiz) e `prova/README.md:83` | Citam o comando ou a cópia inteira. | Só citam; mudam se o comando mudar. |
 | `tests/test_comecando_um_projeto.py:55` e `:138` | O README tem de ter `npx skills add` antes da seção da primeira mensagem. | Nada, enquanto o texto continuar no README. |
 
 **4. Os tetos.** A parte `03` do manual tem 1.972 palavras de prosa para um teto de 3.450; no P1, «Na prática» tem 123
