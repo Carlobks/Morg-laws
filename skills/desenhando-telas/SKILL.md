@@ -107,7 +107,7 @@ Em tablets e celulares não há hover.
 | Situação | Regra |
 |---|---|
 | Ação **principal** de uma linha | Sempre visível |
-| Ação secundária que existe noutro lugar | Pode aparecer só no hover |
+| Ação secundária que existe em outro lugar | Pode aparecer só no hover |
 | Rótulo de um ícone | Sempre visível, nunca só no tooltip |
 | Enriquecimento puro | Hover à vontade |
 
@@ -141,7 +141,7 @@ O que aparece no hover fica visível em telas sem hover (`@media (hover: none)`)
 - **Respeite o `prefers-reduced-motion`** do sistema. Com ele ligado, tira-se o movimento, mas o **sinal fica**: o estado final aparece sem a animação, nunca some. Use uma duração de `0.01ms` em vez de `none`: com `none`, o `transitionend` não dispara e o código que espera por ele fica parado.
 - **Transição de página só com opacidade.** Um `transform` cria um novo contexto de empilhamento e quebra elementos `fixed` e o arrastar e soltar.
 - **Navegação lenta pede retorno imediato** no elemento clicado.
-- Uma animação verifica-se pelo que **pinta** (o valor resolvido ou os píxeis entre frames), não pela variável que a alimenta.
+- Uma animação verifica-se pelo que **pinta** (o valor resolvido ou os pixels entre frames), não pela variável que a alimenta.
 
 ## 10. Componentes
 

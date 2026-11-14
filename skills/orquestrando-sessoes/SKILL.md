@@ -11,7 +11,7 @@ Trabalho grande com agentes falha menos quando cada pedaço tem dono, contexto l
 
 | | Sub-agente | Sessão nova |
 |---|---|---|
-| Quem vê o trabalho | Só o agente que o lançou recebe um resumo | O dono abre a sessão, lê tudo e corrige a meio |
+| Quem vê o trabalho | Só o agente que o lançou recebe um resumo | O dono abre a sessão, lê tudo e corrige no meio do trabalho |
 | Custo | Barato para buscas amplas e tarefas paralelas | Mais lento de abrir |
 | Risco | O erro volta no mesmo tom confiante dos acertos; ninguém o vê a errar | Mais trabalho de coordenação |
 
@@ -71,7 +71,7 @@ Escrever o handoff, compactar e retomar são da skill `passando-o-trabalho`.
 
 ## 6. Várias sessões na mesma pasta
 
-Quando várias sessões (ou pessoas) trabalham na mesma pasta, o índice do git e a branch são partilhados.
+Quando várias sessões (ou pessoas) trabalham na mesma pasta, o índice do git e a branch são compartilhados.
 
 - **Commit sempre por caminho:** `git commit -F msg -- <arquivos>`. Um `git commit` sem caminhos leva tudo o que outra sessão deixou preparado.
 - **O título diz o estado:** cada sessão se chama `ESTADO | ÁREA · assunto`, com um de quatro estados: `ATIVO` (trabalhando), `ESPERA` (esperando o dono ou outra sessão), `OK` (terminou, sem nada fora da branch principal) e `OFF` (parada de propósito); a área em maiúsculas e o assunto em poucas palavras, por exemplo `ESPERA | FINANCEIRO · folha de novembro`. Cada sessão troca o próprio título quando muda de estado; quem orquestra troca o da filha que não acha o próprio id.
@@ -81,11 +81,11 @@ Quando várias sessões (ou pessoas) trabalham na mesma pasta, o índice do git 
 - **Nada que estrague o disco compartilhado:** um script que troca arquivos por um tempo (testes de mutação, geradores) roda num `git worktree` à parte. Outra sessão que rode os testes ao mesmo tempo os vê falhar sem bug, e pode commitar o arquivo trocado.
 - **Confirme o HEAD antes de pedir um reteste:** outra sessão pode ter mudado a branch, e o sintoma parece "a correção não funcionou".
 - **`index.lock`:** o de outra sessão a commitar espera-se que saia, e nunca se apaga. Antes de culpar outro processo, veja **em que repositório** ele corre. Um lock seu, deixado por um comando interrompido, prova-se velho por três coisas: nenhum processo do git a correr, a hora do lock bate com a interrupção e o conteúdo do lock é o seu. Mesmo assim, renomeie-o em vez de o apagar.
-- **Não lance um commit com hooks longos** enquanto a conversa está a pedir decisões ao dono: um "parar" a meio deixa o lock para trás.
+- **Não lance um commit com hooks longos** enquanto a conversa está a pedir decisões ao dono: um "parar" no meio deixa o lock para trás.
 
 ## 7. Uma só branch: quando escolher
 
-Trabalhar só na `main`, sem branches nem worktrees, simplifica a coordenação de muitas sessões numa pasta partilhada. O custo é que tudo o que entra fica logo no caminho de todos, e por isso os hooks têm de ser fortes. É uma escolha de projeto: escreva-a como tal.
+Trabalhar só na `main`, sem branches nem worktrees, simplifica a coordenação de muitas sessões numa pasta compartilhada. O custo é que tudo o que entra fica logo no caminho de todos, e por isso os hooks têm de ser fortes. É uma escolha de projeto: escreva-a como tal.
 
 ## 8. O plano que o dono lê
 

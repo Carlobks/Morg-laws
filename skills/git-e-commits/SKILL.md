@@ -30,7 +30,7 @@ git commit -F msg.txt -- <arquivo1> <arquivo2>
 ## 3. Os hooks são a rede
 
 - O `pre-commit` roda o compilador, o lint, os testes dos arquivos tocados e as catracas. O `commit-msg` confere a mensagem.
-- **Nunca** `--no-verify`, nunca desligar o hook, nunca citar na mensagem a opção que o salta.
+- **Nunca** `--no-verify`, nunca desligar o hook, nunca citar na mensagem a opção que o pula.
 - Hook recusou: leia a saída, corrija a causa e commite de novo. Se o hook estiver errado, corrija o hook num commit próprio.
 - **O hook do git vale também para quem commita à mão; o hook do agente só trava o agente.** O que tem de valer sempre vai no hook do git, e no CI para quem o desligar.
 - **Uma guarda no agente fecha as saídas** (modelo em [`modelos/claude/hooks/`](https://github.com/Carlobks/Morg-laws/tree/main/modelos/claude/hooks)). Ela recusa:
@@ -84,7 +84,7 @@ Antes de dizer "feito":
 
 - **`index.lock` existe:** veja a skill `orquestrando-sessoes`. Nunca apague o lock de outro processo. Um lock seu e velho prova-se e renomeia-se.
 - **Arquivo preparado com a versão errada:** commitar por caminho grava o que está no disco e passa por cima do que ficou preparado.
-- **Commit de outra sessão levou o seu arquivo:** não reescreva o histórico partilhado. Faça um commit novo com a versão certa e avise.
+- **Commit de outra sessão levou o seu arquivo:** não reescreva o histórico compartilhado. Faça um commit novo com a versão certa e avise.
 - **Histórico já publicado com um dado que não devia:** se não é segredo, não se reescreve (muda os hashes de todos). Registre a exceção numa decisão escrita e trave o dado com um teste para não voltar. Segredo publicado roda-se ou revoga-se, sempre.
 - **Marca de executável no Windows:** com `core.filemode=false`, `git commit -- <caminhos>` lê o arquivo do disco e grava-o como `100644`, perdendo o `+x` preparado. Use `git add --chmod=+x` e `git commit -i -- <caminho>`.
 - **`git checkout -- <arquivo>` (ou `git restore`) apaga as mudanças por commitar, sem volta.** Num script que repõe um arquivo depois de um teste, guarde uma cópia antes e reponha a cópia.

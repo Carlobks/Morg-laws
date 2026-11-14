@@ -17,7 +17,7 @@ Muitos dos erros desta lista passam pelo compilador, pelo lint e pelos testes, e
 ## 2. Build e ambiente
 
 - **`process.env.NEXT_PUBLIC_*` só com acesso estático** (`process.env.NEXT_PUBLIC_URL`). O build substitui o texto literal; um acesso dinâmico (`process.env[nome]`) fica `undefined` no navegador. Num projeto real, isso derrubou todas as páginas do cliente.
-- **Não rode `next build` com o servidor de desenvolvimento ligado:** os dois partilham a pasta `.next` e o build estraga o servidor. E não mate o servidor de desenvolvimento de outra pessoa.
+- **Não rode `next build` com o servidor de desenvolvimento ligado:** os dois compartilham a pasta `.next` e o build estraga o servidor. E não mate o servidor de desenvolvimento de outra pessoa.
 - **Bibliotecas de ícones em `optimizePackageImports`** no `next.config`. Sem isso, a biblioteca inteira entra no pacote.
 - Com o Turbopack, alguns ícones de bibliotecas grandes já derrubaram páginas em produção. Ícone novo: prefira um que o projeto já usa, ou confirme com um build.
 
@@ -28,7 +28,7 @@ Muitos dos erros desta lista passam pelo compilador, pelo lint e pelos testes, e
 
 ## 4. Listas e estado
 
-- **A chave de uma lista é o id do registro, nunca o que se mostra.** Seleção, mapas, `key` e exclusões indexados pelo nome colidem no dia em que dois registros partilham o nome (num projeto real: centenas de pessoas e um nome a menos que pessoas).
+- **A chave de uma lista é o id do registro, nunca o que se mostra.** Seleção, mapas, `key` e exclusões indexados pelo nome colidem no dia em que dois registros compartilham o nome (num projeto real: centenas de pessoas e um nome a menos que pessoas).
 - **`key={index}` é proibido** em listas que mudam de ordem ou de tamanho.
 - **Guarde o id selecionado, não a linha.** Uma linha guardada no estado congela no momento do clique e mostra dados velhos depois de uma edição. Derive a linha a partir da prop. Ao corrigir um caso, procure os gêmeos (`grep "useState<.*Row"`).
 - **Ação repetida usa atualização otimista** com um instantâneo para desfazer. O "carregando…" só aparece na primeira carga; o sinal de "salvando" fica no controle que mudou. Recarregar a lista inteira a cada clique faz a tela piscar.

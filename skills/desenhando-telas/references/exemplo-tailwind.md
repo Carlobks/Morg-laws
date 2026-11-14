@@ -79,7 +79,7 @@ fundo:      absolute inset-0 bg-slate-950/75 backdrop-blur-md
 diálogo:    relative flex max-h-[90vh] w-full max-w-xl flex-col overflow-hidden rounded-3xl
             border border-slate-800 bg-slate-950 shadow-2xl
 
-// Mostrar no hover, mas visível em ecrãs sem hover
+// Mostrar no hover, mas visível em telas sem hover
 opacity-0 group-hover:opacity-100 [@media(hover:none)]:opacity-100 transition-opacity
 ```
 

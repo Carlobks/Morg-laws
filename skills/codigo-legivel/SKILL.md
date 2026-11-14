@@ -48,7 +48,7 @@ pelos dois moldes de cada regra e exige o mesmo veredito.
 - **Teste saltado:** diga quando e porquê. No vitest: `it.skipIf(semRede)(…)`, ou, dentro do teste,
   `contexto.skip(semRede, 'precisa da rede')` ou `if (semRede) contexto.skip('precisa da rede')`. **Não** use
   `test.skip(semRede, '…')` nem as opções `{ skip: true }` ou `{ only: true }` do teste: no vitest o 1.º argumento
-  de `test.skip` é o nome do teste, e ele salta sempre
+  de `test.skip` é o nome do teste, e ele pula sempre
   ([API do vitest](https://vitest.dev/api/test)); é a forma do Playwright. No Python:
   `@unittest.skipIf(sys.platform == "win32", "o hook só corre em sh")`, ou o `skipTest` dentro de um `if` ou de um
   `except ImportError`. Um teste que não vai voltar apaga-se.
@@ -64,7 +64,7 @@ pelos dois moldes de cada regra e exige o mesmo veredito.
 - **TypeScript:** copie a pasta [`modelos/testes-ts`](https://github.com/Carlobks/Morg-laws/tree/main/modelos/testes-ts)
   para `tests/catracas/` do projeto. Precisam do `vitest` e do `typescript` (para ler o código pela árvore) e rodam
   com `npx vitest run`.
-- Os testes leem o **índice do git**: um arquivo novo conta depois do `git add`, e o trabalho a meio de outra
+- Os testes leem o **índice do git**: um arquivo novo conta depois do `git add`, e o trabalho no meio de outra
   sessão na mesma pasta não trava o commit desta.
 - Ligue-os ao comando único de testes, que o hook do commit e o CI chamam. No CI de um projeto TypeScript, o
   [molde de CI](https://github.com/Carlobks/Morg-laws/blob/main/modelos/github/workflows/ci.yml) fixa o Node pelo
@@ -91,7 +91,7 @@ um arquivo novo nasce limpo.
    comparar (a ponta anterior do ramo de destino) e o checkout precisa de `fetch-depth: 0`. O molde do CI do
    Morg-laws já as tem. Sem isto, um commit feito sem os hooks (no site do GitHub, por exemplo) subiria a base.
    Quando a base de comparação não é um commit que o git conheça (o push de um ramo novo, cujo «antes» são 40
-   zeros, um push forçado, um nome errado), o «só encolhe» **salta**, com o motivo escrito: nesse push não compara.
+   zeros, um push forçado, um nome errado), o «só encolhe» **pula**, com o motivo escrito: nesse push não compara.
 
 **Limites conhecidos:**
 - Uma catraca diz «não piorou», nunca «está bem».

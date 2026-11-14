@@ -24,7 +24,7 @@ description: Guia como provar que um trabalho de agente funciona — o teste que
 
 - Reproduza antes de mexer. Veja **o que mudou** (`git log`, `git diff`) desde que funcionava.
 - **Uma hipótese de cada vez**, com uma medição que a confirma ou derruba. Três mudanças juntas não dizem qual resolveu.
-- Antes de culpar outro processo, outra sessão ou o ambiente, confirme **onde** ele está a correr.
+- Antes de culpar outro processo, outra sessão ou o ambiente, confirme **onde** ele está rodando.
 - Bug encontrado e não corrigido vai para o registro do projeto, organizado por área. Não fica só na conversa. Sem um rastreador, é um arquivo por bug numa pasta por área, fechado pelo commit que o corrige (skill `git-e-commits` §6).
 
 ## 4. Auditar: contar, não amostrar

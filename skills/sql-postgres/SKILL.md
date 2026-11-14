@@ -29,7 +29,7 @@ O banco de produção é de toda a gente que trabalha nele. Um erro no código v
 
 | Mudança | Prova no banco |
 |---|---|
-| Coluna nova | `SELECT count(*) FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 't' AND column_name = 'c'` devolve 1, corrido pelo dono (sem `table_schema`, a mesma tabela noutro esquema conta também; e o `information_schema` esconde as colunas de um papel sem acesso, o `pg_attribute` não) |
+| Coluna nova | `SELECT count(*) FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 't' AND column_name = 'c'` devolve 1, corrido pelo dono (sem `table_schema`, a mesma tabela em outro esquema conta também; e o `information_schema` esconde as colunas de um papel sem acesso, o `pg_attribute` não) |
 | Função | `SELECT prosrc FROM pg_proc WHERE oid = 'public.f(args)'::regprocedure` mostra o corpo entre `$$` igual ao arquivo commitado. O `pg_get_functiondef` devolve uma versão equivalente, mas normalizada; numa função `BEGIN ATOMIC` o `prosrc` vem vazio, e compara-se o `pg_get_functiondef`, que reconstrói o corpo. `'f'::regproc`, sem argumentos, falha com `42725` quando há duas `f` |
 | Permissão retirada | `SELECT has_function_privilege('papel', 'public.f(args)', 'EXECUTE')` devolve false |
 
@@ -41,7 +41,7 @@ Uma migração numa tabela com uso não pode trancá-la:
 
 - **`SET LOCAL lock_timeout = '2s'` antes do DDL, dentro da transação da migração.** O `ALTER TABLE` pede um lock exclusivo: enquanto espera por uma leitura longa, as consultas seguintes ficam na fila atrás dele. Com o limite, ele desiste com `55P03` em vez de parar o sistema. Fora de uma transação, o `SET LOCAL` só dá um aviso (`25P01`) e não faz nada: se a ferramenta não abre a transação, use `SET lock_timeout` na sessão.
 - **Coluna nova com `DEFAULT` volátil** (`clock_timestamp()`, `random()`) reescreve a tabela inteira; com um `DEFAULT` não volátil (uma constante, `now()`), não.
-- **Restrição nova numa tabela grande:** `ADD CONSTRAINT ... NOT VALID` (vale só para as linhas novas) e, noutro passo, `VALIDATE CONSTRAINT`.
+- **Restrição nova numa tabela grande:** `ADD CONSTRAINT ... NOT VALID` (vale só para as linhas novas) e, em outro passo, `VALIDATE CONSTRAINT`.
 - **Índice numa tabela com uso:** `CREATE INDEX CONCURRENTLY`, que não corre dentro de uma transação (`25001`).
 
 ## 3. Provar sem arriscar
@@ -55,7 +55,7 @@ BEGIN;
 ROLLBACK;
 ```
 
-- **A prova forte é a assimetria:** a mesma operação com dois papéis. Quando a barreira é um grant (ou o `WITH CHECK` do RLS), o que não tem permissão recebe `42501`; o que tem passa, ou cai **noutro** erro (por exemplo, `23503`, chave estrangeira). Assim se prova que fecha e que não partiu nada.
+- **A prova forte é a assimetria:** a mesma operação com dois papéis. Quando a barreira é um grant (ou o `WITH CHECK` do RLS), o que não tem permissão recebe `42501`; o que tem passa, ou cai em **outro** erro (por exemplo, `23503`, chave estrangeira). Assim se prova que fecha e que não partiu nada.
 - **O RLS em `SELECT`, `UPDATE` e `DELETE` não dá erro: filtra.** A linha que a política `USING` exclui some em silêncio (0 linhas, `UPDATE 0`, `DELETE 0`). Aí a assimetria está na contagem: o mesmo `UPDATE ... RETURNING id` devolve a linha a quem tem direito e nada a quem não tem. Zero linhas, sozinho, não prova nada.
 - **Leia o SQLSTATE.** `42703` (coluna inexistente) é erro de **esquema**: parece um bloqueio e não prova nada.
 - **Sequências não obedecem ao `ROLLBACK`.** Chamar `nextval`, ou um `INSERT` numa coluna `IDENTITY`/`serial` que depois falha (o próprio teste do `23503`), queima o número; o `setval` também não se desfaz. Não se testa uma função que consome uma sequência: lê-se o corpo.
@@ -78,7 +78,7 @@ ROLLBACK;
 - **Dado sensível omite-se no `SELECT`**, não se anula depois na saída.
 - **Normalizar só na apresentação** (maiúsculas, acentos). O valor cru fica para consultas e filtros.
 
-A trava da tabela de registro apanha os erros e os acidentes de todos: o `UPDATE`, o `DELETE` e o `TRUNCATE` do dono e do superusuário caem no erro. Não trava um dono decidido, porque `ALTER TABLE ... DISABLE TRIGGER USER` desliga-a. Por isso o dono da tabela não é o papel da aplicação, e desligar um gatilho só se faz numa migração revista. O `ENABLE ALWAYS` faz a trava valer também no modo `replica` (`session_replication_role`), que salta os gatilhos comuns:
+A trava da tabela de registro apanha os erros e os acidentes de todos: o `UPDATE`, o `DELETE` e o `TRUNCATE` do dono e do superusuário caem no erro. Não trava um dono decidido, porque `ALTER TABLE ... DISABLE TRIGGER USER` desliga-a. Por isso o dono da tabela não é o papel da aplicação, e desligar um gatilho só se faz numa migração revista. O `ENABLE ALWAYS` faz a trava valer também no modo `replica` (`session_replication_role`), que pula os gatilhos comuns:
 
 ```sql
 CREATE FUNCTION public.registro_imutavel() RETURNS trigger
@@ -97,7 +97,7 @@ ALTER TABLE public.registro ENABLE ALWAYS TRIGGER registro_sem_truncate;
 ## 6. Armadilhas
 
 - **Consultas em lote** (`WHERE id = ANY($1)` ou `IN (...)`) em vez de uma consulta por linha num laço (N+1).
-- **Nada de `UPDATE` em massa "por arrumação"** sem medir quantas linhas e sem o "sim": pode desfazer o que alguém está a ver hoje.
+- **Nada de `UPDATE` em massa "por arrumação"** sem medir quantas linhas e sem o "sim": pode desfazer o que alguém está vendo hoje.
 - **Filtrar por uma coluna que a tabela não tem** esvazia a lista em silêncio, sem erro, em alguns clientes. Confira o esquema.
 - **O que se aplica tem de ser igual ao que está commitado.** Copiar e colar à mão um SQL ligeiramente diferente cria um banco que ninguém consegue reconstruir.
 
