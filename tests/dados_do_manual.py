@@ -5,7 +5,8 @@ dinheiro) e a lista negra local, sem mudar aquele módulo. Não usa a regra das 
 domínios os endereços do `FONTES.md`, não acusa palavra comum com maiúscula e acusa como possível nome de pessoa duas
 palavras seguidas com maiúscula, fora do início de frase, que não estejam em `manual/pessoas-citaveis.txt` nem na parte
 `nomes` de `tests/palavras-com-maiuscula.txt`. Um nome de uma palavra só fica com a lista negra. O alvo de um link
-`[texto](endereço)` não se confere aqui: o `FONTES.md` e o lychee já o conferem. Nomes de arquivo, em crases ou dentro de um bloco de código.
+`[texto](endereço)` não se confere aqui: o `FONTES.md` e o lychee já o conferem.
+Nomes de arquivo, em crases ou dentro de um bloco de código.
 O CI não vê a lista negra, que vive fora do repositório: lá, a barreira do manual é só este detector."""
 
 import os
@@ -26,7 +27,7 @@ ConteudoDoManual = namedtuple("ConteudoDoManual", "origem texto")
 PARTICULAS = frozenset({"da", "de", "do", "das", "dos"})
 SEQUENCIA = re.compile(r"(?<![\w-])[A-ZÀ-Ý][\wà-ÿ'’-]+(?:[  ]+(?:(?:da|de|do|das|dos)[  ]+)?[A-ZÀ-Ý][\wà-ÿ'’-]+)+")
 CERCA = re.compile(r" {0,3}(`{3,}(?=[^`]*$)|~{3,})")
-DICA_DE_ARQUIVO ="domínio (se for nome de arquivo, ponha em crases)"
+DICA_DE_ARQUIVO = "domínio (se for nome de arquivo, ponha em crases)"
 
 
 def pessoas_citaveis(texto):
@@ -63,7 +64,8 @@ def palavras_do_nome(corrida, antes, abrem):
 def e_assunto_de_um_citavel(corrida, antes, citaveis):
     """True se a corrida começa a frase, a segunda palavra é uma partícula e todo o resto são pessoas de
     `pessoas-citaveis.txt`: a primeira palavra é o assunto («Escolha de Carlobks»), não um nome. Só os citáveis contam,
-    não todo nome aceito («Ana do RH» continua acusada). Custo: «Ana de Carlobks» no início de frase também passa."""
+    não todo nome aceito («Ana do RH» continua acusada).
+    Custo: um nome qualquer + partícula + citável no início de frase também passa («Ana de Carlobks», «Ana do Davi»)."""
     palavras = corrida.split()
     return (len(palavras) >= 3 and palavras[1] in PARTICULAS and catalogo._abre_frase(antes)
             and not sem_o_aceito(" ".join(palavras[2:]), citaveis))
