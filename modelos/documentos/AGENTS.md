@@ -38,7 +38,8 @@ No Claude Code, o CLAUDE.md do projeto tem só a linha `@AGENTS.md` e o que vale
 
 ## Índice: quando ler o quê
 
-As skills abrem pelo nome, estejam onde estiverem instaladas. Instalar ou atualizar: `npx skills add Carlobks/Morg-laws`.
+As skills abrem pelo nome, estejam onde estiverem instaladas. Tire da tabela a skill que não instalou, e a linha que ficar vazia.
+Instalar ou atualizar: o [P1 do manual](https://github.com/Carlobks/Morg-laws/blob/main/manual/03-instalar.md#p1--instalar-as-skills).
 
 | Situação | Skill |
 |---|---|
@@ -50,4 +51,4 @@ As skills abrem pelo nome, estejam onde estiverem instaladas. Instalar ou atuali
 | Vai escrever ou partir código, corrigir um bug, testar ou provar que funciona | `codigo-legivel`, `testes-e-provas` |
 | Vai criar, redesenhar ou rever uma tela | `desenhando-telas` |
 | Vai fazer push de código | `auditoria-de-seguranca` |
-| O projeto usa SQL, Supabase, Next.js ou React | `sql-postgres`, `supabase`, `nextjs-react` |
+| O projeto usa Postgres, Supabase, Next.js ou React | `sql-postgres`, `supabase`, `nextjs-react` |
