@@ -410,11 +410,13 @@ class ProjetoDeExemplo(unittest.TestCase):
         self.assertDoIndice("ok")
 
     def test_cada_pasta_que_diverge_reprova_e_diz_qual(self):
-        for por_pasta in ({".agents/skills": SKILLS[1:]}, {".claude/skills": SKILLS, ".agents/skills": SKILLS[1:]}):
-            with self.subTest(pastas=tuple(por_pasta)):
+        for por_pasta, onde in (({".agents/skills": SKILLS[1:]}, ".agents"),
+                                ({".claude/skills": SKILLS, ".agents/skills": SKILLS[1:]}, ".agents"),
+                                ({".claude/skills": SKILLS[1:], ".agents/skills": SKILLS}, ".claude")):
+            with self.subTest(pastas=tuple(por_pasta), falta_em=onde):
                 self.skills_so_em(por_pasta)
                 saida = self.assertFalhaEm("test_skills_do_indice_instaladas", "test_regras.py")
-                self.assertIn(f".agents/skills/: {SKILLS[0]}", saida)
+                self.assertIn(f"{onde}/skills/: {SKILLS[0]}", saida)
 
     def test_o_indice_sem_skills_com_uma_na_pasta_reprova(self):
         self.skills_so_em({".claude/skills": SKILLS[:1]}, indice_sem_skills=True)
