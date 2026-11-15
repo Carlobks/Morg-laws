@@ -6,7 +6,9 @@
   "texto é conselho; o que tem de ser cumprido vira hook, teste ou CI".
 - Uma barreira "por fazer (<fase>)" só vale enquanto a fase não está marcada como feita no plano.
 - Um caminho citado que já não existe ensina o agente a saltar a regra inteira: todos têm de existir.
-- As skills do índice estão instaladas, e as instaladas estão no índice (e no skills-lock.json, se houver).
+- As skills do índice estão em cada pasta de skills do projeto que existir (a do Claude Code e a do Codex), e as dessas
+  pastas estão no índice (e no skills-lock.json, se houver). Sem nenhuma das pastas e sem o skills-lock.json (skills
+  instaladas na pasta pessoal, com -g), o teste pula e diz por quê: a pasta pessoal muda de máquina e não existe no CI.
 - O CLAUDE.md, se existir ao lado, importa o arquivo de regras (`@AGENTS.md`): sem a linha, o Claude Code não lê regra
   nenhuma. O Claude Code carrega os dois juntos: a soma das linhas fica no limite e os caminhos dele também existem.
 Instalar: copiar para `tests/` do projeto, ao lado do `carregar_por_caminho.py`, e ajustar o bloco abaixo.
@@ -23,7 +25,8 @@ ARQUIVO_DE_REGRAS = RAIZ / "AGENTS.md"
 ARQUIVO_DO_CLAUDE = RAIZ / "CLAUDE.md"  # importa o de regras (@AGENTS.md) e leva só o que vale no Claude Code
 MAPA = RAIZ / "docs" / "regras-e-barreiras.md"
 PLANO = RAIZ / "docs" / "plano.md"  # onde as fases "por fazer" se marcam como feitas (- [x] **<fase> …)
-PASTA_SKILLS = RAIZ / ".claude" / "skills"
+PASTAS_SKILLS = (RAIZ / ".claude" / "skills", RAIZ / ".agents" / "skills")  # Claude Code e Codex: as que existirem
+TRAVA_DAS_SKILLS = RAIZ / "skills-lock.json"
 SECAO_DAS_SKILLS = "## Índice: quando ler o quê"
 MAXIMO_DE_LINHAS, MAXIMO_POR_LINHA = 100, 160
 CAMINHOS_DE_EXEMPLO = set()  # caminhos citados de propósito que não existem (ex.: um nome com AAAA-MM-DD)
@@ -66,6 +69,25 @@ def regras():
         else:
             atual = None
     return blocos
+
+
+def skills_citadas():
+    """Os nomes entre crases na seção do índice; vazio se o arquivo de regras não tem a seção."""
+    partes = texto_das_regras(ARQUIVO_DE_REGRAS).split(SECAO_DAS_SKILLS)
+    return set(re.findall(r"`([a-z0-9-]+)`", partes[1].split("\n## ")[0])) if len(partes) > 1 else set()
+
+
+def skills_da_pasta(pasta):
+    """Os nomes das skills (subpastas com SKILL.md) de uma pasta de skills; vazio se a pasta não existe."""
+    return {skill.name for skill in pasta.iterdir() if (skill / "SKILL.md").is_file()} if pasta.is_dir() else set()
+
+
+def divergencias(citadas, pasta, nomes):
+    """Uma frase por lado: o que o índice cita e a pasta não tem, e o que a pasta tem fora do índice."""
+    onde = pasta.relative_to(RAIZ).as_posix()
+    faltam, sobram = sorted(citadas - nomes), sorted(nomes - citadas)
+    return ([f"no índice e não em {onde}/: {', '.join(faltam)}"] if faltam else []) + (
+        [f"em {onde}/ e fora do índice: {', '.join(sobram)}"] if sobram else [])
 
 
 class RegrasCurtas(unittest.TestCase):
@@ -128,15 +150,20 @@ class NadaApontaParaOQueNaoExiste(unittest.TestCase):
                     self.assertTrue(existe, "caminho citado que já não existe")
 
     def test_skills_do_indice_instaladas(self):
-        partes = texto_das_regras(ARQUIVO_DE_REGRAS).split(SECAO_DAS_SKILLS)
-        if len(partes) == 1 and not PASTA_SKILLS.is_dir():
-            self.skipTest("o projeto não usa skills")
-        citadas = set(re.findall(r"`([a-z0-9-]+)`", partes[1].split("\n## ")[0])) if len(partes) > 1 else set()
-        instaladas = {pasta.name for pasta in PASTA_SKILLS.iterdir() if (pasta / "SKILL.md").is_file()}
-        self.assertEqual(citadas, instaladas, "o índice e a pasta das skills divergem")
-        trava = RAIZ / "skills-lock.json"
-        if trava.is_file():
-            self.assertEqual(set(json.loads(texto_das_regras(trava))["skills"]), instaladas)
+        citadas, pastas = skills_citadas(), [pasta for pasta in PASTAS_SKILLS if pasta.is_dir()]
+        if not pastas and not TRAVA_DAS_SKILLS.is_file():
+            if not citadas:
+                self.skipTest("o projeto não usa skills")
+            self.skipTest("nenhuma pasta de skills no projeto (.claude/skills/ nem .agents/skills/): as instaladas "
+                          "na pasta pessoal, com -g, não se conferem aqui")
+        for pasta in pastas or PASTAS_SKILLS[:1]:  # com a trava e sem pasta, a primeira acusa as que faltam
+            with self.subTest(pasta=pasta.relative_to(RAIZ).as_posix()):
+                nomes = skills_da_pasta(pasta)
+                self.assertEqual(divergencias(citadas, pasta, nomes), [], "o índice e a pasta das skills divergem "
+                                 "(sem nenhuma pasta, confere-se a do Claude Code)")
+                if TRAVA_DAS_SKILLS.is_file():
+                    self.assertEqual(set(json.loads(texto_das_regras(TRAVA_DAS_SKILLS))["skills"]), nomes,
+                                     "o skills-lock.json e a pasta das skills divergem")
 
 
 if __name__ == "__main__":

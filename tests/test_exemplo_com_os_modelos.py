@@ -8,6 +8,7 @@ vermelhos verdadeiros: arquivos gravados com CRLF pelo write_text do Windows e u
 
 import json
 import os
+import shutil
 import subprocess
 import sys
 import unittest
@@ -16,7 +17,7 @@ from unittest import mock
 from carregar_modelos import MODELOS, RAIZ
 from conjuntos_de_skills import gerais
 from leitura_do_repositorio import ler
-from projeto_de_exemplo import apagar, escrever, git, montar, rodar_testes
+from projeto_de_exemplo import SKILLS, apagar, escrever, git, montar, rodar_testes
 
 FUNCAO_COM_COMENTARIOS_NO_FIM = ("def com_notas():\n" + "".join(f"    passo_{i} = {i}\n" for i in range(19))
                                  + "    # uma nota\n    # outra\n    # e mais uma\n")
@@ -372,6 +373,63 @@ class ProjetoDeExemplo(unittest.TestCase):
     def test_pasta_apagada_a_mao_com_a_trava_ainda_citando_reprova(self):
         self.so_com_as_gerais(trava=(*gerais(RAIZ), "supabase"))
         self.assertFalhaEm("test_skills_do_indice_instaladas", "test_regras.py")
+
+    def skills_so_em(self, por_pasta, indice_sem_skills=False):
+        """Põe as skills só nas pastas de `por_pasta` ({pasta: nomes}); sem pastas, é quem instalou com -g."""
+        if indice_sem_skills:
+            self.pasta = montar(())
+            self.addCleanup(apagar, self.pasta)
+        for pasta in (self.pasta / ".claude" / "skills", self.pasta / ".agents" / "skills"):
+            if pasta.is_dir():
+                apagar(pasta)
+        for pasta, nomes in por_pasta.items():
+            for nome in nomes:
+                shutil.copytree(RAIZ / "skills" / nome, self.pasta / pasta / nome)
+
+    def assertDoIndice(self, resultado):
+        """O teste do índice, no test_regras.py verboso, termina em `resultado` (ok, ou skipped e o motivo)."""
+        codigo, saida = rodar_testes(self.pasta, "test_regras.py", verboso=True)
+        self.assertEqual(codigo, 0, saida[-2000:])
+        self.assertIn(f"test_skills_do_indice_instaladas) ... {resultado}", saida)
+
+    def test_sem_nenhuma_pasta_de_skills_pula_com_o_motivo(self):
+        self.skills_so_em({})
+        self.assertDoIndice("skipped 'nenhuma pasta de skills no projeto")
+
+    def test_o_indice_sem_skills_e_sem_pasta_pula(self):
+        self.skills_so_em({}, indice_sem_skills=True)
+        self.assertDoIndice("skipped 'o projeto n")
+
+    def test_so_na_pasta_do_codex_passa(self):
+        self.skills_so_em({".agents/skills": SKILLS})
+        self.assertDoIndice("ok")
+
+    def test_nas_duas_pastas_passa(self):
+        # Controle: daria vermelho se o teste exigisse uma pasta só ou confundisse as duas.
+        self.skills_so_em({".claude/skills": SKILLS, ".agents/skills": SKILLS})
+        self.assertDoIndice("ok")
+
+    def test_cada_pasta_que_diverge_reprova_e_diz_qual(self):
+        for por_pasta in ({".agents/skills": SKILLS[1:]}, {".claude/skills": SKILLS, ".agents/skills": SKILLS[1:]}):
+            with self.subTest(pastas=tuple(por_pasta)):
+                self.skills_so_em(por_pasta)
+                saida = self.assertFalhaEm("test_skills_do_indice_instaladas", "test_regras.py")
+                self.assertIn(f".agents/skills/: {SKILLS[0]}", saida)
+
+    def test_o_indice_sem_skills_com_uma_na_pasta_reprova(self):
+        self.skills_so_em({".claude/skills": SKILLS[:1]}, indice_sem_skills=True)
+        saida = self.assertFalhaEm("test_skills_do_indice_instaladas", "test_regras.py")
+        self.assertIn("em .claude/skills/ e fora do ", saida)
+
+    def test_a_trava_sem_nenhuma_pasta_reprova(self):
+        self.so_com_as_gerais(trava=gerais(RAIZ))
+        self.skills_so_em({})
+        saida = self.assertFalhaEm("test_skills_do_indice_instaladas", "test_regras.py")
+        self.assertIn(f".claude/skills/: {min(gerais(RAIZ))}", saida)
+
+    def test_subpasta_sem_skill_md_nao_conta(self):
+        (self.pasta / ".claude" / "skills" / "rascunho").mkdir()
+        self.assertDoIndice("ok")
 
 
 if __name__ == "__main__":
