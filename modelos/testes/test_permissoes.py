@@ -25,7 +25,7 @@ PERGUNTA = {"Bash(git push)", "Bash(git push *)", "Bash(gh pr create*)", "Bash(g
             "Edit(.claude/settings.json)", "Edit(.claude/hooks/**)", "Edit(.githooks/**)"}
 HOOKS_OBRIGATORIOS = ("guarda_do_git.py", "bloquear_segredos.py", "perguntar_antes.py")
 
-# O que nunca pode estar em "allow": publica (push, PR), instala, apaga, salta os portões ou abre tudo.
+# O que nunca pode estar em "allow": publica (push, PR), instala, apaga, pula os portões ou abre tudo.
 PERIGOSO = re.compile(r"push|install|\bnpx\b|\brm\b|Remove-Item|--no-verify|reset --hard|^\w+\(\*\)$"
                       r"|\bpy(?:thon\d?)?(?:\.exe)? (?:-\w+ )*-\)"  # Python lido do stdin: roda qualquer código
                       r"|\bgh pr (?:\*|create|merge|close|edit|comment|review|ready)", re.IGNORECASE)

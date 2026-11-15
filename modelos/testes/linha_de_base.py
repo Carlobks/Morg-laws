@@ -15,13 +15,13 @@ e compara-o com a linha de base em `tests/linhas-de-base/<regra>.json`. O format
   do commit de antes, ou, se ele a não tem (foi apagada), a última conhecida; e a marca na mensagem de C. E a base do
   fim só pode chegar à de comparação mais as subidas dos commits marcados: o que passa disso (um merge que sobe a
   base por si, ao resolver um conflito, por exemplo) é acusado. Se a base de comparação
-  não for um commit que o git conheça (os 40 zeros de um ramo novo, um push forçado, um nome errado), o teste salta,
+  não for um commit que o git conheça (os 40 zeros de um ramo novo, um push forçado, um nome errado), o teste é pulado,
   com o motivo escrito, em vez de passar calado.
-Lê do índice do git (o que vai no commit), nunca do disco: o trabalho a meio de outra sessão na mesma pasta não
+Lê do índice do git (o que vai no commit), nunca do disco: o trabalho em andamento de outra sessão na mesma pasta não
 trava o commit desta. Um arquivo novo conta depois do `git add`.
 Projeto que já viola: rode uma vez com MORG_CRIAR_LINHA_DE_BASE=1. A base que falta é criada com os valores de
 hoje; uma que existe no índice mas ainda não no último commit ganha as métricas que lhe faltam (o caso de um projeto
-com as duas línguas, que partilham a pasta). O teste falha até ela entrar no git. Uma base já commitada nunca muda.
+com as duas línguas, que compartilham a pasta). O teste falha até ela entrar no git. Uma base já commitada nunca muda.
 Limites conhecidos: mudar de caminho um arquivo que está na base (`git mv`) conta como entrada nova; corrija-o ou
 faça um commit só da base, revisto. Apagar a base e criá-la de novo: o commit que a apaga com o código ainda a
 violar falha no «não piora», e no CI os dois commits no mesmo push são apanhados; só passa com o primeiro feito sem

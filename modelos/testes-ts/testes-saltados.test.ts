@@ -30,7 +30,7 @@ const FORA_DOS_TESTES_SALTADOS_TS = ['vendor/', 'node_modules/']
 const CHAMADAS_QUE_SEMPRE_DESLIGAM = new Set(['xit', 'xdescribe', 'xtest', 'fit', 'fdescribe'])
 const APIS_DE_TESTES = new Set(['it', 'test', 'describe', 'suite', 'bench'])
 
-const SALTA_SEMPRE = 'salta sempre: use it.skipIf(condição) ou contexto.skip(condição, "nota"), ou apague o teste'
+const SALTA_SEMPRE = 'pula sempre: use it.skipIf(condição) ou contexto.skip(condição, "nota"), ou apague o teste'
 const SEM_MOTIVO_ESCRITO = 'falta o motivo escrito'
 
 type SaltoProibido = { linha: number, motivo: string }
@@ -103,7 +103,7 @@ function erroDaChamada(chamada: ts.CallExpression): string | null {
     if (CHAMADAS_QUE_SEMPRE_DESLIGAM.has(cadeia[0])) return `${cadeia[0]} desliga ou isola o teste`
     const daApiDeTestes = APIS_DE_TESTES.has(cadeia[0])
     if (daApiDeTestes && cadeia.includes('only')) return '.only esconde todos os outros testes'
-    // No vitest o 1.º argumento de test.skip é o NOME do teste: `test.skip(condição, …)` salta sempre.
+    // No vitest o 1.º argumento de test.skip é o NOME do teste: `test.skip(condição, …)` pula sempre.
     if (daApiDeTestes && cadeia.includes('skip')) return SALTA_SEMPRE
     if (daApiDeTestes) return erroDasOpcoes(chamada)
     return cadeia.length > 1 && cadeia[cadeia.length - 1] === 'skip' ? erroDoSkipDoContexto(chamada) : null
@@ -144,7 +144,7 @@ describe('detector de saltos', () => {
         expect(linhasProibidas(fonte)).toEqual([1, 2, 3, 4, 5, 6, 7, 8])
     })
 
-    it('no vitest, test.skip salta sempre, com qualquer 1.º argumento (é o nome do teste)', () => {
+    it('no vitest, test.skip pula sempre, com qualquer 1.º argumento (é o nome do teste)', () => {
         const fonte = ["test.skip(semRede, 'precisa da rede')", 'it.skip(!id, `defina ${nome}`)',
             "describe.skip(semRede, () => {})"].join('\n')
         expect(linhasProibidas(fonte)).toEqual([1, 2, 3])

@@ -1,8 +1,8 @@
-"""Hook PreToolUse (Bash/PowerShell): o agente não salta nem desliga os portões do git (Morg-laws).
+"""Hook PreToolUse (Bash/PowerShell): o agente não pula nem desliga os portões do git (Morg-laws).
 
 Os portões (testes, identidade, lista negra, mensagem) rodam nos hooks do git (`.githooks/`, ligados por
 `core.hooksPath`), que valem também para quem commita à mão. Esta guarda recusa, vindo do agente:
-- `--no-verify` (ou `-n` num commit), que salta os hooks do git;
+- `--no-verify` (ou `-n` num commit), que pula os hooks do git;
 - mudar ou desligar o `core.hooksPath` (só se pode pô-lo em `.githooks`);
 - um commit com o `core.hooksPath` que não é `.githooks` (os portões não rodariam);
 - preparar tudo de uma vez (`git add -A` / `-u` / `.` / `--all` / `--update` / `:/`, `git commit -a`, commit de `.`
@@ -113,7 +113,7 @@ def motivo_do_commit(args, ler_hooks):
     """Motivo para recusar um `git commit …` (None se puder seguir)."""
     curtas, longas, mensagens, caminhos = opcoes(args)
     if "n" in curtas or "--no-verify" in longas:
-        return "--no-verify salta os portões do git."
+        return "--no-verify pula os portões do git."
     if "a" in curtas or "--all" in longas or _TUDO & set(caminhos) or not (caminhos or merge_em_curso()):
         return "o commit é por caminho (git commit -F msg -- <arquivos>), nunca de tudo (-a, --all, ., sem caminhos)."
     if any("\n" in texto or "<<" in texto for texto in mensagens):
@@ -147,8 +147,8 @@ def motivo_do_hooks_path(globais, subcomando, args):
 
 
 def merge_em_curso(raiz=RAIZ_DA_GUARDA):
-    """True a meio de um merge: o commit que o fecha leva tudo o que o merge preparou, sem caminhos.
-    O git diz onde está o MERGE_HEAD: num worktree o .git é um arquivo e ele fica noutra pasta."""
+    """True no meio de um merge: o commit que o fecha leva tudo o que o merge preparou, sem caminhos.
+    O git diz onde está o MERGE_HEAD: num worktree o .git é um arquivo e ele fica em outra pasta."""
     caminho = subprocess.run(["git", "-C", str(raiz), "rev-parse", "--path-format=absolute", "--git-path",
                               "MERGE_HEAD"], capture_output=True, text=True, encoding="utf-8", check=False).stdout
     return bool(caminho.strip()) and Path(caminho.strip()).exists()
@@ -166,7 +166,7 @@ def motivo_para_bloquear(comando, ler_hooks):
         if not motivo and subcomando == "commit":
             motivo = motivo_do_commit(args, ler_hooks)
         if not motivo and subcomando in ("push", "merge", "rebase", "am", "cherry-pick") and "--no-verify" in args:
-            motivo = "--no-verify salta os portões do git."
+            motivo = "--no-verify pula os portões do git."
         if not motivo and subcomando == "stash" and args[:1] not in (["list"], ["show"]):
             motivo = "git stash leva o trabalho de todas as sessões desta pasta; commite por caminho."
         if motivo:

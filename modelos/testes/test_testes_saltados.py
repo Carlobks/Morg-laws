@@ -26,9 +26,9 @@ from linha_de_base import TresVerificacoesDaCatraca, arquivos_do_indice, ler_do_
 ARQUIVO_DE_TESTE_PYTHON = re.compile(r"(?:^|/)tests?/.*\.py$|(?:^|/)(?:test_[^/]*|[^/]*_test)\.py$")
 FORA_DOS_TESTES_SALTADOS = ("vendor/", "node_modules/")
 
-SALTA_SEMPRE = "salta sempre: diga a condição (skipIf) ou apague o teste"
+SALTA_SEMPRE = "pula sempre: diga a condição (skipIf) ou apague o teste"
 SEM_MOTIVO = "falta o motivo escrito"
-FORA_DE_UM_IF = "salta sempre: ponha-o dentro de um if com a condição (ou de um except)"
+FORA_DE_UM_IF = "pula sempre: ponha-o dentro de um if com a condição (ou de um except)"
 
 
 def nome_chamado(no):
@@ -64,7 +64,7 @@ def erro_do_decorador(decorador):
 
 
 def erro_da_chamada(chamada, dentro_de_um_if):
-    """Porque esta chamada no corpo salta o teste para sempre; None se for condicional e com motivo."""
+    """Porque esta chamada no corpo pula o teste para sempre; None se for condicional e com motivo."""
     if nome_chamado(chamada) not in ("skipTest", "skip", "SkipTest"):
         return None
     if not dentro_de_um_if:

@@ -1,4 +1,4 @@
-"""Guarda do git (modelos/claude/hooks/guarda_do_git.py): o agente não salta nem desliga os portões do git."""
+"""Guarda do git (modelos/claude/hooks/guarda_do_git.py): o agente não pula nem desliga os portões do git."""
 
 import json
 import subprocess
