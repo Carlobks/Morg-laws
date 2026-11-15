@@ -42,7 +42,7 @@ SECAO_DAS_RONDAS = "## 3. As rondas"
 SECAO_DA_BUSCA = "## 8. Procurar o que já existe"
 MARCA_DA_DISPENSA = "ronda dispensada pelo dono"
 FRASE_DO_INDICE = "o índice só com as skills instaladas"
-FRASE_DA_RONDA_0 = "o teste do índice do molde dá erro"
+FRASE_DA_RONDA_0 = "o teste do índice do molde pula"
 FRASES_DA_BUSCA = ("sem baixar, instalar nem rodar nada", "Nunca invente um candidato")
 DESTINOS_DA_SKILL = ("docs/projeto.md", "docs/README.md", "AGENTS.md", "CLAUDE.md", "docs/regras-e-barreiras.md",
                      "docs/planos/", "docs/decisoes/")
