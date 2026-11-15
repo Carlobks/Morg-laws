@@ -1,4 +1,4 @@
-"""Hook perguntar_antes (modelos/claude/hooks/perguntar_antes.py): push, PR e instalações pedem sempre o "sim".
+"""Hook perguntar_antes (modelos/claude/hooks/perguntar_antes.py): push, PR e instalações pedem o "sim".
 
 Num projeto real, com a regra "ask" de `Bash(git push *)` no settings.json, um `git push --dry-run` rodou sem
 pergunta no modo automático. Uma regra "ask" casa só o comando escrito como nela; o hook lê o comando inteiro e
@@ -88,6 +88,15 @@ class ComoHook(unittest.TestCase):
         decisao = json.loads(saida)["hookSpecificOutput"]
         self.assertEqual((decisao["hookEventName"], decisao["permissionDecision"]), ("PreToolUse", "ask"))
         self.assertIn("push", decisao["permissionDecisionReason"])
+        # A caixa de pergunta fala com quem a lê.
+        self.assertIn("Precisa do seu sim, a cada vez.", decisao["permissionDecisionReason"])
+        self.assertNotIn("dono", decisao["permissionDecisionReason"])
+
+    def test_o_aviso_na_tela_fala_com_quem_le(self):
+        ligacoes = json.loads((PASTA_HOOKS.parent / "settings.json").read_text(encoding="utf-8"))["hooks"]
+        avisos = [hook["statusMessage"] for grupos in ligacoes.values() for grupo in grupos
+                  for hook in grupo["hooks"] if "perguntar_antes" in hook.get("command", "")]
+        self.assertEqual(avisos, ["Vendo se é preciso o seu sim"] * 2)
 
     def test_no_edit_das_regras_tambem_pergunta(self):
         _, saida, _ = self.correr(str(perguntar.RAIZ_DAS_PERGUNTAS / ".claude" / "settings.json"), "Edit")
@@ -114,6 +123,8 @@ class FraseVelhaNaoVolta(unittest.TestCase):
         re.compile(r"modo automático[^\n]{0,60}\bnã[o] (?:pergunta|perguntam|bastam)\b", re.IGNORECASE),
         re.compile(r"\bnã[o] (?:pergunta|perguntam|bastam)\b[^\n]{0,40}modo automático", re.IGNORECASE),
         re.compile(r"seja qual for o mod[o]|em qualquer mod[o]", re.IGNORECASE),
+        # O hook não sabe o que acontece em todos os modos (no dontAsk, por exemplo); e quem viu é o projeto, não uma pessoa.
+        re.compile(r"\bpedem sempr[e] o\b|\bconfirmado pelo don[o]\b", re.IGNORECASE),
     )
 
     def test_nenhum_arquivo_traz_a_frase_velha(self):

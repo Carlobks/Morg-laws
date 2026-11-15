@@ -1,4 +1,4 @@
-"""Hook PreToolUse: push, PR, instalações e mudanças às regras do agente pedem sempre o "sim" do dono.
+"""Hook PreToolUse: push, PR, instalações e mudanças às regras do agente pedem o "sim" do dono.
 
 As regras "ask" do settings.json perguntam também no modo automático, mas só para o comando escrito como na
 regra: `git -C pasta push` ou `git -c nome=valor push` não casam com `Bash(git push *)`. Este hook lê o comando
@@ -84,7 +84,7 @@ def main():
         motivo = motivo_para_perguntar(entrada.get("command") or "")
     if motivo:
         decisao = {"hookEventName": "PreToolUse", "permissionDecision": "ask",
-                   "permissionDecisionReason": f"Morg-laws: {motivo}. Precisa do sim do dono, a cada vez."}
+                   "permissionDecisionReason": f"Morg-laws: {motivo}. Precisa do seu sim, a cada vez."}
         sys.stdout.reconfigure(encoding="utf-8")
         sys.stdout.write(json.dumps({"hookSpecificOutput": decisao}, ensure_ascii=False) + "\n")
 

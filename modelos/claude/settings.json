@@ -61,7 +61,7 @@
             "command": "p=\"${MORG_PY:-$(command -v py || command -v python3)}\"; r=\"$CLAUDE_PROJECT_DIR\"; [ -f \"$r/.claude/hooks/perguntar_antes.py\" ] || r=\"$(git rev-parse --show-toplevel)\"; \"$p\" -I \"$r/.claude/hooks/perguntar_antes.py\"",
             "timeout": 15,
             "onFailure": "block",
-            "statusMessage": "Vendo se é preciso o sim do dono"
+            "statusMessage": "Vendo se é preciso o seu sim"
           }
         ]
       },
@@ -80,7 +80,7 @@
             "command": "p=\"${MORG_PY:-$(command -v py || command -v python3)}\"; r=\"$CLAUDE_PROJECT_DIR\"; [ -f \"$r/.claude/hooks/perguntar_antes.py\" ] || r=\"$(git rev-parse --show-toplevel)\"; \"$p\" -I \"$r/.claude/hooks/perguntar_antes.py\"",
             "timeout": 15,
             "onFailure": "block",
-            "statusMessage": "Vendo se é preciso o sim do dono"
+            "statusMessage": "Vendo se é preciso o seu sim"
           }
         ]
       }
