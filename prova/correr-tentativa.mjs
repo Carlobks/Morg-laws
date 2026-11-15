@@ -14,7 +14,7 @@
 // ou serviços), se a vigilância vir um postgres/initdb/pg_ctl/psql ou uma porta nova durante a
 // corrida, se o modelo do init não for o fixo, ou se o oráculo der erro.
 // Os resultados ficam fora do repositório (têm caminhos da máquina e o e-mail da conta):
-// por omissão em ~/.morg-laws/fase-4/corridas/<id>/.
+// por padrão em ~/.morg-laws/fase-4/corridas/<id>/.
 
 import { spawn, spawnSync } from 'node:child_process'
 import fs from 'node:fs'
@@ -96,7 +96,7 @@ function executar(programa, argumentos, opcoes = {}) {
 }
 
 // A cópia não pode herdar regras de um repositório ou de uma pasta acima dela.
-// O ~/.claude é a configuração do utilizador: não conta aqui, quem o julga é o system/init.
+// O ~/.claude é a configuração do usuário: não conta aqui, quem o julga é o system/init.
 function conferirQueEstaForaDeRepositorios(pasta) {
   const git = executar('git', ['-C', pasta, 'rev-parse', '--show-toplevel'])
   const configuracaoDoUtilizador = path.join(os.homedir(), '.claude')
@@ -331,7 +331,7 @@ async function principal() {
     let segunda = null
 
     // Parte 2, no máximo uma: terminou sem mudanças e a pedir licença.
-    // Quem pergunta depois de já ter mexido não é retomado (decisão do dono), mas fica contado à parte.
+    // Quem pergunta depois de já ter mexido não é retomado (decisão do autor), mas fica contado à parte.
     meta.pediu_licenca = false
     meta.pergunta_com_trabalho_parcial = false
     if (TAREFAS_COM_ORACULO.includes(opcoes.tarefa) && primeira.resumo.sessao) {

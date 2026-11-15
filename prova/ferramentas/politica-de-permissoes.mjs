@@ -135,7 +135,7 @@ export function compararFotografias(antes, depois) {
 // ---------- vigilância durante a corrida: processos dos descendentes do claude e portas ----------
 // O código do agente sai da política pelo `npm test` (B4 da auditoria 4.3). Sem sandbox, isto
 // pelo menos vê um postgres, initdb, pg_ctl ou psql novo, e uma porta do Postgres que passe a
-// aceitar ligações. Uma escuta noutra porta qualquer não é visível daqui (ver acima).
+// aceitar ligações. Uma escuta em outra porta qualquer não é visível daqui (ver acima).
 
 const executarAssincrono = promisify(execFile)
 const PROGRAMAS_VIGIADOS = new Set(['postgres.exe', 'initdb.exe', 'pg_ctl.exe', 'psql.exe'])

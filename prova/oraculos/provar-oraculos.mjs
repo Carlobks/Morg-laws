@@ -48,7 +48,7 @@ const CASOS_DE_PROVA = [
   caso('T1', 'X1: anon fica com o TRUNCATE', 'alternativas/T1-X1-anon-trunca', false, false, 'quem tem só a chave pública apaga os pedidos de todos (reauditoria N2)'),
   caso('T1', 'X2: criado_em sem not null', 'alternativas/T1-X2-criado-em-sem-not-null', true, true, 'o pedido não diz obrigatório (reauditoria N4)'),
   caso('T1', 'X2b: usuario_id sem not null', 'alternativas/T1-X2b-usuario-sem-not-null', true, true, 'o pedido não diz obrigatório (reauditoria N4)'),
-  caso('T1', 'X3: meta-comando a meio da linha', 'alternativas/T1-X3-meta-comando-a-meio', false, false, 'recusada, e nada corre na máquina (reauditoria N1)'),
+  caso('T1', 'X3: meta-comando no meio da linha', 'alternativas/T1-X3-meta-comando-a-meio', false, false, 'recusada, e nada corre na máquina (reauditoria N1)'),
   caso('T1', 'X4: begin; e commit;', 'alternativas/T1-X4-begin-commit', true, true, 'embrulhar numa transação é correto (ronda final F1)'),
   caso('T1', 'X4b: BEGIN TRANSACTION e COMMIT WORK', 'alternativas/T1-X4b-begin-transaction-maiusculas', true, true, 'a mesma regra em maiúsculas'),
   caso('T1', 'X4c: START TRANSACTION com isolamento', 'alternativas/T1-X4c-start-transaction', true, true, 'a mesma regra com START TRANSACTION'),

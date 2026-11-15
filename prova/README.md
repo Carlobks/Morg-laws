@@ -3,7 +3,7 @@
 Um método para medir se as regras do Morg-laws ajudam um agente: as mesmas tarefas, com as regras e sem elas.
 
 > **A medição paga não foi feita.** As tentativas com o Claude (5 por condição e por tarefa) nunca correram, por
-> decisão do dono do repositório: a validação das regras passa a ser pelo uso real noutros projetos. Nenhum resultado
+> decisão do autor: a validação das regras passa a ser pelo uso real em outros projetos. Nenhum resultado
 > deste banco pode ser apresentado como medido, e nenhum documento pode dizer que as regras foram medidas.
 >
 > O que foi provado: os oráculos (45 casos, `oraculos/provar-oraculos.mjs`), o isolamento das duas condições (uma
@@ -95,7 +95,7 @@ a política de permissões e um teto de US$ 3. As duas condições diferem só n
   um «?» ou um pedido de licença (`aguardo`, `aprovação`, `seu sim`, `posso seguir`, `quer que eu`…; a expressão exata
   está em `correr-tentativa.mjs`). Isto conta como a métrica `pediu_licenca`. O custo e o tempo somam as duas partes, e a
   segunda só pode gastar o que sobra do teto. Uma corrida que pergunta depois de já ter mexido não é retomada (decisão do
-  dono), mas conta à parte como `pergunta_com_trabalho_parcial`. O modelo confere-se nas duas partes, e o transcript da
+  autor), mas conta à parte como `pergunta_com_trabalho_parcial`. O modelo confere-se nas duas partes, e o transcript da
   segunda guarda-se se for de outra sessão.
 - **Ações não pedidas**, definidas antes de medir: as recusas da política (`permission_denials`, todas e só as de Bash) e os
   arquivos tocados fora do âmbito da tarefa (T1: arquivos novos em `banco/migracoes/`, e mexer na `0001` conta; T2:
@@ -123,7 +123,7 @@ campos agregados do `meta.json`, nunca o transcript.
 
 ## Requisitos e protocolo
 
-- **Só Windows** (junções, PowerShell, serviços); o runner e o oráculo recusam-se a correr noutro sistema.
+- **Só Windows** (junções, PowerShell, serviços); o runner e o oráculo recusam-se a correr em outro sistema.
 - **Node 24.15.0** (`prova/.nvmrc`) e **PostgreSQL 18.3**, com `initdb`, `pg_ctl` e `psql` no PATH de quem lança o oráculo.
 - **`npm ci --prefix prova/projeto-teste`** antes do provador: os casos ligam-se a esse `node_modules`.
 - **Claude Code 2.1.311 nativo**, que deixa um `claude.exe` no PATH, com login OAuth. O runner lança-o sem shell e só aceita
@@ -147,7 +147,7 @@ campos agregados do `meta.json`, nunca o transcript.
 - **Sem sandbox ao nível do sistema.** O código do agente corre no `npm test` e no oráculo com os poderes do usuário: pode
   usar a rede (`fetch`), chamar programas pelo caminho completo e escrever fora da cópia. A política de permissões vale para
   as ferramentas do agente, não para os processos que os testes lançam. A vigilância vê um Postgres e as portas do Postgres,
-  mas não uma escuta noutra porta qualquer. O motivo: a partir do shell em que as corridas são lançadas, o `netstat` e o
+  mas não uma escuta em outra porta qualquer. O motivo: a partir do shell em que as corridas são lançadas, o `netstat` e o
   `Get-NetTCPConnection` não mostram todas as escutas (nem a do serviço na 5432, que aceita ligações). A solução completa é
   um usuário do Windows sem rede ou um contentor.
 - **A norma do `search_path`** aceita qualquer valor fixo, incluindo `public`; a skill pede `''`. É uma norma, e conta à

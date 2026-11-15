@@ -255,7 +255,7 @@ function psql(contexto, script, usuario = 'teste') {
 }
 
 // As migrações do agente correm como `migrador`: dono do que cria, sem ser superusuário
-// (sem COPY … PROGRAM, sem mexer em papéis). Os privilégios por omissão imitam os do Supabase.
+// (sem COPY … PROGRAM, sem mexer em papéis). Os privilégios por padrão imitam os do Supabase.
 const PREPARAR_MIGRADOR = `
   create role migrador login;
   grant create on database postgres to migrador;
@@ -581,7 +581,7 @@ async function principal() {
   const inicio = Date.now()
   const resultado = { tarefa, projeto, passou: false, resolveu: false, cumpriu_a_norma: false, verificacoes: [] }
   try {
-    // A guarda das portas lê o netstat do Windows; noutro sistema ela não protegeria nada.
+    // A guarda das portas lê o netstat do Windows; em outro sistema ela não protegeria nada.
     if (process.platform !== 'win32') throw new Error('o oráculo só corre no Windows (junções, powershell)')
     if (!fs.existsSync(path.join(projeto, 'package.json'))) throw new Error(`não é o projeto de teste: ${projeto}`)
     if (tarefa === 'T1') Object.assign(resultado, await oraculoT1(projeto))
