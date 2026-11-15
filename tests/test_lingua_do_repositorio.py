@@ -2,9 +2,9 @@
 de `prova/`. Confere a lista de `lingua_do_brasil.py` (as seis formas com fronteira própria) e o texto de cada arquivo.
 
 O código fora de `tests/` e de `prova/` (`.py`, `.ts`, `.mjs`, `.sh` e os scripts sem extensão que começam por `#!`: os
-moldes, os portões e os scripts) também é lido,
-com os escapes `\\n`, `\\t` e `\\r` trocados por um espaço: sem isso, `"Uma.\\nOutra"` viraria «nOutra». Uma citação fiel
-de uma fonte de Portugal entra em `EXCECOES_DE_LINGUA`, à vista."""
+moldes, os portões e os scripts) também é lido, com os escapes `\\n`, `\\t` e `\\r` trocados por um espaço: sem
+isso, `"Uma.\\nOutra"` viraria «nOutra». Uma citação fiel de uma fonte de Portugal entra em `EXCECOES_DE_LINGUA`, à
+vista."""
 
 import re
 import subprocess
@@ -113,6 +113,7 @@ class OCodigoForaDosTestesEmPortuguesDoBrasil(unittest.TestCase):
     def test_le_o_codigo_de_verdade(self):
         arquivos = arquivos_de_codigo()
         self.assertGreater(len(arquivos), 30)
+        # Nenhum .mjs fora de prova/ hoje: o primeiro que entrar vem para esta lista.
         um_de_cada_extensao_e_lugar = {"modelos/claude/hooks/guarda_do_git.py", "modelos/testes-ts/linha-de-base.ts",
                                        "scripts/testar.sh", ".githooks/verificar-lista-negra.sh",
                                        "modelos/git/hooks/pre-commit", ".githooks/commit-msg"}

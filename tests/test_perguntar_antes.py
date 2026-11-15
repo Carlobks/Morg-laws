@@ -91,6 +91,7 @@ class ComoHook(unittest.TestCase):
         # A caixa de pergunta fala com quem a lê.
         self.assertIn("Precisa do seu sim, a cada vez.", decisao["permissionDecisionReason"])
         self.assertNotIn("dono", decisao["permissionDecisionReason"])
+        self.assertNotIn("sempre", decisao["permissionDecisionReason"])
 
     def test_o_aviso_na_tela_fala_com_quem_le(self):
         ligacoes = json.loads((PASTA_HOOKS.parent / "settings.json").read_text(encoding="utf-8"))["hooks"]
@@ -123,7 +124,8 @@ class FraseVelhaNaoVolta(unittest.TestCase):
         re.compile(r"modo automático[^\n]{0,60}\bnã[o] (?:pergunta|perguntam|bastam)\b", re.IGNORECASE),
         re.compile(r"\bnã[o] (?:pergunta|perguntam|bastam)\b[^\n]{0,40}modo automático", re.IGNORECASE),
         re.compile(r"seja qual for o mod[o]|em qualquer mod[o]", re.IGNORECASE),
-        # O hook não sabe o que acontece em todos os modos (no dontAsk, por exemplo); e quem viu é o projeto, não uma pessoa.
+        # O hook não sabe o que acontece em todos os modos (no dontAsk, por exemplo);
+        # e quem viu é o projeto, não uma pessoa.
         re.compile(r"\bpedem sempr[e] o\b|\bconfirmado pelo don[o]\b", re.IGNORECASE),
     )
 
