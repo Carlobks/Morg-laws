@@ -7,7 +7,7 @@ Data: 2026-11-14.
 Com agentes de código, começar um projeto ficou barato; ver qual **não** vale a pena começar continua difícil. Que
 perguntas, tiradas de livros, artigos e publicações, decidem se um projeto deve começar (seguir, encolher, desistir ou
 adaptar algo que já existe)? E como um agente procura, no início, o que já existe (código aberto, pacote, produto
-pronto) e julga se serve? A resposta serve a um pedido do dono do Morg-laws (2026-11-13) e ao lugar natural dele, a skill
+pronto) e julga se serve? A resposta serve a um pedido do autor do Morg-laws (2026-11-13) e ao lugar natural dele, a skill
 `comecando-um-projeto`.
 
 ## Fontes

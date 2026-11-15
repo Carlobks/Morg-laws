@@ -36,7 +36,7 @@ Os testes prontos de `testes-ts/` são a exceção: TypeScript, com o `vitest` e
 | `testes/linha_de_base.py` | `tests/` | O motor dos seis testes prontos (estes três e os de funções, nomes e alarmes): a linha de base em `tests/linhas-de-base/<regra>.json` não piora, não tem folga e só encolhe (no CI, contra `MORG_BASE_DE_COMPARACAO`); `MORG_CRIAR_LINHA_DE_BASE=1` cria a que falta ou completa a que ainda não está commitada |
 | `testes-ts/*.test.ts` | `tests/catracas/` | Os mesmos seis em TypeScript/vitest (tamanho de arquivo e de função, nomes genéricos e únicos, alarmes e testes saltados), com os mesmos limites e listas e a linha de base no mesmo formato; o código lê-se pela árvore do `typescript` (`ler-codigo-ts.ts`, `linha-de-base.ts`) |
 | `testes/test_dados_pessoais.py` | `tests/` | Sem caminhos de pastas pessoais, e-mails pessoais, termos da lista negra nem os números de documento que o projeto ligar |
-| `testes/test_tamanho_das_funcoes.py` | `tests/` | Funções Python até 20 linhas (decisão do dono), contadas como no TypeScript, com linha de base por arquivo |
+| `testes/test_tamanho_das_funcoes.py` | `tests/` | Funções Python até 20 linhas (escolha do Morg-laws), contadas como no TypeScript, com linha de base por arquivo |
 | `testes/test_fins_de_linha.py` | `tests/` | LF no git; CRLF no disco só no que o Windows roda |
 | `testes/test_permissoes.py` | `tests/` | As três colunas, o modo que pula as permissões desligado, os hooks ligados: `onFailure: block` nos do `PreToolUse` e um `onFailure` escrito nos dos outros eventos |
 | `testes/test_ci.py` | `tests/` | Actions fixadas por SHA, token só de leitura, nada baixado direto para uma shell |

@@ -1,4 +1,4 @@
-// Funções JS/TS até 20 linhas (Morg-laws: decisão do dono; o que já viola não piora).
+// Funções JS/TS até 20 linhas (escolha do Morg-laws; o que já viola não piora).
 //
 // Uma função curta faz uma coisa só, e o agente acerta a mudança à primeira. Conta-se como no molde Python
 // test_tamanho_das_funcoes.py: da linha onde a função começa (depois dos decoradores) à linha onde fecha, com as

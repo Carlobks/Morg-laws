@@ -1,4 +1,4 @@
-"""Funções Python até LIMITE_POR_FUNCAO linhas (Morg-laws: decisão do dono; o que já viola não piora).
+"""Funções Python até LIMITE_POR_FUNCAO linhas (escolha do Morg-laws; o que já viola não piora).
 
 Uma função curta faz uma coisa só, e o agente acerta a mudança à primeira. Conta-se como no molde TypeScript
 tamanho-de-funcao.test.ts: da linha do `def` (os decoradores não) à última linha do corpo, com as linhas em branco
