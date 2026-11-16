@@ -99,20 +99,20 @@ function executar(programa, argumentos, opcoes = {}) {
 // O ~/.claude é a configuração do usuário: não conta aqui, quem o julga é o system/init.
 function conferirQueEstaForaDeRepositorios(pasta) {
   const git = executar('git', ['-C', pasta, 'rev-parse', '--show-toplevel'])
-  const configuracaoDoUtilizador = path.join(os.homedir(), '.claude')
+  const configuracaoDoUsuario = path.join(os.homedir(), '.claude')
   const encontradosAcima = []
   for (let atual = path.dirname(pasta); ; atual = path.dirname(atual)) {
     for (const nome of ARQUIVOS_DE_REGRAS_PROCURADOS) {
       const candidato = path.join(atual, nome)
-      if (candidato !== configuracaoDoUtilizador && fs.existsSync(candidato)) encontradosAcima.push(candidato)
+      if (candidato !== configuracaoDoUsuario && fs.existsSync(candidato)) encontradosAcima.push(candidato)
     }
     if (path.dirname(atual) === atual) break
   }
-  const memoriaDoUtilizador = path.join(configuracaoDoUtilizador, 'CLAUDE.md')
+  const memoriaDoUsuario = path.join(configuracaoDoUsuario, 'CLAUDE.md')
   return {
     dentro_de_repositorio_git: git.codigo === 0,
     regras_nas_pastas_acima: encontradosAcima,
-    claude_md_do_utilizador_bytes: fs.existsSync(memoriaDoUtilizador) ? fs.statSync(memoriaDoUtilizador).size : null,
+    claude_md_do_utilizador_bytes: fs.existsSync(memoriaDoUsuario) ? fs.statSync(memoriaDoUsuario).size : null,
   }
 }
 
