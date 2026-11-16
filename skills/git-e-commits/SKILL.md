@@ -60,6 +60,7 @@ O mesmo hook pode exigir outras marcas, cada uma com o motivo concreto (modelo e
 | `Teste-mudado:` | O commit tira ou muda linhas de um teste que já existia. Acrescentar casos não pede nada. |
 | `Sem-changelog:` | Um `feat` ou `fix` no que se instala sem fragmento do changelog. |
 | `Changelog-corrigido:` | O commit muda uma versão já lançada do `CHANGELOG.md`. |
+| `Alarme-novo:` | A contagem dos alarmes calados de um tipo sobe no projeto (o teste de alarmes, ver `codigo-legivel`). |
 
 ## 5. Changelog por fragmento
 
