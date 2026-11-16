@@ -1,5 +1,6 @@
 """A língua do Brasil em todo o texto público do repositório: `.md`, `.json`, `.txt` e `.yml` do git, fora de `tests/` e
-de `prova/`. Confere a lista de `lingua_do_brasil.py` (as seis formas com fronteira própria) e o texto de cada arquivo.
+de `prova/`. Confere a lista de `lingua_do_brasil.py` (as seis formas com fronteira própria e o "saltar"/"registar") e
+o texto de cada arquivo.
 
 O código fora de `tests/` e de `prova/` (`.py`, `.ts`, `.mjs`, `.sh` e os scripts sem extensão que começam por `#!`: os
 moldes, os portões e os scripts) também é lido, com os escapes `\\n`, `\\t` e `\\r` trocados por um espaço: sem
@@ -18,7 +19,11 @@ EXTENSOES_DE_CODIGO = (".py", ".ts", ".mjs", ".sh")
 ESCAPES_DO_CODIGO = re.compile(r"\\[ntr]")
 FORA = ("tests/", "prova/")
 # (arquivo, trecho): o trecho exato que o teste não confere. A citação é a mensagem real do projeto de origem.
-EXCECOES_DE_LINGUA = frozenset({("projetos/erp-de-servicos/o-que-se-mediu.md", "109 ficheiros por commitar")})
+EXCECOES_DE_LINGUA = frozenset({("projetos/erp-de-servicos/o-que-se-mediu.md", "109 ficheiros por commitar"),
+                                ("projetos/erp-de-servicos/regras-e-incidentes.md", "a sugestão saltou")})
+# O nome velho da regra dos testes pulados: só o passo de migração (o README dos moldes e o manual) o cita.
+NOMES_VELHOS_DA_REGRA = re.compile(r"testes[-_]saltados|testesSaltados", re.IGNORECASE)
+ONDE_O_NOME_VELHO_SE_CITA = frozenset({"modelos/README.md", "manual/08-como-se-garante.md"})
 
 
 def arquivos_publicos(extensoes):
@@ -76,6 +81,38 @@ class AsSeisFormasNovas(unittest.TestCase):
         for frase in ("vou estagiar numa empresa", "arranca o curativo"):
             with self.subTest(frase=frase):
                 self.assertEqual(self.achados(frase), 0)
+
+
+class SaltarERegistarReprovam(unittest.TestCase):
+
+    def test_cada_forma_reprova_em_minusculas_e_com_maiuscula(self):
+        for frase in ("saltar o teste", "Saltar o teste", "quem saltar à mão", "os testes saltam", "saltou",
+                      "saltava o middleware", "saltavam", "saltaria", "saltariam", "um teste saltado", "testes saltados",
+                      "a linha saltada", "as linhas saltadas", "SALTADO", "deixava saltá-lo", "os testes saltaram",
+                      "saltando", "que ele salte", "não saltem", "saltei", "saltará", "se salta", "saltas",
+                      "regista um teste", "registas", "registam", "registar", "Registados aqui", "foi registada",
+                      "registadas", "registou", "registava", "registavam", "registe a decisão", "registem",
+                      "registando", "registaram", "registá-lo", "msg = 'pode saltar.'",
+                      "saltar do ônibus"):  # o último é o custo conhecido: o pulo físico também é acusado
+            with self.subTest(frase=frase):
+                self.assertEqual(len(erros_de_lingua("x.md", frase)), 1)
+
+    def test_o_nome_velho_da_regra_e_o_que_existe_no_brasil_passam(self):
+        for frase in ("tests/linhas-de-base/testes-saltados.json", "catraca testes-saltados", "test_testes_saltados.py",
+                      "TestesSaltados", "SALTA_SEMPRE", "o salto alto", "sem saltos", "saltimbanco", "salteado",
+                      "assaltado", "ressaltar", "saltitar", "registrar", "registrado", "o registro", "registrou",
+                      "pular", "o teste pulado"):
+            with self.subTest(frase=frase):
+                self.assertEqual(erros_de_lingua("x.md", frase), [])
+
+
+class OsNomesVelhosDaRegraNaoVoltam(unittest.TestCase):
+
+    def test_so_o_passo_de_migracao_cita_o_nome_velho(self):
+        citam = {nome for nome in arquivos_de_texto_publico() + arquivos_de_codigo()
+                 if NOMES_VELHOS_DA_REGRA.search((RAIZ / nome).read_text(encoding="utf-8-sig", errors="replace"))}
+        self.assertEqual(citam, ONDE_O_NOME_VELHO_SE_CITA,
+                         "a regra chama-se testes-pulados; o nome velho fica só no passo de migração")
 
 
 class OTextoPublicoEmPortuguesDoBrasil(unittest.TestCase):

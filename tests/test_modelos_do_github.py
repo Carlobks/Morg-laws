@@ -217,10 +217,10 @@ class CasosDeErroDoConteudo(unittest.TestCase):
                 self.assertEqual(len(erros_de_lingua("a.md", texto)), 1)
         self.assertEqual(erros_de_lingua("a.md", "bem-te-vi e bem-me-quer"), [])
         for texto in ("O registo", "Vamos partilhar", "continua a ver", "espalhá-lo-ia", "um artefacto", "o ficheiro",
-                      "o contacto", "a equipa", "o facto", "se salta", "o utilizador", "no ecrã"):
+                      "o contacto", "a equipa", "o facto", "se salta", "saltar", "o utilizador", "no ecrã"):
             with self.subTest(texto=texto):
                 self.assertEqual(len(erros_de_lingua("a.md", texto)), 1)
-        for texto in ("equipamento", "para correr", "ressalta", "saltar", "tem a ver", "de fato", "o contato"):
+        for texto in ("equipamento", "para correr", "ressalta", "tem a ver", "de fato", "o contato"):
             with self.subTest(texto=texto):
                 self.assertEqual(erros_de_lingua("a.md", texto), [])
 
