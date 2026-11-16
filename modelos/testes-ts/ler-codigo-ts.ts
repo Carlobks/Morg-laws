@@ -1,6 +1,6 @@
 // Lê o código JS/TS pela árvore do TypeScript, e não por expressões regulares: só a árvore distingue `{ data }`
 // (declara `data`) de `{ data: faturasDoMes }` (declara `faturasDoMes`), e um uso de um nome da sua declaração.
-// Usado pelos moldes de tamanho de função, nomes genéricos, nomes únicos e testes saltados.
+// Usado pelos moldes de tamanho de função, nomes genéricos, nomes únicos e testes pulados.
 import ts from 'typescript'
 
 export const EXTENSOES_JS_E_TS = ['.ts', '.tsx', '.mts', '.cts', '.js', '.jsx', '.mjs', '.cjs']

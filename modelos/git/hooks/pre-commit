@@ -1,5 +1,5 @@
 #!/bin/sh
-# Portão do git (Morg-laws): roda em todos os commits, do agente ou feitos à mão. Nunca saltar com --no-verify.
+# Portão do git (Morg-laws): roda em todos os commits, do agente ou feitos à mão. Nunca pular com --no-verify.
 # Instalar: copiar para .githooks/ do projeto (com a marca de executável) e os portões para scripts/portoes/;
 # depois: git config core.hooksPath .githooks
 # Python: MORG_PY, ou py (Windows), ou python3.

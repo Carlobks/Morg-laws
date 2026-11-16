@@ -63,7 +63,7 @@ class TresColunas(unittest.TestCase):
         local_allow = set(permissoes("settings.local.json").get("allow", []))
         self.assertEqual(local_allow & (set(projeto.get("deny", [])) | set(projeto.get("ask", []))), set())
 
-    def test_o_modo_que_salta_as_permissoes_esta_desligado(self):
+    def test_o_modo_que_pula_as_permissoes_esta_desligado(self):
         # Sem isto, o modo "bypass" ignora o deny, o ask e os hooks de uma vez.
         self.assertEqual(permissoes("settings.json").get("disableBypassPermissionsMode"), "disable")
 

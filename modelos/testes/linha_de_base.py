@@ -1,5 +1,5 @@
 """Motor das catracas com linha de base (Morg-laws: não piorar). Usado pelos seis testes prontos da forma do código
-(tamanho de arquivo e de função, nomes genéricos e únicos, alarmes e testes saltados).
+(tamanho de arquivo e de função, nomes genéricos e únicos, alarmes e testes pulados).
 
 Cada catraca mede, por arquivo, o EXCESSO sobre a regra (`{"src/a.py": {"linhasAcima": 12}}`; zero não aparece)
 e compara-o com a linha de base em `tests/linhas-de-base/<regra>.json`. O formato é o mesmo dos moldes TypeScript

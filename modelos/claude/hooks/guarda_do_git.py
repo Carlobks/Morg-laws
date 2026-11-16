@@ -8,7 +8,7 @@ Os portões (testes, identidade, lista negra, mensagem) rodam nos hooks do git (
 - preparar tudo de uma vez (`git add -A` / `-u` / `.` / `--all` / `--update` / `:/`, `git commit -a`, commit de `.`
   ou sem caminhos, fora de um merge): o commit é por caminho, para não levar o trabalho de outra sessão. No
   `git add` passam só caminhos e as opções da lista `_ADD_…_QUE_PASSAM`: uma opção desconhecida é recusada;
-- `MORG_A_TESTAR` num commit: é a marca que faz o pre-commit saltar os testes dentro de uma corrida de testes;
+- `MORG_A_TESTAR` num commit: é a marca que faz o pre-commit pular os testes dentro de uma corrida de testes;
 - `git commit -m` com várias linhas ou com heredoc: no Windows estraga os acentos; usar `-F <arquivo>`;
 - `git stash` (fora de `list` e `show`): leva o trabalho de todas as sessões que compartilham a pasta.
 Reconhece os comandos pelo texto: um comando montado de outra forma (variáveis, scripts) escapa.
@@ -155,10 +155,10 @@ def merge_em_curso(raiz=RAIZ_DA_GUARDA):
 
 
 def motivo_para_bloquear(comando, ler_hooks):
-    """Devolve o motivo (texto) se o comando saltar ou estragar os portões do git; None se for seguro."""
+    """Devolve o motivo (texto) se o comando pular ou estragar os portões do git; None se for seguro."""
     comandos = comandos_git(palavras(comando))
     if MARCA_DOS_TESTES in comando and any(subcomando == "commit" for _, subcomando, _ in comandos):
-        return f"{MARCA_DOS_TESTES} é só para dentro dos testes: num commit faria o pre-commit saltar os testes."
+        return f"{MARCA_DOS_TESTES} é só para dentro dos testes: num commit faria o pre-commit pular os testes."
     for globais, subcomando, args in comandos:
         motivo = motivo_do_hooks_path(globais, subcomando, args)
         if not motivo and subcomando == "add":

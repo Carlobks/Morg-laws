@@ -1,7 +1,7 @@
-"""Nenhum teste desligado para sempre (Morg-laws: não piorar; um teste saltado deixa de proteger).
+"""Nenhum teste desligado para sempre (Morg-laws: não piorar; um teste pulado deixa de proteger).
 
-Um teste saltado sem condição nunca mais corre, e ninguém volta a ele. Nos arquivos de teste Python, é recusado:
-- `@unittest.skip(…)` e `@pytest.mark.skip(…)`: saltam sempre, mesmo com motivo;
+Um teste pulado sem condição nunca mais corre, e ninguém volta a ele. Nos arquivos de teste Python, é recusado:
+- `@unittest.skip(…)` e `@pytest.mark.skip(…)`: pulam sempre, mesmo com motivo;
 - `@unittest.skipIf/skipUnless(condição, motivo)` e `@pytest.mark.skipif(condição, reason=…)` sem o motivo escrito
   (um texto literal que não está vazio);
 - `self.skipTest(…)`, `pytest.skip(…)` e `raise SkipTest(…)` fora de um `if` ou de um `except`, ou sem o motivo
@@ -10,7 +10,7 @@ A forma certa diz quando e porquê: `@unittest.skipIf(sys.platform == "win32", "
 `if not instalado: self.skipTest("sem o ruff não há o que conferir")`, ou `except ImportError:` com o `skipTest`
 (uma dependência opcional). É a mesma regra do molde TypeScript testes-saltados.test.ts (`it.skip`, `.only`,
 `it.skipIf(condição)`, `contexto.skip` num `if` ou num `catch`).
-Limites conhecidos: uma condição constante (`skipIf(True, "x")`) passa; `pytestmark = pytest.mark.skip` (o salto de
+Limites conhecidos: uma condição constante (`skipIf(True, "x")`) passa; `pytestmark = pytest.mark.skip` (que pula
 um módulo inteiro) não é visto; um `.skip(…)` de outra coisa num arquivo de teste (`leitor.skip(3)`) é recusado.
 Linha de base: tests/linhas-de-base/testes-saltados.json (linha_de_base.py).
 Instalar: copiar para `tests/` do projeto e ajustar o bloco abaixo.
@@ -24,9 +24,9 @@ from linha_de_base import TresVerificacoesDaCatraca, arquivos_do_indice, ler_do_
 
 # Ajuste ao projeto. Arquivo de teste: numa pasta tests/ ou test/, ou com o nome test_*.py ou *_test.py.
 ARQUIVO_DE_TESTE_PYTHON = re.compile(r"(?:^|/)tests?/.*\.py$|(?:^|/)(?:test_[^/]*|[^/]*_test)\.py$")
-FORA_DOS_TESTES_SALTADOS = ("vendor/", "node_modules/")
+FORA_DOS_TESTES_PULADOS = ("vendor/", "node_modules/")
 
-SALTA_SEMPRE = "pula sempre: diga a condição (skipIf) ou apague o teste"
+PULA_SEMPRE = "pula sempre: diga a condição (skipIf) ou apague o teste"
 SEM_MOTIVO = "falta o motivo escrito"
 FORA_DE_UM_IF = "pula sempre: ponha-o dentro de um if com a condição (ou de um except)"
 
@@ -57,7 +57,7 @@ def erro_do_decorador(decorador):
     """Porque este decorador desliga o teste; None se não o desligar ou se o fizer com condição e motivo."""
     nome = nome_chamado(decorador)
     if nome == "skip":
-        return SALTA_SEMPRE
+        return PULA_SEMPRE
     if nome in ("skipIf", "skipUnless", "skipif"):
         return None if motivo_escrito(argumento_do_motivo(decorador, 1)) else SEM_MOTIVO
     return None
@@ -73,7 +73,7 @@ def erro_da_chamada(chamada, dentro_de_um_if):
 
 
 def percorrer(no, dentro_de_um_if, achados):
-    """Junta em `achados` (linha, motivo) de cada salto proibido debaixo de `no`."""
+    """Junta em `achados` (linha, motivo) de cada teste pulado sem condição debaixo de `no`."""
     if isinstance(no, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
         achados += [(d.lineno, erro) for d in no.decorator_list if (erro := erro_do_decorador(d))]
         filhos = no.body
@@ -86,19 +86,19 @@ def percorrer(no, dentro_de_um_if, achados):
     return achados
 
 
-def saltos_proibidos(fonte):
-    """[(linha, motivo)] dos saltos proibidos num arquivo de teste Python."""
+def pulos_proibidos(fonte):
+    """[(linha, motivo)] dos testes pulados proibidos num arquivo de teste Python."""
     return sorted(percorrer(ast.parse(fonte), False, []))
 
 
 def e_teste_python(caminho):
     return (bool(ARQUIVO_DE_TESTE_PYTHON.search(caminho))
-            and not any(caminho.startswith(fora) or f"/{fora}" in caminho for fora in FORA_DOS_TESTES_SALTADOS))
+            and not any(caminho.startswith(fora) or f"/{fora}" in caminho for fora in FORA_DOS_TESTES_PULADOS))
 
 
-class DetectorDeSaltos(unittest.TestCase):
+class DetectorDePulos(unittest.TestCase):
 
-    def test_recusa_o_que_salta_sempre_ou_sem_motivo(self):
+    def test_recusa_o_que_pula_sempre_ou_sem_motivo(self):
         # Cada arroba abre um texto: colada a uma letra, a arroba pareceria um e-mail ao test_dados_pessoais.py.
         fonte = ("@unittest.skip('lento')\ndef test_a(): pass\n"
                  "@pytest.mark.skip\ndef test_b(): pass\n"
@@ -106,7 +106,7 @@ class DetectorDeSaltos(unittest.TestCase):
                  "@pytest.mark.skipif(x)\ndef test_d(): pass\n"
                  "def test_e(self):\n    self.skipTest('sempre')\n"
                  "def test_f(self):\n    if x:\n        pytest.skip(motivo)\n")
-        self.assertEqual(saltos_proibidos(fonte), [(1, SALTA_SEMPRE), (3, SALTA_SEMPRE), (5, SEM_MOTIVO),
+        self.assertEqual(pulos_proibidos(fonte), [(1, PULA_SEMPRE), (3, PULA_SEMPRE), (5, SEM_MOTIVO),
                                                    (7, SEM_MOTIVO), (10, FORA_DE_UM_IF), (13, SEM_MOTIVO)])
 
     def test_deixa_o_que_tem_condicao_e_motivo(self):
@@ -114,14 +114,14 @@ class DetectorDeSaltos(unittest.TestCase):
                  "@pytest.mark.skipif(x, reason='só sh')\ndef test_b(): pass\n"
                  "def test_c(self):\n    if not y:\n        self.skipTest(f'falta {y}')\n"
                  "    if z:\n        raise unittest.SkipTest('sem dados')\n")
-        self.assertEqual(saltos_proibidos(fonte), [])
+        self.assertEqual(pulos_proibidos(fonte), [])
 
-    def test_o_salto_com_motivo_num_except_vale_como_num_if(self):
+    def test_o_pulo_com_motivo_num_except_vale_como_num_if(self):
         # A forma do unittest para uma dependência opcional; no TypeScript, o contexto.skip num catch.
         fonte = ("def test_a(self):\n    try:\n        import numpy\n    except ImportError:\n"
                  "        self.skipTest('sem numpy')\n"
                  "def test_b(self):\n    try:\n        pass\n    except ImportError:\n        self.skipTest('')\n")
-        self.assertEqual(saltos_proibidos(fonte), [(10, SEM_MOTIVO)])
+        self.assertEqual(pulos_proibidos(fonte), [(10, SEM_MOTIVO)])
 
     def test_so_julga_os_arquivos_de_teste(self):
         self.assertEqual([e_teste_python(c) for c in ("tests/x.py", "src/test_y.py", "src/y_test.py", "src/y.py")],
@@ -134,8 +134,8 @@ class TestesSaltados(TresVerificacoesDaCatraca, unittest.TestCase):
 
     def medir(self):
         textos = ler_do_git([caminho for caminho in arquivos_do_indice() if e_teste_python(caminho)])
-        return {caminho: {"testesSaltados": len(saltos)} for caminho, texto in textos.items()
-                if (saltos := saltos_proibidos(texto))}
+        return {caminho: {"testesSaltados": len(pulos)} for caminho, texto in textos.items()
+                if (pulos := pulos_proibidos(texto))}
 
     def julga(self, caminho, metrica):
         return e_teste_python(caminho)

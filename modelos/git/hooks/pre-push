@@ -1,5 +1,5 @@
 #!/bin/sh
-# Portão do git (Morg-laws): verifica antes de o código sair da máquina. Nunca saltar com --no-verify.
+# Portão do git (Morg-laws): verifica antes de o código sair da máquina. Nunca pular com --no-verify.
 # Mostra os arquivos dos commits a enviar, procura segredos com o gitleaks e falhas novas nas dependências com o
 # npm audit. Lógica: scripts/portoes/antes_do_push.py. Precisa do gitleaks.
 # Alternativa só em sh, sem Python: modelos/pre-push do Morg-laws.

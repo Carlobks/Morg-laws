@@ -1,10 +1,10 @@
-// Nenhum teste desligado para sempre nem isolado (Morg-laws: não piorar; um teste saltado deixa de proteger).
+// Nenhum teste desligado para sempre nem isolado (Morg-laws: não piorar; um teste pulado deixa de proteger).
 //
-// Um teste saltado sem condição nunca mais corre, e um `.only` esconde todos os outros. Nos arquivos de teste, lidos
+// Um teste pulado sem condição nunca mais corre, e um `.only` esconde todos os outros. Nos arquivos de teste, lidos
 // pela árvore, olhando a cadeia toda (`it.skip.each`, `test.only.each`, `test.concurrent.only`), é recusado:
 // - `.only` e `xit`, `xdescribe`, `xtest`, `fit`, `fdescribe`;
 // - `it.skip`, `test.skip` e `describe.skip`, com qualquer argumento: no vitest o 1.º argumento é o NOME do teste,
-//   e `test.skip(semRede, 'motivo')` regista um teste saltado chamado `false` (é a assinatura do Playwright, não a
+//   e `test.skip(semRede, 'motivo')` registra um teste pulado chamado `false` (é a assinatura do Playwright, não a
 //   do vitest);
 // - `contexto.skip()` sem condição nem `if`/`catch` à volta, ou sem a nota escrita (um texto que não está vazio);
 // - as opções do teste: `it('a', { skip: true }, …)` e `{ only: true }` (também `it['only']`, a forma abreviada
@@ -26,14 +26,14 @@ import { eCodigoJsOuTs, lerArvore, linhaDaPosicao } from './ler-codigo-ts.js'
 
 // Ajuste ao projeto. Arquivo de teste: numa pasta tests/, test/ ou __tests__/, ou com .test. ou .spec. no nome.
 const ARQUIVO_DE_TESTE_JS_OU_TS = /(?:^|\/)(?:tests?|__tests__)\/|\.(?:test|spec)\.[^/]+$/
-const FORA_DOS_TESTES_SALTADOS_TS = ['vendor/', 'node_modules/']
+const FORA_DOS_TESTES_PULADOS_TS = ['vendor/', 'node_modules/']
 const CHAMADAS_QUE_SEMPRE_DESLIGAM = new Set(['xit', 'xdescribe', 'xtest', 'fit', 'fdescribe'])
 const APIS_DE_TESTES = new Set(['it', 'test', 'describe', 'suite', 'bench'])
 
-const SALTA_SEMPRE = 'pula sempre: use it.skipIf(condição) ou contexto.skip(condição, "nota"), ou apague o teste'
+const PULA_SEMPRE = 'pula sempre: use it.skipIf(condição) ou contexto.skip(condição, "nota"), ou apague o teste'
 const SEM_MOTIVO_ESCRITO = 'falta o motivo escrito'
 
-type SaltoProibido = { linha: number, motivo: string }
+type PuloProibido = { linha: number, motivo: string }
 
 function eMotivoEscrito(no: ts.Node | undefined): boolean {
     if (!no) return false
@@ -78,7 +78,7 @@ function erroDasOpcoes(chamada: ts.CallExpression): string | null {
         const desligada = valor.kind === ts.SyntaxKind.FalseKeyword
         if (nome === 'only' && !desligada) return '{ only } esconde todos os outros testes'
         // Uma condição nas opções não leva nota: no vitest, diga-a com it.skipIf(condição) ou contexto.skip.
-        if (nome === 'skip' && !desligada) return valor.kind === ts.SyntaxKind.TrueKeyword ? SALTA_SEMPRE : SEM_MOTIVO_ESCRITO
+        if (nome === 'skip' && !desligada) return valor.kind === ts.SyntaxKind.TrueKeyword ? PULA_SEMPRE : SEM_MOTIVO_ESCRITO
     }
     return null
 }
@@ -92,7 +92,7 @@ function dentroDeUmIfOuCatch(no: ts.Node): boolean {
 function erroDoSkipDoContexto(chamada: ts.CallExpression): string | null {
     const [condicao, nota] = chamada.arguments
     if (condicao && !eTextoLiteral(condicao)) return eMotivoEscrito(nota) ? null : SEM_MOTIVO_ESCRITO
-    if (!dentroDeUmIfOuCatch(chamada)) return SALTA_SEMPRE
+    if (!dentroDeUmIfOuCatch(chamada)) return PULA_SEMPRE
     return eMotivoEscrito(condicao) ? null : SEM_MOTIVO_ESCRITO
 }
 
@@ -104,14 +104,14 @@ function erroDaChamada(chamada: ts.CallExpression): string | null {
     const daApiDeTestes = APIS_DE_TESTES.has(cadeia[0])
     if (daApiDeTestes && cadeia.includes('only')) return '.only esconde todos os outros testes'
     // No vitest o 1.º argumento de test.skip é o NOME do teste: `test.skip(condição, …)` pula sempre.
-    if (daApiDeTestes && cadeia.includes('skip')) return SALTA_SEMPRE
+    if (daApiDeTestes && cadeia.includes('skip')) return PULA_SEMPRE
     if (daApiDeTestes) return erroDasOpcoes(chamada)
     return cadeia.length > 1 && cadeia[cadeia.length - 1] === 'skip' ? erroDoSkipDoContexto(chamada) : null
 }
 
-function saltosProibidos(caminho: string, texto: string): SaltoProibido[] {
+function pulosProibidos(caminho: string, texto: string): PuloProibido[] {
     const arvore = lerArvore(caminho, texto)
-    const proibidos: SaltoProibido[] = []
+    const proibidos: PuloProibido[] = []
     const visitar = (no: ts.Node): void => {
         const motivo = ts.isCallExpression(no) ? erroDaChamada(no) : null
         if (motivo) proibidos.push({ linha: linhaDaPosicao(arvore, no.getStart(arvore)), motivo })
@@ -122,20 +122,20 @@ function saltosProibidos(caminho: string, texto: string): SaltoProibido[] {
 }
 
 const eTesteJsOuTs = (caminho: string) => eCodigoJsOuTs(caminho) && ARQUIVO_DE_TESTE_JS_OU_TS.test(caminho)
-    && !estaFora(caminho, FORA_DOS_TESTES_SALTADOS_TS)
+    && !estaFora(caminho, FORA_DOS_TESTES_PULADOS_TS)
 
-function excessoDosSaltos(textos: Map<string, string>): ExcessoPorArquivo {
+function excessoDosPulos(textos: Map<string, string>): ExcessoPorArquivo {
     const excessos: ExcessoPorArquivo = {}
     for (const [caminho, texto] of textos) {
-        const saltos = saltosProibidos(caminho, texto).length
-        if (saltos > 0) excessos[caminho] = { testesSaltados: saltos }
+        const pulos = pulosProibidos(caminho, texto).length
+        if (pulos > 0) excessos[caminho] = { testesSaltados: pulos }
     }
     return excessos
 }
 
-const linhasProibidas = (fonte: string) => saltosProibidos('a.test.ts', fonte).map(({ linha }) => linha)
+const linhasProibidas = (fonte: string) => pulosProibidos('a.test.ts', fonte).map(({ linha }) => linha)
 
-describe('detector de saltos', () => {
+describe('detector de testes pulados', () => {
     it('recusa o .only, o skip sem condição e o skip sem motivo', () => {
         const fonte = ["it.only('a', () => {})", "test.describe.only('a', () => {})", "it.skip('a', () => {})",
             'test.skip()', "xit('a', () => {})", "it('a', (contexto) => { contexto.skip('nota') })",
@@ -176,7 +176,7 @@ describe('detector de saltos', () => {
         expect(linhasProibidas(fonte)).toEqual([])
     })
 
-    it('o salto com nota dentro de um if ou de um catch vale, como no Python', () => {
+    it('pular com nota dentro de um if ou de um catch vale, como no Python', () => {
         const fonte = ["it('a', (contexto) => { if (semRede) contexto.skip('sem rede') })",
             "it('b', async (contexto) => { try { await abrir() } catch { contexto.skip('sem o serviço') } })",
             "it('c', (contexto) => { if (semRede) contexto.skip() })"].join('\n')
@@ -190,5 +190,5 @@ describe('detector de saltos', () => {
 })
 
 testarCatraca('testes-saltados', 'diga a condição e o motivo (it.skipIf(condição) ou contexto.skip(condição, "nota")) ou apague o teste',
-    () => excessoDosSaltos(lerDoGit(arquivosDoIndice().filter(eTesteJsOuTs))),
+    () => excessoDosPulos(lerDoGit(arquivosDoIndice().filter(eTesteJsOuTs))),
     (caminho) => eTesteJsOuTs(caminho))
