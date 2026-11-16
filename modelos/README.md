@@ -20,7 +20,7 @@ Os testes prontos de `testes-ts/` são a exceção: TypeScript, com o `vitest` e
 | `git/hooks/pre-commit` | `.githooks/` | Identidade, lista negra e o comando único de testes (defina `COMANDO_DOS_TESTES`) |
 | `git/hooks/commit-msg` | `.githooks/` | Formato da mensagem e lista negra |
 | `git/hooks/pre-push` | `.githooks/` | Mostra o que sai, gitleaks e `npm audit` com linha de base em cada pasta com `package-lock.json` |
-| `git/portoes/*.py` | `scripts/portoes/` | A lógica dos hooks do git: `identidade`, `lista_negra`, `mensagem_commit` (marcas `Sem-teste:`, `Teste-mudado:`, `Sem-changelog:` e `Alarme-novo:`, a que deixa subir a contagem dos alarmes calados), `versao_lancada`, `antes_do_push` |
+| `git/portoes/*.py` | `scripts/portoes/` | A lógica dos hooks do git: `identidade`, `lista_negra`, `mensagem_commit` (marcas `Sem-teste:`, `Teste-mudado:`, `Sem-changelog:`, `Alarme-novo:`, a que deixa subir a contagem dos alarmes calados, e `Changelog-corrigido:`, a que deixa mudar uma versão já lançada do `CHANGELOG.md`), `versao_lancada`, `antes_do_push` |
 | `pre-push` | `.githooks/pre-push` | Alternativa só em `sh`, sem Python |
 | `changelog/juntar_changelog.py` | `scripts/changelog/` | Junta os fragmentos no `CHANGELOG.md`, calcula a versão SemVer pelas categorias e escreve o `VERSION` |
 | `changelog/changelog.d/README.md` | `changelog.d/` | O formato dos fragmentos (`AAAA-MM-DD-assunto.md`, categoria na 1.ª linha) |
