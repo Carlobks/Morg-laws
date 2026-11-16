@@ -21,7 +21,8 @@ FORA = ("tests/", "prova/")
 # (arquivo, trecho): o trecho exato que o teste não confere. A citação é a mensagem real do projeto de origem.
 EXCECOES_DE_LINGUA = frozenset({("projetos/erp-de-servicos/o-que-se-mediu.md", "109 ficheiros por commitar"),
                                 ("projetos/erp-de-servicos/regras-e-incidentes.md", "a sugestão saltou")})
-# O nome velho da regra dos testes pulados: só o passo de migração (o README dos moldes e o manual) o cita.
+# O nome velho da regra dos testes pulados: só o passo de migração (o README dos moldes e o manual) o cita (nos
+# arquivos que o teste de língua lê; o `.toml` e o `.typ` ficam de fora).
 NOMES_VELHOS_DA_REGRA = re.compile(r"testes[-_]saltados|testesSaltados", re.IGNORECASE)
 ONDE_O_NOME_VELHO_SE_CITA = frozenset({"modelos/README.md", "manual/08-como-se-garante.md"})
 
@@ -90,6 +91,7 @@ class SaltarERegistarReprovam(unittest.TestCase):
                       "saltava o middleware", "saltavam", "saltaria", "saltariam", "um teste saltado", "testes saltados",
                       "a linha saltada", "as linhas saltadas", "SALTADO", "deixava saltá-lo", "os testes saltaram",
                       "saltando", "que ele salte", "não saltem", "saltei", "saltará", "se salta", "saltas",
+                      "saltemos", "salteis", "registemos", "registeis",
                       "regista um teste", "registas", "registam", "registar", "Registados aqui", "foi registada",
                       "registadas", "registou", "registava", "registavam", "registe a decisão", "registem",
                       "registando", "registaram", "registá-lo", "msg = 'pode saltar.'",

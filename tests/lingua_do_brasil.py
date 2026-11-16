@@ -29,13 +29,14 @@ FORMAS_DE_PORTUGAL_COM_FRONTEIRA = re.compile(
     r"|\b(?:a|à|na|nas|da|das|numa|pela|uma)\s+consolas?\b", re.IGNORECASE)
 
 # «saltar» e «registar» em todas as formas do verbo; «salta» e «saltas» já estão em PALAVRAS_DE_PORTUGAL. O
-# sublinhado não é fronteira (`SALTA_SEMPRE` passa), e depois de um hífen também passa: é o nome velho da regra,
+# sublinhado não é fronteira (`SALTA_SEMPRE` e `saltar_teste` passam: os nomes com sublinhado ficam com a
+# revisão), e depois de um hífen também passa: é o nome velho da regra,
 # `testes-saltados`, que o passo de migração cita (OsNomesVelhosDaRegraNaoVoltam o prende ao passo). «Salto» e
 # «saltos» existem no Brasil e ficam de fora. Custo conhecido: "saltar" no sentido de pulo físico ("saltar do
 # ônibus") também é acusado; num texto técnico, escreva "pular" ou "descer"; uma citação entra em EXCECOES_DE_LINGUA.
 SALTAR_E_REGISTAR = re.compile(
-    r"(?<!-)\bsalt(?:a(?!s?\b)[^\W_]*|á[^\W_]*|e|es|em|ei|ou)\b"
-    r"|\bregist(?:a[^\W_]*|á[^\W_]*|e|es|em|ei|ou)\b", re.IGNORECASE)
+    r"(?<!-)\bsalt(?:a(?!s?\b)[^\W_]*|á[^\W_]*|e|es|em|ei|emos|eis|ou)\b"
+    r"|\bregist(?:a[^\W_]*|á[^\W_]*|e|es|em|ei|emos|eis|ou)\b", re.IGNORECASE)
 
 
 def erros_de_lingua(nome, texto):
