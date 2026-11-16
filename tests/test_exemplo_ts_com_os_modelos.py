@@ -34,7 +34,7 @@ ESTRAGOS = [
     ("src/tela.ts", "// @ts-expect-error — o tipo da lib está errado\nconst a: number = 'x'\n",
      "catraca alarmes > não piora", "src/tela.ts:1"),
     ("src/pedido.test.ts", "import { it } from 'vitest'\nit.skip('soma', () => {})\n",
-     "catraca testes-saltados > não piora", "src/pedido.test.ts: testesSaltados 1"),
+     "catraca testes-pulados > não piora", "src/pedido.test.ts: testesPulados 1"),
 ]
 
 

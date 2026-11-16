@@ -32,7 +32,7 @@ Os testes prontos de `testes-ts/` são a exceção: TypeScript, com o `vitest` e
 | `testes/test_nomes.py` | `tests/` | Nenhum arquivo, pasta ou identificador Python (lido pela árvore) com nome genérico solto, com linha de base; a lista é a do molde TypeScript |
 | `testes/test_tamanho_dos_arquivos.py` | `tests/` | Arquivos de código até 500 linhas, de todas as línguas (o limite do hook `limite_de_linhas.py`), com linha de base |
 | `testes/test_nomes_unicos.py` | `tests/` | Nomes de topo do Python e nomes de arquivo de código únicos, com linha de base; isenta `main`, `__x__` e a interface comum dos portões e hooks |
-| `testes/test_testes_saltados.py` | `tests/` | Nenhum `skip` sem condição nem sem motivo escrito (unittest e pytest), com linha de base |
+| `testes/test_testes_pulados.py` | `tests/` | Nenhum `skip` sem condição nem sem motivo escrito (unittest e pytest), com linha de base |
 | `testes/linha_de_base.py` | `tests/` | O motor dos seis testes prontos (estes três e os de funções, nomes e alarmes): a linha de base em `tests/linhas-de-base/<regra>.json` não piora, não tem folga e só encolhe (no CI, contra `MORG_BASE_DE_COMPARACAO`); `MORG_CRIAR_LINHA_DE_BASE=1` cria a que falta ou completa a que ainda não está commitada |
 | `testes-ts/*.test.ts` | `tests/catracas/` | Os mesmos seis em TypeScript/vitest (tamanho de arquivo e de função, nomes genéricos e únicos, alarmes e testes pulados), com os mesmos limites e listas e a linha de base no mesmo formato; o código lê-se pela árvore do `typescript` (`ler-codigo-ts.ts`, `linha-de-base.ts`) |
 | `testes/test_dados_pessoais.py` | `tests/` | Sem caminhos de pastas pessoais, e-mails pessoais, termos da lista negra nem os números de documento que o projeto ligar |
@@ -78,6 +78,27 @@ Os testes prontos de `testes-ts/` são a exceção: TypeScript, com o `vitest` e
 8. **Só sessões, sem sub-agentes** (opção; skill `orquestrando-sessoes`, seção 1): acrescente `"Agent"` ao
    `deny` do `.claude/settings.json` e ponha `SO_SESSOES = True` no `test_permissoes.py`. O nome da ferramenta
    sozinho tira-a do contexto do agente; `Agent(Explore)` nega um sub-agente só. O molde vem sem esta linha.
+
+## Quem já usa o teste dos testes pulados
+
+A regra `testes-saltados` passou a chamar-se `testes-pulados`. O molde Python é agora `test_testes_pulados.py`, o
+TypeScript é `testes-pulados.test.ts`, a linha de base é `tests/linhas-de-base/testes-pulados.json` e a métrica dentro
+dela é `testesPulados`. Um projeto que já copiou os moldes velhos troca tudo num commit só, revisto:
+
+1. Rode os testes antes de mexer. Verdes, a base velha é igual ao que existe hoje: não piora e não tem folga.
+2. Troque o molde: `git rm tests/test_testes_saltados.py`, copie o novo para `tests/` e faça
+   `git add tests/test_testes_pulados.py`. No TypeScript, o mesmo com `tests/catracas/testes-saltados.test.ts` e
+   `tests/catracas/testes-pulados.test.ts`.
+3. Rode os testes uma vez com `MORG_CRIAR_LINHA_DE_BASE=1`. O teste novo falha com «linha de base gravada em
+   tests/linhas-de-base/testes-pulados.json: confira-a e faça git add».
+4. Confira que a base nova tem os mesmos números da velha. Este comando não pode imprimir nada:
+   `git show HEAD:tests/linhas-de-base/testes-saltados.json | sed -e 's/testes-saltados/testes-pulados/' -e 's/testesSaltados/testesPulados/g' | diff - tests/linhas-de-base/testes-pulados.json`
+5. `git add tests/linhas-de-base/testes-pulados.json` e `git rm tests/linhas-de-base/testes-saltados.json`.
+6. Rode os testes sem a variável: verdes. Faça um commit só com o molde velho apagado, o novo, a base nova e a velha
+   apagada.
+
+Sem a base velha (o projeto nunca teve um teste pulado), basta o passo 2. Em dois commits separados, o do meio fica
+com a regra nova sem a base, e o «não piora» acusa cada teste pulado que já existia.
 
 ## A compactação fora do molde
 

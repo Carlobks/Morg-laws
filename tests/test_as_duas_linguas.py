@@ -25,7 +25,7 @@ from projeto_de_exemplo_ts import apagar_ts, montar_ts, rodar_vitest
 
 MOLDES = {"tamanho-de-arquivo": "test_tamanho_dos_arquivos.py", "tamanho-de-funcao": "test_tamanho_das_funcoes.py",
           "nomes-genericos": "test_nomes.py", "nomes-unicos": "test_nomes_unicos.py", "alarmes": "test_alarmes.py",
-          "testes-saltados": "test_testes_saltados.py"}
+          "testes-pulados": "test_testes_pulados.py"}
 FORA_DO_INDICE = "fora do índice"
 
 
@@ -99,27 +99,27 @@ GEMEOS = [  # (regra, caso, arquivos para o molde Python, arquivos para o molde 
                                                       "x_b.py": "def main():\n    total = 2\n"},
      {"x-a.ts": "export function main() { const total = 1 }\n",
       "x-b.ts": "export function main() { const total = 2 }\n"}, "aprova"),
-    ("testes-saltados", "pula sempre", {"test_salto.py": "@unittest.skip('lento')\ndef test_a(): pass\n"},
+    ("testes-pulados", "pula sempre", {"test_salto.py": "@unittest.skip('lento')\ndef test_a(): pass\n"},
      {"salto.test.ts": "it.skip('a', () => {})\n"}, "reprova"),
-    ("testes-saltados", "condição sem motivo", {"test_salto.py": "@unittest.skipIf(x, '')\ndef test_a(): pass\n"},
+    ("testes-pulados", "condição sem motivo", {"test_salto.py": "@unittest.skipIf(x, '')\ndef test_a(): pass\n"},
      {"salto.test.ts": "it('a', (contexto) => { contexto.skip(semRede) })\n"}, "reprova"),
-    ("testes-saltados", "condição com motivo", {"test_salto.py": "@unittest.skipIf(x, 'rede')\ndef test_a(): pass\n"},
+    ("testes-pulados", "condição com motivo", {"test_salto.py": "@unittest.skipIf(x, 'rede')\ndef test_a(): pass\n"},
      {"salto.test.ts": "it.skipIf(semRede)('a', () => {})\n"}, "aprova"),
-    ("testes-saltados", "o test.skip do Playwright (no vitest pula sempre)", None,
+    ("testes-pulados", "o test.skip do Playwright (no vitest pula sempre)", None,
      {"salto.test.ts": "test.skip(semRede, 'precisa da rede')\n"}, "reprova"),
-    ("testes-saltados", "salto no corpo, sem condição", {"test_salto.py": "def test_a(self):\n    self.skipTest('x')\n"},
+    ("testes-pulados", "salto no corpo, sem condição", {"test_salto.py": "def test_a(self):\n    self.skipTest('x')\n"},
      {"salto.test.ts": "it('a', (contexto) => { contexto.skip('x') })\n"}, "reprova"),
-    ("testes-saltados", "salto com motivo num if", {"test_salto.py": "def test_a(self):\n    if x:\n"
+    ("testes-pulados", "salto com motivo num if", {"test_salto.py": "def test_a(self):\n    if x:\n"
                                                     "        self.skipTest('sem rede')\n"},
      {"salto.test.ts": "it('a', (contexto) => { if (semRede) contexto.skip('sem rede') })\n"}, "aprova"),
-    ("testes-saltados", "salto com motivo num except/catch", {"test_salto.py": "def test_a(self):\n    try:\n"
+    ("testes-pulados", "salto com motivo num except/catch", {"test_salto.py": "def test_a(self):\n    try:\n"
                                                               "        import numpy\n    except ImportError:\n"
                                                               "        self.skipTest('sem numpy')\n"},
      {"salto.test.ts": "it('a', async (contexto) => { try { await abrir() } catch { contexto.skip('sem o serviço') } })\n"},
      "aprova"),
-    ("testes-saltados", ".only.each (só TypeScript)", None, {"so.test.ts": "test.only.each([1])('a', () => {})\n"},
+    ("testes-pulados", ".only.each (só TypeScript)", None, {"so.test.ts": "test.only.each([1])('a', () => {})\n"},
      "reprova"),
-    ("testes-saltados", "as opções { skip: true } do vitest (só TypeScript)", None,
+    ("testes-pulados", "as opções { skip: true } do vitest (só TypeScript)", None,
      {"opcoes.test.ts": "it('a', { skip: true }, () => {})\n"}, "reprova"),
 ]
 

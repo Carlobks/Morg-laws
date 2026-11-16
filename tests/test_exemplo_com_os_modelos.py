@@ -39,7 +39,7 @@ ESTRAGOS = [
      "src/caixa.py: nomesDeTopoRepetidos"),
     ("tests/test_pedido.py", ("import unittest\n\n\nclass Pedido(unittest.TestCase):\n    @unittest.skip('lento')\n"
                               "    def test_soma(self):\n        pass\n"),
-     "test_nao_piora (test_testes_saltados.", "tests/test_pedido.py"),
+     "test_nao_piora (test_testes_pulados.", "tests/test_pedido.py"),
     ("src/notas.py", FUNCAO_COM_COMENTARIOS_NO_FIM, "test_nao_piora (test_tamanho_das_funcoes.",
      "src/notas.py: funcoesAcima 1"),
     ("src/filas.py", DOIS_METODOS_COM_O_MESMO_NOME, "test_nao_piora (test_tamanho_das_funcoes.",

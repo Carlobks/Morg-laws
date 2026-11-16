@@ -12,12 +12,12 @@
 //   `contexto.skip(condição)` sem ela.
 // A forma certa diz quando e porquê: `it.skipIf(semRede)(…)`, `contexto.skip(semRede, 'precisa da rede')`, ou
 // `if (semRede) contexto.skip('precisa da rede')` (também num `catch`). É a regra do molde Python
-// test_testes_saltados.py (`@unittest.skip`, `skipIf(condição, motivo)`, `skipTest` num `if` ou num `except`).
+// test_testes_pulados.py (`@unittest.skip`, `skipIf(condição, motivo)`, `skipTest` num `if` ou num `except`).
 // Limites conhecidos: as opções por um caminho que a árvore não mostra passam: numa variável
 // (`const opcoes = { skip: true }; it('a', opcoes, …)`), espalhadas (`{ ...{ skip: true } }`) ou depois de um
 // `.each` (`it.each([1])('a', { skip: true }, …)`). Uma condição constante (`it.skipIf(true)`) passa; um `.skip(…)` de outra coisa num arquivo de
 // teste (`leitor.skip(3)`) é recusado; não serve o Playwright, cujo `test.skip(condição, motivo)` é a forma certa lá.
-// Linha de base: tests/linhas-de-base/testes-saltados.json (linha-de-base.ts).
+// Linha de base: tests/linhas-de-base/testes-pulados.json (linha-de-base.ts).
 // Instalar: copiar esta pasta para tests/catracas/ do projeto e ajustar o bloco abaixo.
 import ts from 'typescript'
 import { describe, expect, it } from 'vitest'
@@ -128,7 +128,7 @@ function excessoDosPulos(textos: Map<string, string>): ExcessoPorArquivo {
     const excessos: ExcessoPorArquivo = {}
     for (const [caminho, texto] of textos) {
         const pulos = pulosProibidos(caminho, texto).length
-        if (pulos > 0) excessos[caminho] = { testesSaltados: pulos }
+        if (pulos > 0) excessos[caminho] = { testesPulados: pulos }
     }
     return excessos
 }
@@ -189,6 +189,6 @@ describe('detector de testes pulados', () => {
     })
 })
 
-testarCatraca('testes-saltados', 'diga a condição e o motivo (it.skipIf(condição) ou contexto.skip(condição, "nota")) ou apague o teste',
+testarCatraca('testes-pulados', 'diga a condição e o motivo (it.skipIf(condição) ou contexto.skip(condição, "nota")) ou apague o teste',
     () => excessoDosPulos(lerDoGit(arquivosDoIndice().filter(eTesteJsOuTs))),
     (caminho) => eTesteJsOuTs(caminho))

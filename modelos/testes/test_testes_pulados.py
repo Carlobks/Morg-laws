@@ -8,11 +8,11 @@ Um teste pulado sem condição nunca mais corre, e ninguém volta a ele. Nos arq
   escrito.
 A forma certa diz quando e porquê: `@unittest.skipIf(sys.platform == "win32", "o hook só corre em sh")`,
 `if not instalado: self.skipTest("sem o ruff não há o que conferir")`, ou `except ImportError:` com o `skipTest`
-(uma dependência opcional). É a mesma regra do molde TypeScript testes-saltados.test.ts (`it.skip`, `.only`,
+(uma dependência opcional). É a mesma regra do molde TypeScript testes-pulados.test.ts (`it.skip`, `.only`,
 `it.skipIf(condição)`, `contexto.skip` num `if` ou num `catch`).
 Limites conhecidos: uma condição constante (`skipIf(True, "x")`) passa; `pytestmark = pytest.mark.skip` (que pula
 um módulo inteiro) não é visto; um `.skip(…)` de outra coisa num arquivo de teste (`leitor.skip(3)`) é recusado.
-Linha de base: tests/linhas-de-base/testes-saltados.json (linha_de_base.py).
+Linha de base: tests/linhas-de-base/testes-pulados.json (linha_de_base.py).
 Instalar: copiar para `tests/` do projeto e ajustar o bloco abaixo.
 """
 
@@ -128,13 +128,13 @@ class DetectorDePulos(unittest.TestCase):
                          [True, True, True, False])
 
 
-class TestesSaltados(TresVerificacoesDaCatraca, unittest.TestCase):
-    REGRA = "testes-saltados"
+class TestesPulados(TresVerificacoesDaCatraca, unittest.TestCase):
+    REGRA = "testes-pulados"
     CONSELHO = "diga a condição e o motivo (skipIf) ou apague o teste"
 
     def medir(self):
         textos = ler_do_git([caminho for caminho in arquivos_do_indice() if e_teste_python(caminho)])
-        return {caminho: {"testesSaltados": len(pulos)} for caminho, texto in textos.items()
+        return {caminho: {"testesPulados": len(pulos)} for caminho, texto in textos.items()
                 if (pulos := pulos_proibidos(texto))}
 
     def julga(self, caminho, metrica):
