@@ -86,18 +86,20 @@ TypeScript é `testes-pulados.test.ts`, a linha de base é `tests/linhas-de-base
 dela é `testesPulados`. Um projeto que já copiou os moldes velhos troca tudo num commit só, revisto:
 
 1. Rode os testes antes de mexer. Verdes, a base velha é igual ao que existe hoje: não piora e não tem folga.
-2. Troque o molde: `git rm tests/test_testes_saltados.py`, copie o novo para `tests/` e faça
-   `git add tests/test_testes_pulados.py`. No TypeScript, o mesmo com `tests/catracas/testes-saltados.test.ts` e
-   `tests/catracas/testes-pulados.test.ts`.
+2. Troque o molde: `git rm tests/test_testes_saltados.py`, copie o novo para `tests/`, repita nele o bloco
+   «Ajuste ao projeto» do velho e faça `git add tests/test_testes_pulados.py`. No TypeScript, o mesmo com
+   `tests/catracas/testes-saltados.test.ts` e `tests/catracas/testes-pulados.test.ts`.
 3. Rode os testes uma vez com `MORG_CRIAR_LINHA_DE_BASE=1`. O teste novo falha com «linha de base gravada em
-   tests/linhas-de-base/testes-pulados.json: confira-a e faça git add».
+   tests/linhas-de-base/testes-pulados.json: confira-a e faça git add» e lista cada teste pulado de hoje com
+   «(a base deixa 0)»: é esperado, até a base nova entrar no git. Com as duas línguas, rode os dois comandos com a
+   variável (o `unittest` e o `npx vitest run`) antes do passo 4.
 4. Confira que a base nova tem os mesmos números da velha. Este comando não pode imprimir nada:
    `git show HEAD:tests/linhas-de-base/testes-saltados.json | sed -e 's/testes-saltados/testes-pulados/' -e 's/testesSaltados/testesPulados/g' | diff - tests/linhas-de-base/testes-pulados.json`
 5. `git add tests/linhas-de-base/testes-pulados.json` e `git rm tests/linhas-de-base/testes-saltados.json`.
 6. Rode os testes sem a variável: verdes. Faça um commit só com o molde velho apagado, o novo, a base nova e a velha
    apagada.
 
-Sem a base velha (o projeto nunca teve um teste pulado), basta o passo 2. Em dois commits separados, o do meio fica
+Sem a base velha (o projeto não tinha nenhum teste pulado sem condição), basta o passo 2. Em dois commits separados, o do meio fica
 com a regra nova sem a base, e o «não piora» acusa cada teste pulado que já existia.
 
 ## A compactação fora do molde

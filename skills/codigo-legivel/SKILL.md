@@ -72,6 +72,9 @@ pelos dois moldes de cada regra e exige o mesmo veredito.
 - A linha `Alarme-novo:` na máquina é conferida pelo
   [`mensagem_commit.py`](https://github.com/Carlobks/Morg-laws/blob/main/modelos/git/portoes/mensagem_commit.py),
   no hook `commit-msg`. Um projeto que copia só os testes prontos não o tem, e a marca só é conferida no CI.
+- **Quem copiou os moldes antes de a regra dos testes pulados mudar de nome:** não copie o novo ao lado do velho;
+  troque o molde e a linha de base num commit só, pelos passos do
+  [`modelos/README.md`](https://github.com/Carlobks/Morg-laws/blob/main/modelos/README.md).
 
 ## 4. Num projeto que já viola: a linha de base
 
