@@ -18,7 +18,7 @@ conselho, e o que tem de ser cumprido vira teste.
 | **Nada de nome genérico** (`data`, `utils`, `helper`, `info`, `dados`…) | Não diz o que guarda e dá dezenas de resultados no `grep` | [`test_nomes.py`](https://github.com/Carlobks/Morg-laws/blob/main/modelos/testes/test_nomes.py) | [`nomes-genericos.test.ts`](https://github.com/Carlobks/Morg-laws/blob/main/modelos/testes-ts/nomes-genericos.test.ts) |
 | **Nomes únicos** (de topo e de arquivo) | Duas funções `calcular` ou dois `pedido.ts`: o agente edita o errado | [`test_nomes_unicos.py`](https://github.com/Carlobks/Morg-laws/blob/main/modelos/testes/test_nomes_unicos.py) | [`nomes-unicos.test.ts`](https://github.com/Carlobks/Morg-laws/blob/main/modelos/testes-ts/nomes-unicos.test.ts) |
 | **Nenhum alarme calado sem motivo** (`noqa`, `eslint-disable`, `@ts-expect-error`…) | Um alarme calado sem motivo esconde o seguinte | [`test_alarmes.py`](https://github.com/Carlobks/Morg-laws/blob/main/modelos/testes/test_alarmes.py) | [`alarmes.test.ts`](https://github.com/Carlobks/Morg-laws/blob/main/modelos/testes-ts/alarmes.test.ts) |
-| **Nenhum teste saltado sem condição** (nem `.only`) | Um teste saltado para sempre deixa de proteger, e ninguém volta a ele | [`test_testes_saltados.py`](https://github.com/Carlobks/Morg-laws/blob/main/modelos/testes/test_testes_saltados.py) | [`testes-saltados.test.ts`](https://github.com/Carlobks/Morg-laws/blob/main/modelos/testes-ts/testes-saltados.test.ts) |
+| **Nenhum teste pulado sem condição** (nem `.only`) | Um teste pulado para sempre deixa de proteger, e ninguém volta a ele | [`test_testes_saltados.py`](https://github.com/Carlobks/Morg-laws/blob/main/modelos/testes/test_testes_saltados.py) | [`testes-saltados.test.ts`](https://github.com/Carlobks/Morg-laws/blob/main/modelos/testes-ts/testes-saltados.test.ts) |
 | **Testes num só comando** | Quem não sabe como rodar tudo roda só uma parte; o hook do commit e o CI chamam o mesmo comando | `COMANDO_DOS_TESTES` do [`pre-commit`](https://github.com/Carlobks/Morg-laws/blob/main/modelos/git/hooks/pre-commit) | o mesmo (`npx vitest run`) |
 
 As duas línguas têm os mesmos limites e as mesmas listas, e um teste do Morg-laws corre a mesma pasta de casos
@@ -45,7 +45,7 @@ pelos dois moldes de cada regra e exige o mesmo veredito.
   última conhecida). No fim, a base só pode chegar à de comparação mais as subidas dos commits com a linha:
   um merge que sobe a base além do que os commits com a linha `Alarme-novo:` explicam é acusado. Nas duas línguas é a mesma regra.
   Mudar um alarme de arquivo não sobe nada.
-- **Teste saltado:** diga quando e porquê. No vitest: `it.skipIf(semRede)(…)`, ou, dentro do teste,
+- **Teste pulado:** diga quando e porquê. No vitest: `it.skipIf(semRede)(…)`, ou, dentro do teste,
   `contexto.skip(semRede, 'precisa da rede')` ou `if (semRede) contexto.skip('precisa da rede')`. **Não** use
   `test.skip(semRede, '…')` nem as opções `{ skip: true }` ou `{ only: true }` do teste: no vitest o 1.º argumento
   de `test.skip` é o nome do teste, e ele pula sempre
@@ -121,13 +121,13 @@ um arquivo novo nasce limpo.
 - **testes-e-provas:** provar que um trabalho funciona, o teste que pega o bug, depurar, auditar e o que é uma
   catraca em geral. Esta skill diz as regras da forma do código e os seis testes prontos que as impõem, com a
   linha de base deles. Escrever uma tela ou uma rota não é forma do código: só se abre esta quando o arquivo, a
-  função, um nome, um alarme ou um teste saltado estão em causa.
+  função, um nome, um alarme ou um teste pulado estão em causa.
 - **escrevendo-regras-de-agente:** onde uma regra vai (texto, skill ou barreira).
 - **git-e-commits:** o comando único no hook do commit e os commits.
 
 ## Fontes
 
 Os limites (500 linhas por arquivo, 20 por função nova) e as listas vêm da prática do projeto de origem, onde os
-mesmos testes correm como catracas. A forma de saltar um teste no vitest vem da
+mesmos testes correm como catracas. A forma de pular um teste no vitest vem da
 [API do vitest](https://vitest.dev/api/test). A forma de cada teste está nos próprios moldes, que dizem o que medem.
 As fontes estão em [`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md#testes-prontos-vitest). As páginas do livro *Competente o Suficiente*, de Fabio Akita, que a skill usa, estão em [`FONTES.md`](https://github.com/Carlobks/Morg-laws/blob/main/FONTES.md#livros-e-autores).

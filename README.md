@@ -34,7 +34,7 @@ Para que as regras sejam cumpridas e não só lidas, copie os modelos que servem
 [modelos/README.md](modelos/README.md). O mínimo recomendado é a guarda do git, o hook de segredos e o que pergunta
 antes do push (`modelos/claude/`), o `pre-commit` com o comando único de testes (`modelos/git/`) e o
 `test_regras.py`, que liga cada regra do `AGENTS.md` à barreira que a obriga. Para a forma do código (arquivo até 500
-linhas, função nova até 20, nomes únicos, alarmes e testes saltados), copie os testes prontos de `modelos/testes/`
+linhas, função nova até 20, nomes únicos, alarmes e testes pulados), copie os testes prontos de `modelos/testes/`
 (Python) ou de `modelos/testes-ts/` (TypeScript, vitest); a skill `codigo-legivel` diz as regras e como adotá-las num
 projeto que já viola.
 

@@ -70,7 +70,7 @@ Resumo com palavras nossas de *Competente o Suficiente*, de Fabio Akita. A pági
 ## 7. Acesso e permissões do agente
 
 - Não deixar ao alcance do agente o que ele não deve usar (uma senha guardada em texto, a pasta das cópias de segurança, um atalho de que já ninguém se lembra): o que está ao alcance acaba por ser usado. (pp. 164–165) #40 · **máquina** (negar leitura nas permissões) · onde aplicar: `auditoria-de-seguranca`
-- Não aprovar commits que acrescentam exceções ao alarme (o aviso de segurança posto na lista de exceções do próprio verificador, um `eslint-disable`, um teste saltado) sem a razão escrita. (p. 165) #41 · **máquina** (catraca) · onde aplicar: `codigo-legivel`
+- Não aprovar commits que acrescentam exceções ao alarme (o aviso de segurança posto na lista de exceções do próprio verificador, um `eslint-disable`, um teste pulado) sem a razão escrita. (p. 165) #41 · **máquina** (catraca) · onde aplicar: `codigo-legivel`
 - Não dar ao agente credenciais de escrita em produção. Corte o acesso, não o filtre, e nunca dê a mesma credencial a todos. (pp. 205, 234) #43 #52 · **máquina** (papel só de leitura) · onde aplicar: ainda nenhuma
 - Não ligar o agente a um sistema real (uma conta, um servidor, a produção) sem pesar que a responsabilidade do que ele fizer lá é de quem abriu a porta. (pp. 205–206) #44 · **máquina** (permissões por ferramenta) · onde aplicar: ainda nenhuma
 - Não usar o modo que pula todas as permissões fora de uma sandbox. (pp. 228, 386) #50 #77 · **máquina** (desligar esse modo nas definições) · onde aplicar: `auditoria-de-seguranca`

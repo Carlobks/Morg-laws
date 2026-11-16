@@ -9,7 +9,7 @@ Muitos dos erros desta lista passam pelo compilador, pelo lint e pelos testes, e
 
 ## 1. Servidor: segurança e fluxo
 
-- **Toda Server Action e toda rota `/api` confere a sessão e a permissão por si.** Uma Server Action é um endpoint público: qualquer pessoa a chama de fora da tela. O middleware não é barreira: a CVE-2025-29927 deixava saltá-lo com um cabeçalho interno em apps com servidor próprio, e a própria Vercel recomenda não o usar como única proteção das rotas.
+- **Toda Server Action e toda rota `/api` confere a sessão e a permissão por si.** Uma Server Action é um endpoint público: qualquer pessoa a chama de fora da tela. O middleware não é barreira: a CVE-2025-29927 deixava pulá-lo com um cabeçalho interno em apps com servidor próprio, e a própria Vercel recomenda não o usar como única proteção das rotas.
 - **`unstable_rethrow(err)` é a primeira linha de qualquer `catch` genérico.** `redirect()`, `notFound()` e o erro de render dinâmico funcionam por `throw`: um `catch` que engole tudo engole também o redirect. Os mocks nos testes têm de imitar este comportamento.
 - **Arquivo `'use server'` não tem re-exports nem exporta constantes.** O `tsc` não acusa, mas o build falha (num projeto real, deu erro 500 em produção duas vezes). As constantes vão para um arquivo sem a diretiva.
 - **Mantenha o Next e o React atualizados.** A falha React2Shell (CVE-2025-55182 no React e CVE-2025-66478 no Next, nota 10 de 10) permitia executar código no servidor, sem login, através dos Server Components. Depois vieram mais falhas nos mesmos pacotes. A correção é só atualizar: regras de firewall não substituem a atualização.

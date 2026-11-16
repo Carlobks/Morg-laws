@@ -5,7 +5,7 @@
 - Cada regra tem uma linha no mapa das barreiras (modelo em modelos/documentos/regras-e-barreiras.md do Morg-laws):
   "texto é conselho; o que tem de ser cumprido vira hook, teste ou CI".
 - Uma barreira "por fazer (<fase>)" só vale enquanto a fase não está marcada como feita no plano.
-- Um caminho citado que já não existe ensina o agente a saltar a regra inteira: todos têm de existir.
+- Um caminho citado que já não existe ensina o agente a pular a regra inteira: todos têm de existir.
 - As skills do índice estão em cada pasta de skills do projeto que existir (a do Claude Code e a do Codex), e as dessas
   pastas estão no índice (e no skills-lock.json, se houver). Sem nenhuma das pastas e sem o skills-lock.json (skills
   instaladas na pasta pessoal, com -g), o teste pula e diz por quê: a pasta pessoal muda de máquina e não existe no CI.

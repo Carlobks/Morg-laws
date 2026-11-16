@@ -47,7 +47,7 @@ description: Guia como provar que um trabalho de agente funciona — o teste que
 - Quem corrige uma ocorrência desce a linha de base **no mesmo commit**.
 - **Limite:** uma catraca só diz "não piorou", nunca "está bem". E um contador que exagera (conta ruído) ensina a equipe a ignorá-lo: meça o próprio detector.
 - Uma meta fixada sobre um número do ambiente de desenvolvimento não vale para produção.
-- As catracas prontas da forma do código (tamanho de arquivo e de função, nomes, alarmes, testes saltados), em
+- As catracas prontas da forma do código (tamanho de arquivo e de função, nomes, alarmes, testes pulados), em
   Python e em TypeScript, com a linha de base em JSON, estão na skill `codigo-legivel`. Esta skill diz como provar;
   aquela, que regras de forma o código cumpre.
 

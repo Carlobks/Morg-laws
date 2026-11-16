@@ -33,7 +33,7 @@ O `npm audit --audit-level=high` só decide quando o comando falha e não filtra
 ## 3. Armadilhas conhecidas que viram verificação
 
 - **Server Components com execução remota (React2Shell, CVSS 10):** React 19.0–19.2.0 e Next 15–16 sem o patch. Trave a versão mínima no portão das bibliotecas.
-- **O middleware não é a única barreira:** um cabeçalho interno já permitiu saltar o middleware do Next. Toda rota e toda Server Action confere o usuário **dentro** dela.
+- **O middleware não é a única barreira:** um cabeçalho interno já permitiu pular o middleware do Next. Toda rota e toda Server Action confere o usuário **dentro** dela.
 - **Uma Server Action é um endpoint público:** qualquer pessoa a pode chamar, sem passar pela tela. Um teste lista as funções exportadas de cada arquivo `'use server'` e exige que cada uma confira a permissão.
 - **Supabase:** tabela sem RLS, função `SECURITY DEFINER` sem guarda de papel e chave de serviço em código de cliente. O detalhe está na skill `supabase`.
 

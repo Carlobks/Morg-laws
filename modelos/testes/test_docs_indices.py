@@ -5,7 +5,7 @@ não dizia o que ficava fora do escopo.
 - cada `.md` e pasta de `docs/` tem uma linha no índice `docs/README.md`;
 - as ADRs (`docs/decisoes/NNNN-titulo.md`) têm números seguidos e estão no índice;
 - cada pesquisa (`docs/pesquisa/*.md`) está no índice dela, com a data na última coluna;
-- as armadilhas (`| A1 | … |`) seguem A1, A2, … sem saltos, cada uma com a regra para a evitar;
+- as armadilhas (`| A1 | … |`) seguem A1, A2, … sem lacunas, cada uma com a regra para a evitar;
 - cada plano diz o que fica "Fora do escopo" e a "Prova";
 - cada handoff é um arquivo por assunto, com as seções e só hashes de commits que existem.
 Uma parte cuja pasta ou arquivo não existe no projeto é pulada. Instalar: copiar para `tests/` e ajustar abaixo.
@@ -83,7 +83,7 @@ class Armadilhas(unittest.TestCase):
         exigir(self, ARMADILHAS)
         linhas = [linha for linha in texto_do_doc(ARMADILHAS).splitlines() if re.match(r"\| A\d+ \|", linha)]
         numeros = [int(re.match(r"\| A(\d+)", linha).group(1)) for linha in linhas]
-        self.assertEqual(numeros, list(range(1, len(numeros) + 1)), "A1, A2, … sem saltos nem repetidos")
+        self.assertEqual(numeros, list(range(1, len(numeros) + 1)), "A1, A2, … sem lacunas nem repetidos")
         for linha in linhas:
             colunas = [coluna.strip() for coluna in linha.strip().strip("|").split("|")]
             with self.subTest(armadilha=colunas[0]):

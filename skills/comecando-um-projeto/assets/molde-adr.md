@@ -16,6 +16,6 @@ uma ADR nova que diz qual substitui. Formato de Michael Nygard (contexto, decis�
 - **Contexto:** uma verificação achou um caminho pessoal em commits antigos, já publicados. A árvore atual está
   limpa e um teste impede que o caminho volte. Reescrever o histórico muda os hashes de todos os clones e de todos
   os documentos que os citam.
-- **Decisão:** não reescrever. Os commits ficam como estão, registados aqui como exceção. Um segredo publicado é
+- **Decisão:** não reescrever. Os commits ficam como estão, registrados aqui como exceção. Um segredo publicado é
   outro caso: roda-se ou revoga-se, sempre.
 - **Consequências:** o dado continua no histórico; a regra "sem dados reais" vale daqui para a frente, com o teste.

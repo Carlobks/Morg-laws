@@ -34,7 +34,7 @@ Uma instrução que o agente lê em todo turno custa contexto em todo turno. Esc
 - **Texto integral** num arquivo à parte, com **o mesmo título**, para se achar com um `grep`. O arquivo lido sempre aponta para lá.
 - O motivo é o que torna a regra aplicável a casos novos. Uma regra sem motivo é seguida à letra e falha no primeiro caso que não previu.
 - Instrução concreta vence aspiração: "rode `npx tsc --noEmit` antes de commitar" funciona; "siga boas práticas" não muda nada.
-- Uma regra que aponta para uma ferramenta que já não existe ensina o agente a saltar a regra inteira. Ao remover uma ferramenta, procure as regras que a citam.
+- Uma regra que aponta para uma ferramenta que já não existe ensina o agente a pular a regra inteira. Ao remover uma ferramenta, procure as regras que a citam.
 - Uma decisão de projeto ("só usamos a branch `main`") escreve-se como escolha, com o custo e o benefício, não como lei universal.
 
 ## 4. Limites de tamanho
