@@ -1,0 +1,59 @@
+{
+  "skill_name": "desenhando-sites",
+  "evals": [
+    {
+      "id": 1,
+      "eval_name": "estudio de arquitetura com revelar e ancoras",
+      "prompt": "Faz o site de um estúdio de arquitetura pequeno, num arquivo só (estudio.html, HTML, CSS e JavaScript, sem bibliotecas de fora e sem imagens externas). O estúdio faz casas e reformas de apartamentos. Quero um cabeçalho fixo com links para as partes do site, uma apresentação do estúdio, o jeito de trabalhar em etapas, uns projetos de exemplo, a equipe e um contato no fim. Inventa os textos. Quero que a página tenha movimento enquanto a pessoa desce.",
+      "expected_output": "Um site com a capa animada ao carregar, os blocos das seções surgindo com o scroll ao longo da página toda, uma vez só, as âncoras parando abaixo do cabeçalho fixo, o texto visível sem JavaScript e sem deslocamento com o movimento reduzido.",
+      "files": [],
+      "expectations": [
+        "Ao carregar, sem rolar, o título da capa tem uma animação de entrada (animation ou transition disparada no carregamento) e termina visível, sem depender de um evento de scroll ou de um IntersectionObserver",
+        "Blocos de pelo menos três seções abaixo da dobra começam com opacidade 0 (ou deslocados) e ficam com opacidade 1 depois de a seção entrar na tela, por um IntersectionObserver, e não por um listener de scroll",
+        "Depois de revelado, um bloco não volta a esconder nem a animar ao rolar até o topo e descer de novo (o observador para de observá-lo, ou a classe nunca sai)",
+        "Com o JavaScript desligado, todo o texto das seções aparece com opacidade 1: o estado escondido depende de uma classe ou atributo posto pelo script",
+        "O revelar usa um deslocamento vertical entre 10 e 16 px e uma duração entre 400 e 600 ms, e a transição nomeia só opacity e transform (nenhuma usa all)",
+        "Pelo menos dois níveis de atraso na mesma seção: o título entra antes e o texto de apoio entre 80 e 120 ms depois, e não um atraso igual crescendo para cada filho",
+        "Cada seção alvo de um link do cabeçalho tem scroll-margin-top (ou scroll-padding-top no html) igual ou maior do que a altura do cabeçalho fixo: ao clicar no link, o topo da seção fica abaixo do cabeçalho",
+        "Dentro de @media (prefers-reduced-motion: reduce), os blocos revelados e a capa ficam sem translate (transform none); só a opacidade pode mudar",
+        "Se houver paralaxe, ele só existe acima de 768 px de largura, só em elementos decorativos e só com transform"
+      ]
+    },
+    {
+      "id": 2,
+      "eval_name": "nutricionista com lateral de marcacao e cartoes curtos",
+      "prompt": "Preciso do site de uma nutricionista que atende no consultório e por vídeo, num arquivo só (nutricionista.html, sem bibliotecas de fora, sem imagens externas). Ela quer explicar as três linhas de acompanhamento (emagrecimento, esporte e gestação), como é a primeira consulta, quanto custa, as perguntas mais comuns e um jeito fácil de marcar consulta, que a pessoa ache em qualquer ponto da página. A maioria das pessoas vai abrir pelo celular. Inventa os textos, sem depoimentos de pacientes.",
+      "expected_output": "Um site em que a marcação acompanha o scroll numa lateral no computador e numa barra fixa embaixo no celular, com as linhas de acompanhamento em cartões curtos com ícone e os blocos surgindo com o scroll.",
+      "files": [],
+      "expectations": [
+        "A 1440 px de largura, a marcação de consulta fica numa coluna lateral com position sticky que continua visível no mesmo lugar depois de rolar a página por mais de uma tela",
+        "A 390 px de largura, a lateral não aparece ao lado do conteúdo e há uma barra fixa embaixo da tela com o botão de marcar, de pelo menos 44 px de altura",
+        "Na página a 390 px, o último conteúdo antes do rodapé não fica coberto pela barra fixa (há um espaço embaixo do tamanho da barra, ou a barra some no fim)",
+        "As três linhas de acompanhamento ficam em três cartões, cada um com um ícone (SVG ou caractere) e um texto de até 25 palavras",
+        "Nenhum antepassado da lateral sticky tem overflow hidden, auto ou scroll",
+        "Os blocos abaixo da dobra surgem com o scroll por um IntersectionObserver, uma vez só, e com o JavaScript desligado o texto aparece",
+        "Nenhum depoimento de paciente aparece na página",
+        "A 390 px a página não tem scroll horizontal",
+        "Nenhuma transition usa all, e as animações mexem só em transform e opacity"
+      ]
+    },
+    {
+      "id": 3,
+      "eval_name": "limpeza de piscinas com vidro, destaque e formulario",
+      "prompt": "Faz a página de uma empresa de limpeza e manutenção de piscinas, num arquivo só (piscinas.html, sem bibliotecas de fora, sem imagens externas). Os serviços são limpeza semanal, tratamento da água, conserto de bomba e filtro, e abertura da piscina no começo do verão; a limpeza semanal é o que eles mais querem vender. No fim, um formulário para pedir uma visita técnica. Escreve antes do código o plano do desenho e depois faz a página. Inventa os textos.",
+      "expected_output": "Um plano escrito antes do código e uma página com o cabeçalho de vidro que fica sólido com a transparência reduzida, um serviço em destaque e o formulário em duas colunas no computador e numa no celular.",
+      "files": [],
+      "expectations": [
+        "A resposta traz, antes do código, um plano com 4 a 6 cores com nome e valor, as letras com o papel de cada uma e um esboço do layout em ASCII",
+        "O cabeçalho é fixo e tem backdrop-filter com blur e um fundo semitransparente, e o conteúdo da página passa por baixo dele ao rolar",
+        "Dentro de @media (prefers-reduced-transparency: reduce), o cabeçalho fica com fundo opaco e sem backdrop-filter",
+        "Nenhum elemento translúcido com backdrop-filter fica por cima de outro elemento translúcido com backdrop-filter (nada de vidro sobre vidro)",
+        "Na lista dos serviços, a limpeza semanal tem um destaque visual que nenhum outro serviço tem (tamanho, cor, borda ou selo), e só ela",
+        "A 1440 px, a seção do pedido de visita tem duas colunas: à esquerda três informações curtas e à direita os campos do formulário",
+        "A 390 px, a seção do pedido de visita fica numa coluna só, com as informações acima dos campos",
+        "Os blocos das seções surgem com o scroll e não se repetem ao subir; com o JavaScript desligado o texto aparece",
+        "O botão do formulário diz o que acontece (por exemplo, pedir a visita), e não apenas Enviar"
+      ]
+    }
+  ]
+}
