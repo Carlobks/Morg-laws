@@ -11,10 +11,12 @@
         "Ao carregar, sem rolar, o título da capa tem uma animação de entrada (animation ou transition disparada no carregamento) e termina visível, sem depender de um evento de scroll ou de um IntersectionObserver",
         "Blocos de pelo menos três seções abaixo da dobra começam com opacidade 0 (ou deslocados) e ficam com opacidade 1 depois de a seção entrar na tela, por um IntersectionObserver, e não por um listener de scroll",
         "Depois de revelado, um bloco não volta a esconder nem a animar ao rolar até o topo e descer de novo (o observador para de observá-lo, ou a classe nunca sai)",
+        "Com a página rolada até o fim, a 1440 e a 390 px, o último bloco da página (o do contato ou do rodapé) tem opacidade 1",
         "Com o JavaScript desligado, todo o texto das seções aparece com opacidade 1: o estado escondido depende de uma classe ou atributo posto pelo script",
         "O revelar usa um deslocamento vertical entre 10 e 16 px e uma duração entre 400 e 600 ms, e a transição nomeia só opacity e transform (nenhuma usa all)",
         "Pelo menos dois níveis de atraso na mesma seção: o título entra antes e o texto de apoio entre 80 e 120 ms depois, e não um atraso igual crescendo para cada filho",
-        "Cada seção alvo de um link do cabeçalho tem scroll-margin-top (ou scroll-padding-top no html) igual ou maior do que a altura do cabeçalho fixo: ao clicar no link, o topo da seção fica abaixo do cabeçalho",
+        "Ao clicar em cada link do cabeçalho, o topo da seção de destino fica abaixo do cabeçalho fixo (por scroll-padding-top no html ou scroll-margin-top nos alvos, igual ou maior do que a altura do cabeçalho)",
+        "Um elemento focável posto debaixo do cabeçalho fixo e focado com a tecla Tab ou com focus() fica visível abaixo do cabeçalho, e não coberto por ele",
         "Dentro de @media (prefers-reduced-motion: reduce), os blocos revelados e a capa ficam sem translate (transform none); só a opacidade pode mudar",
         "Se houver paralaxe, ele só existe acima de 768 px de largura, só em elementos decorativos e só com transform"
       ]
@@ -29,6 +31,7 @@
         "A 1440 px de largura, a marcação de consulta fica numa coluna lateral com position sticky que continua visível no mesmo lugar depois de rolar a página por mais de uma tela",
         "A 390 px de largura, a lateral não aparece ao lado do conteúdo e há uma barra fixa embaixo da tela com o botão de marcar, de pelo menos 44 px de altura",
         "Na página a 390 px, o último conteúdo antes do rodapé não fica coberto pela barra fixa (há um espaço embaixo do tamanho da barra, ou a barra some no fim)",
+        "A 390 px, um campo do formulário que recebe o foco quando está debaixo da barra fixa sobe e fica visível acima dela (por scroll-padding-bottom ou outro meio)",
         "As três linhas de acompanhamento ficam em três cartões, cada um com um ícone (SVG ou caractere) e um texto de até 25 palavras",
         "Nenhum antepassado da lateral sticky tem overflow hidden, auto ou scroll",
         "Os blocos abaixo da dobra surgem com o scroll por um IntersectionObserver, uma vez só, e com o JavaScript desligado o texto aparece",

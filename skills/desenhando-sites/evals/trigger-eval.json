@@ -5,6 +5,8 @@
   {"query": "monta uma landing page para o lançamento do curso de fotografia", "should_trigger": true},
   {"query": "o site da oficina tem texto demais em cada cartão de serviço, enxuga", "should_trigger": true},
   {"query": "quero o cabeçalho do site translúcido, com o conteúdo passando por trás", "should_trigger": true},
+  {"query": "revê o site da clínica, a capa está sem graça e as seções parecem todas iguais", "should_trigger": true},
+  {"query": "revê o site da clínica: dá para usar só com o teclado e com leitor de tela?", "should_trigger": false},
   {"query": "o painel do ERP está feio, os números não se destacam", "should_trigger": false},
   {"query": "o cabeçalho de vidro do site passa no contraste quando a foto clara passa por trás?", "should_trigger": false},
   {"query": "faz o logotipo da marca da padaria", "should_trigger": false},

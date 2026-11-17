@@ -20,10 +20,11 @@ mesmos em todas, e a página de entrada leva a capa; as outras levam uma entrada
 ## 2. Capas sem foto
 
 Uma capa forte sem nenhuma imagem é possível; ela só precisa de outro protagonista. Escolha um (os três são ideias
-nossas; a letra com espaçamento negativo é de Emil Kowalski, `apple-design`):
+nossas; o espaçamento negativo no título grande é de Emil Kowalski, `apple-design`, que usa −0,02 em no exemplo
+dele):
 
 - **A letra:** o título ocupa a capa, entre 2,5 e 5,5 rem conforme a largura (`clamp`), com a entrelinha perto de 1 e
-  o espaçamento entre letras negativo (por volta de −0,02 a −0,03 em). O texto de apoio fica pequeno e longe, para o
+  o espaçamento entre letras negativo, por volta de −0,02 a −0,03 em (o tamanho, a entrelinha e o −0,03 são nossos). O texto de apoio fica pequeno e longe, para o
   título ter ar. Funciona quando o nome ou a promessa do cliente é curta.
 - **A forma:** um bloco de cor, um círculo grande ou um recorte geométrico que ocupa de um terço à metade da capa, com
   o título ao lado ou por cima. A forma pode vir do mundo do cliente (o perfil de uma peça, o desenho de uma planta, a
@@ -55,22 +56,28 @@ ordem da entrada.
   .cabecalho { background: rgb(246 244 239 / 0.97); border-bottom: 1px solid #1d1b18; }
 }
 
-/* As âncoras param abaixo do cabeçalho: a mesma variável nos dois lugares */
-section[id] { scroll-margin-top: var(--altura-cabecalho); }
+/* As âncoras e o foco param abaixo do cabeçalho: a mesma variável nos dois lugares */
+html { scroll-padding-top: var(--altura-cabecalho); }
 ```
 
 - **A cor do fundo é a do site,** com opacidade; a opacidade de 0,72 e o desfoque de 16 px são nossos (a `apple-design`
   usa um exemplo parecido). Mais transparente do que isso e o texto do cabeçalho depende demais do que passa por trás.
 - **Os links do cabeçalho com peso 600 e um pouco de espaçamento:** é o texto mais pesado que o vidro pede (Emil
   Kowalski, `apple-design`).
-- **Uma variável só para a altura:** se o cabeçalho crescer no celular, a margem das âncoras cresce junto.
+- **Uma variável só para a altura:** se o cabeçalho crescer no celular, o espaço das âncoras cresce junto.
+- **`scroll-padding-top` no `html`, e não `scroll-margin-top` em cada seção:** vale para qualquer alvo de âncora (uma
+  seção, um título com `id`) e também para o elemento que recebe o foco do teclado, que o navegador rola para a
+  vista respeitando esse espaço. O `scroll-margin-top` só vale para os alvos que o levam, e o foco continua debaixo do
+  cabeçalho (forma nossa, medida abaixo).
 - **O contraste do texto se mede sobre o pior fundo** que passa por trás (uma foto clara, um bloco escuro), com a
   página rolada até o fim: o método está na `cuidando-da-acessibilidade`.
 
 **Medido:** com a transparência reduzida emulada, o fundo virou `rgb(246, 244, 239)` e o `backdrop-filter` ficou
 `none`; sem ela, `rgba(246, 244, 239, 0.72)` com `blur(16px) saturate(1.6)`. Ao clicar no link de uma seção, o topo
-dela parou em 64 px, rente ao fim do cabeçalho; na mesma página **sem** a linha do `scroll-margin-top`, parou em 0,
-debaixo do cabeçalho. A variante de `prefers-contrast: more` não foi emulada.
+dela parou em 64 px, rente ao fim do cabeçalho; na mesma página **sem** a linha do `scroll-padding-top`, parou em 0,
+debaixo do cabeçalho. Um campo posto logo acima da tela e focado por script parou com o topo a 412 px (1440 px) e a
+362 px (390 px), fora do cabeçalho; com a versão anterior desta receita (`scroll-margin-top` nas seções) ficava a
+10 px do topo, debaixo dele. A variante de `prefers-contrast: more` não foi emulada nesta sessão.
 
 ## 4. A ação que segue o scroll
 
@@ -94,6 +101,7 @@ debaixo do cabeçalho. A variante de `prefers-contrast: more` não foi emulada.
     flex: 1; min-height: 44px; display: grid; place-items: center;
     background: #1d1b18; color: #fff; border-radius: 0.75rem;
   }
+  html { scroll-padding-bottom: 5rem; }
   body { padding-bottom: 5rem; }
 }
 ```
@@ -103,18 +111,23 @@ debaixo do cabeçalho. A variante de `prefers-contrast: more` não foi emulada.
   <div><!-- o conteúdo das seções --></div>
   <aside class="lateral"><a href="#pedido">Pedir orçamento</a></aside>
 </section>
-<nav class="barra-acao" aria-label="Ação principal"><a href="#pedido">Pedir orçamento</a></nav>
+<div class="barra-acao"><a href="#pedido">Pedir orçamento</a></div>
 ```
 
 - **`align-items: start`** na grade: sem ele a lateral estica até a altura da coluna e o `sticky` não tem para onde
   andar.
 - **`top` com a altura do cabeçalho** mais um respiro, para a lateral não ficar debaixo do vidro.
-- **O `body` ganha o espaço da barra** no celular, para ela não cobrir o último conteúdo.
+- **O `body` ganha o espaço da barra** no celular, para ela não cobrir o último conteúdo, e o `html` ganha o mesmo
+  espaço no `scroll-padding-bottom`, para um campo que recebe o foco subir acima dela.
+- **A barra é um `div`, não um `nav`:** um link só, para a mesma página, não é navegação, e um marco de navegação a
+  mais só atrapalha quem usa leitor de tela (a semântica se confere na `cuidando-da-acessibilidade`).
 - **Nenhum antepassado da lateral com `overflow`** diferente de `visible`: é o que mais quebra um `sticky`.
 
 **Medido:** a 1440 px, com a seção rolada 200, 600 e 1000 px para cima, a lateral estava a 88 px do topo da janela
 nos três pontos (64 do cabeçalho mais 24 de respiro), enquanto o título da seção passava de −70 a −870 px. A 390 px a lateral não aparecia e a barra sim, com
-o botão de 44 px de altura.
+o botão de 44 px de altura. Um campo do formulário parado debaixo da barra e focado por script subiu para 427–448 px,
+acima dela (que começa em 775 px); na versão anterior desta receita, sem `scroll-padding`, ficava em 765–786 px,
+coberto.
 
 ## 5. O formulário em duas colunas
 

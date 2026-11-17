@@ -50,30 +50,39 @@ escondido.
       entrada.target.classList.add("revelado");
       observador.unobserve(entrada.target);
     }
-  }, { rootMargin: "0px 0px -12% 0px" });
+  }, { threshold: 0.15 });
   alvos.forEach((alvo) => observador.observe(alvo));
 })();
 ```
 
 Por que cada peça é assim:
 
-- **`rootMargin` com −12 % embaixo:** o bloco começa a surgir quando já entrou cerca de 12 % na tela, dentro da faixa
-  de 10 a 20 % da `ui-animation`. Mais cedo, a animação acaba antes de a pessoa olhar; mais tarde, ela vê um espaço
-  vazio.
+- **`threshold: 0.15`:** o bloco começa a surgir quando 15 % dele está à vista, dentro da faixa de 10 a 20 % da
+  `ui-animation`. Antes disso a animação acabaria sem ninguém olhar; bem depois, a pessoa daria com um vazio.
+- **Nunca `rootMargin` com a margem de baixo negativa** (por exemplo `"0px 0px -12% 0px"`). Ela encolhe a janela do
+  observador por baixo, e um bloco só conta como visto quando passa a linha dos 88 % da altura da tela. O que fica nos
+  últimos 12 % da página (o endereço do rodapé, a última chamada) nunca chega lá, porque a página acaba antes, e fica
+  com opacidade 0 para sempre.
+- **Um bloco muito alto** (mais de cerca de seis telas, onde 15 % dele nunca cabe na tela de uma vez) não dispara: nesse
+  caso revelam-se os filhos dele, e não o bloco, que é também a regra da entrada por contêiner.
 - **`unobserve` depois de revelar:** é o que faz o bloco surgir uma vez só. Sem isso, um script que tira a classe ao
   sair da tela faz o bloco piscar a cada subida.
-- **Três papéis em vez de um atraso por índice:** o título lidera, o apoio vem 100 ms depois e anda menos, o detalhe
-  só esmaece. Um atraso que cresce igual a cada filho (`--i * 80ms`) é o metrônomo que a onda evita.
-- **A curva de saída forte** começa rápida e assenta devagar: a pessoa vê a resposta logo. O mesmo valor da
-  `desenhando-telas`, com uma duração de site.
+- **Três papéis em vez de um atraso por índice:** primeiro o título; o apoio vem 100 ms depois (dentro da faixa de
+  80–120 ms da `ui-animation`) e sobe só 10 px; o detalhe vem 180 ms depois e não sobe. Os 10 px, os 14 px do título e
+  os 180 ms são nossos. Um atraso que cresce igual a cada filho (`--i * 80ms`) transforma a entrada numa fila.
+- **A curva de saída forte**, `cubic-bezier(0.23, 1, 0.32, 1)`, é da `emil-design-eng` de Emil Kowalski: começa
+  rápida e assenta devagar, e a pessoa vê a resposta logo. É o mesmo valor da `desenhando-telas`, com uma duração de
+  site; os 520 ms são nossos, dentro da faixa de 400–600 ms.
 - **O que está na tela ao carregar não leva `data-revelar`.** O observador dispararia logo, mas a capa não deve
   depender do script: ela tem a sua própria entrada (seção 2).
 - **Uma entrada por contêiner:** se a seção inteira leva `data-revelar`, os filhos dela não levam.
 
 **Medido** (a 1440 px e a 390 px): antes do scroll, o título de uma seção abaixo da dobra tinha opacidade 0 e
-`translateY(14px)`; 150 ms depois de a seção entrar na tela, opacidade 0,79; depois de 1 s, 1 e `transform: none`; o
+`translateY(14px)`; 150 ms depois de a seção entrar na tela, opacidade entre 0,73 e 0,79 (varia de uma corrida para outra); depois de 1 s, 1 e `transform: none`; o
 apoio tinha `transition-delay` de 0,1 s; a transição nomeava só `opacity, transform`. Ao subir até o topo e voltar, a
-classe continuava lá e a opacidade era 1 logo no primeiro quadro: não houve segunda animação. **Com o JavaScript
+classe continuava lá e a opacidade era 1 logo no primeiro quadro: não houve segunda animação. **O último bloco da
+página** (um parágrafo no rodapé, com o topo a 844 px numa tela de 900), rolado até o fim, ficou com opacidade 1; com
+o `rootMargin` de −12 % no lugar do `threshold`, o mesmo parágrafo, a 858 px, ficou com opacidade 0. **Com o JavaScript
 desligado**, a raiz não foi marcada e todos os blocos tinham opacidade 1 desde o carregamento. **Com o movimento
 reduzido**, o `transform` ficou `none` antes e depois, e só a opacidade mudou, em 0,2 s.
 
@@ -114,16 +123,17 @@ isso fora do script, e nunca no celular.
 }
 ```
 
-- **`linear` aqui está certo, e só aqui:** a mão de quem rola é o relógio; qualquer curva distorceria a relação de 1
-  para 1 com o scroll (Matthew Blode, `ui-animation`).
+- **`linear` aqui está certo, e só aqui:** quem dá o ritmo é o dedo ou a roda de quem lê, e uma curva faria a forma
+  correr à frente da página num trecho e ficar para trás em outro (Matthew Blode, `ui-animation`).
 - **O `@supports` não é opcional:** num navegador sem `animation-timeline`, o elemento fica no estado final, parado,
   em vez de preso no primeiro quadro.
 - **Os 80 px de percurso** (de 40 a −40) para uma forma que atravessa a tela inteira ficam bem abaixo dos cerca de
   15 % da distância rolada; o valor é nosso.
 - **O celular fica de fora** pela largura, e o movimento reduzido pela preferência.
 
-**Medido:** a 1440 px, a forma estava em `translateY(40px)` quando apontava na base da tela e em `translateY(-26px)`
-quando o topo dela chegava ao topo da tela; a 390 px e com o movimento reduzido, nenhuma animação.
+**Medido:** a 1440 px, a forma estava em `translateY(40px)` quando apontava na base da tela e entre
+`translateY(-26px)` e `translateY(-30px)` quando o topo dela chegava ao topo da tela (nas duas páginas de teste, de
+alturas diferentes); a 390 px e com o movimento reduzido, nenhuma animação.
 
 ## 4. Âncoras suaves, sem prender o scroll
 
@@ -132,14 +142,16 @@ html { scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 ```
 
-É o único lugar onde o site mexe no scroll. A margem das âncoras com o cabeçalho fixo está em `capa-e-estrutura.md`.
+É o único lugar onde o site mexe no scroll. O espaço que as âncoras e o foco deixam para o cabeçalho fixo está em `capa-e-estrutura.md`.
 
 ## 5. Os tons de movimento
 
 Um tom para o site inteiro, escolhido no plano. A tabela é da `motion-design` da LottieFiles, com os nomes traduzidos
-por nós; a coluna «Para que site» é nossa.
+por nós; a coluna «Para que site» é nossa. **A duração vale para as respostas a um gesto** da pessoa (abrir o detalhe
+de um serviço, o menu, a confirmação do formulário). O revelar com o scroll e a entrada da capa não seguem esta coluna:
+têm as faixas das seções 1 e 2.
 
-| Tom (LottieFiles) | Duração | Ressalto | Para que site |
+| Tom (LottieFiles) | Duração das respostas a um gesto | Ressalto | Para que site |
 |---|---|---|---|
 | Premium (sofisticado) | 350–600 ms | nenhum | marca de luxo, ateliê, trabalho autoral |
 | Corporate (profissional) | 200–400 ms | 0–3 % | serviços, empresa, escritório |
@@ -147,10 +159,12 @@ por nós; a coluna «Para que site» é nossa.
 | Energetic (enérgico) | 100–250 ms | 15–30 % | esporte, lançamento |
 
 E, do mapa das emoções da mesma fonte, a **calma**: 500–1000 ms, numa curva suave nas duas pontas (seno), em caminhos
-de curvas leves. É o tom para um consultório, uma terapia ou um cuidado.
+de curvas leves. É o tom para um consultório, uma terapia ou um cuidado. Numa resposta a um clique, fique na ponta
+de baixo (500 ms, valor nosso): um menu que leva um segundo para abrir parece travado, por mais calmo que seja o site.
 
-O revelar com o scroll (seção 1) tem a sua própria faixa de 400–600 ms, que vale em qualquer tom: um tom rápido não o
-leva a 200 ms, porque a velocidade de uma tela de sistema parece nervosa num site.
+O revelar com o scroll (seção 1) tem a sua própria faixa de 400–600 ms, e a capa (seção 2) a sua, de 0,5–0,7 s; as
+duas valem em qualquer tom. Um tom rápido não leva o revelar a 200 ms, porque a velocidade de uma tela de sistema
+parece nervosa num site, e um tom calmo não o leva a um segundo.
 
 **O que não se usa da LottieFiles:** a regra das três camadas de movimento sempre presentes e a saída com aceleração.
 As duas contradizem a `emil-design-eng` e a régua de acessibilidade dos ensaios; uma camada de ambiente, quando
