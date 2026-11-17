@@ -1,6 +1,6 @@
 ---
 name: desenhando-telas
-description: Guia as decisões de interface em sistemas com muitos dados (ERPs, painéis) — que tela deve existir, o que mostrar e esconder, quantas abas e ações cabem, cor e daltonismo, contraste, alvos de toque, botões e movimento. Usar ao criar, redesenhar ou rever uma tela, modal, tabela, formulário, painel ou navegação, ou ao decidir se uma página deve existir. Não usar para identidade visual de marca ou páginas de marketing, nem para provar no navegador que a tela ficou certa (é a testes-e-provas).
+description: Guia o desenho de telas de sistema (ERP, Kanban, painel) — que tela existe, hierarquia, resumir e abrir ao clicar, KPIs, atalhos, celular e movimento. Usar ao criar, redesenhar ou rever essas telas. Não usar para sites (é a desenhando-sites) nem para acessibilidade (é a cuidando-da-acessibilidade).
 ---
 
 # Desenhando telas

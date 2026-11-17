@@ -1,6 +1,6 @@
 ---
 name: pondo-o-plano-a-prova
-description: Conduz uma conversa de perguntas com o dono até que um plano, uma decisão ou uma mudança se possa executar sem adivinhar — o que se quer, o antes e o depois, o que não se toca, o que não tem volta, quem decide, e o oráculo (como saber se ficou certo), escrito antes de começar. Usar quando um pedido grande ou uma mudança numa tela chega sem limites ou sem forma de validar, quando o dono pede para "apertar", "pôr à prova" ou "fazer as perguntas", ou antes de um trabalho caro de desfazer. Não usar para uma tarefa pequena e clara, para fatos que se leem no código ou nos dados, nem para o primeiro contato com um projeto (é a comecando-um-projeto).
+description: Interroga o dono até que um plano, uma decisão ou uma mudança se possa executar sem adivinhar — o que se quer, o antes e o depois, o que não se toca, o que não tem volta, quem decide e como saber se ficou certo. Usar quando um pedido grande ou uma mudança numa tela chega sem limites ou sem forma de validar, quando o dono pede para "apertar", "pôr à prova" ou "fazer as perguntas", ou antes de um trabalho caro de desfazer. Não usar para uma tarefa pequena e clara, para fatos que se leem no código ou nos dados, nem para o primeiro contato com um projeto (é a comecando-um-projeto).
 ---
 
 # Pondo o plano à prova

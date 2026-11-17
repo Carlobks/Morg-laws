@@ -42,7 +42,7 @@ As skills abrem pelo nome, estejam onde estiverem instaladas (`.claude/skills/`,
 | Vai compactar a conversa, parar ou retomar trabalho | `passando-o-trabalho` |
 | Vai commitar ou fechar um ciclo de trabalho | `git-e-commits` |
 | Vai escrever ou partir código, corrigir um bug, testar ou provar que funciona | `codigo-legivel`, `testes-e-provas` |
-| Vai criar, redesenhar ou rever uma tela | `desenhando-telas` |
+| Vai criar, redesenhar ou rever uma tela ou um site, ou conferir a acessibilidade | `desenhando-telas`, `desenhando-sites`, `cuidando-da-acessibilidade` |
 | Vai fazer push de código | `auditoria-de-seguranca` |
 | O projeto usa SQL, Supabase, Next.js ou React | `sql-postgres`, `supabase`, `nextjs-react` |
 

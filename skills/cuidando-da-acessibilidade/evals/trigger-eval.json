@@ -1,0 +1,14 @@
+[
+  {"query": "os botões da tela de pedidos estão pequenos demais no celular?", "should_trigger": true},
+  {"query": "revê a acessibilidade do formulário de cadastro antes de eu publicar", "should_trigger": true},
+  {"query": "o site respeita quem ligou o movimento reduzido no sistema?", "should_trigger": true},
+  {"query": "o texto cinza claro das datas tem contraste suficiente sobre o fundo branco?", "should_trigger": true},
+  {"query": "o verde e o vermelho do status confundem quem é daltônico", "should_trigger": true},
+  {"query": "dá para usar o modal de edição só com o teclado? o foco some quando ele fecha", "should_trigger": true},
+  {"query": "redesenha a tela de pagamentos, está confusa", "should_trigger": false},
+  {"query": "escolhe a paleta de cores do site da clínica", "should_trigger": false},
+  {"query": "o teste de e2e do formulário falha no CI", "should_trigger": false},
+  {"query": "quero textos que surgem com o scroll no site da escola de música", "should_trigger": false},
+  {"query": "quantas abas cabem na página de configurações?", "should_trigger": false},
+  {"query": "tira uma captura e prova que a tela nova ficou certa", "should_trigger": false}
+]

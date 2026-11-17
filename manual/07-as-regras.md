@@ -50,7 +50,7 @@ O `AGENTS.md` traz uma tabela de nove situações, cada uma com a skill que se a
 | Compactar a conversa, parar ou retomar | `passando-o-trabalho` | Guarda o estado num handoff, o commita e conduz a retomada |
 | Commitar ou fechar um ciclo | `git-e-commits` | Commit por caminho, mensagem com o porquê, hooks que não se pulam e changelog por fragmento |
 | Escrever ou partir código, corrigir um bug, testar | `codigo-legivel`, `testes-e-provas` | A primeira fixa a forma do código; a segunda diz como provar que funciona |
-| Criar, redesenhar ou rever uma tela | `desenhando-telas` | Decide o que mostrar, quantas abas e ações cabem, cor, contraste e movimento |
+| Criar, redesenhar ou rever uma tela ou um site, ou conferir a acessibilidade | `desenhando-telas`, `desenhando-sites`, `cuidando-da-acessibilidade` | A primeira desenha telas de sistema com muitos dados; a segunda, sites; a terceira mede contraste, alvos, teclado e movimento |
 | Fazer push de código | `auditoria-de-seguranca` | Revisa segredos, bibliotecas e rotas antes de enviar, com achados e cobertura em vez de uma nota |
 | O projeto usa Postgres, Supabase, Next.js ou React | `sql-postgres`, `supabase`, `nextjs-react` | Cada uma traz as armadilhas da sua tecnologia que só aparecem em produção |
 

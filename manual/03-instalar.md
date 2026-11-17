@@ -27,7 +27,7 @@ npx skills add Carlobks/Morg-laws -a claude-code -y --skill sql-postgres --skill
 
 npx skills add Carlobks/Morg-laws -a claude-code -y --skill nextjs-react
 
-npx skills add Carlobks/Morg-laws -a claude-code -y --skill desenhando-telas
+npx skills add Carlobks/Morg-laws -a claude-code -y --skill desenhando-telas --skill desenhando-sites --skill cuidando-da-acessibilidade
 ```
 
 Se o projeto usa Postgres sem o Supabase, tire o `--skill supabase` do comando do Postgres.
@@ -52,7 +52,7 @@ O que costuma dar errado:
 
 O `npx skills add` procura a pasta `skills/` do repositório, e só ela. O `AGENTS.md` e o `CLAUDE.md` da raiz não fazem parte de nenhuma skill e ficam de fora: foi o que um teste numa pasta vazia mostrou, comparando arquivo a arquivo com o repositório, sem nenhuma diferença nas skills. Esse teste é de 2026-10-30, na versão 1.7.4 do pacote; o de 2026-11-14, na 1.8.1, comparou do mesmo jeito a instalação de uma parte e a de todas.
 
-A primeira linha de tecnologia é para quem usa Postgres; quem não usa o Supabase tira o `--skill supabase`, mas o Supabase não vem sem a de SQL. A segunda é para Next.js ou React; a terceira, para sistemas com muitas telas e dados, como painéis.
+A primeira linha de tecnologia é para quem usa Postgres; quem não usa o Supabase tira o `--skill supabase`, mas o Supabase não vem sem a de SQL. A segunda é para Next.js ou React; a terceira, para quem desenha telas de sistema (painéis, ERPs) ou sites, e traz junto a de acessibilidade, que mede o que as duas desenham.
 
 Com `-y` e sem `--skill`, a ferramenta instala todas, e dentro de um agente ela liga o `-y` sozinha (pela leitura do código dela, na [pesquisa](https://github.com/Carlobks/Morg-laws/blob/main/pesquisas/2026-11-14-instalar-so-algumas-skills.md)): por isso cada comando leva os nomes. A ferramenta guarda no `skills-lock.json` só o que se instalou, e o `npx skills update` atualiza só essas: uma skill que você não trouxe, ou uma nova do Morg-laws, só chega com um `add` dela. Para atualizar, use `npx skills update -p -y`. Quer todas? Tire todos os `--skill` do comando das que servem a qualquer projeto. A do Supabase manda usar junto a de SQL; as outras se citam só para apontar o caminho, e nenhuma para de funcionar sem outra.
 

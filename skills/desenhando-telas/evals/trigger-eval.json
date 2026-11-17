@@ -1,12 +1,16 @@
 [
+  {"query": "o quadro Kanban das ordens de serviço não funciona no celular, as colunas ficam espremidas", "should_trigger": true},
+  {"query": "a ficha do funcionário tem informação demais, ninguém acha o telefone", "should_trigger": true},
+  {"query": "arruma os KPIs do painel financeiro, estão todos numa linha só", "should_trigger": true},
   {"query": "redesenha a tela de pagamentos, está confusa e com botões demais", "should_trigger": true},
-  {"query": "quantas abas posso pôr nesta página de cadastro?", "should_trigger": true},
-  {"query": "essa página índice só lista links para as outras, mantenho?", "should_trigger": true},
-  {"query": "o texto cinza do subtítulo tem contraste suficiente?", "should_trigger": true},
-  {"query": "cria o modal para editar o fornecedor", "should_trigger": true},
-  {"query": "o verde e o vermelho do status confundem quem é daltônico", "should_trigger": true},
-  {"query": "faz o logotipo e a paleta da nossa marca nova", "should_trigger": false},
-  {"query": "tira uma captura e prova que a tela ficou certa", "should_trigger": false},
-  {"query": "a query da tabela está lenta", "should_trigger": false},
-  {"query": "escreve a landing page de marketing do produto", "should_trigger": false}
+  {"query": "quantas abas posso pôr nesta página de cadastro de fornecedores?", "should_trigger": true},
+  {"query": "essa página índice só lista links para as outras, mantenho ou tiro?", "should_trigger": true},
+  {"query": "ninguém descobre os atalhos de teclado da lista de pedidos, como deixo isso à vista?", "should_trigger": true},
+  {"query": "faz o site da clínica de fisioterapia, com a capa e os serviços", "should_trigger": false},
+  {"query": "o texto cinza dos rótulos da tabela tem contraste suficiente?", "should_trigger": false},
+  {"query": "prova no navegador que o arrastar dos cartões funciona", "should_trigger": false},
+  {"query": "a landing page do produto novo está sem impacto, refaz a primeira dobra", "should_trigger": false},
+  {"query": "os botões do formulário passam no tamanho mínimo de toque?", "should_trigger": false},
+  {"query": "a query que alimenta o painel está lenta", "should_trigger": false},
+  {"query": "faz o logotipo e a paleta da nossa marca nova", "should_trigger": false}
 ]

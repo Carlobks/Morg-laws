@@ -1,0 +1,14 @@
+[
+  {"query": "faz o site de uma psicóloga que atende online e no consultório", "should_trigger": true},
+  {"query": "a página de entrada da empresa está sem impacto, parece um modelo pronto", "should_trigger": true},
+  {"query": "quero que os textos do site apareçam conforme a pessoa rola a página", "should_trigger": true},
+  {"query": "monta uma landing page para o lançamento do curso de fotografia", "should_trigger": true},
+  {"query": "o site da oficina tem texto demais em cada cartão de serviço, enxuga", "should_trigger": true},
+  {"query": "quero o cabeçalho do site translúcido, com o conteúdo passando por trás", "should_trigger": true},
+  {"query": "o painel do ERP está feio, os números não se destacam", "should_trigger": false},
+  {"query": "o cabeçalho de vidro do site passa no contraste quando a foto clara passa por trás?", "should_trigger": false},
+  {"query": "faz o logotipo da marca da padaria", "should_trigger": false},
+  {"query": "as animações do site respeitam quem pediu menos movimento no sistema?", "should_trigger": false},
+  {"query": "redesenha a ficha do cliente no sistema interno", "should_trigger": false},
+  {"query": "publica o site na hospedagem e liga o domínio novo", "should_trigger": false}
+]

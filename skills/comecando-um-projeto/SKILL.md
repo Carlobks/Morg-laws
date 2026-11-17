@@ -1,6 +1,6 @@
 ---
 name: comecando-um-projeto
-description: Conduz o primeiro contato com um projeto, novo ou que já existe, em rondas de perguntas sobre o que ele é, para quem, o que faz e não faz, as restrições e a arquitetura, e deixa escritos o documento do projeto, o AGENTS.md, o primeiro plano e as ADR. Usar ao começar um projeto do zero, ao abrir pela primeira vez um projeto com código e sem documentos, ou quando o dono cola a mensagem inicial do Morg-laws. Não usar para um pedido ou mudança num projeto que já tem esses documentos (é a pondo-o-plano-a-prova), para dividir o trabalho entre sessões (é a orquestrando-sessoes) nem para mudar as regras de um AGENTS.md que já existe (é a escrevendo-regras-de-agente).
+description: Conduz o primeiro contato com um projeto, novo ou que já existe, em rondas de perguntas (o que é, para quem, o que faz e não faz, restrições, arquitetura) e escreve o documento do projeto, o AGENTS.md, o primeiro plano e as ADR. Usar ao começar um projeto do zero, ao abrir pela primeira vez um projeto sem documentos ou quando o dono cola a mensagem inicial do Morg-laws. Não usar para mudança num projeto que já tem esses documentos (é a pondo-o-plano-a-prova), para dividir trabalho (é a orquestrando-sessoes) nem para mudar um AGENTS.md que já existe (é a escrevendo-regras-de-agente).
 ---
 
 # Começando um projeto
