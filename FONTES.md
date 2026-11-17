@@ -436,3 +436,19 @@ Lidas em 2026-11-14 com o `WebFetch`, para `pesquisas/2026-11-14-antes-de-comeca
 - **choosealicense.com — Licenses** — https://choosealicense.com/licenses/ — lido em 2026-11-14. Sustenta: as licenças comparadas por permissões, condições e limitações; MIT e Apache-2.0 pedem manter os avisos; a GPL-3.0 pede publicar o código da versão distribuída sob a mesma licença; a AGPL-3.0 conta o uso em rede como distribuição.
 - **SPDX License List** (versão 3.29.0, 2026-09-16) — https://spdx.org/licenses/ — lido em 2026-11-14. Sustenta: o identificador curto e padronizado de cada licença (`MIT`, `Apache-2.0`). A página não define a coluna «OSI Approved».
 - **Martin Fowler — Utility vs Strategic Dichotomy** (2010-07-29, revisto em 2016-04-07) — https://martinfowler.com/bliki/UtilityVsStrategicDichotomy.html — lido em 2026-11-14. Sustenta: o que não diferencia se compra pronto e se adapta o processo ao pacote; só o que diferencia se constrói; a maior parte dos projetos é do primeiro tipo.
+
+## Ensaios de design
+
+Lidas de 2026-11-16 a 2026-11-17, para `pesquisas/2026-11-17-ensaios-de-design.md`: as skills de design ensaiadas às
+cegas, cada uma baixada como texto num commit fixo e nada executado, a régua de acessibilidade e as que ficaram de fora.
+
+- **Emil Kowalski — `emilkowalski/skills`** (commit `64eb3deb`, 2026-11-15; MIT, Emil Kowalski) — https://github.com/emilkowalski/skills/tree/64eb3deb — lido em 2026-11-16. Sustenta: as skills `emil-design-eng`, `apple-design` e `choreograph`, ensaiadas; a `apple-design` ganhou o Kanban e o site da empresa, a `emil-design-eng` só o painel.
+- **Damola Akinleye — `interface-design`** (commit `2f9be320`, 2026-06-20; MIT) — https://github.com/Dammyjay93/interface-design/tree/2f9be320 — lido em 2026-11-16. Sustenta: a skill que ganhou a ficha de funcionário e ficou em 3.º no painel.
+- **Jakub Krehel — `make-interfaces-feel-better`** (commit `1a2aa969`, 2026-11-16; MIT) — https://github.com/jakubkrehel/make-interfaces-feel-better/tree/1a2aa969 — lido em 2026-11-16. Sustenta: a skill mais constante dos ensaios, na metade de cima nos quatro casos ordenados.
+- **LottieFiles — `motion-design`** (commit `f9a8a041`, 2026-05-18; MIT, LottieFiles) — https://github.com/LottieFiles/motion-design-skill/tree/f9a8a041 — lido em 2026-11-16. Sustenta: a skill que ganhou o site da psicóloga e ficou em 2.º no da empresa.
+- **Anthropic — `frontend-design`** (commit `e4bb5d96`, 2026-11-16; Apache-2.0 no `LICENSE.txt` da pasta) — https://github.com/anthropics/skills/tree/e4bb5d96/skills/frontend-design — lido em 2026-11-16. Sustenta: ensaiada nos dois sites; última no da empresa.
+- **Matthew Blode — `ui-animation`** (commit `7df4b7ed`, 2026-11-14; MIT) — https://github.com/mblode/agent-skills/tree/7df4b7ed/skills/ui-animation — lido em 2026-11-16. Sustenta: ensaiada nos cinco casos; 2.ª no painel, as piores animações ao mover cartões no Kanban.
+- **Vercel — Web Interface Guidelines, `AGENTS.md`** (commit `434b7f91`, 2026-10-05; MIT, Vercel Labs) — https://github.com/vercel-labs/web-interface-guidelines/blob/434b7f91364665f2f733b310ec54809bf8f37937/AGENTS.md — lido em 2026-11-17. Sustenta: as 38 regras da régua aplicada às 10 páginas que ganharam (alvos de toque, contraste, `scroll-margin-top`, `touch-action` e as outras).
+- **`impeccable`** (Apache-2.0) — https://github.com/pbakaus/impeccable — lido em 2026-11-16 na `main`, só em parte. Sustenta: recusada na barreira de segurança (um lançador baixa um binário que não se lê e põe hooks no agente).
+- **taste-skill** (MIT) — https://github.com/Leonxlnx/taste-skill — lido em 2026-11-16 na `main` (só o `SKILL.md`). Sustenta: recusada na barreira de segurança (declara um hook que roda `node` ao fim de cada sessão).
+- **skills.sh — o catálogo** — https://skills.sh/ — lido em 2026-11-16. Sustenta: onde a busca das skills de design começou (a tabela de instalações e a categoria de design). Os números de instalação não se conferem.
