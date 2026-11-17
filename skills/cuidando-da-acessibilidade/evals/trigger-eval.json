@@ -5,10 +5,18 @@
   {"query": "o texto cinza claro das datas tem contraste suficiente sobre o fundo branco?", "should_trigger": true},
   {"query": "o verde e o vermelho do status confundem quem é daltônico", "should_trigger": true},
   {"query": "dá para usar o modal de edição só com o teclado? o foco some quando ele fecha", "should_trigger": true},
+  {"query": "o cabeçalho de vidro do site passa no contraste quando a foto clara passa por baixo dele?", "should_trigger": true},
+  {"query": "terminei a página de orçamento em index.html, confere se alguém com leitor de tela consegue preencher", "should_trigger": true},
+  {"query": "a animação de fundo da capa fica rodando sem parar, isso é problema de acessibilidade?", "should_trigger": true},
+  {"query": "o leitor de tela lê os ícones da barra lateral só como 'imagem', sem nome; confere a tela toda antes de eu entregar", "should_trigger": true},
   {"query": "redesenha a tela de pagamentos, está confusa", "should_trigger": false},
   {"query": "escolhe a paleta de cores do site da clínica", "should_trigger": false},
   {"query": "o teste de e2e do formulário falha no CI", "should_trigger": false},
   {"query": "quero textos que surgem com o scroll no site da escola de música", "should_trigger": false},
   {"query": "quantas abas cabem na página de configurações?", "should_trigger": false},
-  {"query": "tira uma captura e prova que a tela nova ficou certa", "should_trigger": false}
+  {"query": "tira uma captura e prova que a tela nova ficou certa", "should_trigger": false},
+  {"query": "faz a animação do cartão sair mais suave quando ele muda de coluna no Kanban", "should_trigger": false},
+  {"query": "o painel inicial tem indicadores demais numa linha só, reorganiza", "should_trigger": false},
+  {"query": "a página demora 4 segundos para carregar no celular, por quê?", "should_trigger": false},
+  {"query": "o formulário de contato não está gravando no banco quando envio", "should_trigger": false}
 ]

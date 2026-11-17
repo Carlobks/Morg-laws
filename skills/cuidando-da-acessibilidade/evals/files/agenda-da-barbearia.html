@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agenda · Barbearia do Bairro</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, sans-serif; color: #1f2937; background: #ffffff; line-height: 1.5; }
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, summary:focus-visible {
+    outline: 3px solid #2563eb; outline-offset: 2px;
+  }
+  .topo {
+    position: fixed; top: 0; left: 0; right: 0; height: 64px; z-index: 10;
+    display: flex; align-items: center; justify-content: space-between; padding: 0 8px;
+    background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(12px);
+  }
+  .topo a {
+    display: inline-flex; align-items: center; min-height: 44px; padding: 0 8px;
+    color: #ffffff; text-decoration: none; touch-action: manipulation;
+  }
+  .topo .marca { font-weight: 700; }
+  .pular {
+    position: fixed; top: 8px; left: 8px; z-index: 20; padding: 12px 16px; border-radius: 8px;
+    background: #1f2937; color: #ffffff; transform: translateY(-200%); transition: transform 150ms ease;
+  }
+  .pular:focus { transform: translateY(0); }
+  .capa { background: #1f2937; color: #f9fafb; padding: 120px 20px 64px; position: relative; overflow: hidden; }
+  .capa h1 { font-size: 2.5rem; margin: 0 0 8px; }
+  .pulso {
+    position: absolute; right: 24px; top: 96px; width: 120px; height: 120px; border-radius: 50%;
+    background: #f59e0b; opacity: 0.35; animation: pulsar 3s ease-in-out infinite;
+  }
+  @keyframes pulsar { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.4); } }
+  .botao {
+    display: inline-flex; align-items: center; height: 32px; padding: 0 14px; border: 0; border-radius: 8px;
+    background: #b45309; color: #ffffff; font: inherit; font-size: 0.9rem; cursor: pointer;
+    transition: background-color 150ms ease;
+  }
+  section { padding: 48px 20px; }
+  #servicos { background: #fef3c7; }
+  #servicos h2 { font-size: 2rem; font-weight: 700; color: #8a8a8a; margin: 0 0 16px; }
+  .cartoes { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+  .cartao { background: #fef3c7; border: 1px solid #f59e0b; border-radius: 12px; padding: 16px; }
+  .cartao h3 { margin: 0 0 4px; font-size: 1.1rem; }
+  .meta { font-size: 0.75rem; color: #a3a3a3; }
+  .horarios { list-style: none; padding: 0; margin: 0; }
+  .horarios li { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #e5e7eb; }
+  .ponto { width: 12px; height: 12px; border-radius: 50%; }
+  .livre { background: #16a34a; }
+  .ocupado { background: #dc2626; }
+  .favoritar { width: 20px; height: 20px; padding: 0; border: 0; background: none; cursor: pointer; }
+  .resposta { max-height: 0; overflow: hidden; transition: max-height 300ms ease; }
+  .pergunta.aberta .resposta { max-height: 200px; }
+  .pergunta button { background: none; border: 0; font: inherit; padding: 12px 0; min-height: 44px; cursor: pointer; }
+  form { display: grid; gap: 12px; max-width: 420px; }
+  label { font-weight: 600; }
+  input, textarea { font: inherit; font-size: 0.875rem; padding: 10px; border: 1px solid #9ca3af; border-radius: 8px; }
+  .com-erro { border-color: #dc2626; }
+  footer { padding: 32px 20px; background: #f3f4f6; }
+</style>
+</head>
+<body>
+<a class="pular" href="#inicio">Pular para o conteúdo</a>
+<header class="topo">
+  <a class="marca" href="#inicio">Barbearia</a>
+  <nav aria-label="Seções">
+    <a href="#servicos">Serviços</a>
+    <a href="#agenda">Agenda</a>
+    <a href="#contato">Contato</a>
+  </nav>
+</header>
+
+<main id="inicio">
+  <div class="capa">
+    <div class="pulso"></div>
+    <svg width="48" height="48" viewBox="0 0 48 48"><path d="M8 40 L40 8 M8 8 L40 40" stroke="#f59e0b" stroke-width="4"/></svg>
+    <h1>Corte sem fila, na hora marcada</h1>
+    <p>Escolha o serviço, veja os horários livres e reserve em um minuto.</p>
+    <button class="botao" type="button">Marcar horário</button>
+  </div>
+
+  <section id="servicos">
+    <h2>Serviços</h2>
+    <div class="cartoes">
+      <div class="cartao"><h3>Corte</h3><p>Tesoura e máquina, com lavagem.</p><p class="meta">40 min · R$ 50</p></div>
+      <div class="cartao"><h3>Barba</h3><p>Toalha quente e navalha.</p><p class="meta">30 min · R$ 35</p></div>
+      <div class="cartao"><h3>Corte e barba</h3><p>Os dois, com desconto.</p><p class="meta">70 min · R$ 75</p></div>
+    </div>
+  </section>
+
+  <section id="agenda">
+    <h2>Horários de hoje</h2>
+    <ul class="horarios">
+      <li><span class="ponto livre"></span><span>09:00</span><button class="botao" type="button">Reservar</button>
+        <button class="favoritar" type="button" aria-label="Favoritar o horário das 09:00">☆</button></li>
+      <li><span class="ponto ocupado"></span><span>09:40</span><button class="botao" type="button">Reservar</button>
+        <button class="favoritar" type="button" aria-label="Favoritar o horário das 09:40">☆</button></li>
+      <li><span class="ponto livre"></span><span>10:20</span><button class="botao" type="button">Reservar</button>
+        <button class="favoritar" type="button" aria-label="Favoritar o horário das 10:20">☆</button></li>
+    </ul>
+    <p>Precisa de outro dia? Veja a <a href="#contato">página de contato</a> e fale com a gente.</p>
+  </section>
+
+  <section id="perguntas">
+    <h2>Perguntas frequentes</h2>
+    <div class="pergunta">
+      <button type="button" aria-expanded="false">Posso cancelar a reserva?</button>
+      <div class="resposta"><p>Sim, até duas horas antes, pelo link da mensagem de confirmação.</p></div>
+    </div>
+    <div class="pergunta">
+      <button type="button" aria-expanded="false">Aceitam cartão?</button>
+      <div class="resposta"><p>Sim, débito, crédito e Pix.</p></div>
+    </div>
+  </section>
+
+  <section id="contato">
+    <h2>Fale com a gente</h2>
+    <form id="formulario" novalidate>
+      <label for="nome">Nome</label>
+      <input id="nome" name="nome" type="text" required>
+      <label for="email">E-mail</label>
+      <input id="email" name="email" type="text" required>
+      <label for="mensagem">Mensagem</label>
+      <textarea id="mensagem" name="mensagem" rows="4" required></textarea>
+      <button class="botao" type="submit">Enviar</button>
+    </form>
+  </section>
+</main>
+
+<footer><p>Barbearia do Bairro · Rua de Exemplo, 100</p></footer>
+
+<script>
+  document.querySelectorAll('.pergunta button').forEach((botao) => {
+    botao.addEventListener('click', () => {
+      const pergunta = botao.closest('.pergunta');
+      const aberta = pergunta.classList.toggle('aberta');
+      botao.setAttribute('aria-expanded', String(aberta));
+    });
+  });
+  document.getElementById('formulario').addEventListener('submit', (evento) => {
+    evento.preventDefault();
+    evento.target.querySelectorAll('[required]').forEach((campo) => {
+      campo.classList.toggle('com-erro', !campo.value.trim());
+    });
+  });
+</script>
+</body>
+</html>

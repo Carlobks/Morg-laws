@@ -1,0 +1,64 @@
+{
+  "skill_name": "cuidando-da-acessibilidade",
+  "evals": [
+    {
+      "id": 1,
+      "eval_name": "acha as falhas plantadas e nao inventa outras",
+      "prompt": "Vou publicar amanhã a página de agenda da barbearia (evals/files/agenda-da-barbearia.html). Revê a acessibilidade dela antes, com um navegador se você tiver, e me diz o que está errado e o que corrigir. Não mexe no arquivo ainda.",
+      "expected_output": "Um relatório com as três partes da skill (Falhas, Passou, Não medido) que acha as falhas plantadas na página, cada uma com o elemento e o valor medido, e que não acusa como falha o que foi plantado certo.",
+      "files": ["evals/files/agenda-da-barbearia.html"],
+      "expectations": [
+        "Acusa o contraste do texto secundário dos cartões de serviço (p.meta, 12 px, cinza sobre amarelo claro, cerca de 2,3:1 contra o mínimo de 4,5:1)",
+        "Acusa o texto branco do cabeçalho fixo translúcido medido pelo pior fundo: passa sobre a capa escura e falha (perto de 1:1) quando as seções claras passam por trás",
+        "Acusa os alvos abaixo de 44 px no celular (os botões Marcar horário, Reservar e Enviar com 32 px de altura) e os botões de favoritar com 20 × 20 px, abaixo dos 24 px",
+        "Acusa o estado dos horários (livre ou ocupado) dado só pela cor do ponto, sem texto nem ícone",
+        "Acusa a animação infinita do círculo da capa sem controle de pausa",
+        "Acusa que a animação do círculo continua com transform quando o movimento reduzido está ligado",
+        "Acusa a transição de max-height do acordeão das perguntas como animação de propriedade de layout",
+        "Acusa o formulário: ao enviar vazio só a borda fica vermelha, sem mensagem em texto, sem aria-invalid, sem aria-describedby, sem região viva e sem mover o foco para o primeiro erro",
+        "Acusa os campos: e-mail com type=text, sem autocomplete, com corretor ligado, e a letra dos campos com 14 px no celular",
+        "Acusa o SVG decorativo da capa sem aria-hidden",
+        "Acusa as âncoras das seções sem scroll-margin-top com o cabeçalho fixo de 64 px",
+        "Não acusa como falha de contraste o título Serviços (32 px em negrito, cerca de 3,1:1, que passa no limite de 3:1 do texto grande)",
+        "Não acusa como alvo pequeno o link página de contato, que está dentro de uma frase",
+        "Não acusa falta de foco visível nem falta do link de pular para o conteúdo, que existem e funcionam",
+        "O relatório tem a parte Não medido, com pelo menos uma coisa que não conferiu (por exemplo, o leitor de tela ou o contraste em hover)"
+      ]
+    },
+    {
+      "id": 2,
+      "eval_name": "corrige o movimento e o vidro sem tirar os dois",
+      "prompt": "Gosto do círculo pulsando na capa e do cabeçalho de vidro da página da barbearia (evals/files/agenda-da-barbearia.html), não quero perder nenhum dos dois. Mas me disseram que não está acessível. Corrige o movimento e o cabeçalho, e salva a página corrigida como agenda-corrigida.html.",
+      "expected_output": "A página corrigida mantém o círculo animado e o cabeçalho translúcido, com os limites da skill: pausa e movimento reduzido no círculo, contraste do cabeçalho medido pelo pior fundo, vidro sólido com a transparência reduzida, acordeão sem animar a altura.",
+      "files": ["evals/files/agenda-da-barbearia.html"],
+      "expectations": [
+        "A página corrigida ainda tem a animação do círculo da capa (um @keyframes aplicado a .pulso ou ao elemento que o substitui) e o cabeçalho com backdrop-filter e fundo translúcido",
+        "Há um botão visível que pausa a animação do círculo, alcançável pelo teclado e com nome acessível",
+        "Dentro de @media (prefers-reduced-motion: reduce), a animação do círculo para ou fica só com opacidade, sem transform",
+        "O texto do cabeçalho passa em 4,5:1 sobre o pior fundo que passa por trás dele (o fundo amarelo claro, o branco e o cinza do rodapé), medido pela mistura da cor do cabeçalho com cada fundo",
+        "Dentro de @media (prefers-reduced-transparency: reduce), o cabeçalho fica com fundo opaco",
+        "A transição do acordeão das perguntas não anima mais max-height nem height; se anima, é só transform ou opacity",
+        "Nenhuma transition usa all",
+        "A resposta diz como mediu o contraste do cabeçalho e o que não mediu"
+      ]
+    },
+    {
+      "id": 3,
+      "eval_name": "corrige o formulario e os alvos no celular",
+      "prompt": "No celular a página da barbearia (evals/files/agenda-da-barbearia.html) está difícil de usar: os botões são pequenos e o formulário de contato não diz o que está errado. Arruma isso sem mudar o visual mais do que precisa e salva como agenda-corrigida.html.",
+      "expected_output": "A página corrigida tem alvos de pelo menos 44 px a 390 px de largura e um formulário com erro em texto junto ao campo, aria-invalid, foco no primeiro erro, região viva e os atributos certos nos campos.",
+      "files": ["evals/files/agenda-da-barbearia.html"],
+      "expectations": [
+        "A 390 px de largura, os botões Marcar horário, Reservar e Enviar medem pelo menos 44 px de altura",
+        "Os botões de favoritar têm área de toque de pelo menos 44 × 44 px a 390 px (pelo tamanho, pelo padding ou por um pseudo-elemento)",
+        "Os botões têm touch-action: manipulation",
+        "Ao enviar o formulário vazio, cada campo obrigatório recebe aria-invalid=true e uma mensagem em texto ligada por aria-describedby",
+        "Ao enviar o formulário vazio, o foco vai para o primeiro campo com erro",
+        "As mensagens de erro ou um resumo delas ficam numa região aria-live polite ou role=alert que existe na página",
+        "O campo de e-mail tem type=email, autocomplete=email e spellcheck=false; o de nome tem autocomplete=name",
+        "A letra dos campos é de pelo menos 16 px a 390 px de largura",
+        "A borda vermelha, se ficou, não é o único sinal do erro"
+      ]
+    }
+  ]
+}
