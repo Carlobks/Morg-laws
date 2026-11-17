@@ -1,0 +1,60 @@
+{
+  "skill_name": "desenhando-telas",
+  "evals": [
+    {
+      "id": 1,
+      "eval_name": "quadro da cozinha com teclado e celular",
+      "prompt": "Faz num arquivo só, quadro-da-cozinha.html (HTML, CSS e JavaScript, sem bibliotecas de fora), o quadro de pedidos da cozinha de um restaurante: as colunas Recebido, Em preparo, Pronto e Entregue, com uns 14 pedidos inventados (número da mesa, prato, hora do pedido, e alguns marcados como atrasados). O pessoal da cozinha usa o teclado num computador da bancada e os garçons abrem no celular. Tem de dar para mudar o pedido de coluna e abrir o detalhe dele.",
+      "expected_output": "Um quadro com as quatro colunas, que se usa pelo teclado sem ler instruções escondidas, que funciona a 390 px de largura e que muda o pedido de coluna por arrasto, por teclado e por um «Mover para».",
+      "files": [],
+      "expectations": [
+        "Ao carregar, sem rolar nem clicar, há uma legenda de teclas visível no cabeçalho ou no rodapé que diz como começar a usar o teclado (por exemplo, que o Tab entra no quadro)",
+        "Pelo teclado, espaço pega um pedido, as setas o movem para outra coluna e espaço o solta: o pedido aparece na coluna nova",
+        "Com um pedido pego pelo teclado, Esc cancela e o pedido volta à coluna de onde saiu",
+        "Cada pedido tem um «Mover para» (no cartão ou no detalhe) que lista as quatro colunas na ordem do fluxo, com a atual marcada, e funciona por clique",
+        "O detalhe do pedido abre numa lateral ou gaveta; dentro dela o Tab percorre os controles e Esc fecha e devolve o foco ao cartão",
+        "Cada coluna tem rolagem própria (overflow-y auto ou scroll na lista da coluna) e o cabeçalho da coluna fica parado",
+        "A 390 px de largura aparece uma coluna de cada vez, com abas ou botões de coluna que mostram a contagem de pedidos e medem pelo menos 44 px de altura",
+        "O pedido atrasado se marca com um ícone e pouca cor (uma borda fina, um ponto ou o texto colorido), e não com o fundo inteiro do cartão em vermelho",
+        "Nenhum fundo usa repeating-linear-gradient nem listras decorativas",
+        "Mover um pedido tem uma transição curta (até 300 ms) feita só com transform ou opacity, e nenhuma transition usa all",
+        "Dentro de @media (prefers-reduced-motion: reduce), ou do interruptor de movimento da página, a animação de mover fica sem transform"
+      ]
+    },
+    {
+      "id": 2,
+      "eval_name": "painel da escola de idiomas com lateral e grade",
+      "prompt": "Preciso do painel de entrada da secretaria de uma escola de idiomas, num arquivo só (painel-da-escola.html, sem bibliotecas de fora). A secretaria quer ver de manhã: alunos ativos, matrículas novas do mês, mensalidades em atraso, aulas de hoje, taxa de presença da semana e turmas com vaga. Também quer saber o que precisa de atenção (pagamento atrasado, professor que faltou, turma lotada), um gráfico das matrículas dos últimos meses e as últimas 20 matrículas. Inventa os dados. Tem de servir também no celular.",
+      "expected_output": "Um painel com os seis indicadores em grade, o que precisa de atenção numa lateral que acompanha o scroll (um bloco no topo no celular), o gráfico com destaque ao passar o mouse e a lista longa embaixo, na largura toda.",
+      "files": [],
+      "expectations": [
+        "A 1440 px de largura, os seis indicadores não estão numa só linha: ficam numa grade de 3 colunas por 2 linhas (ou 2 por 3)",
+        "O bloco do que precisa de atenção fica numa coluna lateral com position: sticky a 1440 px, e cada pendência tem um ícone diferente por tipo",
+        "A 390 px de largura, a lateral do que precisa de atenção aparece acima dos indicadores ou recolhida no topo, e não no fim da página",
+        "A lista das últimas matrículas fica abaixo dos indicadores e do gráfico, ocupando a largura do conteúdo principal, e não numa coluna estreita e alta ao lado deles",
+        "Ao passar o mouse sobre uma barra ou um ponto do gráfico, esse elemento fica destacado e os outros ficam mais apagados",
+        "Ao abrir a página, os blocos entram escalonados com uma diferença de 30 a 80 ms entre eles, só com transform e opacity",
+        "Há um estado vazio ou de erro previsto em pelo menos um bloco de dados (o texto e a forma de mostrá-lo estão no código)",
+        "Nenhum fundo usa repeating-linear-gradient nem listras decorativas",
+        "Nenhuma transition usa all, e nenhuma animação de interface passa de 500 ms"
+      ]
+    },
+    {
+      "id": 3,
+      "eval_name": "ficha do aluno da escola de musica com resumo",
+      "prompt": "Faz a ficha de um aluno de uma escola de música, num arquivo só (ficha-do-aluno.html, sem bibliotecas de fora), com dados inventados: dados pessoais, responsável, instrumento e professor, horários das aulas, as 30 últimas presenças, pagamentos dos últimos 12 meses, avaliações semestrais, os 15 documentos (contrato, autorização de imagem, atestados), observações dos professores e o que está pendente (uma mensalidade atrasada e um atestado vencido). A secretaria abre essa ficha o dia todo e reclama que as fichas de hoje mostram tudo de uma vez.",
+      "expected_output": "Uma ficha que abre com o nome em destaque e o pendente num bloco próprio, e que mostra os outros blocos resumidos, com o resto a abrir ao clicar ou em abas com contagem.",
+      "files": [],
+      "expectations": [
+        "O nome do aluno é o maior texto da página e, na mesma faixa do topo, há uma só coisa em destaque do lado direito (por exemplo, o estado da matrícula ou o saldo)",
+        "As pendências (a mensalidade atrasada e o atestado vencido) ficam num bloco próprio perto do topo, cada uma com um ícone diferente",
+        "Ao carregar, as 30 presenças, os 12 pagamentos e os 15 documentos não aparecem todos à vista: cada um mostra um resumo e o resto abre ao clicar (lateral, gaveta, acordeão ou aba)",
+        "Onde há abas ou blocos recolhidos, o rótulo leva a contagem do que está escondido (por exemplo, Documentos · 15)",
+        "Os blocos-resumo ficam numa grade em que os vizinhos da mesma linha têm a mesma altura a 1440 px",
+        "Nenhum bloco sozinho numa linha da grade fica mais de duas vezes mais alto do que os outros blocos a 1440 px",
+        "Os documentos têm ícones diferentes por tipo",
+        "A 390 px de largura a ficha cabe sem scroll horizontal e os botões que abrem os blocos medem pelo menos 44 px de altura"
+      ]
+    }
+  ]
+}
