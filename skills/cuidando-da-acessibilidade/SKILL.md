@@ -6,9 +6,9 @@ description: Mede e corrige a acessibilidade — contraste, daltonismo, alvos de
 # Cuidando da acessibilidade
 
 **Limites que se medem, não proibições de gosto.** Esta skill não diz «sem vidro» nem «sem movimento». Diz que o texto
-precisa de 4,5:1 sobre o pior fundo que passa por trás dele, e que com o movimento reduzido sobra só a opacidade. O
-vidro, o movimento com o scroll e a cor forte continuam permitidos quando a `desenhando-telas` ou a `desenhando-sites`
-os pedem; aqui eles ganham os seus limites.
+precisa de 4,5:1 sobre o pior fundo que passa por trás dele, e que com o movimento reduzido sobram só a opacidade e a
+cor, ou nada. O vidro, o movimento com o scroll e a cor forte continuam permitidos quando a `desenhando-telas` ou a
+`desenhando-sites` os pedem; aqui eles ganham seus limites.
 
 Cada regra traz **como se mede**, porque uma tela bonita não é prova de que todo mundo consegue usá-la. O passo a passo,
 com os trechos de JavaScript prontos, está em `references/como-medir.md`; cada número com a sua fonte, em
@@ -29,24 +29,28 @@ Ela não decide a cara da tela; mede a que existe e propõe a correção mínima
 
 ## 1. Alvos de toque
 
-- **≥ 24 × 24 px sempre** (WCAG 2.2, critério 2.5.8, nível AA) e **≥ 44 × 44 px onde há toque** (o tamanho padrão da
-  Apple em iOS e iPadOS, e o que a Vercel pede no celular).
+- **≥ 24 × 24 px em todo alvo**, salvo o link dentro de uma frase: é a regra da Vercel, sem exceções, e esta skill a
+  segue. **≥ 44 × 44 px onde há toque** (o tamanho padrão da Apple em iOS e iPadOS, e o que a Vercel pede no celular).
+- **A WCAG 2.2 pede menos** (critério 2.5.8, nível AA): 24 × 24 px, com cinco exceções. Passa o alvo menor com espaço
+  em volta (um círculo de 24 px centrado nele não toca outro alvo), o que tem um equivalente de 24 px na mesma página,
+  o link dentro do texto, o controle desenhado pelo navegador e o tamanho que é essencial. No relatório, diga qual
+  das réguas falhou: um botão de 20 px com folga em volta falha na Vercel e passa na WCAG.
 - **Meça a caixa a 390 px**, depois de renderizada. Não a deduza do padding nem da altura da letra: nos ensaios, 9 de
   10 páginas tinham alvos abaixo de 44 px no celular, e todas pareciam ter botões normais.
 - **Os que mais falharam:** abas de coluna, botões de ação dentro de cartões e de linhas, atalhos, o logotipo como
   link, links de telefone e botões só de ícone (copiar, favoritar, fixar).
 - **Se o desenho pede um botão pequeno**, aumente a área de toque e não o desenho: `min-height`, padding ou um
   pseudo-elemento que estende a área clicável.
-- **Exceção:** um link dentro de uma frase segue o tamanho da linha (é a exceção da própria norma).
+- **Exceção nas duas réguas:** um link dentro de uma frase segue o tamanho da linha.
 - **`touch-action: manipulation`** nos alvos, para o toque duplo não ampliar a página (8 de 10 não declaravam).
 - Caixa de seleção e botão de opção: o rótulo faz parte do alvo, sem zona morta entre os dois.
 
 ## 2. Contraste
 
-| Texto | Mínimo (WCAG 2.2, critério 1.4.3, AA) |
+| Texto | Mínimo (WCAG 2.2, AA) |
 |---|---|
-| Normal | **4,5:1** |
-| Grande: ≥ 24 px, ou ≥ 18,66 px em negrito | **3:1** |
+| Normal | **4,5:1** (critério 1.4.3) |
+| Grande: ≥ 24 px, ou ≥ 18,66 px em negrito | **3:1** (critério 1.4.3) |
 | Ícones e bordas que são a única pista de um controle | **3:1** (critério 1.4.11) |
 
 - **O texto secundário pequeno é o que falha.** Nos ensaios, 9 de 10 páginas tinham códigos, datas, rótulos e
@@ -58,8 +62,10 @@ Ela não decide a cara da tela; mede a que existe e propõe a correção mínima
   `references/como-medir.md`.
 - **Diga o método:** WCAG 2 (a fórmula da luminância) ou APCA, que a Vercel prefere. Os números não são os mesmos; um
   relatório que não diz qual usou não se confere.
-- Um título grande pode ficar em 3:1; o texto pequeno do lado dele não. Não acuse o título grande que passa no limite
-  dele.
+- **Cada texto contra o seu limite.** O título que passa no limite do texto grande não é falha, mesmo ao lado de um
+  texto pequeno da mesma cor que falha.
+- **A opacidade conta.** Um texto esmaecido com `opacity` se mede com a cor que sobra depois de esmaecer, não com a cor
+  declarada.
 
 ## 3. Cor e daltonismo
 
@@ -82,31 +88,33 @@ Ela não decide a cara da tela; mede a que existe e propõe a correção mínima
   escala do sistema chega por outro caminho. Aí o `px` é aceitável, como decisão escrita do projeto.
 - O zoom nunca se desliga: nada de `user-scalable=no` nem `maximum-scale=1`.
 - A letra aumenta até 200% sem perder conteúdo nem função (critério 1.4.4, AA), e a página cabe em 320 px de largura
-  sem scroll nos dois sentidos (critério 1.4.10, AA). Tabelas de dados, mapas e gráficos podem rolar de lado; o resto
-  da página, não.
+  sem scroll horizontal (critério 1.4.10, AA; o vertical pode). Tabelas de dados, mapas e gráficos podem rolar de lado;
+  o resto da página, não.
 
 ## 5. Movimento
 
 O movimento pode ficar: o que muda é o que acontece quando a pessoa pede menos e quando ele não para.
 
 - **Com o movimento reduzido, sai o movimento e fica o sinal.** O estado final aparece sem a viagem; o que entrava
-  deslizando entra só com opacidade, ou já está lá. Nada some e nada fica escondido esperando uma animação que não
-  vem.
+  deslizando entra só com opacidade, ou já está lá. Uma troca de cor que diz alguma coisa (o estado que mudou) pode
+  ficar. Nada some e nada fica escondido esperando uma animação que não vem.
 - **`0.01ms`, não `none`**, ao zerar a duração: com `none` o evento de fim (`transitionend`, `animationend`) não
   dispara, e o código que espera por ele fica parado.
 - **Mais de 5 s, ao lado de conteúdo, leva pausa** (WCAG 2.2, critério 2.2.2, nível A). Vale para o que começa sozinho,
-  inclusive o que começa ao entrar na tela com o scroll. Duas das 10 páginas tinham várias animações infinitas sem
+  inclusive o que começa ao entrar na tela com o scroll, e vale para a animação finita longa, não só para a infinita.
+  Duas das 10 páginas tinham várias animações infinitas sem
   nenhum controle.
 - **Anime só `transform` e `opacity`.** Metade das páginas animava propriedades de layout: o acordeão das perguntas
   abrindo pela altura (`max-height`, `grid-template-rows`) e o link de pular para o conteúdo surgindo pelo `top`. O
   acordeão pode abrir sem animar a altura (abre direto e o conteúdo entra com opacidade); o link de pular entra com
   `transform`.
 - **Nada de `transition: all`:** liste as propriedades.
-- **O que mais incomoda o ouvido interno:** fundo de tela inteira em movimento, oscilação lenta perto de um ciclo a
-  cada 5 s, salto brusco de claro para escuro, objeto grande atravessando a tela. Com movimento reduzido, estes são os
-  primeiros a sair; sem ele, os primeiros a encurtar.
+- **Os movimentos que mais mexem com o equilíbrio** de quem tem sensibilidade vestibular: um objeto grande que cruza
+  a tela, um fundo do tamanho da tela que anda, um balanço lento que volta mais ou menos a cada 5 s, e a passagem
+  de claro para escuro sem transição. Com o movimento reduzido, estes saem primeiro. Sem ele, o objeto grande fica
+  translúcido enquanto cruza, e os outros ficam curtos.
 - **Paralaxe e revelar com o scroll** são permitidos nos sites; com o movimento reduzido, o conteúdo aparece no lugar,
-  sem deslocamento, e sem JavaScript ele já está visível.
+  sem deslocamento. Sem JavaScript, o conteúdo já está visível: o script só esconde o que ele mesmo vai revelar.
 
 **Quem decide o movimento reduzido:** a preferência do sistema **ou** um interruptor do projeto, nunca nenhum dos dois.
 Cada lado tem o seu custo:
@@ -117,7 +125,9 @@ Cada lado tem o seu custo:
   parada para ele. O teste de tela não pegou, porque a ferramenta de teste roda sem preferência por padrão. Por isso
   aquele projeto passou a ter um interruptor seu
   ([regras e incidentes do projeto, regra 27](https://github.com/Carlobks/Morg-laws/blob/main/projetos/erp-de-servicos/regras-e-incidentes.md#telas-e-design)).
-- **O interruptor do projeto** obriga a que a pessoa o ache, e deve começar pelo valor da preferência do sistema.
+- **O interruptor do projeto** exige que a pessoa o ache. Começar pelo valor da preferência do sistema poupa esse
+  trabalho a quem precisa, mas traz de volta o custo do primeiro lado até a pessoa achar o interruptor; o projeto de
+  origem preferiu não começar por ela. Escreva qual das duas o projeto escolheu.
 - **Nos dois casos**, os testes de tela rodam nos dois sentidos: com e sem movimento.
 
 ## 6. Transparência e contraste do sistema
@@ -126,16 +136,18 @@ Cada lado tem o seu custo:
   (seção 2) com a preferência desligada.
 - **`prefers-reduced-transparency: reduce`:** o vidro fica sólido (fundo opaco, sem desfoque). O suporte dos
   navegadores ainda é parcial: é um ganho a mais, não a garantia do contraste.
-- **`prefers-contrast: more`:** fundo quase sólido e borda que contrasta; o texto secundário sobe para a cor do texto
-  principal.
-- **Nunca vidro sobre vidro:** duas camadas translúcidas somam os fundos e o pior caso fica impossível de prever.
+- **`prefers-contrast: more`:** com contraste maior, o vidro fica quase opaco e ganha uma borda visível; o texto
+  secundário sobe para a cor do texto principal.
+- **Vidro sobre vidro** (uma gaveta translúcida sobre um cabeçalho translúcido) se mede pelo pior fundo das duas
+  camadas juntas, com o conteúdo de trás rolando sob as duas. Se não dá para achar esse pior caso, torne sólida uma
+  das camadas.
 
 ## 7. Teclado e foco
 
 As páginas preferidas acertaram o básico sozinhas (foco visível em tudo, nada tapado, tudo alcançável): basta
 conferir. O que falhou foi o resto.
 
-- **Diálogos e gavetas prendem o foco, levam-no para dentro ao abrir, fecham com Esc e devolvem o foco a quem os
+- **Diálogos e gavetas prendem o foco, o levam para dentro ao abrir, fecham com Esc e devolvem o foco a quem os
   abriu.** Uma janela
   com `aria-modal="true"` em que o Tab saía para a página de trás estava entre as preferidas.
 - **`overscroll-behavior: contain`** em modais e gavetas, para rolar o conteúdo deles não rolar a página por trás.
@@ -217,25 +229,25 @@ Feche sempre com estas três partes, nesta ordem:
 
 | Regra | Onde (elemento) | Medido | Limite | Correção mínima |
 |---|---|---|---|---|
-| Contraste | `p.meta` «40 min · R$ 50», 12 px | 2,27:1 (WCAG 2) | 4,5:1 | cor do texto secundário com ≥ 4,5:1 sobre o fundo do cartão |
+| Contraste | `span.codigo` «#A-1042», 11 px | 3,6:1 (WCAG 2) | 4,5:1 | cor do código com ≥ 4,5:1 sobre o fundo da linha |
 
 **Passou**, em uma linha: o que se conferiu e estava certo (para a próxima revisão não refazer).
 
 **Não medido**, sempre presente: o que não se conferiu e por quê (sem navegador, sem leitor de tela, estado que não se
 conseguiu abrir, contraste em `:hover`). Um relatório sem esta parte diz mais do que mediu.
 
-Não invente falhas para encher a tabela: uma regra que passou vai para «Passou». Um título grande a 3,1:1 passa; um link
-dentro de uma frase com 22 px de altura passa.
+Não invente falhas para encher a tabela: uma regra que passou vai para «Passou». Um título que passa no limite do
+texto grande não é falha, e um link dentro de uma frase segue a altura da linha.
 
 ## 14. Lista de verificação
 
 - [ ] A página foi rolada até o fim antes de medir?
-- [ ] Alvos medidos a 390 px: ≥ 24 px todos, ≥ 44 px no toque? `touch-action: manipulation`?
+- [ ] Alvos medidos a 390 px: ≥ 24 px todos (Vercel; a WCAG tem exceções), ≥ 44 px no toque? `touch-action: manipulation`?
 - [ ] Contraste ≥ 4,5:1 (3:1 no texto grande), começando pelo texto secundário pequeno? O método foi dito?
 - [ ] Texto sobre vidro, gradiente ou imagem medido pelo pior fundo?
 - [ ] A cor nunca é o único sinal? Captura em cinza e com deuteranopia conferida?
 - [ ] Tamanhos em `rem`? Zoom ligado? 320 px sem scroll horizontal?
-- [ ] Com movimento reduzido sobra só opacidade, ou nada? O sinal fica? `0.01ms` em vez de `none`?
+- [ ] Com movimento reduzido sobram só a opacidade e a cor, ou nada? O sinal fica? `0.01ms` em vez de `none`?
 - [ ] O que se mexe mais de 5 s tem pausa? Só `transform` e `opacity` animados? Nada de `transition: all`?
 - [ ] Quem decide o movimento reduzido está escrito (sistema ou interruptor do projeto)? Os testes rodam nos dois
   sentidos?

@@ -41,7 +41,8 @@ nunca vê a versão reduzida, e um que só o liga nunca vê a animação.
 ## Os trechos
 
 Todos devolvem uma lista; cada item descreve o elemento pelo seletor curto e pelo texto. Cole primeiro o trecho 0,
-que os outros usam.
+que os outros usam. Os trechos só declaram funções, que se podem colar de novo na mesma página; para medir outra vez
+(o trecho 4 com o movimento reduzido, por exemplo), basta chamar a função de novo.
 
 ### 0. As funções comuns
 
@@ -100,20 +101,27 @@ function medirContraste() {
     const caixa = el.getBoundingClientRect();
     if (!temTexto || !caixa.width || caixa.bottom < 0 || caixa.right < 0) continue;
     const estilo = getComputedStyle(el);
-    if (estilo.visibility === 'hidden' || Number(estilo.opacity) === 0) continue;
+    if (estilo.visibility === 'hidden') continue;
     const camadas = [];
-    let solido = true, opaco = false;
-    for (let a = el; a; a = a.parentElement) {
+    let solido = true, fundoOpaco = null, opacidade = 1, a = el;
+    for (; a; a = a.parentElement) {
       const s = getComputedStyle(a);
       if (s.backgroundImage !== 'none' || s.backdropFilter !== 'none') solido = false;
       const cor = rgba(s.backgroundColor);
-      if (cor[3] > 0) camadas.push(cor);
-      if (cor[3] === 1) { opaco = true; break; }
+      if (cor[3] === 1 && Number(s.opacity) === 1) { fundoOpaco = cor; break; }
       if (s.position === 'fixed' || s.position === 'sticky') { solido = false; break; }
+      opacidade *= Number(s.opacity);
+      if (cor[3] > 0) camadas.push(cor);
     }
-    if (!solido || !opaco) { semFundoSolido.push(descrever(el)); continue; }
-    const fundo = camadas.reverse().reduce((baixo, cima) => compor(cima, baixo));
-    const valor = razao(compor(rgba(estilo.color), fundo), fundo);
+    let opacidadeAcima = 1;
+    for (let b = a && a.parentElement; b; b = b.parentElement) opacidadeAcima *= Number(getComputedStyle(b).opacity);
+    if (opacidade === 0 || opacidadeAcima === 0) continue;
+    if (opacidadeAcima < 1 || (opacidade < 1 && camadas.length)) solido = false;
+    if (!solido || !fundoOpaco) { semFundoSolido.push(descrever(el)); continue; }
+    const fundo = camadas.reverse().reduce((baixo, cima) => compor(cima, baixo), fundoOpaco);
+    const corDoTexto = rgba(estilo.color);
+    corDoTexto[3] *= opacidade;
+    const valor = razao(compor(corDoTexto, fundo), fundo);
     const minimo = textoGrande(estilo) ? 3 : 4.5;
     if (valor < minimo) falhas.push({ elemento: descrever(el), razao: valor.toFixed(2), minimo, letra: estilo.fontSize });
   }
@@ -123,6 +131,10 @@ function medirContraste() {
 
 `semFundoSolido` é a lista de textos que este trecho **não sabe** medir (vidro, gradiente, imagem, camada fixa
 translúcida): vão para o trecho 7. Nunca os conte como aprovados.
+
+A opacidade entra na conta: um texto secundário feito com `opacity: 0.6`, nele ou num pai, mede-se com a cor
+esmaecida, como a pessoa a vê. A conta só é exata quando o que esmaece não tem fundo próprio entre o texto e o fundo
+opaco; quando tem, ou quando quem esmaece está acima do fundo opaco, o texto vai para `semFundoSolido`.
 
 ### 3. Alvos
 
@@ -148,15 +160,20 @@ function semTouchAction() {
 }
 ```
 
-O link dentro de uma frase fica de fora: é a exceção do critério 2.5.8. Rode a 390 px; abaixo de 24 px falha sempre,
-abaixo de 44 px falha onde há toque.
+O link dentro de uma frase fica de fora: é a exceção do critério 2.5.8. Rode a 390 px e leia assim:
+
+- **Abaixo de 44 px** falha onde há toque.
+- **Abaixo de 24 px** (`abaixoDe24: true`) falha na regra da Vercel, que não tem exceções. Na WCAG 2.5.8, confira
+  antes a exceção do espaçamento: um círculo de 24 px de diâmetro, centrado na caixa do alvo pequeno, não pode tocar
+  outro alvo nem o círculo de outro alvo pequeno. Um botão de 20 px com o vizinho a mais de 12 px do centro dele
+  passa na WCAG e falha na Vercel; o relatório diz em qual das duas falhou.
 
 ### 4. Movimento
 
 ```js
-const PROPRIEDADES_DE_LAYOUT = /^(top|left|right|bottom|width|height|max-height|min-height|max-width|min-width|margin.*|padding.*|grid-template-.*|inset.*|font-size)$/;
 function emHifen(nome) { return nome.replace(/[A-Z]/g, (letra) => '-' + letra.toLowerCase()); }
 function medirMovimento() {
+  const PROPRIEDADES_DE_LAYOUT = /^(top|left|right|bottom|width|height|max-height|min-height|max-width|min-width|margin.*|padding.*|grid-template-.*|inset.*|font-size)$/;
   const animacoes = document.getAnimations().map((animacao) => {
     const quadros = animacao.effect.getKeyframes();
     const propriedades = [...new Set(quadros.flatMap(Object.keys))]
@@ -164,7 +181,7 @@ function medirMovimento() {
     const tempo = animacao.effect.getComputedTiming();
     return {
       elemento: descrever(animacao.effect.target), propriedades,
-      infinita: tempo.iterations === Infinity, duracaoTotalMs: tempo.endTime,
+      infinita: tempo.iterations === Infinity, duracaoTotalMs: tempo.endTime, maisDe5s: tempo.endTime > 5000,
       soOpacidadeOuCor: propriedades.every((p) => /^(opacity|color|background-color|border-color|fill|stroke)$/.test(p)),
     };
   });
@@ -185,7 +202,8 @@ function medirMovimento() {
 Leia o resultado assim:
 
 - **Sem emulação:** `transicoesDeLayout` e as `animacoes` com propriedades fora de `transform` e `opacity` são falha
-  (anima o layout). As `animacoes` com `infinita: true` precisam de um botão de pausa à vista.
+  (anima o layout). As `animacoes` com `maisDe5s: true` (as infinitas também) precisam de um botão de pausa à vista,
+  quando começam sozinhas ou com o scroll e estão ao lado de outro conteúdo.
 - **Com o movimento reduzido emulado:** sobra só o que tem `soOpacidadeOuCor: true`, ou nada. Uma animação infinita que
   continua com `transform` é falha.
 - O trecho só vê as animações que estão rodando e as transições declaradas. A transição de um acordeão só aparece em
@@ -217,12 +235,18 @@ function ancorasSobOCabecalho() {
 
 Um SVG sem `aria-hidden` e sem nome é decorativo esquecido ou um ícone sem nome: os dois falham.
 
+Um alvo de âncora que começa no topo da página (o `main` do «Pular para o conteúdo», por exemplo) não fica tapado:
+ao ir até ele a página não rola, e o que está sob o cabeçalho é a folga do topo. Descarte-o da lista.
+
 ### 6. Formulário enviado vazio
 
 ```js
-function enviarVazioELer(formulario) {
-  formulario.querySelectorAll('input, textarea, select').forEach((campo) => { if (campo.type !== 'hidden') campo.value = ''; });
+async function enviarVazioELer(formulario, esperaMs = 300) {
+  formulario.querySelectorAll('input, textarea, select').forEach((campo) => {
+    if (!['hidden', 'checkbox', 'radio', 'submit', 'button', 'reset'].includes(campo.type)) campo.value = '';
+  });
   formulario.requestSubmit();
+  await new Promise((pronto) => setTimeout(pronto, esperaMs));
   const regioesVivas = [...document.querySelectorAll('[aria-live], [role=alert], [role=status]')]
     .filter((r) => r.getAttribute('aria-live') !== 'off').map((r) => r.textContent.trim()).filter(Boolean);
   const campos = [...formulario.querySelectorAll('input, textarea, select')].filter((c) => c.type !== 'hidden').map((c) => ({
@@ -235,6 +259,12 @@ function enviarVazioELer(formulario) {
   return { focoFoiPara: descrever(document.activeElement), regioesVivas, campos };
 }
 ```
+
+Chame com `await enviarVazioELer(document.querySelector('form'))`. A espera existe porque num formulário de React (ou
+de outra biblioteca que redesenha depois do evento) a mensagem e o foco só mudam na renderização seguinte: lido logo
+depois do envio, um formulário certo pareceria sem mensagem e com o foco no `body`. Se a página valida no servidor,
+aumente a espera. As caixas de seleção e os botões de opção não se limpam: o `value` deles é o que se envia, não o
+que a pessoa marcou.
 
 O formulário passa se: cada campo vazio obrigatório tem `ariaInvalid: "true"` e uma `mensagem` em texto; o foco foi
 para o primeiro campo com erro; a mensagem chegou a uma região viva; a letra dos campos é ≥ 16 px a 390 px; o e-mail

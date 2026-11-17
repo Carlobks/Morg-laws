@@ -5,12 +5,12 @@
       "id": 1,
       "eval_name": "acha as falhas plantadas e nao inventa outras",
       "prompt": "Vou publicar amanhã a página de agenda da barbearia (evals/files/agenda-da-barbearia.html). Revê a acessibilidade dela antes, com um navegador se você tiver, e me diz o que está errado e o que corrigir. Não mexe no arquivo ainda.",
-      "expected_output": "Um relatório com as três partes da skill (Falhas, Passou, Não medido) que acha as falhas plantadas na página, cada uma com o elemento e o valor medido, e que não acusa como falha o que foi plantado certo.",
+      "expected_output": "Um relatório com as três partes da skill (Falhas, Passou, Não medido) que acha as falhas plantadas na página, cada uma com o elemento e o valor medido, e que não acusa como falha o que foi plantado certo. A página também não tem touch-action: manipulation nos botões, tabular-nums nas horas e nos preços, theme-color nem text-wrap: balance nos títulos: acusar essas faltas cumpre a skill e não conta como falha inventada.",
       "files": ["evals/files/agenda-da-barbearia.html"],
       "expectations": [
         "Acusa o contraste do texto secundário dos cartões de serviço (p.meta, 12 px, cinza sobre amarelo claro, cerca de 2,3:1 contra o mínimo de 4,5:1)",
         "Acusa o texto branco do cabeçalho fixo translúcido medido pelo pior fundo: passa sobre a capa escura e falha (perto de 1:1) quando as seções claras passam por trás",
-        "Acusa os alvos abaixo de 44 px no celular (os botões Marcar horário, Reservar e Enviar com 32 px de altura) e os botões de favoritar com 20 × 20 px, abaixo dos 24 px",
+        "Acusa os alvos abaixo de 44 px no celular (os botões Marcar horário, Reservar e Enviar com 32 px de altura) e os botões de favoritar com 20 × 20 px, abaixo dos 24 px da regra da Vercel; se citar a WCAG 2.5.8, não diz que os favoritos falham nela sem conferir a exceção do espaçamento (o vizinho mais perto fica a 22 px do centro deles, e por isso passam na WCAG)",
         "Acusa o estado dos horários (livre ou ocupado) dado só pela cor do ponto, sem texto nem ícone",
         "Acusa a animação infinita do círculo da capa sem controle de pausa",
         "Acusa que a animação do círculo continua com transform quando o movimento reduzido está ligado",
@@ -18,10 +18,12 @@
         "Acusa o formulário: ao enviar vazio só a borda fica vermelha, sem mensagem em texto, sem aria-invalid, sem aria-describedby, sem região viva e sem mover o foco para o primeiro erro",
         "Acusa os campos: e-mail com type=text, sem autocomplete, com corretor ligado, e a letra dos campos com 14 px no celular",
         "Acusa o SVG decorativo da capa sem aria-hidden",
+        "Acusa a falta de touch-action: manipulation nos botões (os .botao, os .favoritar e os botões do acordeão)",
         "Acusa as âncoras das seções sem scroll-margin-top com o cabeçalho fixo de 64 px",
         "Não acusa como falha de contraste o título Serviços (32 px em negrito, cerca de 3,1:1, que passa no limite de 3:1 do texto grande)",
         "Não acusa como alvo pequeno o link página de contato, que está dentro de uma frase",
         "Não acusa falta de foco visível nem falta do link de pular para o conteúdo, que existem e funcionam",
+        "Não acusa como âncora tapada o main#inicio, o alvo do link de pular, que fica no topo da página",
         "O relatório tem a parte Não medido, com pelo menos uma coisa que não conferiu (por exemplo, o leitor de tela ou o contraste em hover)"
       ]
     },
