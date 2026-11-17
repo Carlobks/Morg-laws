@@ -1,6 +1,6 @@
 # Exemplo: os papéis em Tailwind, tema escuro
 
-Uma forma de aplicar a skill `desenhando-telas` com Tailwind CSS, num tema escuro de cinzas frios (`slate`). É um
+Uma forma de aplicar a skill `desenhando-telas` com Tailwind CSS **v3**, num tema escuro de cinzas frios (`slate`). É um
 **exemplo**: troque as cores pelas do seu projeto e mantenha as **relações** (fronteira ≥ 1,2:1, um acento por tela,
 estado em tokens, só `transform` e `opacity` animados).
 
@@ -20,7 +20,8 @@ O contraste dos textos se confere com a `cuidando-da-acessibilidade`.
 | Cabeçalho de tabela | `bg-slate-800 border-b border-slate-700` |
 | Fundo atrás do modal | `bg-slate-950/75 backdrop-blur-md` |
 
-Calculado com as cores do Tailwind (fórmula de luminância do WCAG):
+Calculado com as cores hexadecimais do Tailwind v3 (fórmula de luminância do WCAG). O v4 define o `slate` em `oklch`, e
+os números mudam: refaça a conta com as cores da versão que o projeto usa.
 
 - a borda `slate-700` dá 1,72:1 sobre o cartão (`slate-900`) e 1,95:1 sobre o fundo (`slate-950`);
 - a divisória `slate-800` dá 1,22:1 sobre o cartão;
@@ -59,12 +60,13 @@ rounded-2xl border border-slate-700 bg-slate-900 p-4
 // Grade de KPIs: 3 × 2 no computador, 2 × 3 no tablet, uma coluna no celular
 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3
 
-// Cartões vizinhos com a mesma altura
-grid auto-rows-fr gap-4 lg:grid-cols-3
+// Cartões vizinhos com a mesma altura: a grade já estica os itens da mesma linha (align-items: stretch).
+// Não use auto-rows-fr: ele dá a todas as linhas a altura da mais alta e deixa cartões meio vazios.
+grid gap-4 lg:grid-cols-3
 
-// Lateral que acompanha o scroll
+// Lateral que acompanha o scroll, no modo sem animação (sem script ou com o movimento reduzido).
+// O sticky não anima; a versão com movimento usa o script de kanban-ficha-painel.md.
 aside: sticky top-4 self-start
-       a transição do movimento, se houver: transition-transform duration-200 ease-[cubic-bezier(0.23,1,0.32,1)]
 
 // Coluna do quadro que rola sozinha
 coluna:    flex max-h-[calc(100dvh-8rem)] flex-col
@@ -82,7 +84,8 @@ principal:  inline-flex min-h-11 items-center gap-2 rounded-xl bg-<acento>-600 p
             transition-transform duration-150 ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.97]
             disabled:opacity-40
 secundário: inline-flex min-h-11 items-center rounded-xl border border-slate-700 px-5 text-sm font-medium
-            text-slate-300 hover:bg-slate-800 active:scale-[0.97]
+            text-slate-300 hover:bg-slate-800 transition-[transform,background-color] duration-150
+            ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.97]
 fantasma:   inline-flex min-h-11 items-center gap-1 rounded-lg border border-slate-700 px-3 text-xs font-medium
             text-slate-300 hover:bg-slate-800
 ferramenta: inline-flex min-h-11 items-center gap-1 rounded-lg px-2 text-xs font-semibold text-slate-300

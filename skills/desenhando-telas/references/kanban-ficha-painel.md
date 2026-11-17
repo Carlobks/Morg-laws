@@ -65,7 +65,7 @@ vista.
   Dentro de uma aba com lista, os itens têm ícones diferentes por tipo, e o filtro mostra a contagem alinhada ao centro
   da linha com o rótulo.
 - **O último bloco não estica a página:** se sobrou um bloco sozinho numa linha da grade, ele ocupa a largura toda com
-  pouca altura, ou junta-se a outro.
+  pouca altura, ou se junta a outro.
 
 ## O painel (panorama)
 
@@ -74,15 +74,72 @@ vista.
 - **Os KPIs:** uma grade de 3 × 2, agrupada por categoria (dois de dinheiro juntos, dois de prazo juntos…), cada um com
   o rótulo, o número grande com `tabular-nums` e a variação com um sinal além da cor (seta ou texto). Abaixo de 768 px,
   2 × 3 ou uma coluna.
-- **A lateral do que precisa de atenção:** uma coluna à direita, com `position: sticky`, que acompanha o scroll
-  (seção 5 do `SKILL.md`). Uma linha por pendência, com ícone por tipo, contagem e o link para resolver. No celular,
-  um bloco recolhido no topo com o resumo.
-- **Os gráficos:** abaixo dos KPIs, cada um com o título que diz a pergunta («Pedidos por semana»). Ao passar o mouse,
+- **A lateral do que precisa de atenção:** uma coluna à direita que acompanha o scroll (seção 5 do `SKILL.md`; a
+  receita está na seção seguinte). Uma linha por pendência, com ícone por tipo, contagem e o link para resolver. No
+  celular, um bloco recolhido no topo com o resumo.
+- **Os gráficos:** abaixo dos KPIs, cada um com o título que diz a pergunta («Chamados abertos por semana»). Ao passar o mouse,
   a série ou a barra sob o ponteiro fica acesa e as outras se apagam um pouco, com o valor num rótulo ao lado; o mesmo
   com o foco do teclado.
 - **As listas longas:** histórico, últimos movimentos, a atividade recente: embaixo de tudo, na largura toda, com 5 a 8
   linhas (nosso) e um «ver tudo». Nunca numa coluna estreita e alta ao lado dos gráficos.
 - **A entrada:** os blocos entram escalonados, na ordem da importância (os KPIs, a lateral, os gráficos, as listas),
   30–80 ms entre eles, o grupo todo abaixo de cerca de 300 ms. Uma entrada por bloco; o que está dentro já está lá.
-- **Os estados:** cada KPI e cada gráfico tem o seu «a carregar» (o esqueleto do mesmo tamanho), o «vazio» (o período
+- **Os estados:** cada KPI e cada gráfico tem o seu «carregando» (o esqueleto do mesmo tamanho), o «vazio» (o período
   sem dados, com a ação de trocar o período) e o «erro» (o bloco que falhou diz o que houve; os outros continuam).
+
+## A lateral que acompanha o scroll, com animação
+
+O `position: sticky` sozinho prende a lateral no topo, mas não anima: ele não mexe no `transform`, e uma transição de
+`transform` nunca dispara. Para a lateral chegar à posição nova com movimento, é preciso um script. A receita tem dois
+modos:
+
+- **Sem script, ou com o movimento reduzido:** `position: sticky`, sem transição. É o modo que funciona sempre.
+- **Com o script:** a lateral deixa de ser `sticky`, ganha uma transição de `transform` e, a cada scroll, recebe um
+  `translateY` que a leva até a altura da tela, limitado ao fim da coluna (para não passar do fim do painel).
+
+```css
+.lateral-de-atencao { position: sticky; top: 16px; align-self: start; }
+.lateral-de-atencao.lateral-segue {
+  position: relative; top: auto;
+  transition: transform 250ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+```
+
+```js
+const FOLGA_DO_TOPO = 16; // o mesmo `top` do sticky e o padding de cima da grade
+const grade = document.querySelector(".grade-do-painel");
+const lateral = grade.querySelector(".lateral-de-atencao");
+let quadroPedido = false;
+
+function posicionarLateral() {
+  quadroPedido = false;
+  const topoDaGrade = grade.getBoundingClientRect().top + scrollY;
+  const fim = grade.clientHeight - lateral.offsetHeight - 2 * FOLGA_DO_TOPO;
+  const alvo = Math.min(Math.max(scrollY - topoDaGrade, 0), fim);
+  lateral.style.transform = `translateY(${alvo}px)`;
+}
+function pedirQuadro() {
+  if (!quadroPedido) { quadroPedido = true; requestAnimationFrame(posicionarLateral); }
+}
+// Com o interruptor de movimento do projeto, troque a consulta pela leitura dele.
+if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+  lateral.classList.add("lateral-segue");
+  addEventListener("scroll", pedirQuadro, { passive: true });
+  addEventListener("resize", pedirQuadro);
+  posicionarLateral();
+}
+```
+
+A conta supõe que a grade tem `FOLGA_DO_TOPO` de padding em cima e embaixo e que a lateral começa no topo da grade;
+se a página for outra, ajuste a conta. Um quadro por `requestAnimationFrame` e o ouvinte passivo evitam trabalho a
+mais durante o scroll.
+
+**Medido** num Chromium sem janela, a 1440 × 900, numa página de teste com a grade de 3032 px e a lateral de 240 px:
+rolando de 0 para 1200 px, a lateral sai de −1184 px (onde o scroll a deixou) e passa por −853, −575, −366… px do topo
+da tela, quadro a quadro, até assentar em 16 px em cerca de 200 ms; no fim da página fica dentro da grade (a lateral
+termina em 256 px, a grade em 300 px); com o movimento reduzido emulado, fica `sticky` em 16 px, sem nenhuma animação.
+O código acima foi colado sem mudança na página de teste. Não foi medido num navegador com janela, com
+o scroll de verdade do mouse, nem no Safari e no Firefox.
+
+**Cuidado com o `overflow`:** um `overflow: hidden` ou `auto` num antepassado da lateral quebra o `sticky` (o modo
+sem script). Um `transform` num antepassado não quebra o `sticky`, mas tira da janela os elementos `fixed`.

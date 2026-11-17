@@ -29,7 +29,8 @@
       "files": [],
       "expectations": [
         "A 1440 px de largura, os seis indicadores não estão numa só linha: ficam numa grade de 3 colunas por 2 linhas (ou 2 por 3)",
-        "O bloco do que precisa de atenção fica numa coluna lateral com position: sticky a 1440 px, e cada pendência tem um ícone diferente por tipo",
+        "O bloco do que precisa de atenção fica numa coluna lateral a 1440 px que continua visível na tela depois de rolar a página até o meio (por position: sticky ou por um script que a move com transform), e cada pendência tem um ícone diferente por tipo",
+        "Se a lateral anima ao acompanhar o scroll, a animação é de transform com até 300 ms e há um script que muda o transform no scroll (uma transição num elemento só sticky não conta, porque nunca dispara); com o movimento reduzido ela fica sticky, sem transição",
         "A 390 px de largura, a lateral do que precisa de atenção aparece acima dos indicadores ou recolhida no topo, e não no fim da página",
         "A lista das últimas matrículas fica abaixo dos indicadores e do gráfico, ocupando a largura do conteúdo principal, e não numa coluna estreita e alta ao lado deles",
         "Ao passar o mouse sobre uma barra ou um ponto do gráfico, esse elemento fica destacado e os outros ficam mais apagados",
@@ -50,7 +51,7 @@
         "As pendências (a mensalidade atrasada e o atestado vencido) ficam num bloco próprio perto do topo, cada uma com um ícone diferente",
         "Ao carregar, as 30 presenças, os 12 pagamentos e os 15 documentos não aparecem todos à vista: cada um mostra um resumo e o resto abre ao clicar (lateral, gaveta, acordeão ou aba)",
         "Onde há abas ou blocos recolhidos, o rótulo leva a contagem do que está escondido (por exemplo, Documentos · 15)",
-        "Os blocos-resumo ficam numa grade em que os vizinhos da mesma linha têm a mesma altura a 1440 px",
+        "Os blocos-resumo ficam numa grade em que os vizinhos da mesma linha têm a mesma altura a 1440 px, sem que uma linha de blocos curtos fique esticada até a altura da linha mais alta (como faz o grid-auto-rows: 1fr)",
         "Nenhum bloco sozinho numa linha da grade fica mais de duas vezes mais alto do que os outros blocos a 1440 px",
         "Os documentos têm ícones diferentes por tipo",
         "A 390 px de largura a ficha cabe sem scroll horizontal e os botões que abrem os blocos medem pelo menos 44 px de altura"

@@ -1,6 +1,6 @@
 ---
 name: desenhando-telas
-description: Guia o desenho de telas de sistema (ERP, Kanban, painel) — que tela existe, hierarquia, resumir e abrir ao clicar, KPIs, atalhos, celular e movimento. Usar ao criar, redesenhar ou rever essas telas. Não usar para sites (é a desenhando-sites) nem para acessibilidade (é a cuidando-da-acessibilidade).
+description: Desenha telas de sistema (ERP, Kanban, ficha, painel) — hierarquia, resumir e abrir ao clicar, KPIs, atalhos, celular e movimento. Usar ao criar, redesenhar ou rever telas. Não usar para sites (é a desenhando-sites), acessibilidade (é a cuidando-da-acessibilidade) nem provas (é a testes-e-provas).
 ---
 
 # Desenhando telas
@@ -104,7 +104,7 @@ completo; é deixar a pessoa fazer o trabalho de escolher.
   direita** (o estado, o saldo, o próximo prazo). Duas coisas em destaque são nenhuma.
 - **O que precisa de atenção tem um bloco próprio**, perto do topo, com a cor do estado e um ícone diferente para cada
   tipo de pendência. É o bloco que a pessoa procura primeiro; não o dilua entre os outros.
-- **Um estado de alerta diz-se com pouca cor e um ícone**: um ponto ou uma borda fina na cor do estado e o ícone ao
+- **Um estado de alerta se diz com pouca cor e um ícone**: um ponto ou uma borda fina na cor do estado e o ícone ao
   lado do texto, não o cartão inteiro pintado de vermelho.
 - **Um número protagonista** por tela ou por bloco, grande, com `tabular-nums`. O resto é apoio.
 - **Letra:** a escala sai de uma razão (≈ 1,2 para telas densas, ≈ 1,25 para as comuns), não do olho. A hierarquia vem
@@ -123,24 +123,28 @@ completo; é deixar a pessoa fazer o trabalho de escolher.
   a trabalhar: as teclas, o filtro ativo, a contagem. Um cartão meio vazio ao lado de um cheio pede outra grade.
 - **Proximidade:** o espaço entre seções é pelo menos o dobro do maior espaço dentro delas. Separe primeiro por espaço;
   a linha vem depois.
-- **Densidade decidida em px e mantida:** 12 a 16 px de padding é bancada de trabalho; 24 px é folheto. Escolha uma e
-  repita-a em toda a tela.
+- **Densidade decidida em px e mantida:** escolha o padding dos cartões antes de começar e use o mesmo número em
+  toda a tela. Uma tela de operação fica entre 12 e 16 px; com 24 px ela já respira como material de divulgação, e
+  mostra menos por vez.
 - **Rótulo e valor:** numa coluna estreita (≈ 200 px) o rótulo vai por cima do valor; lado a lado só num contêiner
   mais largo (≈ 400 px).
 
 ## 5. A lateral que segue o scroll
 
-O bloco do que precisa de atenção, ou a ação principal da tela, pode viver numa coluna lateral com
-`position: sticky` que acompanha o scroll enquanto o resto do painel rola. Foi a peça mais elogiada nos ensaios do
-painel. Ela pode ter **duas animações**:
+O bloco do que precisa de atenção, ou a ação principal da tela, pode viver numa coluna lateral que acompanha o scroll
+enquanto o resto do painel rola. Nos ensaios, foi uma das peças elogiadas no painel que ficou em primeiro. Ela pode ter
+**duas animações**:
 
 - **A entrada ao abrir a tela**, uma vez, junto com o resto do painel (seção 9).
-- **O movimento enquanto acompanha o scroll:** em vez de ficar colada seca, chega à nova posição com uma transição
-  curta (≤ 300 ms, valor nosso, a calibrar) feita só com `transform`. Nunca atrasa a leitura, nunca cobre conteúdo, e
-  com o movimento reduzido fica só o `position: sticky`, sem animação.
+- **O movimento enquanto acompanha o scroll:** em vez de ficar colada, a lateral chega à nova posição com uma
+  transição curta (≤ 300 ms, valor nosso, a calibrar) feita só com `transform`. **Isso pede script:** o
+  `position: sticky` não muda o `transform` e por isso não anima nada. A receita, testada, está em
+  `references/kanban-ficha-painel.md`: o `sticky` é o modo sem animação (sem script e com o movimento reduzido), e o
+  script o troca por um `translateY` com transição, limitado à altura da coluna.
 
-É **a única coisa da tela de sistema que se mexe com o scroll**. O conteúdo nunca espera pelo scroll para aparecer:
-num produto que se rola dezenas de vezes por sessão, aparecer tarde lê-se como lentidão.
+Ela nunca atrasa a leitura nem cobre conteúdo. É **a única coisa da tela de sistema que se mexe com o scroll**. O
+conteúdo nunca espera pelo scroll para aparecer: num produto que se rola dezenas de vezes por sessão, aparecer tarde
+se lê como lentidão.
 
 No celular a lateral deixa de ser lateral: vira um bloco no topo, recolhido, com o resumo («3 pendências») e a
 contagem por tipo (valor nosso).
@@ -151,8 +155,8 @@ para» com os estados em fila (seção 6); e o teclado funciona dentro dela como
 
 ## 6. Teclado
 
-Nos ensaios, todas as telas tinham atalhos e quase nenhuma dizia como começar a usá-los. Atalho que não aparece é
-como se não existisse.
+Nos quadros dos ensaios, todos tinham atalhos e só um dizia como começar a usá-los; nos painéis, só um tinha atalhos.
+Atalho que não aparece é como se não existisse.
 
 - **Uma legenda de teclas sempre à vista**, no cabeçalho ou no rodapé, nunca escondida num canto ou atrás de um «?».
   Ela diz **como começar** («Tab para entrar no quadro»), não só as teclas de dentro.
@@ -178,7 +182,7 @@ como se não existisse.
   acento só; a cor comunica (estado, ação, identidade), e cor sem motivo é ruído.
 - **No tema escuro, a cor é pouca e só onde importa.** No escuro qualquer cor ganha destaque: um quadro com uma cor por
   coluna, por etiqueta e por pessoa vira confusão. Neutros para a estrutura e cor forte só no estado e na ação.
-- **Nada de listras, barras cinzentas nem padrões decorativos** no fundo ou nos cartões. Gradiente só se disser alguma
+- **Nada de listras, barras cinza nem padrões decorativos** no fundo ou nos cartões. Gradiente só se disser alguma
   coisa.
 - **Ícones diferentes por tipo** (de documento, de pendência, de estado), do mesmo conjunto e do mesmo traço. O traço
   acompanha o peso do texto ao lado: 1,5 px ao lado de texto 400, 2 px ao lado de 500–600.
@@ -194,25 +198,27 @@ Nos ensaios, nenhum quadro funcionou no celular. Uma tela de sistema que só fun
   pelo menos 44 px de altura) e o «Mover para» como ação do cartão em vez do arrastar (valor e forma nossos, a partir
   dos ensaios).
 - **Cada coluna do quadro rola sozinha**, no computador e no celular; o cabeçalho da coluna fica parado.
-- **A grade de 3 × 2 vira 2 × 3 ou uma coluna;** a lateral vira o bloco recolhido no topo (seção 5).
+- **A grade de 3 × 2 vira 2 × 3 ou uma coluna** (valor nosso); a lateral vira o bloco recolhido no topo (seção 5).
 - **Todo alvo com pelo menos 44 px no toque.** Abas, ações dentro de cartões e botões só de ícone foram os que mais
   falharam; meça a caixa com a `cuidando-da-acessibilidade`.
-- **Nada principal depende de hover:** no toque não há hover.
+- O que só aparece no hover: ver a `cuidando-da-acessibilidade`.
 - Tabelas largas: as colunas de apoio saem primeiro, ou a linha vira um cartão; nunca a página inteira com scroll de
   lado.
 
 ## 9. Movimento no sistema
 
 **A frequência decide se anima.** Os **atalhos** usados centenas de vezes por dia (abrir a paleta de comandos, trocar
-de vista, navegar numa lista) não animam: animação ali deixa o sistema lento. **Mover um cartão anima, pelo mouse e
-pelo teclado:** é a confirmação de que o cartão foi para onde a pessoa queria, e foi o movimento mais elogiado dos
-ensaios. O que se usa poucas vezes (um modal, uma gaveta, a entrada do painel) tem animação normal.
+de vista) não animam: animação ali deixa o sistema lento. O que se usa dezenas de vezes por dia (navegar numa lista,
+o hover de uma linha) anima pouco ou nada. **Mover um cartão anima, pelo mouse e pelo teclado:** é a confirmação de
+que o cartão foi para onde a pessoa queria, e no quadro dos ensaios foi o que mais separou as boas das ruins. O que
+se usa poucas vezes (um modal, uma gaveta, a entrada do painel) tem animação normal.
 
 - **Durações:** pressão 100–160 ms, tooltip 125–200 ms, menu 150–250 ms, modal e gaveta 200–500 ms. **A interface de
   sistema fica abaixo de 300 ms**; modais e gavetas são a exceção. As tabelas estão em
   `references/movimento-no-sistema.md`.
-- **Curva de saída forte** (`cubic-bezier(0.23, 1, 0.32, 1)`) para entrar e responder; nunca `ease-in`, que atrasa o
-  primeiro quadro, o momento em que a pessoa está olhando.
+- **Curva de saída forte** (`cubic-bezier(0.23, 1, 0.32, 1)`) para entrar e responder; nunca `ease-in`. A
+  resposta tem de se ver logo depois do clique, e o `ease-in` gasta o começo parado, que é justamente quando a pessoa
+  procura sinal de que foi ouvida.
 - **Nada cresce do zero:** começa em `scale(0.95)` com opacidade 0. O popover nasce do botão que o abriu; o modal fica
   centrado.
 - **Pressão:** `scale(0.96)` ou `scale(0.97)` no `:active`, nunca abaixo de 0,95.
@@ -225,10 +231,12 @@ ensaios. O que se usa poucas vezes (um modal, uma gaveta, a entrada do painel) t
 - **Gráficos com destaque ao passar o mouse:** o elemento sob o ponteiro fica aceso e os outros se apagam um pouco;
   com o teclado, o mesmo no foco.
 - **A entrada do painel conta.** Ao abrir, os blocos entram escalonados, 30–80 ms entre um e outro e o grupo inteiro
-  abaixo de cerca de 300 ms, na ordem da importância. **Uma entrada por contêiner:** se o bloco entra, o que está dentro
-  dele já está lá. Ninguém espera a animação para clicar.
-- **Transição de página sem `transform`:** só opacidade e cor. Um `transform` num antepassado cria um novo contexto e
-  quebra os elementos `fixed` e `sticky` (a lateral da seção 5) e o arrastar.
+  abaixo de cerca de 300 ms, na ordem da importância. **Uma entrada por contêiner:** anima o bloco ou os
+  filhos dele, nunca os dois. Ninguém espera a animação para clicar.
+- **Transição de página sem `transform`:** só opacidade e cor. Um `transform` num antepassado vira a referência dos
+  elementos `fixed` (um modal, um cabeçalho fixo), que passam a se posicionar por ele e não pela janela, e atrapalha o
+  arrastar. O `sticky` não quebra com `transform`; ele quebra com um `overflow` (`hidden`, `auto`) num antepassado,
+  que é o risco a conferir na lateral da seção 5.
 - **Só `transform` e `opacity`** nos elementos que se mexem, com as propriedades nomeadas na transição (nunca
   `transition: all`).
 - **Com o movimento reduzido sobram a opacidade e a cor, ou nada** (os limites estão na `cuidando-da-acessibilidade`):
@@ -238,7 +246,7 @@ ensaios. O que se usa poucas vezes (um modal, uma gaveta, a entrada do painel) t
 
 ## 10. Estados
 
-Cada bloco de dados tem os quatro desenhados, não só o caminho feliz: **a carregar** (o esqueleto com a forma do
+Cada bloco de dados tem os quatro desenhados, não só o caminho feliz: **carregando** (o esqueleto com a forma do
 conteúdo, sem pular quando chega), **vazio** (o que significa e a ação para sair dele), **erro** (o que houve e o que
 fazer, sem esvaziar o resto da tela) e **com dados**. Nos ensaios, 4 de 10 telas só tinham o caminho feliz.
 
@@ -252,9 +260,11 @@ próprio controle.
    falta um token ou um componente.
 3. **Tire captura a 1440 px e a 390 px** quando houver navegador, e critique antes de mostrar: o ponto focal ganha?
    Algum cartão sobra? A lateral vira bloco no celular? A legenda de teclas aparece sem rolar?
-4. **O teste da troca:** troque, de cabeça, a letra e o layout pelos mais comuns. Onde não mudaria nada, foi o padrão
-   que decidiu, não você; volte a essa parte.
-5. **O teste de semicerrar os olhos:** com a vista turva, a hierarquia ainda se lê e nada grita aos olhos.
+4. **O teste da troca:** imagine a mesma tela feita por outro agente com o mesmo pedido. A parte que sairia igual
+   (a fonte de sempre, a grade de sempre) é a que ninguém escolheu; volte a ela e decida pelo que a pessoa da seção 1
+   precisa.
+5. **O teste de semicerrar os olhos:** com a imagem borrada, ainda se acha o ponto focal e a divisão dos blocos, e
+   nenhuma borda ou cor chama mais atenção do que os dados.
 6. **Reveja o movimento a 10 % da velocidade** e o teclado de ponta a ponta (entrar, mover, cancelar, abrir a lateral,
    sair dela).
 7. **No fim, passe a `cuidando-da-acessibilidade`** e diga o que não se verificou.
@@ -286,8 +296,8 @@ as duas divergem, siga a do projeto e diga a divergência no relatório, para o 
 - [ ] KPIs em grade 3 × 2 (ou 2 × 3 no celular), agrupados, e não numa linha só?
 - [ ] Cartões vizinhos com a mesma altura? Nenhum cartão alto e estreito sozinho? Listas longas embaixo, na largura toda?
 - [ ] Sem espaço vazio sem razão no cabeçalho e nos cartões? Espaço entre seções ≥ 2× o de dentro?
-- [ ] A lateral `sticky` só anima com `transform`, ≤ 300 ms, e fica parada com o movimento reduzido? Vira bloco no
-  celular?
+- [ ] A lateral que acompanha o scroll anima por script, só com `transform` e ≤ 300 ms, e fica só `sticky` sem script
+  e com o movimento reduzido? Nenhum `overflow` num antepassado quebra o `sticky`? Vira bloco no celular?
 - [ ] **A barra lateral de detalhe:** grupos separados por linhas finas e tons de fundo, «Mover para» com os estados em
   fila, teclado funcionando dentro dela e Esc devolvendo o foco?
 - [ ] Legenda de teclas à vista ao carregar, dizendo como começar? Espaço, setas, espaço e Esc movem e cancelam?
@@ -298,7 +308,7 @@ as duas divergem, siga a do projeto e diga a divergência no relatório, para o 
 - [ ] Saída forte, nada de `ease-in`, nada de `scale(0)`, pressão entre 0,96 e 0,97?
 - [ ] Entrada do painel escalonada 30–80 ms, uma por contêiner? Transição de página sem `transform`?
 - [ ] Só `transform` e `opacity` animados, sem `transition: all`? Com o movimento reduzido sobram a opacidade e a cor?
-- [ ] Estados a carregar, vazio e erro desenhados em cada bloco?
+- [ ] Estados carregando, vazio e erro desenhados em cada bloco?
 - [ ] Capturas a 1440 e a 390 px criticadas? Teste da troca e de semicerrar feitos?
 - [ ] A `cuidando-da-acessibilidade` passou, e o que não se verificou está dito?
 

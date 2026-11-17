@@ -26,10 +26,10 @@ Lidas em 2026-11-16 e relidas em 2026-11-17; o `LICENSE` de cada repositório fo
 | Pessoa, verbo e tom em palavras que dizem algo; o ponto focal dito antes | — | Damola Akinleye, `interface-design` (MIT), commit `2f9be320` |
 | Escala de letra por razão | ≈ 1,2 (denso), ≈ 1,25 (comum) | idem |
 | Três níveis num tamanho só | valor 600, rótulo 500, meta 400 | idem |
-| Densidade decidida em px | 12–16 px de padding é bancada; 24 px é folheto | idem |
+| Densidade decidida em px | 12–16 px numa tela de operação; com 24 px a tela já respira como material de divulgação | idem |
 | Distribuição e acento | ≈ 60/30/10; uma cor de acento | idem |
 | Uma estratégia de profundidade | bordas, sombras ou degraus de fundo, sem misturar | idem |
-| Estados de cada bloco de dados | a carregar, vazio, erro | idem |
+| Estados de cada bloco de dados | carregando, vazio, erro | idem |
 | Teste da troca e de semicerrar os olhos | — | idem |
 | Atalhos de alta frequência sem animação | centenas de vezes por dia | Emil Kowalski, `emil-design-eng` (MIT), commit `64eb3deb`; e `interface-design` |
 | Durações e curvas | ver `movimento-no-sistema.md` | Emil Kowalski, `emil-design-eng` |
@@ -46,8 +46,9 @@ Lidas em 2026-11-16 e relidas em 2026-11-17; o `LICENSE` de cada repositório fo
   fronteira de pelo menos 1,2:1, que não muda com o que está atrás (um incidente do projeto de origem).
 - A `emil-design-eng` não anima nada que o teclado dispara. Aqui o cartão movido pelo teclado anima, curto; o atalho
   continua sem animação.
-- A `interface-design` cita 44 × 44 px como regra da WCAG. A WCAG pede 24 × 24 px; os 44 são da Apple. Os alvos estão
-  na `cuidando-da-acessibilidade`.
+- A `interface-design` cita 44 × 44 px como regra da WCAG. A WCAG pede 24 × 24 px no nível AA (critério 2.5.8); os
+  44 × 44 são do nível AAA dela (critério 2.5.5, citado de memória, não relido) e o padrão da Apple. Os alvos estão na
+  `cuidando-da-acessibilidade`.
 
 ## Dos ensaios às cegas (novembro de 2026)
 
@@ -93,7 +94,7 @@ acima).
 - **Abas bem usadas**: Nielsen Norman Group — https://www.nngroup.com/articles/tabs-used-right/
 - **Região comum** (a caixa agrupa com mais força do que o espaço; tente primeiro só com espaço, e caixas a mais são
   ruído): Nielsen Norman Group — https://www.nngroup.com/articles/common-region/ (lido em 2026-11-06)
-- **Proximidade** (o rótulo junto do campo; o espaço dentro de um grupo menor do que entre grupos; o afastado lê-se como
+- **Proximidade** (o rótulo junto do campo; o espaço dentro de um grupo menor do que entre grupos; o afastado se lê como
   não relacionado): Nielsen Norman Group — https://www.nngroup.com/articles/gestalt-proximity/ (lido em 2026-11-06)
 - **Interruptores** (gravam na hora; o que espera por um botão usa botões de opção ou uma caixa de seleção; não se
   misturam os dois): Nielsen Norman Group — https://www.nngroup.com/articles/toggle-switch-guidelines/ (lido em

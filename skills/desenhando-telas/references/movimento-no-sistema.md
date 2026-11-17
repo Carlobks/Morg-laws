@@ -12,8 +12,8 @@ mexem com o equilíbrio) estão na `cuidando-da-acessibilidade` e não se repete
 
 | Com que frequência | O que fazer | Fonte |
 |---|---|---|
-| Centenas de vezes por dia: atalhos, paleta de comandos, trocar de vista, navegar numa lista | Sem animação | Emil Kowalski (`emil-design-eng`); Damola Akinleye (`interface-design`) |
-| Dezenas de vezes por dia: hover, abrir uma linha | Pouca ou nenhuma | Emil Kowalski (`emil-design-eng`) |
+| Centenas de vezes por dia: atalhos, paleta de comandos, trocar de vista | Sem animação | Emil Kowalski (`emil-design-eng`); Damola Akinleye (`interface-design`) |
+| Dezenas de vezes por dia: navegar numa lista, hover, abrir uma linha | Pouca ou nenhuma | Emil Kowalski (`emil-design-eng`) |
 | Mover um cartão, pelo mouse ou pelo teclado | Anima, curto: confirma para onde o cartão foi | os ensaios às cegas de novembro de 2026 |
 | Às vezes: modal, gaveta, aviso | Animação normal | Emil Kowalski (`emil-design-eng`) |
 | Uma vez por visita: a entrada do painel | Escalonada, curta | Emil Kowalski (`choreograph`); os ensaios às cegas |
@@ -32,7 +32,7 @@ pelo teclado com uma animação curta foi elogiado, porque a pessoa precisa ver 
 | Modal, gaveta | 200–500 ms | idem |
 | O resto da interface de sistema | abaixo de 300 ms | idem; Damola Akinleye (`interface-design`) |
 | Escalonamento da entrada | 30–80 ms entre itens, o grupo todo abaixo de cerca de 300 ms | Emil Kowalski (`choreograph`) |
-| A lateral `sticky` acompanhando o scroll | ≤ 300 ms, só `transform` | nosso |
+| A lateral acompanhando o scroll (com script; ver `kanban-ficha-painel.md`) | ≤ 300 ms, só `transform` | nosso |
 | O cartão deslizando para a posição nova pelo teclado | 150–250 ms | nosso, dentro da faixa do menu |
 
 As saídas são mais curtas e mais simples do que as entradas, e saem todas juntas, sem escalonar ao contrário
@@ -44,7 +44,7 @@ As saídas são mais curtas e mais simples do que as entradas, e saem todas junt
 |---|---|---|
 | Entrar, responder a uma ação | `cubic-bezier(0.23, 1, 0.32, 1)` (saída forte) | Emil Kowalski (`emil-design-eng`); Damola Akinleye (`interface-design`) |
 | Algo que já está na tela e muda de lugar | `cubic-bezier(0.77, 0, 0.175, 1)` (entrada e saída fortes) | idem |
-| Nunca | `ease-in` | idem: começa devagar, no momento em que a pessoa está olhando |
+| Nunca | `ease-in` | idem: a resposta fica parada justo no começo, quando a pessoa procura o sinal de que o clique contou |
 
 ## Escala e origem
 
@@ -81,13 +81,14 @@ Vêm da `apple-design` de Emil Kowalski, que traduz para a web a palestra *Desig
 
 Da `choreograph` de Emil Kowalski, com palavras nossas:
 
-- **Uma entrada por contêiner:** se o bloco entra, o conteúdo dele já está lá. Duas camadas de entrada fazem a pessoa
-  esperar duas vezes.
+- **Uma entrada por contêiner:** escolha entre animar o bloco e animar os filhos dele. Com os dois, a tela só fica
+  pronta quando a última peça de dentro chega, e a espera soma.
 - **Sem escalonar o que se usa o dia todo** (linhas de lista, itens de menu, o conteúdo de uma aba): esses aparecem
   juntos, ou sem animação.
 - **Escalonamento igual em todos é mecânico:** o mais importante entra primeiro e anda um pouco mais; o de apoio, menos;
   o decorativo só esmaece no lugar.
-- **A coreografia nunca bloqueia:** o que está visível já se pode clicar.
+- **A animação não segura a mão de ninguém:** um botão que já apareceu responde ao clique, mesmo que o bloco ao lado
+  ainda esteja entrando.
 
 ## Verificar
 
