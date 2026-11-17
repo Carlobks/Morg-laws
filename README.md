@@ -63,7 +63,7 @@ git config core.hooksPath .githooks
 O `pre-commit` recusa commits com e-mail que não seja o noreply do GitHub, com um nome de autor da lista negra, com AGENTS.md acima de 60 linhas e com dado pessoal ou identificador em `projetos/` (o teste lê o que está preparado).
 Ele também procura nomes e dados sensíveis numa lista que fica **fora** do repositório
 (`git config morg.listaNegra <arquivo>`); sem essa lista, só avisa. No GitHub, o `gitleaks` procura segredos em todo push.
-O workflow `links` confere os links externos dos `.md` uma vez por semana e em cada mudança de `.md`: um vermelho dele quer dizer que um site não respondeu, e não que um teste quebrou. Os links relativos e as fontes são conferidos pela suíte local, sem rede.
+O workflow `links` confere os links externos dos `.md` uma vez por semana e em cada mudança de `.md`: um vermelho dele quer dizer que um site não respondeu, e não que um teste quebrou. Os links relativos e as fontes são conferidos pela suíte local, sem rede. O job `npm-audit` do workflow `segurança` audita o lockfile do exemplo TypeScript: um vermelho só dele quer dizer que uma dependência tem um aviso alto ou crítico (ou que o registro do npm não respondeu), e não que um teste quebrou.
 
 Achou um problema numa regra, tem uma sugestão ou uma correção de fonte? Entre pelos formulários do [New issue](https://github.com/Carlobks/Morg-laws/issues/new/choose): os formulários desses três casos pedem a prova. Problema de segurança não vai numa issue, que é pública: use o aviso privado, como diz a [política de segurança](https://github.com/Carlobks/Morg-laws/blob/main/.github/SECURITY.md). Numa PR, siga a lista do modelo que aparece no corpo dela.
 
