@@ -4,3 +4,5 @@
 # Este arquivo é público.
 Claude Code
 Arch Linux
+Source Serif
+Source Sans

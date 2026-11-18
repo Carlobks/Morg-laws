@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 324 130" width="324" height="130" fill="none" stroke="#1b2238" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Da conversa que enche ao arquivo que fica: as mensagens à esquerda, a seta, a pasta com a folha dentro. -->
+  <g stroke-width="0.8">
+    <rect x="20" y="20" width="70" height="20" rx="10"/>
+    <rect x="50" y="50" width="84" height="20" rx="10"/>
+    <rect x="20" y="80" width="60" height="20" rx="10"/>
+  </g>
+  <path d="M146 60 C170 60 178 62 204 62 M196 55 L204 62 L196 69" stroke-width="1.2"/>
+  <path d="M222 36 H248 L256 44 H306 V98 H222 Z" stroke-width="1.2"/>
+  <path d="M238 64 H290 M238 76 H272" stroke-width="0.8"/>
+</svg>

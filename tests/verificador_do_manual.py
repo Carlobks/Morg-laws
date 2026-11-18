@@ -15,21 +15,23 @@ import test_fontes_e_pesquisas as fontes
 from leitura_do_repositorio import ler
 
 PASTA_DO_MANUAL = "manual/"
-# Palavras de cada lado do par, abaixo do que cabe numa página de 6 x 9,6 pol. O método: encher um lado do P6 com prosa
-# real do repositório (parágrafos de 60, 120 e 1000 palavras), compilar com o comando do README e achar o maior
-# enchimento que sai 0. A prática leva o código (9 linhas no Markdown, 14 impressas) e cabe de 251 a 334 palavras; a
-# teoria, sem código, de 431 a 603. Os tetos ficam abaixo do menor: o `panic` do molde é a rede, estes são o aviso cedo.
-TETO_DA_PRATICA = 250
-TETO_DA_TEORIA = 400
+# Palavras de cada lado do par, abaixo do que cabe numa página de 432 x 648 pt (a do molde novo). O método: encher um lado
+# do P6 com prosa real do repositório (parágrafos de 30, 60, 120 e 1000 palavras), compilar com o comando do README e
+# achar o maior enchimento que sai 0. A prática leva o código (9 linhas no Markdown, 14 impressas) e cabe de 243 a 280
+# palavras; a teoria, sem código, de 418 a 490. Os tetos ficam no menor da prática (243) e abaixo do menor da teoria
+# (410): o `panic` do molde é a rede, estes são o aviso cedo.
+TETO_DA_PRATICA = 243
+TETO_DA_TEORIA = 410
 MOLDE = "manual/manual.typ"
+PASTA_DO_MOLDE = "manual/molde/"
 TETO_DO_MOLDE_EM_LINHAS = 150
 FORA_DO_TETO = ("manual/fontes/", "manual/imagens/", "manual/pessoas-citaveis.txt", "manual/nomes-citaveis.txt",
                 "manual/palavras-que-abrem-frase.txt")
-TETOS_POR_PARTE = {  # palavras da prosa (fora de blocos de código) por parte; com pares: n × (250 + 400) + 200
+TETOS_POR_PARTE = {  # palavras da prosa (fora de blocos de código) por parte; com pares: n × (243 + 410) + 200
     "manual/README.md": 500, "manual/00-antes-de-comecar.md": 1500, "manual/01-o-que-e-o-morg-laws.md": 1000,
-    "manual/02-preparar-o-computador.md": 2650, "manual/03-instalar.md": 3450, "manual/04-pedir.md": 2800, "manual/05-sessoes.md": 5400,
-    "manual/06-o-ciclo-de-uma-mudanca.md": 3450, "manual/07-as-regras.md": 2000,
-    "manual/08-como-se-garante.md": 2700, "manual/09-quando-da-errado.md": 1500, "manual/10-glossario.md": 1800,
+    "manual/02-preparar-o-computador.md": 2650, "manual/03-instalar.md": 3465, "manual/04-pedir.md": 2812, "manual/05-sessoes.md": 5424,
+    "manual/06-o-ciclo-de-uma-mudanca.md": 3465, "manual/07-as-regras.md": 2000,
+    "manual/08-como-se-garante.md": 2700, "manual/09-quando-da-errado.md": 1506, "manual/10-glossario.md": 1800,
     "manual/11-pedidos-prontos.md": 1800, "manual/12-como-este-manual-foi-feito.md": 1000}
 PARTES_EM_TEXTO_SEGUIDO = ("00", "01", "02", "07", "08", "11", "12")  # prefixos do nome; o glossário (10) não pede fonte
 EXCECOES_DE_SECAO = frozenset({("manual/07-as-regras.md", "O índice das skills")})  # (arquivo, título) sem fonte
@@ -234,7 +236,7 @@ def medido_sem_negacao(nome, texto):
 def teto_de_um_arquivo(raiz, nome):
     """O arquivo dentro do teto: o molde em linhas, cada parte em palavras; o que não tem teto reprova, sem ser lido
     (só o `.md` e o `.typ` com teto se leem; uma imagem acusa-se pela extensão)."""
-    if nome == MOLDE:
+    if nome == MOLDE or (nome.startswith(PASTA_DO_MOLDE) and nome.endswith(".typ")):
         medida, teto, unidade = len(ler(raiz / nome).splitlines()), TETO_DO_MOLDE_EM_LINHAS, "linhas"
     elif nome in TETOS_POR_PARTE:
         medida, teto, unidade = palavras_da_prosa(ler(raiz / nome).splitlines()), TETOS_POR_PARTE[nome], "palavras"

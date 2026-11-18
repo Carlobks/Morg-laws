@@ -395,6 +395,13 @@ Lidas em 2026-11-09 com o `WebFetch`, para `pesquisas/2026-11-09-paginas-duplas.
 - **WeasyPrint — API Reference, «Supported Features»** — https://doc.courtbouillon.org/weasyprint/stable/api_reference.html — Sustenta: suporta `@page` com `:left` e `:right`, notas de rodapé, `target-counter()` e marcadores do PDF.
 - **WeasyPrint — First Steps, instalação** — https://doc.courtbouillon.org/weasyprint/stable/first_steps.html — Sustenta: no Windows o caminho mais fácil é o executável da última versão; para usar o WeasyPrint como biblioteca Python, o Pango instala-se pelo MSYS2.
 
+## O molde do manual (letras e medidas)
+
+Lidas em 2026-11-18 para o molde novo do PDF (`manual/molde/`). As medidas de forma do livro de referência (página de 6 × 9 pol., margem de 54 pt, corpo a 10,5 pt, entrelinha de 13,5 pt, cabeçalho em caixa-alta espaçada) são as do livro de Fabio Akita em «Livros e autores», medidas no PDF dele: o manual usa só as medidas, nenhum texto do livro.
+
+- **Source Serif 4 (Adobe) — lançamento 4.005R** — https://github.com/adobe-fonts/source-serif/releases/tag/4.005R — baixado em 2026-11-18 (o pacote «Desktop», as TTF estáticas). Sustenta: a letra do corpo do PDF; licença SIL Open Font License 1.1, copiada em `manual/fontes/OFL-SourceSerif4.txt`; os nomes dos arquivos e o tamanho de cada um (de 188 a 272 KB) conferidos antes de entrarem no repositório.
+- **Source Sans 3 (Adobe) — lançamento 3.052R** — https://github.com/adobe-fonts/source-sans/releases/tag/3.052R — baixado em 2026-11-18 (o pacote TTF). Sustenta: a letra dos títulos, dos cabeçalhos e das legendas; licença SIL Open Font License 1.1. O lançamento não traz o arquivo da licença: o texto em `manual/fontes/OFL-SourceSans3.txt` é o do arquivo `LICENSE.md` do lançamento da Source Serif 4, com a linha de copyright da Source Sans 3 (a que está dentro das próprias TTF).
+
 ## Preparar o computador (parte 02 do manual)
 
 O autor só usou estes passos no Linux; os de Windows e macOS vêm das páginas abaixo.

@@ -248,8 +248,8 @@ class PorPar(ManualTemporario):
         with mock.patch.object(verificador, "TETO_DA_PRATICA", 4):
             self.assertEqual(self.erros("manual/04-pedir.md", com_cinco), [])
 
-    def test_os_tetos_por_lado_sao_250_e_400(self):
-        self.assertEqual((verificador.TETO_DA_PRATICA, verificador.TETO_DA_TEORIA), (250, 400))
+    def test_os_tetos_por_lado_sao_243_e_410(self):
+        self.assertEqual((verificador.TETO_DA_PRATICA, verificador.TETO_DA_TEORIA), (243, 410))
 
     def test_os_tetos_dos_procedimentos_seguem_a_conta_de_n_pares(self):
         pares = {"03-instalar": 5, "04-pedir": 4, "05-sessoes": 8, "06-o-ciclo-de-uma-mudanca": 5,
