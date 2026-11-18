@@ -218,11 +218,10 @@ class PorPar(ManualTemporario):
             with self.subTest(texto=texto):
                 self.assertEqual(self.erros(NOME, texto), [])
 
-    def test_nota_de_rodape_num_par_reprova(self):
-        erros = self.erros("manual/04-pedir.md", par(TEORIA_COM_LINK + "[^1]\n\n[^1]: nota"))
-        self.assertEqual(len(erros), 1)
-        self.assertIn("nota de rodapé", erros[0])
-        self.assertEqual(verificador.notas_de_rodape_num_par("a.md", "Q", ["Texto sem nota."]), [])
+    def test_a_nota_de_rodape_num_par_ja_nao_reprova_e_conta_como_fonte(self):
+        com_nota = par("O porquê está na nota.[^1]\n\n[^1]: SOBRENOME, 2026, p. 31.")
+        self.assertEqual(self.erros("manual/04-pedir.md", com_nota), [])
+        self.assertEqual(len(self.erros("manual/04-pedir.md", par("O porquê é só opinião."))), 1)
 
     def test_teto_da_teoria(self):
         com_cinco = par("um dois três quatro [cinco](https://example.com/x)")

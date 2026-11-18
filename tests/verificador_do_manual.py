@@ -27,16 +27,33 @@ PASTA_DO_MOLDE = "manual/molde/"
 TETO_DO_MOLDE_EM_LINHAS = 150
 FORA_DO_TETO = ("manual/fontes/", "manual/imagens/", "manual/pessoas-citaveis.txt", "manual/nomes-citaveis.txt",
                 "manual/palavras-que-abrem-frase.txt")
+# O livro novo (o mapa do §1 do plano): os nomes dos arquivos, sem `manual/` e sem `.md`. Um arquivo novo só vale depois de listado
+# no molde (`capitulos-novos`, `pecas-novas` em manual.typ): o alcance dos testes novos é essa lista, e as partes de hoje ficam de fora.
+CAPITULOS = ("cap-01-duas-empresas", "cap-02-uma-pasta-que-lembra", "cap-03-instalar-skills-e-regras", "cap-04-as-barreiras",
+             "cap-05-quatro-partes-e-um-oraculo", "cap-06-pouca-cerimonia", "cap-07-compactar-parar-e-retomar",
+             "cap-08-sessoes-filhas", "cap-09-uma-orquestradora", "cap-10-quem-escreveu-nao-audita", "cap-11-o-plano-e-o-sim",
+             "cap-12-commits-pequenos", "cap-13-bug-traz-teste", "cap-14-as-regras-uma-por-uma", "cap-15-texto-vira-barreira")
+PECAS = ("prefacio", "como-ler", "posfacio", "apendice-a", "apendice-b", "referencias", "de-onde-veio", "glossario")
+PARTE_DO_CAPITULO = {1: 1, 2: 2, 3: 2, 4: 2, 5: 3, 6: 3, 7: 4, 8: 4, 9: 4, 10: 4, 11: 5, 12: 5, 13: 5, 14: 6, 15: 6}
+SECOES_DO_MAPA = frozenset({f"A.{n}" for n in range(1, 8)} | {f"B.{n}" for n in (2, 3, 4, 7, 9, 12, 15, 16)})
 TETOS_POR_PARTE = {  # palavras da prosa (fora de blocos de código) por parte; com pares: n × (243 + 410) + 200
     "manual/README.md": 500, "manual/00-antes-de-comecar.md": 1500, "manual/01-o-que-e-o-morg-laws.md": 1000,
     "manual/02-preparar-o-computador.md": 2650, "manual/03-instalar.md": 3465, "manual/04-pedir.md": 2812, "manual/05-sessoes.md": 5424,
     "manual/06-o-ciclo-de-uma-mudanca.md": 3465, "manual/07-as-regras.md": 2000,
     "manual/08-como-se-garante.md": 2700, "manual/09-quando-da-errado.md": 1506, "manual/10-glossario.md": 1800,
-    "manual/11-pedidos-prontos.md": 1800, "manual/12-como-este-manual-foi-feito.md": 1000}
+    "manual/11-pedidos-prontos.md": 1800, "manual/12-como-este-manual-foi-feito.md": 1000,
+    "manual/referencias.md": 1500}  # as Referências do livro novo (≈4 pp.); cada capítulo novo acrescenta o seu teto
 PARTES_EM_TEXTO_SEGUIDO = ("00", "01", "02", "07", "08", "11", "12")  # prefixos do nome; o glossário (10) não pede fonte
 EXCECOES_DE_SECAO = frozenset({("manual/07-as-regras.md", "O índice das skills")})  # (arquivo, título) sem fonte
 EXCECOES_DO_CODEX = frozenset()  # (arquivo, primeiros 40 caracteres do parágrafo) que cita o Codex sem link
-ORDEM_DO_PAR =["Na prática", "Por quê e fonte"]
+ORDEM_DO_PAR = ["Na prática", "Por quê e fonte"]  # o par de hoje (`## P<n>`)
+ORDEM_DO_PAR_NOVO = ["Na prática", "Por quê"]  # o par marcado: a fonte é a nota numerada
+MARCA_DE_PAR = re.compile(r"\s*<!--\s*raw-typst\s+#marca-de-par\(\)\s*-->\s*")
+CHAMADA_DE_NOTA = re.compile(r"\[\^([^\]\s]+)\](?!:)")
+DEFINICAO_DE_NOTA = re.compile(r"\[\^([^\]\s]+)\]:[ \t]*(.*)")
+VOZES_DO_AUTOR = re.compile(r"vozes da minha cabeça")
+ASPAS_CURVAS = re.compile(r"“[^”]*”")
+ALCANCE_TOTAL = False  # a 4.8 liga-o, quando a lista do molde já não tem nenhuma parte de hoje: N1 e N5 valem para tudo
 
 LINK_MARCADO = re.compile(r"\[[^\]]*\]\([^)\s]*\)")
 LINK_COM_ENDERECO = re.compile(r"\]\(https?://")
@@ -46,7 +63,8 @@ PAGINA_POR_EXTENSO = re.compile(r"\b(?:páginas?|págs?\.)\s*\d", re.IGNORECASE)
 PAR_DE_PROCEDIMENTO = re.compile(r"P\d+\b")
 CITACAO_DE_PAGINA = re.compile(r"(?<![\w.])pp?\. ?(\d+(?:\s?[–-]\s?\d+)?(?:(?:,\s?| e )\d+(?:\s?[–-]\s?\d+)?)*)")
 ITEM_DE_PAGINA = re.compile(r"\d+(?:\s?[–-]\s?\d+)?")
-DECISAO_DO_PO = re.compile(r"(?:vozes da cabeça de Carlobks \(decisão de |\b[Dd]ecisão de Carlobks \()\d{4}-\d\d-\d\d\)")
+DECISAO_DO_PO = re.compile(r"(?:vozes da cabeça de Carlobks \(decisão de |\b[Dd]ecisão de Carlobks \(|\b[Dd]ecisão do autor \()"
+                           r"\d{4}-\d\d-\d\d\)")
 SENTENCA = re.compile(r"(?<=[.!?])(?<!\bp\.)(?<!\bpp\.)\s+")
 ABRE_BLOCO = re.compile(r"\s*(?:[-*+]\s|\d+[.)]\s|\||#)")
 DE_CITACAO = re.compile(r"^\s*(?:>\s*)+")
@@ -74,7 +92,7 @@ def prosa(linhas):
     for linha in linhas:
         if linha.lstrip().startswith(fontes.CERCAS_DE_CODIGO):
             no_codigo = not no_codigo
-        elif not no_codigo:
+        elif not no_codigo and not MARCA_DE_PAR.fullmatch(linha):
             saida.append(linha)
     return saida
 
@@ -123,14 +141,24 @@ def paginas_sem_entrada(nome, texto, conhecidas):
 
 
 def tem_fonte(linhas):
-    """Um link com endereço, uma página do livro, ou uma decisão de Carlobks com «Porquê:»."""
+    """Um link com endereço, uma página do livro, uma nota numerada chamada, ou uma decisão com «Porquê:»."""
     texto = texto_de_prosa("\n".join(linhas))
     decisao = DECISAO_DO_PO.search(texto) and "Porquê:" in texto
-    return bool(LINK_COM_ENDERECO.search(texto) or itens_de_pagina(texto) or decisao)
+    return bool(LINK_COM_ENDERECO.search(texto) or itens_de_pagina(texto) or CHAMADA_DE_NOTA.search(texto) or decisao)
 
 
-def notas_de_rodape_num_par(nome, titulo, linhas):
-    return [f"{nome}: «{titulo}»: nota de rodapé num par — ponha a fonte em link"] * any("[^" in l for l in linhas)
+def definicoes_de_notas(texto):
+    """[(nome, texto)] das notas `[^nome]: …`: a linha e as seguintes até uma linha em branco; o código não conta."""
+    definicoes, aberta = [], False
+    for linha in texto_de_prosa(texto).splitlines():
+        if achado := DEFINICAO_DE_NOTA.fullmatch(linha):
+            definicoes.append((achado[1], achado[2]))
+            aberta = True
+        elif aberta and linha.strip():
+            definicoes[-1] = (definicoes[-1][0], definicoes[-1][1] + " " + linha.strip())
+        else:
+            aberta = False
+    return definicoes
 
 
 def texto_antes_do_primeiro_h3(nome, titulo, linhas):
@@ -144,24 +172,43 @@ def texto_antes_do_primeiro_h3(nome, titulo, linhas):
         * bool(" ".join(prosa(antes)).strip())
 
 
-def lados_do_par(nome, titulo, linhas):
-    """A ordem «Na prática» → «Por quê e fonte», o teto de palavras de cada lado e a fonte da teoria."""
-    lados = linhas_por_secao("\n".join(linhas), 3)
-    if [lado for lado, _ in lados] != ORDEM_DO_PAR:
-        return [f"{nome}: «{titulo}»: precisa de «### Na prática» e depois «### Por quê e fonte»"]
+def lados_do_par(nome, titulo, linhas, marcado=False):
+    """A ordem «Na prática» → «Por quê» (o par marcado) ou «Por quê e fonte» (o de hoje), o teto de cada lado e a fonte."""
+    lados, ordem = linhas_por_secao("\n".join(linhas), 3), ORDEM_DO_PAR_NOVO if marcado else ORDEM_DO_PAR
+    if [lado for lado, _ in lados] != ordem:
+        return [f"{nome}: «{titulo}»: precisa de «### Na prática» e depois «### {ordem[1]}»"]
     tetos = (TETO_DA_PRATICA, TETO_DA_TEORIA)
     erros = [f"{nome}: «{titulo}»: «{lado}» tem {n} palavras (teto {teto})"
              for (lado, corpo), teto in zip(lados, tetos) if (n := palavras_da_prosa(corpo)) > teto]
     return erros + [f"{nome}: «{titulo}»: a teoria está sem fonte"] * (not tem_fonte(lados[1][1]))
 
 
+def secoes_de_par(texto):
+    """[(título, linhas, marcado)] dos `##`: `marcado` quando a linha de antes é o marcador invisível do par novo."""
+    saida, no_codigo, anterior = [], False, ""
+    for linha in texto.splitlines():
+        no_codigo ^= linha.lstrip().startswith(fontes.CERCAS_DE_CODIGO)
+        if linha.startswith("## ") and not no_codigo:
+            saida.append((linha[3:].strip(), [], bool(MARCA_DE_PAR.fullmatch(anterior))))
+        elif saida:
+            saida[-1][1].append(linha)
+        anterior = linha if linha.strip() else anterior
+    return saida
+
+
+def marcas_soltas(nome, texto):
+    """O marcador de par sem um `## título` logo a seguir: não abre par nenhum."""
+    linhas = [linha for linha in texto.splitlines() if linha.strip()]
+    return [f"{nome}: marcador de par sem «## título» logo a seguir" for i, linha in enumerate(linhas)
+            if MARCA_DE_PAR.fullmatch(linha) and not (i + 1 < len(linhas) and linhas[i + 1].startswith("## "))]
+
+
 def pares_do_texto(nome, texto):
-    """Cada `## P…` é um par: notas de rodapé, ordem, tetos por lado e fonte."""
-    erros = []
-    for titulo, linhas in linhas_por_secao(texto, 2):
-        if PAR_DE_PROCEDIMENTO.match(titulo):
-            erros += (notas_de_rodape_num_par(nome, titulo, linhas) + texto_antes_do_primeiro_h3(nome, titulo, linhas)
-                      + lados_do_par(nome, titulo, linhas))
+    """Cada `## P…` (o gatilho de hoje) e cada `##` depois do marcador (o gatilho novo) é um par: ordem, tetos e fonte."""
+    erros = marcas_soltas(nome, texto)
+    for titulo, linhas, marcado in secoes_de_par(texto):
+        if marcado or PAR_DE_PROCEDIMENTO.match(titulo):
+            erros += texto_antes_do_primeiro_h3(nome, titulo, linhas) + lados_do_par(nome, titulo, linhas, marcado)
     return erros
 
 
@@ -183,10 +230,23 @@ def decisoes_sem_porque(nome, texto):
 
 def codex_sem_link(nome, texto):
     """Todo parágrafo de prosa com «Codex» leva um link para a documentação dele (só a presença; a fonte entra no
-    FONTES.md). As exceções, (arquivo, início do parágrafo), estão em EXCECOES_DO_CODEX."""
+    FONTES.md). A nota numerada chamada no parágrafo conta como o link dele, se a nota o tiver. As exceções,
+    (arquivo, início do parágrafo), estão em EXCECOES_DO_CODEX."""
+    notas = dict(definicoes_de_notas(texto))
+
+    def com_link(p):
+        return LINK_DO_CODEX.search(p) or any(LINK_DO_CODEX.search(notas.get(n, "")) for n in CHAMADA_DE_NOTA.findall(p))
     return [f"{nome}: «Codex» sem link para a documentação do Codex no mesmo parágrafo — «{p.strip()[:40]}…»"
             for p in paragrafos(texto_de_prosa(texto))
-            if CODEX.search(p) and not LINK_DO_CODEX.search(p) and (nome, p.strip()[:40]) not in EXCECOES_DO_CODEX]
+            if CODEX.search(p) and not com_link(p) and (nome, p.strip()[:40]) not in EXCECOES_DO_CODEX]
+
+
+def vozes_sem_decisao_na_nota(nome, texto):
+    """«as vozes da minha cabeça» na prosa (fora de aspas) leva uma nota «Decisão do autor (AAAA-MM-DD). Porquê: …»."""
+    notas = dict(definicoes_de_notas(texto))
+    return [f"{nome}: «as vozes da minha cabeça» sem nota «Decisão do autor (AAAA-MM-DD). Porquê: …» — «{p.strip()[:40]}…»"
+            for p in paragrafos(texto_de_prosa(texto)) if VOZES_DO_AUTOR.search(ASPAS_CURVAS.sub(" ", p))
+            and not any(DECISAO_DO_PO.search(notas.get(n, "")) for n in CHAMADA_DE_NOTA.findall(p))]
 
 
 def aspas_francesas(nome, texto):
@@ -264,24 +324,164 @@ def erros_da_lista_do_molde(raiz, arquivos):
     molde = ler(raiz / MOLDE)
     no_git = sorted(a.removeprefix(PASTA_DO_MANUAL).removesuffix(".md") for a in arquivos
                     if re.fullmatch(r"manual/\d\d-[^/]*\.md", a))
-    dos_tetos = [c.removeprefix(PASTA_DO_MANUAL).removesuffix(".md") for c in TETOS_POR_PARTE if c != "manual/README.md"]
+    dos_tetos = [c.removeprefix(PASTA_DO_MANUAL).removesuffix(".md") for c in TETOS_POR_PARTE
+               if re.fullmatch(r"manual/\d\d-[^/]*\.md", c)]
     erros = []
     for nome, esperado, origem in (("escritas", no_git, "os manual/NN-*.md do git"), ("partes", dos_tetos, "as chaves de TETOS_POR_PARTE")):
         lista = lista_do_molde(molde, nome)
         if lista != esperado:
             erros.append(f"{MOLDE}: `{nome}` {lista} diferem de {origem} {esperado}")
+    for nome, mapa in (("capitulos-novos", CAPITULOS), ("pecas-novas", PECAS)):
+        esperado, lista = [n for n in mapa if f"{PASTA_DO_MANUAL}{n}.md" in arquivos], lista_do_molde(molde, nome)
+        if lista != esperado:
+            erros.append(f"{MOLDE}: `{nome}` {lista} diferem dos arquivos novos do git {esperado}, na ordem do mapa")
     return erros
 
 
+def novos_do_molde(raiz):
+    """Os arquivos novos que o molde já lista: o alcance dos testes do livro novo (sem molde, nenhum)."""
+    molde = ler(raiz / MOLDE) if (raiz / MOLDE).exists() else ""
+    return [f"{PASTA_DO_MANUAL}{n}.md" for lista in ("capitulos-novos", "pecas-novas") for n in lista_do_molde(molde, lista)]
+
+
 def pares_repetidos(vistos, nome, texto):
-    """O mesmo `P<n>` em dois títulos, do mesmo arquivo ou de outro, reprova; `vistos` guarda onde cada um nasceu."""
+    """O mesmo `P<n>` (par de hoje) ou o mesmo título (par marcado) duas vezes, no mesmo arquivo ou noutro, reprova;
+    `vistos` guarda onde cada um nasceu."""
     erros = []
-    for titulo, _ in linhas_por_secao(texto, 2):
+    for titulo, _, marcado in secoes_de_par(texto):
         achado = PAR_DE_PROCEDIMENTO.match(titulo)
-        if achado and achado.group() in vistos:
-            erros.append(f"{nome}: «{titulo}»: o {achado.group()} já existe em {vistos[achado.group()]}")
-        elif achado:
-            vistos[achado.group()] = nome
+        chave = f"par «{titulo}»" if marcado else achado and achado.group()
+        if chave in vistos:
+            erros.append(f"{nome}: «{titulo}»: o {chave} já existe em {vistos[chave]}")
+        elif chave:
+            vistos[chave] = nome
+    return erros
+
+
+CODIGOS_INTERNOS = re.compile(r"\bP\d+\b|\bL-\d+\b|\b[Pp]rocedimentos? P\b|\b[Nn]a parte \d+\b")
+REMISSAO_DE_CAPITULO = re.compile(r"\b[Cc]apítulos? (\d+(?:(?:,\s?| e )\d+)*)")
+REMISSAO_DE_APENDICE = re.compile(r"\b(?:[Aa]pêndice|Ap\.|[Ss]eção) ([A-Z])(?:\.(\d+))?\b")
+IMAGEM = re.compile(r"!\[([^\]]*)\]\(([^)\s]+)\)")
+FIGURA = re.compile(r"(?:.*/)?figura-(\d+)-(\d+)\.svg")
+ARTE_DE_PARTE = re.compile(r"manual/imagens/arte-parte-([1-6])-([ab])\.svg")
+FALA_DO_SISTEMA = re.compile(r"\b(?:Windows|macOS|terminal)\b", re.IGNORECASE)
+NOTA_DE_AUTOR = re.compile(r"[A-ZÀ-Ý][A-ZÀ-Ý' -]*[A-ZÀ-Ý], \d{4}\b")
+ENTRADA_DE_REFERENCIA = re.compile(r"[ \t]*(?:[-*+][ \t]+)?([A-ZÀ-Ý][A-ZÀ-Ý' -]*[A-ZÀ-Ý]),\s")
+APENDICE_B, COMO_LER, GLOSSARIO, REFERENCIAS = ("manual/apendice-b.md", "manual/como-ler.md", "manual/glossario.md",
+                                                "manual/referencias.md")
+FUNCOES_DO_APP = frozenset()  # (arquivo, título) das seções do Ap. B que o autor marcou como usadas no app (a folha da 4.0)
+
+
+def codigos_internos(nome, texto):
+    """N1 · nenhum `P<n>`, `L-<n>`, «procedimento P» nem «na parte N» na prosa (o `D<n>` já o recusa test_fontes_e_pesquisas)."""
+    return [f"{nome}: código interno «{a.group()}» na prosa — conte a ideia, sem o código"
+            for a in CODIGOS_INTERNOS.finditer(texto_de_prosa(texto))]
+
+
+def notas_fecham(nome, texto):
+    """N2 · cada `[^nome]` chamado tem a sua definição, cada definição é chamada, uma vez só, e nenhuma é vazia."""
+    definicoes = definicoes_de_notas(texto)
+    definidas, chamadas = [n for n, _ in definicoes], set(CHAMADA_DE_NOTA.findall(texto_de_prosa(texto)))
+    return ([f"{nome}: nota [^{n}] chamada sem definição" for n in sorted(chamadas - set(definidas))]
+            + [f"{nome}: nota [^{n}] definida e nunca chamada" for n in sorted(set(definidas) - chamadas)]
+            + [f"{nome}: nota [^{n}] definida duas vezes" for n in sorted({n for n in definidas if definidas.count(n) > 1})]
+            + [f"{nome}: nota [^{n}] vazia" for n, corpo in definicoes if not corpo.strip()])
+
+
+def remissoes_existem(nome, texto):
+    """N4 · cada «Capítulo N», «Apêndice X» e «Seção B.N» aponta para uma peça do mapa do §1 (não para os arquivos que existem)."""
+    prosa_do_texto, erros = texto_de_prosa(texto), []
+    for achado in REMISSAO_DE_CAPITULO.finditer(prosa_do_texto):
+        erros += [f"{nome}: «Capítulo {n}» não existe no mapa (1 a {len(CAPITULOS)})" for n in re.findall(r"\d+", achado[1])
+                  if not 1 <= int(n) <= len(CAPITULOS)]
+    for achado in REMISSAO_DE_APENDICE.finditer(prosa_do_texto):
+        letra, numero = achado.groups()
+        if letra not in "AB" or (numero and f"{letra}.{numero}" not in SECOES_DO_MAPA):
+            erros.append(f"{nome}: «{achado.group()}» não existe no mapa (Apêndices A e B, seções {sorted(SECOES_DO_MAPA)})")
+    return erros
+
+
+def comandos_so_no_apendice_b(nome, texto):
+    """N5 · fora do Ap. B só blocos ```pedido; a palavra «terminal» só no Ap. B e no «Como ler» (e no glossário, que a define)."""
+    erros, aberto = [], False
+    for linha in texto.splitlines():
+        if linha.lstrip().startswith(fontes.CERCAS_DE_CODIGO):
+            info = linha.lstrip().lstrip("`~").strip()
+            erros += [f"{nome}: bloco de código «{info}» fora do Apêndice B — só os blocos ```pedido"] * (
+                not aberto and info != "pedido" and nome != APENDICE_B)
+            aberto = not aberto
+    if nome not in (APENDICE_B, COMO_LER, GLOSSARIO) and re.search(r"\bterminal\b", texto_de_prosa(texto), re.IGNORECASE):
+        erros.append(f"{nome}: a palavra «terminal» só aparece no Apêndice B e no «Como ler»")
+    return erros
+
+
+def nao_testado_a_vista(nome, texto):
+    """N6 · cada seção do Ap. B que fala de Windows, macOS ou terminal diz «não testado pelo autor», salvo as do app."""
+    if nome != APENDICE_B:
+        return []
+    return [f"{nome}: «{titulo}»: fala de Windows, macOS ou terminal sem «não testado pelo autor»"
+            for titulo, linhas in linhas_por_secao(texto, 2) if (nome, titulo) not in FUNCOES_DO_APP
+            and FALA_DO_SISTEMA.search(titulo + " " + " ".join(prosa(linhas)))
+            and "não testado pelo autor" not in " ".join(prosa(linhas)).lower()]
+
+
+def figuras_dos_capitulos(nome, texto):
+    """N7 · cada imagem de um arquivo é `figura-<capítulo>-<n>.svg` e a legenda abre com «Figura <capítulo>.<n>»."""
+    erros = []
+    for legenda, caminho in IMAGEM.findall(texto_de_prosa(texto)):
+        achado = FIGURA.fullmatch(caminho)
+        if not achado:
+            erros.append(f"{nome}: imagem «{caminho}» — as figuras são figura-<capítulo>-<n>.svg (as artes são do molde)")
+        elif not re.match(rf"Figura {int(achado[1])}\.{int(achado[2])}\b", legenda):
+            erros.append(f"{nome}: a figura «{caminho}» precisa da legenda «Figura {int(achado[1])}.{int(achado[2])}»")
+    return erros
+
+
+def artes_das_partes(raiz, arquivos, novos):
+    """N7 · só há as 12 `arte-parte-<n>-{a,b}.svg`; as partes que já têm capítulo novo têm as duas e o molde chama-as."""
+    molde = "\n".join(ler(raiz / a) for a in arquivos if a.endswith(".typ"))
+    com_capitulo = {PARTE_DO_CAPITULO[int(n[len(PASTA_DO_MANUAL) + 4:][:2])] for n in novos
+                    if n.startswith(PASTA_DO_MANUAL + "cap-")}
+    erros = [f"{a}: fora das 12 artes arte-parte-<1 a 6>-<a ou b>.svg" for a in sorted(arquivos)
+             if a.startswith(PASTA_DO_MANUAL + "imagens/arte-parte-") and not ARTE_DE_PARTE.fullmatch(a)]
+    for parte in sorted(com_capitulo):
+        for lado in "ab":
+            arte = f"arte-parte-{parte}-{lado}.svg"
+            if f"{PASTA_DO_MANUAL}imagens/{arte}" not in arquivos:
+                erros.append(f"manual/imagens/{arte}: falta — a parte {parte} já tem capítulo novo")
+            elif arte not in molde:
+                erros.append(f"manual/imagens/{arte}: o molde não a chama")
+    return erros
+
+
+def notas_e_referencias(raiz, arquivos, novos):
+    """N3 · cada nota «SOBRENOME, ano» tem a entrada nas Referências; cada entrada tem uma nota e uma linha no FONTES.md."""
+    notas = {tuple(a.group().split(", ")) for n in novos if n in arquivos for _, corpo in definicoes_de_notas(ler(raiz / n))
+             if (a := NOTA_DE_AUTOR.match(corpo))}
+    entradas, erros = [], []
+    for linha in (ler(raiz / REFERENCIAS).splitlines() if REFERENCIAS in arquivos else []):
+        if achado := ENTRADA_DE_REFERENCIA.match(linha):
+            ano = re.search(r"\b(?:19|20)\d\d\b", linha.split("Acesso em")[0])
+            entradas.append((achado[1], ano.group() if ano else None))
+    fontes_md = ler(raiz / "FONTES.md").lower()
+    erros += [f"nota «{s}, {a}» sem entrada em {REFERENCIAS}" for s, a in sorted(notas - set(entradas))]
+    erros += [f"{REFERENCIAS}: «{s}, {a}» sem nota que a cite" for s, a in entradas if (s, a) not in notas]
+    return erros + [f"{REFERENCIAS}: «{s}» sem linha no FONTES.md" for s in sorted({s for s, _ in entradas})
+                    if s.lower() not in fontes_md]
+
+
+VERIFICACOES_DOS_NOVOS = (codigos_internos, notas_fecham, remissoes_existem, comandos_so_no_apendice_b, nao_testado_a_vista,
+                          figuras_dos_capitulos, vozes_sem_decisao_na_nota)
+
+
+def erros_do_alcance_total(raiz, arquivos, novos):
+    """O que a 4.8 liga (ALCANCE_TOTAL): nenhum `## P<n>` sobra e N1 e N5 valem também para as partes de hoje."""
+    erros = []
+    for nome in sorted(a for a in arquivos if a.endswith(".md") and a not in novos):
+        texto = ler(raiz / nome)
+        erros += [f"{nome}: «## {t}» — o gatilho de hoje já devia ter saído" for t, _, _ in secoes_de_par(texto)
+                  if PAR_DE_PROCEDIMENTO.match(t)]
+        erros += codigos_internos(nome, texto) + comandos_so_no_apendice_b(nome, texto)
     return erros
 
 
@@ -289,12 +489,16 @@ VERIFICACOES_DO_TEXTO = (links_soltos, pares_do_texto, secoes_sem_fonte, decisoe
                          pagina_por_extenso, aspas_francesas, medido_sem_negacao, lingua_do_brasil.erros_de_lingua)
 
 
-def erros_do_manual(raiz, arquivos):
-    """Todos os erros do manual: `arquivos` são os caminhos relativos à raiz (os de `manual/` do git)."""
+def erros_do_manual(raiz, arquivos, novos=None):
+    """Todos os erros do manual: `arquivos` são os caminhos relativos à raiz (os de `manual/` do git); `novos` são os
+    arquivos do livro novo (por defeito, os que o molde lista): só neles valem os testes novos."""
+    novos = novos_do_molde(raiz) if novos is None else novos
     conhecidas, erros, vistos = paginas_conhecidas(raiz), erros_de_teto_por_parte(raiz, arquivos), {}
     for nome in sorted(a for a in arquivos if a.endswith(".md")):
         texto = ler(raiz / nome)
         erros += pares_repetidos(vistos, nome, texto)
         erros += [erro for verificacao in VERIFICACOES_DO_TEXTO for erro in verificacao(nome, texto)]
         erros += paginas_sem_entrada(nome, texto, conhecidas)
-    return erros
+        erros += [erro for verificacao in VERIFICACOES_DOS_NOVOS * (nome in novos) for erro in verificacao(nome, texto)]
+    erros += notas_e_referencias(raiz, arquivos, novos) + artes_das_partes(raiz, arquivos, novos)
+    return erros + erros_do_alcance_total(raiz, arquivos, novos) * ALCANCE_TOTAL

@@ -15,6 +15,10 @@
 #let escritas = ("00-antes-de-comecar", "01-o-que-e-o-morg-laws", "02-preparar-o-computador", "03-instalar", "04-pedir", "05-sessoes",
   "06-o-ciclo-de-uma-mudanca", "07-as-regras", "08-como-se-garante", "09-quando-da-errado", "10-glossario", "11-pedidos-prontos", "12-como-este-manual-foi-feito")
 
+// O livro novo, na ordem do mapa: os capítulos e as peças já escritos (o verificador confere-os com o git e só neles vale N1 a N7).
+#let capitulos-novos = ()
+#let pecas-novas = ("referencias",)
+
 #let commit = sys.inputs.at("commit", default: none)
 #let escopo-do-markdown = (marca-de-par: marca-de-par)
 
@@ -51,6 +55,11 @@ desenho vetorial do agente, em Typst e SVG, sem imagem feita por IA.
 
 #for parte in partes.filter(p => p in escritas) {
   cmarker.render(read(parte + ".md"), h1-level: 2, scope: escopo-do-markdown)
+  fecha-o-par()
+}
+
+#for nome in capitulos-novos + pecas-novas {
+  cmarker.render(read(nome + ".md"), h1-level: 2, scope: escopo-do-markdown)
   fecha-o-par()
 }
 
