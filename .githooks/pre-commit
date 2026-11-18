@@ -45,6 +45,11 @@ MORG_LER_DO_INDICE=1 "$py" -X utf8 -m unittest discover -s tests -p test_manual_
   echo "ERRO: dado pessoal, identificador ou nome de arquivo sem crases em manual/ (o teste acima diz onde)." >&2
   exit 1; }
 
+# 2d. As metas da narrativa do livro novo: só avisam (o script sai sempre com 0), por isso depois dos testes e sem barrar nada.
+if [ -f scripts/metas-da-narrativa.py ]; then
+  "$py" -X utf8 scripts/metas-da-narrativa.py || true
+fi
+
 # 3. AGENTS.md é lido inteiro em todo turno: no máximo 60 linhas.
 if [ -f AGENTS.md ]; then
   linhas=$(wc -l < AGENTS.md)
