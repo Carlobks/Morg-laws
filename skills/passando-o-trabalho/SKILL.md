@@ -28,7 +28,8 @@ Em todos os casos:
 3. Commitar **só** esse arquivo, pelo caminho, com os hooks do projeto. Pasta ignorada: ver a seção 3.
 4. Entregar o que o caso pede: a mensagem de retomada para a sessão nova (parar) ou o `/compact` com essa mensagem
    (compactar).
-5. Ao retomar: ler o handoff inteiro, comparar com o `git status -s`, reler o «Descartado», seguir o passo 1.
+5. Ao retomar: ler o handoff inteiro, pôr o nome da sessão se as regras do projeto definem um formato, comparar com
+   o `git status -s`, reler o «Descartado», seguir o passo 1.
 
 ## 1. Conferir o estado, em silêncio
 
@@ -128,7 +129,7 @@ ignorada) e, depois dela, a mensagem para colar na sessão nova (na língua do u
 português do Brasil só como modelo):
 
 ```text
-Retomando um trabalho que parou. O estado está em .context/HANDOFF-<assunto>.md; os outros HANDOFF-*.md dessa pasta são de outros assuntos e não se tocam. Leia esse arquivo inteiro, rode git status -s e diga o que mudou em relação à tabela, releia o «Descartado» e não proponha nada dele. Diga numa frase onde estávamos e siga o passo 1 dos próximos passos ([resumo do passo]). Se ele pedir uma decisão minha, pergunte antes.
+Retomando um trabalho que parou. O estado está em .context/HANDOFF-<assunto>.md; os outros HANDOFF-*.md dessa pasta são de outros assuntos e não se tocam. Se as regras do projeto definem um formato para o nome da sessão, ponha esse nome primeiro; senão, siga em frente. Leia esse arquivo inteiro, rode git status -s e diga o que mudou em relação à tabela, releia o «Descartado» e não proponha nada dele. Diga numa frase onde estávamos e siga o passo 1 dos próximos passos ([resumo do passo]). Se ele pedir uma decisão minha, pergunte antes.
 ```
 
 **Pausa de menos de uma hora:** grave e commite o handoff, sem compactar e sem sessão nova. Ao voltar, continue na
@@ -163,7 +164,7 @@ escreve na conversa. Os blocos abaixo estão em português do Brasil só como mo
 E, depois dele, a mensagem para mandar quando a compactação terminar (o primeiro pedido da conversa nova):
 
 ```text
-A conversa acabou de ser compactada. O estado está em .context/HANDOFF-<assunto>.md; os outros HANDOFF-*.md dessa pasta são de outros assuntos e não se tocam. Leia esse arquivo inteiro, rode git status -s e diga o que mudou em relação à tabela, releia o «Descartado» e não proponha nada dele. Diga numa frase onde estávamos e siga o passo 1 dos próximos passos ([resumo do passo]). Se ele pedir uma decisão minha, pergunte antes.
+A conversa acabou de ser compactada. O estado está em .context/HANDOFF-<assunto>.md; os outros HANDOFF-*.md dessa pasta são de outros assuntos e não se tocam. Se as regras do projeto definem um formato para o nome da sessão, ponha esse nome primeiro; senão, siga em frente. Leia esse arquivo inteiro, rode git status -s e diga o que mudou em relação à tabela, releia o «Descartado» e não proponha nada dele. Diga numa frase onde estávamos e siga o passo 1 dos próximos passos ([resumo do passo]). Se ele pedir uma decisão minha, pergunte antes.
 ```
 
 **Codex:** a documentação mostra o `/compact` sem argumentos, com uma confirmação antes de resumir. Como não há onde
@@ -171,7 +172,7 @@ pôr as instruções, elas vão na mensagem de retomada. Diga para rodar o `/com
 para colar logo depois:
 
 ```text
-A conversa acabou de ser compactada. Objetivo: [uma linha]. Arquivos ativos: [lista]. Não repetir: [o essencial do Descartado]. Erro atual: [literal, ou "nenhum"]. O estado completo está em .context/HANDOFF-<assunto>.md; os outros HANDOFF-*.md dessa pasta são de outros assuntos e não se tocam. Leia esse arquivo inteiro, rode git status -s e diga o que mudou em relação à tabela, releia o «Descartado» e não proponha nada dele. Diga numa frase onde estávamos e siga o passo 1 dos próximos passos ([resumo do passo]). Se ele pedir uma decisão minha, pergunte antes.
+A conversa acabou de ser compactada. Objetivo: [uma linha]. Arquivos ativos: [lista]. Não repetir: [o essencial do Descartado]. Erro atual: [literal, ou "nenhum"]. O estado completo está em .context/HANDOFF-<assunto>.md; os outros HANDOFF-*.md dessa pasta são de outros assuntos e não se tocam. Se as regras do projeto definem um formato para o nome da sessão, ponha esse nome primeiro; senão, siga em frente. Leia esse arquivo inteiro, rode git status -s e diga o que mudou em relação à tabela, releia o «Descartado» e não proponha nada dele. Diga numa frase onde estávamos e siga o passo 1 dos próximos passos ([resumo do passo]). Se ele pedir uma decisão minha, pergunte antes.
 ```
 
 No Claude Code e no Codex, o comando sai no fim da resposta, depois de uma linha com o caminho do handoff e o hash do commit (ou «só no
@@ -183,10 +184,12 @@ Quando o pedido ou o resumo mandar ler o handoff:
 
 1. Leia-o inteiro. Sem caminho no pedido, liste `.context/HANDOFF-*.md`: um só, leia esse; vários, leia o do assunto
    da conversa, e se não estiver claro, pergunte qual.
-2. Rode `git status -s` e `git log --oneline -5` e compare com o «Estado verificado». Se divergir, diga o quê antes
+2. Se as regras do projeto definem um formato para o nome da sessão, ponha-o agora, com o assunto do handoff; senão,
+   siga em frente. Uma sessão nova nasce sem esse nome, e a compactação não o põe.
+3. Rode `git status -s` e `git log --oneline -5` e compare com o «Estado verificado». Se divergir, diga o quê antes
    de agir: outra sessão pode ter mexido.
-3. Releia o «Descartado». Só se volta a uma dessas abordagens com um fato novo, e dizendo qual.
-4. Siga o passo 1 dos «Próximos passos».
+4. Releia o «Descartado». Só se volta a uma dessas abordagens com um fato novo, e dizendo qual.
+5. Siga o passo 1 dos «Próximos passos».
 
 **Títulos antigos.** Um handoff gravado com outro molde pode trazer `## Estado do código (…)` e
 `## Abordagens descartadas (…)`: valem como «Estado verificado» e «Descartado». A gravação seguinte usa os títulos
