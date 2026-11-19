@@ -1,7 +1,6 @@
 # Capa e estrutura
 
-A estrutura do site, as capas sem foto, o cabeçalho de vidro, a ação que segue o scroll e o formulário em duas
-colunas. O código foi escrito por nós e testado numa página isolada, num Chromium sem janela (a 1440 px e a 390 px, com
+A estrutura do site, as capas sem foto, o cabeçalho de vidro e o formulário em duas colunas. O código foi escrito por nós e testado numa página isolada, num Chromium sem janela (a 1440 px e a 390 px, com
 e sem a transparência reduzida emulada); o que se mediu está no fim de cada receita. Os valores sem fonte dizem
 «nosso» e são um ponto de partida.
 
@@ -79,57 +78,7 @@ debaixo do cabeçalho. Um campo posto logo acima da tela e focado por script par
 362 px (390 px), fora do cabeçalho; com a versão anterior desta receita (`scroll-margin-top` nas seções) ficava a
 10 px do topo, debaixo dele. A variante de `prefers-contrast: more` não foi emulada nesta sessão.
 
-## 4. A ação que segue o scroll
-
-```css
-.com-lateral { display: grid; grid-template-columns: 1fr 18rem; gap: 3rem; align-items: start; }
-.lateral {
-  position: sticky; top: calc(var(--altura-cabecalho) + 1.5rem);
-  padding: 1.5rem; background: #fff; border-radius: 1rem;
-}
-.barra-acao { display: none; }
-
-@media (max-width: 767px) {
-  .com-lateral { grid-template-columns: 1fr; }
-  .lateral { display: none; }
-  .barra-acao {
-    display: flex; position: fixed; inset: auto 0 0 0; z-index: 9;
-    padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom));
-    background: #fff; border-top: 1px solid #d6d0c4;
-  }
-  .barra-acao a {
-    flex: 1; min-height: 44px; display: grid; place-items: center;
-    background: #1d1b18; color: #fff; border-radius: 0.75rem;
-  }
-  html { scroll-padding-bottom: 5rem; }
-  body { padding-bottom: 5rem; }
-}
-```
-
-```html
-<section class="com-lateral">
-  <div><!-- o conteúdo das seções --></div>
-  <aside class="lateral"><a href="#pedido">Pedir orçamento</a></aside>
-</section>
-<div class="barra-acao"><a href="#pedido">Pedir orçamento</a></div>
-```
-
-- **`align-items: start`** na grade: sem ele a lateral estica até a altura da coluna e o `sticky` não tem para onde
-  andar.
-- **`top` com a altura do cabeçalho** mais um respiro, para a lateral não ficar debaixo do vidro.
-- **O `body` ganha o espaço da barra** no celular, para ela não cobrir o último conteúdo, e o `html` ganha o mesmo
-  espaço no `scroll-padding-bottom`, para um campo que recebe o foco subir acima dela.
-- **A barra é um `div`, não um `nav`:** um link só, para a mesma página, não é navegação, e um marco de navegação a
-  mais só atrapalha quem usa leitor de tela (a semântica se confere na `cuidando-da-acessibilidade`).
-- **Nenhum antepassado da lateral com `overflow`** diferente de `visible`: é o que mais quebra um `sticky`.
-
-**Medido:** a 1440 px, com a seção rolada 200, 600 e 1000 px para cima, a lateral estava a 88 px do topo da janela
-nos três pontos (64 do cabeçalho mais 24 de respiro), enquanto o título da seção passava de −70 a −870 px. A 390 px a lateral não aparecia e a barra sim, com
-o botão de 44 px de altura. Um campo do formulário parado debaixo da barra e focado por script subiu para 427–448 px,
-acima dela (que começa em 775 px); na versão anterior desta receita, sem `scroll-padding`, ficava em 765–786 px,
-coberto.
-
-## 5. O formulário em duas colunas
+## 4. O formulário em duas colunas
 
 ```css
 .pedido { display: grid; grid-template-columns: minmax(14rem, 2fr) 3fr; gap: 3rem; align-items: start; }

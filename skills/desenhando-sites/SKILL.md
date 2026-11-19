@@ -15,7 +15,7 @@ Onde ler o resto:
 - `references/movimento-com-o-scroll.md`: a receita testada do revelar com o scroll, a entrada da capa, o paralaxe e
   a tabela dos tons de movimento.
 - `references/capa-e-estrutura.md`: as estruturas possíveis e quando cada uma serve, capas sem foto, o cabeçalho de
-  vidro, a ação que segue o scroll e o formulário em duas colunas.
+  vidro e o formulário em duas colunas.
 - `references/fontes.md`: cada regra com a fonte e o commit fixo.
 
 As regras vêm dos ensaios às cegas de novembro de 2026, em que o site de uma empresa de serviços e o de uma psicóloga
@@ -133,23 +133,6 @@ Seções afastadas demais umas das outras foram outra queixa dos ensaios; aperta
 - **Dentro de uma seção, menos espaço do que entre as seções** (nosso): o olho separa as partes pelo espaço antes de
   precisar de uma linha.
 
-## 6. A ação principal que segue o scroll
-
-No site que ficou em primeiro, o botão de marcar seguia a pessoa numa coluna ao lado do conteúdo, e quem julgou o
-elogiou.
-
-- **No computador:** a ação principal (marcar, pedir orçamento) numa coluna lateral com `position: sticky`, logo abaixo
-  do cabeçalho fixo, ao lado das seções de conteúdo.
-- **No celular:** a lateral vira uma barra fixa embaixo, com o botão da ação ocupando a largura, a altura do alvo que a
-  `cuidando-da-acessibilidade` pede e a margem da área segura (valor e forma nossos). A página reserva embaixo o
-  espaço da barra duas vezes: no fim do conteúdo, para ela não cobrir o último bloco, e no `scroll-padding-bottom`,
-  para um campo que recebe o foco não ficar debaixo dela (seção 9).
-- **Uma ação só nela** (nosso). A lateral não vira um segundo menu.
-- **O `sticky` quebra com um `overflow`** (`hidden`, `auto`) num antepassado: confira antes de dizer que funciona (o
-  mesmo aviso da `desenhando-telas`).
-
-A receita testada está em `references/capa-e-estrutura.md`.
-
 ## 7. Movimento com o scroll
 
 Foi o que decidiu o primeiro lugar nos dois sites: no da empresa, a primeira passou a segunda só pelo movimento, e no
@@ -216,8 +199,7 @@ Com cabeçalho fixo, o título que uma âncora leva para o topo e o elemento que
 dele. Nos ensaios, os quatro sites da régua de acessibilidade falharam nas âncoras. A regra e o modo de medir estão
 na `cuidando-da-acessibilidade`; o que cabe a esta skill é a forma (nossa): `scroll-padding-top` no `html`, com a
 altura do cabeçalho tirada da mesma variável que o cabeçalho usa, o que vale para toda âncora e para o foco e não
-deixa as duas medidas divergirem; no celular, com a barra fixa embaixo, também `scroll-padding-bottom` com a altura
-dela. Um `scroll-margin-top` em cada alvo resolve a âncora, mas não o foco.
+deixa as duas medidas divergirem. Um `scroll-margin-top` em cada alvo resolve a âncora, mas não o foco.
 
 ## 10. Fugir do padrão
 
@@ -271,16 +253,13 @@ preenche o que o manual não diz. Quando os dois divergem, siga o manual e diga 
 - [ ] O formulário em duas colunas no computador (três informações curtas e os campos) e numa no celular? Botões com
   verbo e resultado?
 - [ ] Espaço entre seções numa escala fixa, sem meia tela vazia?
-- [ ] A ação principal numa lateral `sticky` no computador e numa barra fixa embaixo no celular, sem `overflow` que
-  quebre o `sticky`?
 - [ ] Os blocos surgem com o scroll ao longo da página toda, de 10 a 16 px, em 400–600 ms, uma vez só, por
   `threshold` e não por `rootMargin` negativo? O último bloco da página surge ao chegar ao fim?
 - [ ] A ordem segue a importância (título, apoio 80–120 ms depois, o detalhe sem subir)? Uma entrada por contêiner?
 - [ ] Sem JavaScript todo o texto aparece? A capa entra ao carregar, sem esperar o scroll?
 - [ ] Paralaxe só decorativo, até cerca de 15 %, sem duração, desligado no celular? Nada prende o scroll?
 - [ ] Vidro só no cabeçalho e em painéis flutuantes, nunca empilhado? O texto nele mais pesado e com mais contraste?
-- [ ] `scroll-padding-top` no `html` com a altura do cabeçalho (a mesma variável) e, no celular, `scroll-padding-bottom`
-  com a da barra?
+- [ ] `scroll-padding-top` no `html` com a altura do cabeçalho (a mesma variável)?
 - [ ] Nenhum padrão de página gerada que ninguém escolheu? Uma só aposta por página?
 - [ ] Capturas a 1440 e a 390 px criticadas, a página rolada até o fim e de volta, o JavaScript desligado uma vez?
 - [ ] O manual de marca, se existe, foi seguido, e a divergência dita?

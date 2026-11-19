@@ -48,9 +48,6 @@ executado, e as regras estão escritas com palavras nossas. O titular e a licen�
 | 4 | Nada de depoimento, número ou prêmio inventado | nosso |
 | 5 | Nem apertado nem vazio | ensaios (seções afastadas demais) |
 | 5 | 96–128 px e 56–80 px; nenhuma seção com mais de meia tela vazia; menos espaço dentro da seção do que entre as seções | nosso |
-| 6 | A ação principal numa lateral que acompanha o scroll | ensaios (a marcação do site que ficou em primeiro) |
-| 6 | A barra fixa embaixo no celular, o espaço dela no fim e no `scroll-padding-bottom` | nosso; o tamanho do alvo e o foco que não se esconde vêm da `cuidando-da-acessibilidade` |
-| 6 | Uma ação só na lateral; o `sticky` quebra com `overflow` | nosso (o aviso do `overflow` é o mesmo da `desenhando-telas`) |
 | 7 | Os textos surgem com o scroll na página toda | ensaios (decidiu o primeiro lugar nos dois sites) |
 | 7 | 10–16 px, saída forte, 400–600 ms; disparar com 10–20 % na tela; uma vez só; em onda de 80–120 ms; o menor só esmaece; conteúdo visível sem script; a capa não espera; nunca um evento de scroll | mblode |
 | 7 | Disparar por `threshold`, nunca por `rootMargin` negativo (o último bloco nunca surgiria) | nosso, medido no Chromium |
@@ -65,7 +62,7 @@ executado, e as regras estão escritas com palavras nossas. O titular e a licen�
 | 8 | Opacidade de 0,72 e desfoque de 16 px | nosso |
 | 8 | Na dúvida, uma das camadas fica sólida | `cuidando-da-acessibilidade` |
 | 9 | As âncoras não param sob o cabeçalho | régua (os quatro sites da régua falharam) |
-| 9 | `scroll-padding-top` no `html` com a variável do cabeçalho, e `scroll-padding-bottom` com a barra no celular, para as âncoras e o foco | nosso, medido no Chromium |
+| 9 | `scroll-padding-top` no `html` com a variável do cabeçalho, para as âncoras e o foco | nosso, medido no Chromium |
 | 10 | O padrão que serve a qualquer cliente não é escolha; os dois exemplos; uma só aposta por página | fd |
 | 11 | Capturas e crítica antes de mostrar; tirar um enfeite antes de entregar | fd |
 | 11 | Rolar até o fim e voltar; desligar o JavaScript | nosso, a partir das regras da seção 7 |
