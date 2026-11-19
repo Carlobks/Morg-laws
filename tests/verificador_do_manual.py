@@ -42,6 +42,7 @@ TETOS_POR_PARTE = {  # palavras da prosa (fora de blocos de código) por parte; 
     "manual/06-o-ciclo-de-uma-mudanca.md": 3465, "manual/07-as-regras.md": 2000,
     "manual/08-como-se-garante.md": 2700, "manual/09-quando-da-errado.md": 1506, "manual/10-glossario.md": 1800,
     "manual/11-pedidos-prontos.md": 1800, "manual/12-como-este-manual-foi-feito.md": 1000,
+    "manual/prefacio.md": 900, "manual/como-ler.md": 1000,
     "manual/referencias.md": 1500}  # as Referências do livro novo (≈4 pp.); cada capítulo novo acrescenta o seu teto
 PARTES_EM_TEXTO_SEGUIDO = ("00", "01", "02", "07", "08", "11", "12")  # prefixos do nome; o glossário (10) não pede fonte
 EXCECOES_DE_SECAO = frozenset({("manual/07-as-regras.md", "O índice das skills")})  # (arquivo, título) sem fonte

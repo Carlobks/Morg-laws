@@ -10,9 +10,9 @@
 #let entrelinha = 0.62em
 
 // O nome da obra, num só lugar: o rosto, o cabeçalho par, o título do PDF e o colofão leem estas três variáveis.
-#let nome-da-obra = "Morg-laws"
-#let subtitulo-da-obra = "Manual de uso"
-#let cabecalho-par = nome-da-obra + " · " + subtitulo-da-obra
+#let nome-da-obra = "A IA Faz. E Eu?"
+#let subtitulo-da-obra = "O que sobra para quem não escreve código quando o agente escreve tudo"
+#let cabecalho-par = nome-da-obra
 
 // Uma página que leva esta marca fica sem cabeçalho: a abertura, a página de parte, a arte e a página em branco.
 #let sem-cabecalho-aqui() = [#metadata(none) <sem-cabecalho>]
@@ -28,7 +28,7 @@
 }
 
 // As peças sem número (o Prefácio, os apêndices, as Notas…): abrem como um capítulo, sem o algarismo e sem gastar o contador.
-#let sem-numero(texto) = texto.starts-with("Apêndice") or texto in ("Prefácio", "Como ler este manual", "Posfácio", "Notas", "Referências", "Glossário")
+#let sem-numero(texto) = texto.starts-with("Apêndice") or texto in ("Prefácio", "Como ler este livro", "Posfácio", "Notas", "Referências", "Glossário")
 
 // O número de um capítulo (o `h` achado por `query`): o contador lido no lugar do título ainda não tem o passo da abertura, que vem depois.
 #let numero-do-capitulo(h) = if sem-numero(texto-de(h.body)) { none } else { counter("capitulo").at(h.location()).first() + 1 }
